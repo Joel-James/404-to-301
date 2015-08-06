@@ -44,14 +44,7 @@ class _404_To_301_Activator {
 					'redirect_to' => $i4t3_to,
 					'redirect_page' => $i4t3_page,
 					'email_notify' => $i4t3_notify
-				);
-		
-		// New integration settings array to be added
-		$i4t3ExtOptions = array();
-		if( !empty( get_option( 'i4t3_ext_options' ) ) ) {
-			$i4t3ExtOptions = get_option( 'i4t3_ext_options' );
-		}
-		
+				);	
 
 		/**
 		 *	Array of all settings arrays.

@@ -121,6 +121,7 @@ class _404_To_301 {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'i4t3_options_register' );
 		$this->loader->add_filter( 'admin_footer_text', $plugin_admin, 'i4t3_dashboard_footer');
 		$this->loader->add_filter( 'plugin_action_links', $plugin_admin, 'i4t3_plugin_action_links', 10, 5 );
+		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'i4t3_upgrade_if_new' );
 	}
 
 	

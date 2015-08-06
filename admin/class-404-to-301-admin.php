@@ -107,6 +107,26 @@ class _404_To_301_Admin {
 		}
 
 	}
+	
+	
+	/**
+	 * Run upgrade functions
+	 *
+	 * If 404 to 301 is upgraded, we may need to perform few updations in db
+	 * 
+	 * @since	2.0.0
+	 * @uses	get_option()	To get the activation redirect option from db.
+	 * @return	void.
+	 */
+	public function i4t3_upgrade_if_new() {
+	
+		if ( !get_option('i4t3_version_no') || ( get_option('i4t3_version_no') < I4T3_VERSION  ) ) {
+			if( class_exists( '_404_To_301_Activator' ) ) {
+				_404_To_301_Activator::activate();
+			}
+			update_option('i4t3_version_no', I4T3_VERSION );
+		}
+	}
 
 
 	/**

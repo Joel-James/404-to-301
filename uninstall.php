@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fired only when the 404 to 301 is uninstalled.
+ * Fired only when the 404 to 301 is un-installed.
  *
  * Removes everything that 404 to 301 added to your db.
  *
@@ -21,6 +21,12 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 // Delete plugin options
 if( get_option( 'i4t3_gnrl_options' ) ) {
 	delete_option( 'i4t3_gnrl_options' );
+}
+if( get_option( 'i4t3_db_version' ) ) {
+	delete_option( 'i4t3_db_version' );
+}
+if( get_option( 'i4t3_version_no' ) ) {
+	delete_option( 'i4t3_version_no' );
 }
 
 // Drop tables

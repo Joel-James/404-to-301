@@ -55,7 +55,7 @@
 							<span></span>
 						</div>
 						<div class="misc-pub-section">
-							<label><a href="http://iscode.co/docs/category/404-to-301/" class="i4t3-author-link" target="_blank" title="Visit plugin website"><strong>Plugin documentation</strong></a></label>
+							<label><a href="http://iscode.co/docs_cat/404-to-301/" class="i4t3-author-link" target="_blank" title="Visit plugin website"><strong>Plugin documentation</strong></a></label>
 							<span></span>
 						</div>
 						<div class="misc-pub-section">
@@ -64,7 +64,7 @@
 						</div>
 						<div class="misc-pub-section">
 							<label>Need help?</label>
-							<span><strong><a href="http://iscode.co/contact/">contact support</a></strong></span>
+							<span><strong><a href="http://iscode.co/support/">contact support</a></strong></span>
 						</div>
 					</div>
 				</div>

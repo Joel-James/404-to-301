@@ -51,6 +51,9 @@ if(!defined('I4T3_LOGS_PAGE')) {
 if(!defined('I4T3_DB_VERSION')) {
 	define( 'I4T3_DB_VERSION', '1.0' );
 }
+if(!defined('I4T3_VERSION')) {
+	define( 'I4T3_VERSION', '2.0.0' );
+}
 // Set who all can access 404 settings. You can change this if you want to give others access.
 if(!defined('I4T3_ADMIN_PERMISSION')) {
 	define( 'I4T3_ADMIN_PERMISSION', 'manage_options' );
