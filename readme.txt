@@ -4,7 +4,7 @@ Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
 Requires at least: 3.0
 Tested up to: 4.2.4
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,7 +110,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://iscode.co/s
 
 == Changelog ==
 
-= 2.0.0 (29/07/2015) =
+= 2.0.1 (29/07/2015) =
 **New Feature**
 
 - Now you can log/monitor all 404 errors (optional).
@@ -154,6 +154,5 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://iscode.co/s
 
 == Upgrade Notice ==
 
-= 1.0.8 =
-* Very minor bug fix
-* Tested for WP 4.2
+= 2.0.1 =
+* Upgraded the plugin core code.

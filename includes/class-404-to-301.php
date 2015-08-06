@@ -67,7 +67,7 @@ class _404_To_301 {
 	public function __construct() {
 
 		$this->plugin_name = '404-to-301';
-		$this->version = '2.0.0';
+		$this->version = '2.0.1';
 		$this->table = $GLOBALS['wpdb']->prefix . '404_to_301';
 		$this->load_dependencies();
 		$this->define_admin_hooks();
