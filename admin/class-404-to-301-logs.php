@@ -90,15 +90,15 @@ class _404_To_301_Logs extends WP_List_Table_404 {
         $wpdb->hide_errors();
 
         // Per page filter
-		$per_page = apply_filters( 'i4t3_log_list_per_page', 10 );
+        $per_page = apply_filters( 'i4t3_log_list_per_page', 2 );
 
         $current_page = $this->get_pagenum();
-		$limit = ( $current_page-1 )* $per_page;
-		
-		// If no sort, default to title
-        $orderby = ( isset( $_GET['orderby'] ) ) ? $_GET['orderby'] : 'date';
+        $limit = ( $current_page-1 )* $per_page;
+        
+        // If no sort, default to title
+        $orderby = ( isset( $_GET['orderby'] ) ) ? $this->i4t3_get_sort_column_filtered( $_GET['orderby'] ) : 'date';
         // If no order, default to asc
-        $order = ( isset($_GET['order'] ) ) ? $_GET['order'] : 'ASC';
+        $order = ( isset($_GET['order'] ) && 'desc' == $_GET['order'] ) ? 'DESC' : 'ASC';
 
         $log_data = $wpdb->get_results( $wpdb->prepare( "SELECT SQL_CALC_FOUND_ROWS id as ID,date,url,ref,ip,ua FROM $this->table ORDER BY $orderby $order LIMIT %d,%d", array( $limit, $per_page) ), ARRAY_A );
 
@@ -106,9 +106,35 @@ class _404_To_301_Logs extends WP_List_Table_404 {
         foreach ($log_data as $key) {
           $error_data[] = $key;
         }
-		
+        
         return $error_data;
     }
+
+	/**
+     * Filter the sorting parameters.
+     *
+     * This is used to filter the sorting parameters in order
+	 * to prevent SQL injection atacks. We will accept only our
+	 * required values. Else we will assign a default value.
+     *
+     * @since   2.0.3
+     * @author  Joel James.
+     * @var    $column    Value from url.
+     * @var    $filtered_column   Value aftet filtering.
+     * @return  string   $filtered_column.
+     */
+    public function i4t3_get_sort_column_filtered( $column ) {
+
+        $allowed_columns = array( 'date','url','ref','ip' );
+
+        if( in_array( $column, $allowed_columns ) ) {
+            $filtered_column = esc_sql( $column );
+        } else {
+            $filtered_column = 'date';
+        }
+        return $filtered_column;
+    }
+
 
     /**
      * Empty record text.
@@ -303,7 +329,7 @@ class _404_To_301_Logs extends WP_List_Table_404 {
         $current_page = $this->get_pagenum();
 
         // Per page filter
-		$per_page = apply_filters( 'i4t3_log_list_per_page', 10 );
+		$per_page = apply_filters( 'i4t3_log_list_per_page', 2 );
 		
 		$total = $wpdb->get_var( "SELECT count(id) as ID FROM $this->table" );
 		
@@ -351,17 +377,9 @@ class _404_To_301_Logs extends WP_List_Table_404 {
                 wp_die( 'Nope! Security check failed!' );
 
             $action = $this->current_action();
-
-            switch ( $action ) {
-
-                case 'clear':
-                    $this->clear_404_logs();
-                    break;
-
-                default:
-                    return;
-                    break;
-            }
+			if( $action == 'clear' ) {
+				$this->clear_404_logs();
+			}
         }
 
     }
@@ -383,7 +401,10 @@ class _404_To_301_Logs extends WP_List_Table_404 {
         // Let us hide sql query errors if any
         $wpdb->hide_errors();
         $total = $wpdb->query( "DELETE FROM $this->table" );
-        return ( $total > 0 ) ? true : false;
+        if ( $total > 0 ) {
+			wp_redirect(admin_url('admin.php?page=i4t3-logs'));
+			exit();
+		}
     }
 
 }

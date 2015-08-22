@@ -3,8 +3,8 @@ Contributors: joelcj91,is_code
 Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo redirect, error redirect, 404 seo
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
 Requires at least: 3.0
-Tested up to: 4.2.4
-Stable tag: 2.0.1
+Tested up to: 4.3
+Stable tag: 2.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,6 +110,18 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://iscode.co/s
 
 == Changelog ==
 
+= 2.0.3 (21/08/2015) =
+
+**Bug Fixes**
+
+- Fixed a serious issue which may cause SQL injection attack.
+
+= 2.0.2 (16/08/2015) =
+**Bug Fixes**
+
+- Fixed an issue with https redirect.
+- Fixed an issue with url preg_match.
+
 = 2.0.1 (29/07/2015) =
 **New Feature**
 
@@ -154,5 +166,5 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://iscode.co/s
 
 == Upgrade Notice ==
 
-= 2.0.1 =
-* Upgraded the plugin core code.
+= 2.0.3 =
+* Fixed a serious issue which may cause SQL injection attack.

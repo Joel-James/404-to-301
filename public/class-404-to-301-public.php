@@ -69,6 +69,10 @@ class _404_To_301_Public {
 		
 		// Filter to change the email address used for admin notifications
 		$admin_email = apply_filters( 'i4t3_notify_admin_email_address', get_option( 'admin_email' ) );
+		
+		// Action hook that will be performed before sending 404 error mail
+		do_action( 'i4t3_before_404_email_log', $log_data );
+		
 		// Get the site name
 		$site_name = get_bloginfo( 'name' );
 		
@@ -89,9 +93,6 @@ class _404_To_301_Public {
 		$message .= '<td>' . $log_data['ua'] . '</td>';
 		$message .= '</tr>';
 		$message .= '</table>';
-
-		// Action hook that will be performed before sending 404 error mail
-		do_action( 'i4t3_before_404_log_mail', $message );
 
 		$is_sent = wp_mail(
 			$admin_email,
@@ -180,7 +181,7 @@ class _404_To_301_Public {
 				// Redirect to a custom link given by user
 				case 'link':
 					$naked_url = $this->gnrl_options['redirect_link'];
-					$url = 'http://' . preg_replace( '~^http://~', '', $naked_url );
+					$url = (!preg_match("~^(?:f|ht)tps?://~i", $naked_url)) ? "http://" . $naked_url : $naked_url;
 					break;
 				// If nothing, be chill and do nothing!
 				default:
@@ -190,12 +191,13 @@ class _404_To_301_Public {
 			// Perform the redirect if $url is set
 			if (!empty($url)) {
 				// Action hook that will be performed before 404 redirect starts
+				//echo $url; exit();
 				do_action( 'i4t3_before_404_redirect' );
 				wp_redirect( $url, $redirect_type );
 				exit(); // exit, because WordPress will not exit automatically
 			}
 			// Action hook that will be performed after 404 redirect
-			do_action( 'i4t3_no_redirect_action' );
+			do_action( 'i4t3_after_404_redirect' );
 		}
 	}
 
