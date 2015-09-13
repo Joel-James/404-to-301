@@ -20,7 +20,7 @@ if( ! class_exists( 'WP_List_Table_404' ) ) {
  * This class defines all the methods to output the error logs display table using
  * WordPress listing table class.
  *
- * @link       http://iscode.co/product/404-to-301/
+ * @link       http://iscode.co/products/404-to-301/
  * @since      2.0.0
  * @package    I4T3
  * @subpackage I4T3/admin
@@ -90,7 +90,7 @@ class _404_To_301_Logs extends WP_List_Table_404 {
         $wpdb->hide_errors();
 
         // Per page filter
-        $per_page = apply_filters( 'i4t3_log_list_per_page', 2 );
+        $per_page = apply_filters( 'i4t3_log_list_per_page', 10 );
 
         $current_page = $this->get_pagenum();
         $limit = ( $current_page-1 )* $per_page;
@@ -329,7 +329,7 @@ class _404_To_301_Logs extends WP_List_Table_404 {
         $current_page = $this->get_pagenum();
 
         // Per page filter
-		$per_page = apply_filters( 'i4t3_log_list_per_page', 2 );
+		$per_page = apply_filters( 'i4t3_log_list_per_page', 10 );
 		
 		$total = $wpdb->get_var( "SELECT count(id) as ID FROM $this->table" );
 		

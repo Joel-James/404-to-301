@@ -7,7 +7,7 @@ if ( ! defined( 'WPINC' ) ) {
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
- * @link		http://iscode.co/product/404-to-301/
+ * @link		http://iscode.co/products/404-to-301/
  * @since		2.0.0
  * @package		I4T3
  * @subpackage	I4T3/includes
@@ -63,7 +63,7 @@ class _404_To_301_Activator {
 		// remember, two spaces after PRIMARY KEY otherwise WP borks
 		$installed_version = get_option('i4t3_db_version');
 		
-		if( I4T3_DB_VERSION != $installed_version ) {
+		if( !$installed_version || ( I4T3_DB_VERSION != $installed_version ) ) {
 
 			global $wpdb;
 			$table = $wpdb->prefix . "404_to_301";

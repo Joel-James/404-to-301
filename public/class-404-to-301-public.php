@@ -7,7 +7,7 @@ if ( ! defined( 'WPINC' ) ) {
  * The public-facing functionality of the plugin.
  *
  *
- * @link       http://iscode.co/product/404-to-301
+ * @link       http://iscode.co/products/404-to-301
  * @since      2.0.0
  * @package    I4T3
  * @subpackage I4T3/public
@@ -149,7 +149,7 @@ class _404_To_301_Public {
 			}
 
 			// Add log data to db if log is enabled by user
-			if($logging_status == 1) {
+			if($logging_status == 1 && !$this->i4t3_is_bot()) {
 			
 				$wpdb->insert( $this->table, $data );
 				
@@ -163,7 +163,7 @@ class _404_To_301_Public {
 			}
 
 			// Send email notification if enabled
-			if ($is_email_send) {
+			if ($is_email_send && !$this->i4t3_is_bot()) {
 				$this->i4t3_send_404_log_email($data);
 			}
 
@@ -199,6 +199,35 @@ class _404_To_301_Public {
 			// Action hook that will be performed after 404 redirect
 			do_action( 'i4t3_after_404_redirect' );
 		}
+	}
+	
+	
+	/**
+	* Check if Bot is visiting.
+	*
+	* This function is used to check if a bot is being viewed our site content.
+	*
+	* @reference http://stackoverflow.com/questions/677419/how-to-detect-search-engine-bots-with-php
+	* @since    2.0.5
+	* @author	Joel James
+	*/
+	public function i4t3_is_bot() {
+	
+		$botlist = array("Teoma", "alexa", "froogle", "Gigabot", "inktomi",
+		"looksmart", "URL_Spider_SQL", "Firefly", "NationalDirectory",
+		"Ask Jeeves", "TECNOSEEK", "InfoSeek", "WebFindBot", "girafabot",
+		"crawler", "www.galaxy.com", "Googlebot", "Scooter", "Slurp",
+		"msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
+		"Baiduspider", "Feedfetcher-Google", "TechnoratiSnoop", "Rankivabot",
+		"Mediapartners-Google", "Sogou web spider", "WebAlta Crawler","TweetmemeBot",
+		"Butterfly","Twitturls","Me.dium","Twiceler");
+	 
+		foreach($botlist as $bot){
+			if(strpos($_SERVER['HTTP_USER_AGENT'],$bot)!==false)
+			return true;	// Is a bot
+		}
+	 
+		return false;	// Not a bot
 	}
 
 }

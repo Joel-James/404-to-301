@@ -13,7 +13,7 @@ if ( ! defined( 'WPINC' ) ) {
  *
  * @package    I4T3
  * @subpackage I4T3/includes
- * @link       http://iscode.co/product/404-to-301/
+ * @link       http://iscode.co/products/404-to-301/
  * @since      2.0.0
  * @author     Joel James <me@joelsays.com>
  */

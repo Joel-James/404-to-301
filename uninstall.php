@@ -6,7 +6,7 @@
  * Removes everything that 404 to 301 added to your db.
  *
  *
- * @link		http://iscode.co/product/404-to-301/
+ * @link		http://iscode.co/products/404-to-301/
  * @since		2.0.0
  * @author		Joel James
  * @package		I4T3

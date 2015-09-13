@@ -20,7 +20,7 @@
 									<hr/>
 								</p>
 								<p>
-									So you installed this plugin and how is it doing? Feel free to <a href="http://iscode.co/contact/" class="i4t3-author-link" target="_blank" title="<?php _e( 'Contact the developer', '404-to-301' ); ?>">get in touch with me</a> anytime for help. I am always happy to help.
+									So you installed this plugin and how is it doing? Feel free to <a href="http://iscode.co/support/" class="i4t3-author-link" target="_blank" title="<?php _e( 'Contact the developer', '404-to-301' ); ?>">get in touch with me</a> anytime for help. I am always happy to help.
 								</p>
 							</div>
 						</div>
@@ -55,11 +55,11 @@
 							<span></span>
 						</div>
 						<div class="misc-pub-section">
-							<label><a href="http://iscode.co/docs_cat/404-to-301/" class="i4t3-author-link" target="_blank" title="Visit plugin website"><strong>Plugin documentation</strong></a></label>
+							<label><a href="http://iscode.co/docs/category/404-to-301/" class="i4t3-author-link" target="_blank" title="Visit plugin website"><strong>Plugin documentation</strong></a></label>
 							<span></span>
 						</div>
 						<div class="misc-pub-section">
-							<label><a href="http://iscode.co/product/404-to-301/" class="i4t3-author-link" target="_blank" title="Visit plugin website"><strong>More plugin details</strong></a></label>
+							<label><a href="http://iscode.co/docs/category/404-to-301/" class="i4t3-author-link" target="_blank" title="Visit plugin website"><strong>More plugin details</strong></a></label>
 							<span></span>
 						</div>
 						<div class="misc-pub-section">

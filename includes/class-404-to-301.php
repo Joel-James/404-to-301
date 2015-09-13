@@ -11,7 +11,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @link       http://iscode.co/product/404-to-301/
+ * @link       http://iscode.co/products/404-to-301/
  * @since      2.0.0
  * @package    I4T3
  * @subpackage I4T3/includes
@@ -67,7 +67,7 @@ class _404_To_301 {
 	public function __construct() {
 
 		$this->plugin_name = '404-to-301';
-		$this->version = '2.0.3';
+		$this->version = '2.0.6';
 		$this->table = $GLOBALS['wpdb']->prefix . '404_to_301';
 		$this->load_dependencies();
 		$this->define_admin_hooks();

@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name:       404 to 301
- * Plugin URI:        http://iscode.co/product/404-to-301/
+ * Plugin URI:        http://iscode.co/products/404-to-301/
  * Description:       Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
- * Version:           2.0.3
+ * Version:           2.0.6
  * Author:            Joel James
  * Author URI:        http://iscode.co/
  * Donate link:		  https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
@@ -23,12 +23,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Easy Digital Downloads. If not, see <http://www.gnu.org/licenses/>.
+ * along with 404 to 301. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package I4T3
  * @category Core
  * @author Joel James
- * @version 2.0.0
+ * @version 2.0.6
  */
 
 // If this file is called directly, abort.
@@ -49,10 +49,10 @@ if(!defined('I4T3_LOGS_PAGE')) {
 	define( 'I4T3_LOGS_PAGE', admin_url( 'admin.php?page=i4t3-logs' ) );
 }
 if(!defined('I4T3_DB_VERSION')) {
-	define( 'I4T3_DB_VERSION', '2' );
+	define( 'I4T3_DB_VERSION', '3' );
 }
 if(!defined('I4T3_VERSION')) {
-	define( 'I4T3_VERSION', '2.0.3' );
+	define( 'I4T3_VERSION', '2.0.6' );
 }
 // Set who all can access 404 settings. You can change this if you want to give others access.
 if(!defined('I4T3_ADMIN_PERMISSION')) {

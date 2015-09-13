@@ -9,7 +9,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Defines the plugin name, version, and enqueue the dashboard-specific stylesheet, JavaScript
  * and all other admin side functions.
  *
- * @link       http://iscode.co/product/404-to-301/
+ * @link       http://iscode.co/products/404-to-301/
  * @since      2.0.0
  * @package    I4T3
  * @subpackage I4T3/admin
