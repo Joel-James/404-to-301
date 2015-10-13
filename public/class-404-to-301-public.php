@@ -93,7 +93,6 @@ class _404_To_301_Public {
 		$message .= '<td>' . $log_data['ua'] . '</td>';
 		$message .= '</tr>';
 		$message .= '</table>';
-
 		$is_sent = wp_mail(
 			$admin_email,
 			__( 'Snap! One more 404 on ', '404-to-301' ) . $site_name,
@@ -149,7 +148,7 @@ class _404_To_301_Public {
 			}
 
 			// Add log data to db if log is enabled by user
-			if($logging_status == 1 && !$this->i4t3_is_bot()) {
+			if($logging_status == 1 && !$this->i4t3_is_bot() && !$this->i4t3_exclude_user_feedback() ) {
 			
 				$wpdb->insert( $this->table, $data );
 				
@@ -228,6 +227,29 @@ class _404_To_301_Public {
 		}
 	 
 		return false;	// Not a bot
+	}
+	
+	
+	/**
+	* Exclude specific uri strings from error logs
+	*
+	* @retun 	True if requested uri matches specified one
+	* @since    2.0.5
+	* @author	Joel James
+	*/
+	public function i4t3_exclude_user_feedback() {
+		
+		// Add links to be excluded in this array.
+		$links = array(
+			"plugins/user-feedback/css/src"
+		);
+		
+		foreach( $links as $link ){
+			if( strpos($_SERVER['REQUEST_URI'], $link )!== false )
+			return true;
+		}
+		
+		return false;
 	}
 
 }
