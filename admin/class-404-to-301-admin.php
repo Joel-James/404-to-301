@@ -66,6 +66,7 @@ class _404_To_301_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->table = $table;
+		$this->gnrl_options = get_option( 'i4t3_gnrl_options' );
 	}
 	
 
@@ -126,6 +127,26 @@ class _404_To_301_Admin {
 			}
 			update_option('i4t3_version_no', I4T3_VERSION );
 		}
+	}
+	
+	/**
+	 * Changing email notification recipient
+	 *
+	 * Using filter to change email notification recipient address from
+	 * default admin email.
+	 * 
+	 * @since	2.0.7
+	 * @uses	get_option()	To get the email address option from db.
+	 * @return	$email 		Email address to be used for notification.
+	 */
+	public function i4t3_change_notify_email( $email ) {
+		if( !empty( $this->gnrl_options['email_notify_address'] ) ) {
+			$email_option = $this->gnrl_options['email_notify_address'];
+			if( is_email( $email_option ) ) {
+				$email = $email_option;
+			}
+		}
+		return $email;
 	}
 
 
@@ -244,7 +265,11 @@ class _404_To_301_Admin {
 		if (( $pagenow == 'admin.php' ) && ( in_array ( $_GET['page'], array('i4t3-settings', 'i4t3-logs')))) {
 			
 			_e( 'Thank you for choosing 404 to 301 to improve your website', '404-to-301' );
-			echo ' | Kindly give this plugin a <a href="https://wordpress.org/support/view/plugin-reviews/404-to-301?filter=5#postform">rating &#9733; &#9733;</a>';
+			echo ' | ';
+			_e( 'Kindly give this plugin a','404-to-301');
+			echo '<a href="https://wordpress.org/support/view/plugin-reviews/404-to-301?filter=5#postform">';
+			_e( 'rating','404-to-301');
+			echo ' &#9733; &#9733;</a>';
 		} else {
 			return;
 		}
@@ -264,8 +289,8 @@ class _404_To_301_Admin {
 	public function i4t3_plugin_action_links( $links, $file ) {
 		$plugin_file = basename('404-to-301.php');
 		if (basename($file) == $plugin_file) {
-			$settings_link = '<a href="admin.php?page=i4t3-settings">Settings</a>';
-			$settings_link .= ' | <a href="admin.php?page=i4t3-logs">Logs</a>';
+			$settings_link = '<a href="admin.php?page=i4t3-settings">'. __( 'Settings', '404-to-301' ) .'</a>';
+			$settings_link .= ' | <a href="admin.php?page=i4t3-logs">'. __( 'Logs', '404-to-301' ) .'</a>';
 			array_unshift($links, $settings_link);
 		}
 		return $links;
@@ -277,6 +302,8 @@ class _404_To_301_Admin {
 	*
 	* Function to output the debug data for the plugin. This will be useful
 	* when asking for support. Just copy and paste these data to the email.
+	*
+	* Please DO NOT translate this part, as this need to be provided for debugging only.
 	*
 	* @since    2.0.0
 	* @var 		array 	$gnrl_options 	Array of plugin settings

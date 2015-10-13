@@ -3,8 +3,8 @@ Contributors: joelcj91,is_code
 Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo redirect, error redirect, 404 seo, custom 404 page
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
 Requires at least: 3.0
-Tested up to: 4.3
-Stable tag: 2.0.6
+Tested up to: 4.3.1
+Stable tag: 2.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,7 @@ You will not see any 404 error reports in your webmaster tool dashboard.
 >
 > - You can redirect errors to any existing page or custom link.<br />
 > - No more 404 errors in your website. Seriously!<br />
+> - **Translation ready!**<br />
 > - You can optionally monitor/log all errors.<br />
 > - You can optionally enable email notification on all 404 errors.<br />
 > - You can choose which redirect method to be used (301,302,307).<br />
@@ -42,7 +43,7 @@ You will not see any 404 error reports in your webmaster tool dashboard.
 
 **Bug Reports**
 
-Bug reports for 404 to 301 are always welcome. [Report here](http://iscode.co/support/).
+Bug reports for 404 to 301 are always welcome. [Report here](https://iscode.co/bug-report/).
 
 **More information**
 
@@ -110,23 +111,38 @@ Bug reports for 404 to 301 are always welcome. [Report here](http://iscode.co/bu
 
 == Changelog ==
 
+= 2.0.7 (25/09/2015) =
+
+**New Feature**
+
+- New option to change error notification email address.
+- Now **100% Translation ready**.
+
+**Improvements**
+
+- Minor code improvements.
+
 = 2.0.6 (13/09/2015) =
 
 **Improvements**
+
 - Introduced new website for the plugin.
 - Fixed few dead link issues
 
 = 2.0.5 (03/09/2015) =
 
 **Improvements**
+
 - Added option to avoid search engine crawlers/bots from logging errors.
 
 **Bug Fixes**
+
 - Fixed error log per page issue.
 
 = 2.0.4 (26/08/2015) =
 
 **Bug Fixes**
+
 - Fixed an issue where error log table is not being created.
 
 = 2.0.3 (21/08/2015) =
@@ -185,7 +201,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](http://iscode.co/bu
 
 == Upgrade Notice ==
 
-= 2.0.6 =
+= 2.0.7 =
 **Improvements**
-- Introduced new website for the plugin.
-- Fixed few dead link issues
+- New option to change error notification email address.
+- Now **100% Translation ready**.

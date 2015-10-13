@@ -141,8 +141,8 @@ class WP_List_Table_404 {
 
 		if ( empty( $this->modes ) ) {
 			$this->modes = array(
-				'list'    => __( 'List View' ),
-				'excerpt' => __( 'Excerpt View' )
+				'list'    => __( 'List View', '404-to-301' ),
+				'excerpt' => __( 'Excerpt View', '404-to-301' )
 			);
 		}
 	}
@@ -435,9 +435,9 @@ class WP_List_Table_404 {
 		if ( empty( $this->_actions ) )
 			return;
 
-		echo "<label for='bulk-action-selector-" . esc_attr( $which ) . "' class='screen-reader-text'>" . __( 'Select bulk action' ) . "</label>";
+		echo "<label for='bulk-action-selector-" . esc_attr( $which ) . "' class='screen-reader-text'>" . __( 'Select bulk action', '404-to-301' ) . "</label>";
 		echo "<select name='action$two' id='bulk-action-selector-" . esc_attr( $which ) . "'>\n";
-		echo "<option value='-1' selected='selected'>" . __( 'Bulk Actions' ) . "</option>\n";
+		echo "<option value='-1' selected='selected'>" . __( 'Bulk Actions', '404-to-301' ) . "</option>\n";
 
 		foreach ( $this->_actions as $name => $title ) {
 			$class = 'edit' == $name ? ' class="hide-if-no-js"' : '';
@@ -447,7 +447,7 @@ class WP_List_Table_404 {
 
 		echo "</select>\n";
 
-		submit_button( __( 'Apply' ), 'action', '', false, array( 'id' => "doaction$two" ) );
+		submit_button( __( 'Apply', '404-to-301' ), 'action', '', false, array( 'id' => "doaction$two" ) );
 		echo "\n";
 	}
 
@@ -562,7 +562,7 @@ class WP_List_Table_404 {
 				selected( $m, $year . $month, false ),
 				esc_attr( $arc_row->year . $month ),
 				/* translators: 1: month name, 2: 4-digit year */
-				sprintf( __( '%1$s %2$d' ), $wp_locale->get_month( $month ), $year )
+				sprintf( __( '%1$s %2$d', '404-to-301' ), $wp_locale->get_month( $month ), $year )
 			);
 		}
 ?>
@@ -609,7 +609,7 @@ class WP_List_Table_404 {
 	 * @param int $pending_comments Number of pending comments.
 	 */
 	protected function comments_bubble( $post_id, $pending_comments ) {
-		$pending_phrase = sprintf( __( '%s pending' ), number_format( $pending_comments ) );
+		$pending_phrase = sprintf( __( '%s pending', '404-to-301' ), number_format( $pending_comments ) );
 
 		if ( $pending_comments )
 			echo '<strong>';
@@ -707,14 +707,14 @@ class WP_List_Table_404 {
 		}
 		$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
 			'first-page' . $disable_first,
-			esc_attr__( 'Go to the first page' ),
+			esc_attr__( 'Go to the first page', '404-to-301' ),
 			esc_url( remove_query_arg( 'paged', $current_url ) ),
 			'&laquo;'
 		);
 
 		$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
 			'prev-page' . $disable_first,
-			esc_attr__( 'Go to the previous page' ),
+			esc_attr__( 'Go to the previous page', '404-to-301' ),
 			esc_url( add_query_arg( 'paged', max( 1, $current-1 ), $current_url ) ),
 			'&lsaquo;'
 		);
@@ -723,8 +723,8 @@ class WP_List_Table_404 {
 			$html_current_page = $current;
 		} else {
 			$html_current_page = sprintf( "%s<input class='current-page' id='current-page-selector' title='%s' type='text' name='paged' value='%s' size='%d' />",
-				'<label for="current-page-selector" class="screen-reader-text">' . __( 'Select Page' ) . '</label>',
-				esc_attr__( 'Current page' ),
+				'<label for="current-page-selector" class="screen-reader-text">' . __( 'Select Page', '404-to-301' ) . '</label>',
+				esc_attr__( 'Current page', '404-to-301' ),
 				$current,
 				strlen( $total_pages )
 			);
@@ -734,14 +734,14 @@ class WP_List_Table_404 {
 
 		$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
 			'next-page' . $disable_last,
-			esc_attr__( 'Go to the next page' ),
+			esc_attr__( 'Go to the next page', '404-to-301' ),
 			esc_url( add_query_arg( 'paged', min( $total_pages, $current+1 ), $current_url ) ),
 			'&rsaquo;'
 		);
 
 		$page_links[] = sprintf( "<a class='%s' title='%s' href='%s'>%s</a>",
 			'last-page' . $disable_last,
-			esc_attr__( 'Go to the last page' ),
+			esc_attr__( 'Go to the last page', '404-to-301' ),
 			esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
 			'&raquo;'
 		);
@@ -878,7 +878,7 @@ class WP_List_Table_404 {
 
 		if ( ! empty( $columns['cb'] ) ) {
 			static $cb_counter = 1;
-			$columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . __( 'Select All' ) . '</label>'
+			$columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . __( 'Select All', '404-to-301' ) . '</label>'
 				. '<input id="cb-select-all-' . $cb_counter . '" type="checkbox" />';
 			$cb_counter++;
 		}

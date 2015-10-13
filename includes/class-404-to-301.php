@@ -67,9 +67,10 @@ class _404_To_301 {
 	public function __construct() {
 
 		$this->plugin_name = '404-to-301';
-		$this->version = '2.0.6';
+		$this->version = '2.0.7';
 		$this->table = $GLOBALS['wpdb']->prefix . '404_to_301';
 		$this->load_dependencies();
+		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_handler_hooks();
 	}
@@ -93,11 +94,28 @@ class _404_To_301 {
 	private function load_dependencies() {
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-404-to-301-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-404-to-301-i18n.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-404-to-301-admin.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-404-to-301-logs.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-404-to-301-public.php';
 		
 		$this->loader = new _404_To_301_Loader();
+	}
+	
+	
+	/**
+	 * Define the locale for this plugin for internationalization.
+	 *
+	 * Uses the Plugin_Name_i18n class in order to set the domain and to register the hook
+	 * with WordPress.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function set_locale() {
+		$plugin_i18n = new _404_To_301_i18n();
+		$plugin_i18n->set_domain( $this->get_plugin_name() );
+		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 	}
 
 
@@ -122,6 +140,7 @@ class _404_To_301 {
 		$this->loader->add_filter( 'admin_footer_text', $plugin_admin, 'i4t3_dashboard_footer');
 		$this->loader->add_filter( 'plugin_action_links', $plugin_admin, 'i4t3_plugin_action_links', 10, 5 );
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'i4t3_upgrade_if_new' );
+		$this->loader->add_filter( 'i4t3_notify_admin_email_address', $plugin_admin, 'i4t3_change_notify_email' );
 	}
 
 	

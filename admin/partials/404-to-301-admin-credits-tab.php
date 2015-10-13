@@ -20,14 +20,14 @@
 									<hr/>
 								</p>
 								<p>
-									So you installed this plugin and how is it doing? Feel free to <a href="http://iscode.co/support/" class="i4t3-author-link" target="_blank" title="<?php _e( 'Contact the developer', '404-to-301' ); ?>">get in touch with me</a> anytime for help. I am always happy to help.
+									<?php _e( 'So you installed this plugin and how is it doing? Feel free to', '404-to-301' ); ?> <a href="http://iscode.co/support/" class="i4t3-author-link" target="_blank" title="<?php _e( 'Contact the developer', '404-to-301' ); ?>"><?php _e( 'get in touch with me', '404-to-301' ); ?></a> <?php _e( 'anytime for help. I am always happy to help.', '404-to-301' ); ?>
 								</p>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="postbox">
-					<h3 class="hndle"><span>Debugging Data</span></h3>
+					<h3 class="hndle"><span><?php _e( 'Debugging Data', '404-to-301' ); ?></span></h3>
 					<div class="inside">
 						<div class="c4p-clearfix">
 							<div class="c4p-left" style="width: 70%">
@@ -40,48 +40,48 @@
 			<div id="postbox-container-1" class="postbox-container">
 			
 				<div class="postbox">
-					<h3 class="hndle ui-sortable-handle"><span class="dashicons dashicons-info"></span> Plugin Information</h3>
+					<h3 class="hndle ui-sortable-handle"><span class="dashicons dashicons-info"></span> <?php _e( 'Plugin Information', '404-to-301' ); ?></h3>
 					<div class="inside">
 						<div class="misc-pub-section">
-							<label>Name : </label>
-							<span><strong>404 to 301</strong></span>
+							<label><?php _e( 'Name', '404-to-301' ); ?> : </label>
+							<span><strong><?php _e( '404 to 301', '404-to-301' ); ?></strong></span>
 						</div>
 						<div class="misc-pub-section">
-							<label>Version : v<?php echo $this->version; ?></label>
+							<label><?php _e( 'Version', '404-to-301' ); ?> : v<?php echo $this->version; ?></label>
 							<span></span>
 						</div>
 						<div class="misc-pub-section">
-							<label>Author : <a href="http://iscode.co/" class="i4t3-author-link" target="_blank" title="Visit author website">is_code()</a></label>
+							<label><?php _e( 'Author', '404-to-301' ); ?> : <a href="http://iscode.co/" class="i4t3-author-link" target="_blank" title="<?php _e( 'Visit author website', '404-to-301' ); ?>">is_code()</a></label>
 							<span></span>
 						</div>
 						<div class="misc-pub-section">
-							<label><a href="http://iscode.co/docs/category/404-to-301/" class="i4t3-author-link" target="_blank" title="Visit plugin website"><strong>Plugin documentation</strong></a></label>
+							<label><a href="http://iscode.co/docs/category/404-to-301/" class="i4t3-author-link" target="_blank" title="<?php _e( 'Visit plugin website','404-to-301' ); ?>"><strong><?php _e( 'Plugin documentation','404-to-301' ); ?></strong></a></label>
 							<span></span>
 						</div>
 						<div class="misc-pub-section">
-							<label><a href="http://iscode.co/docs/category/404-to-301/" class="i4t3-author-link" target="_blank" title="Visit plugin website"><strong>More plugin details</strong></a></label>
+							<label><a href="http://iscode.co/docs/category/404-to-301/" class="i4t3-author-link" target="_blank" title="<?php _e( 'Visit plugin website','404-to-301' ); ?>"><strong><?php _e( 'More plugin details','404-to-301' ); ?></strong></a></label>
 							<span></span>
 						</div>
 						<div class="misc-pub-section">
-							<label>Need help?</label>
-							<span><strong><a href="http://iscode.co/support/">contact support</a></strong></span>
+							<label><?php _e( 'Need help?','404-to-301' ); ?></label>
+							<span><strong><a href="http://iscode.co/support/"><?php _e( 'contact support','404-to-301' ); ?></a></strong></span>
 						</div>
 					</div>
 				</div>
 				<div class="postbox">
-					<h3 class="hndle ui-sortable-handle"><span class="dashicons dashicons-smiley"></span> Like the plugin?</h3>
+					<h3 class="hndle ui-sortable-handle"><span class="dashicons dashicons-smiley"></span> <?php _e( 'Like the plugin','404-to-301' ); ?>?</h3>
 					<div class="inside">
 						<div class="misc-pub-section">
-							<span class="dashicons dashicons-star-filled"></span> <label><strong><a href="https://wordpress.org/support/view/plugin-reviews/404-to-301?filter=5#postform" target="_blank" title="Rate now">Rate this on WordPress</a></strong></label>
+							<span class="dashicons dashicons-star-filled"></span> <label><strong><a href="https://wordpress.org/support/view/plugin-reviews/404-to-301?filter=5#postform" target="_blank" title="<?php _e( 'Rate now','404-to-301' ); ?>"><?php _e( 'Rate this on WordPress','404-to-301' ); ?></a></strong></label>
 						</div>
 						<div class="misc-pub-section">
-							<label><span class="dashicons dashicons-heart"></span> <strong><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4" target="_blank" title="Donate now">Make a small donation</a></strong></label>
+							<label><span class="dashicons dashicons-heart"></span> <strong><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4" target="_blank" title="<?php _e( 'Donate now','404-to-301' ); ?>"><?php _e( 'Make a small donation','404-to-301' ); ?></a></strong></label>
 						</div>
 						<div class="misc-pub-section">
-							<label><span class="dashicons dashicons-admin-plugins"></span> <strong><a href="https://github.com/joel-james/404-to-301/" target="_blank" title="Contribute now">Contribute to the Plugin</a></strong></label>
+							<label><span class="dashicons dashicons-admin-plugins"></span> <strong><a href="https://github.com/joel-james/404-to-301/" target="_blank" title="<?php _e( 'Contribute now','404-to-301' ); ?>"><?php _e( 'Contribute to the Plugin','404-to-301' ); ?></a></strong></label>
 						</div>
 						<div class="misc-pub-section">
-							<label><span class="dashicons dashicons-twitter"></span> <strong><a href="https://twitter.com/home?status=I%20am%20using%20404%20to%20301%20plugin%20by%20%40Joel_James%20to%20handle%20all%20404%20errors%20in%20my%20%40WordPress%20site%20-%20it%20is%20awesome!%20%3E%20https://wordpress.org/plugins/404-to-301/" target="_blank" title="Tweet now">Tweet about the Plugin</a></strong></label>
+							<label><span class="dashicons dashicons-twitter"></span> <strong><a href="https://twitter.com/home?status=I%20am%20using%20404%20to%20301%20plugin%20by%20%40Joel_James%20to%20handle%20all%20404%20errors%20in%20my%20%40WordPress%20site%20-%20it%20is%20awesome!%20%3E%20https://wordpress.org/plugins/404-to-301/" target="_blank" title="<?php _e( 'Tweet now','404-to-301' ); ?>"><?php _e( 'Tweet about the Plugin','404-to-301' ); ?></a></strong></label>
 						</div>
 					</div>
 				</div>

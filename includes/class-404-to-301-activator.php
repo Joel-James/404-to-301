@@ -35,6 +35,7 @@ class _404_To_301_Activator {
 		$i4t3_to			= self::transfer( '', 'redirect_to', 'link' );
 		$i4t3_page			= self::transfer( '', 'redirect_page', '' );
 		$i4t3_notify		= self::transfer( '', 'email_notify', 1 );
+		$i4t3_notify_email	= self::transfer( '', 'email_notify_address', get_option( 'admin_email' ) );
 
 		// New general settings array to be added
 		$i4t3GnrlOptions = array( 
@@ -43,7 +44,8 @@ class _404_To_301_Activator {
 					'redirect_log' => $i4t3_enable,
 					'redirect_to' => $i4t3_to,
 					'redirect_page' => $i4t3_page,
-					'email_notify' => $i4t3_notify
+					'email_notify' => $i4t3_notify,
+					'email_notify_address' => $i4t3_notify_email
 				);	
 
 		/**
@@ -104,9 +106,9 @@ class _404_To_301_Activator {
 		if( get_option( $option ) ) {
 			$i4t3_option = get_option( $option );
 			// If exists, then take that option value
-			$fresh = $i4t3_option[$new];
+			$fresh = (!empty($i4t3_option[$new])) ? $i4t3_option[$new] : $fresh;
 			// Check if old value is available for the same option
-			if(get_option( $old )) {
+			if( in_array( $old, array( 'type', 'link' ) ) && get_option( $old )) {
 				// If available delete it, as we are moving to new settings
 				delete_option( $old );
 			}
