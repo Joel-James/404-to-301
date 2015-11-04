@@ -114,13 +114,15 @@ class _404_To_301_Public {
 	public function i4t3_redirect_404() {
 		
 		// Check if 404 page and not admin side
-		if ( is_404() && !is_admin() ) {
+		if ( is_404() && !is_admin() && !$this->i4t3_excluded_paths() ) {
 			
 			// Get the settings options
-			$logging_status = ( $this->gnrl_options['redirect_log'] ) ? $this->gnrl_options['redirect_log'] : 1;
+			$logging_status = ( !empty( $this->gnrl_options['redirect_log'] ) ) ? $this->gnrl_options['redirect_log'] : 0;
+			
 			$redirect_type = ( $this->gnrl_options['redirect_type'] ) ? $this->gnrl_options['redirect_type'] : '301';
 			// Get the email notification settings
-			$is_email_send = ( !empty( $this->gnrl_options['email_notify'] ) ) ? true : false;
+			$is_email_send = ( !empty( $this->gnrl_options['email_notify'] ) && $this->gnrl_options['email_notify'] == 1 ) ? true : false;
+
 			// Get error details if emailnotification or log is enabled
 			if( $logging_status == 1 || $is_email_send ) {
 				
@@ -148,7 +150,7 @@ class _404_To_301_Public {
 			}
 
 			// Add log data to db if log is enabled by user
-			if($logging_status == 1 && !$this->i4t3_is_bot() && !$this->i4t3_exclude_user_feedback() ) {
+			if($logging_status == 1 && !$this->i4t3_is_bot()) {
 			
 				$wpdb->insert( $this->table, $data );
 				
@@ -213,13 +215,13 @@ class _404_To_301_Public {
 	public function i4t3_is_bot() {
 	
 		$botlist = array("Teoma", "alexa", "froogle", "Gigabot", "inktomi",
-		"looksmart", "URL_Spider_SQL", "Firefly", "NationalDirectory",
-		"Ask Jeeves", "TECNOSEEK", "InfoSeek", "WebFindBot", "girafabot",
-		"crawler", "www.galaxy.com", "Googlebot", "Scooter", "Slurp",
-		"msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
-		"Baiduspider", "Feedfetcher-Google", "TechnoratiSnoop", "Rankivabot",
-		"Mediapartners-Google", "Sogou web spider", "WebAlta Crawler","TweetmemeBot",
-		"Butterfly","Twitturls","Me.dium","Twiceler");
+						"looksmart", "URL_Spider_SQL", "Firefly", "NationalDirectory",
+						"Ask Jeeves", "TECNOSEEK", "InfoSeek", "WebFindBot", "girafabot",
+						"crawler", "www.galaxy.com", "Googlebot", "Scooter", "Slurp",
+						"msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
+						"Baiduspider", "Feedfetcher-Google", "TechnoratiSnoop", "Rankivabot",
+						"Mediapartners-Google", "Sogou web spider", "WebAlta Crawler","TweetmemeBot",
+						"Butterfly","Twitturls","Me.dium","Twiceler");
 	 
 		foreach($botlist as $bot){
 			if(strpos($_SERVER['HTTP_USER_AGENT'],$bot)!==false)
@@ -231,24 +233,26 @@ class _404_To_301_Public {
 	
 	
 	/**
-	* Exclude specific uri strings from error logs
+	* Exclude specific uri strings/paths from errors
 	*
 	* @retun 	True if requested uri matches specified one
-	* @since    2.0.5
+	* @since    2.0.8
 	* @author	Joel James
 	*/
-	public function i4t3_exclude_user_feedback() {
+	public function i4t3_excluded_paths() {
 		
 		// Add links to be excluded in this array.
-		$links = array(
-			"plugins/user-feedback/css/src"
-		);
-		
-		foreach( $links as $link ){
-			if( strpos($_SERVER['REQUEST_URI'], $link )!== false )
-			return true;
+		$links_string = $this->gnrl_options['exclude_paths'];
+		if( empty( $links_string ) ) {
+			return false;
 		}
-		
+		$links = explode( "\n", $links_string );
+		if( !empty( $links ) ) {
+			foreach( $links as $link ){
+				if( strpos( $_SERVER['REQUEST_URI'], trim($link) )!== false )
+				return true;
+			}
+		}
 		return false;
 	}
 

@@ -34,8 +34,9 @@ class _404_To_301_Activator {
 		$i4t3_enable		= self::transfer( '', 'redirect_log', 1 );
 		$i4t3_to			= self::transfer( '', 'redirect_to', 'link' );
 		$i4t3_page			= self::transfer( '', 'redirect_page', '' );
-		$i4t3_notify		= self::transfer( '', 'email_notify', 1 );
+		$i4t3_notify		= self::transfer( '', 'email_notify', 0 );
 		$i4t3_notify_email	= self::transfer( '', 'email_notify_address', get_option( 'admin_email' ) );
+		$i4t3_exclude		= self::transfer( '', 'exclude_paths', '' );
 
 		// New general settings array to be added
 		$i4t3GnrlOptions = array( 
@@ -45,7 +46,8 @@ class _404_To_301_Activator {
 					'redirect_to' => $i4t3_to,
 					'redirect_page' => $i4t3_page,
 					'email_notify' => $i4t3_notify,
-					'email_notify_address' => $i4t3_notify_email
+					'email_notify_address' => $i4t3_notify_email,
+					'exclude_paths' => $i4t3_exclude
 				);	
 
 		/**

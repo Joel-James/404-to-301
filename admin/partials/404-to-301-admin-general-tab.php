@@ -91,6 +91,13 @@
 						<p class="description"><?php _e( 'Change the recipient email address for error log notifications', '404-to-301' ); ?>.</p>
 					</td>
 				</tr>
+				<tr>
+					<th><?php _e( 'Exclude paths', '404-to-301' ); ?></th>
+					<td>
+						<textarea rows="5" cols="50" placeholder="http://example.com&#13;&#10;wp-content/plugins/abc-plugin/css/" name="i4t3_gnrl_options[exclude_paths]"><?php echo $options['exclude_paths']; ?></textarea>
+						<p class="description"><?php _e( 'If you want to exclude few paths from error logs, enter here. One per line.', '404-to-301' ); ?>.</p>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 		<?php submit_button( __( 'Save All Changes', '404-to-301' ) ); ?>

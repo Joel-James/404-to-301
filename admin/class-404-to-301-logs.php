@@ -5,7 +5,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /**
- * WP_List_Table is marked as private by WordPress. So they change it.
+ * WP_List_Table is marked as private by WordPress. So they may change it.
  * Details here - https://codex.wordpress.org/Class_Reference/WP_List_Table
  * So we have copied this class and using independently to avoid future issues. 
  */
@@ -67,8 +67,6 @@ class _404_To_301_Logs extends WP_List_Table_404 {
             'ajax'      => false        //does this table support ajax?
           )
         );
-
-        $this->process_bulk_action(); // To perform bulk delete action
     }
 
     /**
@@ -347,6 +345,7 @@ class _404_To_301_Logs extends WP_List_Table_404 {
         );
 
         $this->items = $this->log_data;
+		$this->process_bulk_action(); // To perform bulk delete action
     }
 
 
@@ -376,35 +375,13 @@ class _404_To_301_Logs extends WP_List_Table_404 {
             if ( ! wp_verify_nonce( $nonce, $action ) )
                 wp_die( 'Nope! Security check failed!' );
 
-            $action = $this->current_action();
-			if( $action == 'clear' ) {
-				$this->clear_404_logs();
+			else if( 'clear' === $this->current_action() ) {
+				global $wpdb;
+				// Let us hide sql query errors if any
+				$wpdb->hide_errors();
+				$total = $wpdb->query( "DELETE FROM $this->table" );
 			}
         }
 
     }
-
-    /**
-     * To perform clear logs.
-     *
-     * This function is used to clear the entire log from db. This function is called
-     * from process_bulk_action() method.
-     * This function will delete the entire data from our log table and this can't be UNDONE.
-     *
-     * @since   2.0.0
-     * @author  Joel James.
-     * @retun   true if deleted something, else false.
-     */
-    public function clear_404_logs() {
-
-        global $wpdb;
-        // Let us hide sql query errors if any
-        $wpdb->hide_errors();
-        $total = $wpdb->query( "DELETE FROM $this->table" );
-        if ( $total > 0 ) {
-			wp_redirect(admin_url('admin.php?page=i4t3-logs'));
-			exit();
-		}
-    }
-
 }
