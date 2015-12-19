@@ -3,7 +3,7 @@
  * Plugin Name:       404 to 301
  * Plugin URI:        http://iscode.co/products/404-to-301/
  * Description:       Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
- * Version:           2.0.9
+ * Version:           2.1.0
  * Author:            Joel James
  * Author URI:        http://iscode.co/
  * Donate link:		  https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
@@ -28,7 +28,7 @@
  * @package I4T3
  * @category Core
  * @author Joel James
- * @version 2.0.7
+ * @version 2.1.0
  */
 
 // If this file is called directly, abort.
@@ -52,7 +52,7 @@ if(!defined('I4T3_DB_VERSION')) {
 	define( 'I4T3_DB_VERSION', '3' );
 }
 if(!defined('I4T3_VERSION')) {
-	define( 'I4T3_VERSION', '2.0.9' );
+	define( 'I4T3_VERSION', '2.1.0' );
 }
 // Set who all can access 404 settings. You can change this if you want to give others access.
 if(!defined('I4T3_ADMIN_PERMISSION')) {

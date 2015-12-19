@@ -132,17 +132,17 @@ class _404_To_301_Public {
 				global $wpdb;
 				$data = array( 
 					'date' => current_time('mysql'),
-					'url' => $_SERVER['REQUEST_URI']
+					'url' => $this->get_clear_empty( $_SERVER['REQUEST_URI'] )
 				);
 				if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-					$data['ip'] = $_SERVER['HTTP_CLIENT_IP'];
+					$data['ip'] = $this->get_clear_empty( $_SERVER['HTTP_CLIENT_IP'] );
 				} else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-					$data['ip'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+					$data['ip'] = $this->get_clear_empty( $_SERVER['HTTP_X_FORWARDED_FOR'] );
 				} else {
-					$data['ip'] = $_SERVER['REMOTE_ADDR'];
+					$data['ip'] = $this->get_clear_empty( $_SERVER['REMOTE_ADDR'] );
 				}
-				$data['ref'] = $_SERVER['HTTP_REFERER'];
-				$data['ua'] = $_SERVER['HTTP_USER_AGENT'];
+				$data['ref'] = $this->get_clear_empty( $_SERVER['HTTP_REFERER'] );
+				$data['ua'] = $this->get_clear_empty( $_SERVER['HTTP_USER_AGENT'] );
 				// trim stuff
 				foreach( array( 'url', 'ref', 'ua' ) as $k )
 					if( isset( $data[$k] ) )
@@ -254,6 +254,18 @@ class _404_To_301_Public {
 			}
 		}
 		return false;
+	}
+	
+	
+	/**
+	* Check if value is empty before trying to insert.
+	*
+	* @since    2.0.9.1
+	* @author	Joel James
+	*/
+	public function get_clear_empty( $data = null ) {
+		
+		return ( $data == null || empty($data) ) ? 'N/A' : $data;
 	}
 
 }

@@ -67,7 +67,7 @@ class _404_To_301 {
 	public function __construct() {
 
 		$this->plugin_name = '404-to-301';
-		$this->version = '2.0.9';
+		$this->version = '2.1.0';
 		$this->table = $GLOBALS['wpdb']->prefix . '404_to_301';
 		$this->load_dependencies();
 		$this->set_locale();
@@ -141,6 +141,7 @@ class _404_To_301 {
 		$this->loader->add_filter( 'plugin_action_links', $plugin_admin, 'i4t3_plugin_action_links', 10, 5 );
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'i4t3_upgrade_if_new' );
 		$this->loader->add_filter( 'i4t3_notify_admin_email_address', $plugin_admin, 'i4t3_change_notify_email' );
+		$this->loader->add_filter( 'set-screen-option', $plugin_admin, 'set_screen', 10, 3 );
 	}
 
 	

@@ -52,6 +52,15 @@ class _404_To_301_Admin {
 	* @var      string    $gnrl_options    Get the options saved in db.
 	*/
 	private $gnrl_options;
+	
+	/**
+	* The options from db.
+	*
+	* @since    2.1.0
+	* @access   private
+	* @var      mixed    $list_table  Class object for listing table.
+	*/
+	private $list_table;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -71,7 +80,7 @@ class _404_To_301_Admin {
 	
 
 	/**
-	 * Register the stylesheets for the Dashboard.
+	 * Register the stylesheet for the Dashboard.
 	 *
 	 * This function is used to register all the required stylesheets for
 	 * dashboard. Styles will be registered only for i4t3 pages for performance.
@@ -160,7 +169,7 @@ class _404_To_301_Admin {
 	public function i4t3_create_404_to_301_menu(){
 		
 		// Error log menu
-		add_menu_page( 
+		$hook = add_menu_page( 
 				__( '404 Error Logs', '404-to-301' ),
 				__( '404 Error Logs', '404-to-301' ),
 				I4T3_ADMIN_PERMISSION,
@@ -169,6 +178,8 @@ class _404_To_301_Admin {
 				'dashicons-redo', 
 				90
 		);
+		
+		add_action( "load-$hook", array( $this, 'screen_option' ) );
 			
 		// 404 to 301 settings menu
 		add_submenu_page(
@@ -180,7 +191,40 @@ class _404_To_301_Admin {
 			array( $this, 'i4t3_admin_page' )
 		);
 	}
+	
+	
+	/**
+     * To set the screen of the error listing page.
+     *
+     * @since   2.1.0
+     * @author  Joel James.
+     */
+	public static function set_screen( $status, $option, $value ) {
+		return $value;
+	}
+	
+	/**
+     * To make screen options for 404 to 301 listing.
+     *
+     * This function is used to show screen options like entries per page,
+	 * show/hide columns etc.
+     *
+     * @since   2.1.0
+     * @author  Joel James.
+     */
+	public function screen_option() {
 
+		$option = 'per_page';
+		$args   = [
+			'label'   =>  __( 'Error Logs', '404-to-301' ),
+			'default' => 5,
+			'option'  => 'logs_per_page'
+		];
+
+		add_screen_option( $option, $args );
+		
+		$this->list_table = new _404_To_301_Logs( $this->table );
+	}
 
 
 	/**
@@ -192,14 +236,26 @@ class _404_To_301_Admin {
 	*/
 	public function i4t3_render_list_page(){
 		
-		global $i4t3_errorlogtable;
-		$i4t3_errorlogtable = new _404_To_301_Logs( $this->table );
-		echo '<div class="wrap"><h2>'. __( '404 Error Logs', '404-to-301' ) .'</h2>';
-		$i4t3_errorlogtable->prepare_items(); 
-		echo '<form method="post">
-				<input type="hidden" name="page" value="i4t3_logs_list">';
-		$i4t3_errorlogtable->display(); 
-		echo '</form></div>'; 
+		?>
+		<div class="wrap">
+			<h2><?php _e( '404 Error Logs', '404-to-301' ); ?></h2>
+
+			<div id="poststuff">
+				<div id="post-body" class="metabox-holder">
+					<div id="post-body-content">
+						<div class="meta-box-sortables ui-sortable">
+							<form method="post">
+								<?php
+								$this->list_table->prepare_items();
+								$this->list_table->display(); ?>
+							</form>
+						</div>
+					</div>
+				</div>
+				<br class="clear">
+			</div>
+		</div>
+		<?php
 	}
 
 
