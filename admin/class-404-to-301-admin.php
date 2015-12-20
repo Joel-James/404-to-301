@@ -215,11 +215,11 @@ class _404_To_301_Admin {
 	public function screen_option() {
 
 		$option = 'per_page';
-		$args   = [
+		$args   = array(
 			'label'   =>  __( 'Error Logs', '404-to-301' ),
 			'default' => 5,
 			'option'  => 'logs_per_page'
-		];
+		);
 
 		add_screen_option( $option, $args );
 		

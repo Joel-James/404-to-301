@@ -10,7 +10,13 @@ if ( ! defined( 'WPINC' ) ) {
  * So we have copied this class and using independently to avoid future issues. 
  */
 if( ! class_exists( 'WP_List_Table_404' ) ) {
-    require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/core/class-wp-list-table.php';
+
+	global $wp_version;
+	if ( $wp_version >= 4.4 ) {
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/core/class-wp-list-table-4.4.php';
+	} else {
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/core/class-wp-list-table-old.php';
+	}
 }
 
 /**
@@ -335,14 +341,14 @@ class _404_To_301_Logs extends WP_List_Table_404 {
      */
 	function get_columns() {
 		
-		$columns = [
+		$columns = array(
 			'cb'      => '<input type="checkbox" style="width: 5%;" />',
 			'date'=> __( 'Date and Time', '404-to-301' ),
             'url' => __( '404 Path', '404-to-301' ),
             'ref' => __( 'Came From', '404-to-301' ), // referer
             'ip'  => __( 'IP Address', '404-to-301' ),
             'ua'  => __( 'User Agent', '404-to-301' )
-		];
+		);
 
 		return $columns;
 	}
@@ -383,10 +389,10 @@ class _404_To_301_Logs extends WP_List_Table_404 {
      */
 	public function get_bulk_actions() {
 		
-		$actions = [
+		$actions = array(
 			'bulk-delete' => __('Delete Selected', '404-to-301' ),
 			'bulk-all-delete' => __( 'Delete All', '404-to-301' )
-		];
+		);
 		
 		return $actions;
 	}
@@ -418,10 +424,10 @@ class _404_To_301_Logs extends WP_List_Table_404 {
 		$current_page = $this->get_pagenum();
 		$total_items  = self::record_count();
 
-		$this->set_pagination_args( [
+		$this->set_pagination_args( array(
 			'total_items' => $total_items, //WE have to calculate the total number of items
 			'per_page'    => $per_page //WE have to determine how many items to show on a page
-		] );
+		) );
 
 		$this->items = self::i4t3_get_log_data( $per_page, $current_page );
 	}
