@@ -54,11 +54,12 @@ class _404_To_301_Logs extends WP_List_Table_404 {
 
 		self::$table = $table;
 		
-		parent::__construct( [
-			'singular' => __( '404 Error Log', '404-to-301' ), //singular name of the listed records
-			'plural'   => __( '404 Error Logs', '404-to-301' ), //plural name of the listed records
-			'ajax'     => false //does this table support ajax?
-		] );
+		parent::__construct( array(
+				'singular' => __( '404 Error Log', '404-to-301' ), //singular name of the listed records
+				'plural'   => __( '404 Error Logs', '404-to-301' ), //plural name of the listed records
+				'ajax'     => false //does this table support ajax?
+			)
+		);
 
 	}
 
@@ -137,8 +138,8 @@ class _404_To_301_Logs extends WP_List_Table_404 {
 
 		$wpdb->delete(
 			self::$table,
-			[ 'id' => $id ],
-			[ '%d' ]
+			array( 'id' => $id ),
+			array( '%d' )
 		);
 	}
 	
@@ -246,9 +247,9 @@ class _404_To_301_Logs extends WP_List_Table_404 {
 		
 		$title = apply_filters( 'i4t3_log_list_date_column', date("j M Y, g:i a", strtotime($item['date'])) );
 		$confirm = __( 'Are you sure you want to delete this item?', '404-to-301' );
-		$actions = [
+		$actions = array(
 			'delete' => sprintf( '<a href="?page=%s&action=%s&log=%s&_wpnonce=%s" onclick="return confirm(\'%s\');">'. __( 'Delete', '404-to-301' ) .'</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['id'] ), $delete_nonce, $confirm )
-		];
+		);
 
 		return $title . $this->row_actions( $actions );
 	}
