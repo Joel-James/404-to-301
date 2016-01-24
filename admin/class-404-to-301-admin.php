@@ -225,6 +225,19 @@ class _404_To_301_Admin {
 		
 		$this->list_table = new _404_To_301_Logs( $this->table );
 	}
+	
+	
+	/**
+	 * Output buffer function
+	 *
+	 * To avoid header already sent issue
+	 * @link 	https://tommcfarlin.com/wp_redirect-headers-already-sent/
+	 * @since 	2.1.4
+	 */
+	public function add_buffer() {
+		
+		ob_start();
+	}
 
 
 	/**
@@ -386,7 +399,9 @@ class _404_To_301_Admin {
 		// Output basic info about the site
 		$html 	.=	'<h4>Basic Details</h4>
 						<p>
-							Version of Plugin : '. $this->version .'<br/>
+							WordPress Version : '. get_bloginfo('version') .'<br/>
+							PHP Version : '. PHP_VERSION .'<br/>
+							Plugin Version : '. $this->version .'<br/>
 							Home Page : '. home_url() .'<br/>
 						</p><hr/>';
 
