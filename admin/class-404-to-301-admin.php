@@ -185,7 +185,7 @@ class _404_To_301_Admin {
 		add_submenu_page(
 			'i4t3-logs',
 			__( '404 to 301 Settings', '404-to-301' ),
-			'404 Settings', 
+			__( '404 Settings', '404-to-301' ),
 			I4T3_ADMIN_PERMISSION, 
 			'i4t3-settings',
 			array( $this, 'i4t3_admin_page' )
