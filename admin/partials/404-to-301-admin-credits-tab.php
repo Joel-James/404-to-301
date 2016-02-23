@@ -12,7 +12,7 @@
 							</div>
 							<div class="c4p-left" style="width: 70%">
 							<?php $uname = ( $current_user->user_firstname == '' ) ? $current_user->user_login : $current_user->user_firstname; ?>
-								<p>Yo <strong><?php echo $uname; ?></strong>! <?php _e( 'Thank you for using 404 to 301', '404-to-301' ); ?></p>
+								<p><?php printf( __( 'Yo %s!', '404-to-301' ), '<strong>'.$uname.'</strong>' ); ?> <?php _e( 'Thank you for using 404 to 301', '404-to-301' ); ?></p>
 								<p>
 									<?php _e( 'This plugin is brought to you by', '404-to-301' ); ?> <a href="http://iscode.co/" class="i4t3-author-link" target="_blank" title="<?php _e( 'Visit author website', '404-to-301' ); ?>"><strong>is_code()</strong></a>, <?php _e( 'a web store developed and managed by Joel James.', '404-to-301' ); ?>
 								</p>
