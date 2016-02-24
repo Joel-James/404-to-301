@@ -185,7 +185,7 @@ class _404_To_301_Admin {
 		add_submenu_page(
 			'i4t3-logs',
 			__( '404 to 301 Settings', '404-to-301' ),
-			'404 Settings', 
+			__( '404 Settings', '404-to-301' ),
 			I4T3_ADMIN_PERMISSION, 
 			'i4t3-settings',
 			array( $this, 'i4t3_admin_page' )
@@ -224,6 +224,19 @@ class _404_To_301_Admin {
 		add_screen_option( $option, $args );
 		
 		$this->list_table = new _404_To_301_Logs( $this->table );
+	}
+	
+	
+	/**
+	 * Output buffer function
+	 *
+	 * To avoid header already sent issue
+	 * @link 	https://tommcfarlin.com/wp_redirect-headers-already-sent/
+	 * @since 	2.1.4
+	 */
+	public function add_buffer() {
+		
+		ob_start();
 	}
 
 
@@ -376,7 +389,7 @@ class _404_To_301_Admin {
 		
 		// Dump the plugin settings data
 		if( !empty( $gnrl_options ) ) {
-			$html 	.=	'<h4>Settings Data</h4>
+			$html 	.=	'<h4>'.__( 'Settings Data', '404-to-301' ).'</h4>
 							<p><pre>';
 			foreach ( $gnrl_options as $key => $option ) {
 				$html 	.=	$key.' : '.$option.'<br/>';
@@ -384,25 +397,27 @@ class _404_To_301_Admin {
 			$html 	.=	'</pre></p><hr/>';
 		}
 		// Output basic info about the site
-		$html 	.=	'<h4>Basic Details</h4>
+		$html 	.=	'<h4>'.__( 'Basic Details', '404-to-301').'</h4>
 						<p>
-							Version of Plugin : '. $this->version .'<br/>
-							Home Page : '. home_url() .'<br/>
+							'.__( 'WordPress Version', '404-to-301').' : '. get_bloginfo('version' ) .'<br/>
+							'.__( 'PHP Version', '404-to-301').' : '. PHP_VERSION .'<br/>
+							'.__( 'Plugin Version', '404-to-301').' : '. $this->version .'<br/>
+							'.__( 'Home Page', '404-to-301').' : '. home_url() .'<br/>
 						</p><hr/>';
 
 		if ( $active_theme->exists() ) {
 
-			$html 	.=	'<h4>Active Theme Details</h4>
+			$html 	.=	'<h4>'.__( 'Active Theme Details', '404-to-301' ).'</h4>
 							<p>
-								Name : '. $active_theme->get( 'Name' ) .'<br/>
-								Version : '. $active_theme->get( 'Version' ) .'<br/>
-								Theme URI : '. $active_theme->get( 'ThemeURI' ) .'<br/>
+								'.__( 'Name', '404-to-301').' : '. $active_theme->get( 'Name' ) .'<br/>
+								'.__( 'Version', '404-to-301').' : '. $active_theme->get( 'Version' ) .'<br/>
+								'.__( 'Theme URI', '404-to-301').' : '. $active_theme->get( 'ThemeURI' ) .'<br/>
 							</p><hr/>';
 		}
 		
 		// Dump the active plugins data
 		if( !empty( $active_plugins ) ) {
-			$html 	.=	'<h4>Active Plugins</h4>
+			$html 	.=	'<h4>'.__( 'Active Plugins', '404-to-301' ).'</h4>
 							<p>';
 			foreach ( $active_plugins as $plugin ) {
 				$html 	.=	$plugin.'<br/>';

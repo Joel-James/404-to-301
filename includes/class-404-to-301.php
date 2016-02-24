@@ -67,7 +67,7 @@ class _404_To_301 {
 	public function __construct() {
 
 		$this->plugin_name = '404-to-301';
-		$this->version = '2.1.1';
+		$this->version = '2.1.4';
 		$this->table = $GLOBALS['wpdb']->prefix . '404_to_301';
 		$this->load_dependencies();
 		$this->set_locale();
@@ -132,6 +132,7 @@ class _404_To_301 {
 
 		$plugin_admin = new _404_To_301_Admin( $this->get_plugin_name(), $this->get_version(), $this->get_table() );
 
+		$this->loader->add_filter( 'admin_init', $plugin_admin, 'add_buffer' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'i4t3_create_404_to_301_menu');
