@@ -21,3 +21,5 @@ Automatically redirect all 404 errors to any page using 301 redirect to boost yo
 
 
 <pre>Pull requests are always welcome!</pre>
+
+<strong>PS</strong>: Send pull request to <strong>dev</strong> branch
