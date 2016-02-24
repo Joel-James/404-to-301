@@ -37,7 +37,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 if(!defined('I4T3_PATH')){
-	define( 'I4T3_PATH', home_url( PLUGINDIR . '/404-to-301/' ) );
+	define( 'I4T3_PATH', WP_PLUGIN_URL . '/404-to-301/' );
 }
 if(!defined('I4T3_PLUGIN_DIR')) {
 	define( 'I4T3_PLUGIN_DIR', __FILE__ );
