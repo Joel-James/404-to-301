@@ -1,16 +1,16 @@
 <?php
 /**
- * Plugin Name:       404 to 301
- * Plugin URI:        http://iscode.co/products/404-to-301/
- * Description:       Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
- * Version:           2.1.4
- * Author:            Joel James
- * Author URI:        http://iscode.co/
- * Donate link:		  https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
- * License:           GPL-2.0+
- * License URI:		  http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       404-to-301
- * Domain Path:       /languages
+ * Plugin Name:     404 to 301
+ * Plugin URI:      http://iscode.co/products/404-to-301/
+ * Description:     Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
+ * Version:         2.1.5
+ * Author:          Joel James
+ * Author URI:      http://iscode.co/
+ * Donate link:     https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
+ * License:         GPL-2.0+
+ * License URI:     http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:     404-to-301
+ * Domain Path:     /languages
  *
  * 404 to 301 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,35 +28,34 @@
  * @package I4T3
  * @category Core
  * @author Joel James
- * @version 2.1.4
+ * @version 2.1.5
  */
-
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die('Damn it.! Dude you are looking for what?');
+if (!defined('WPINC')) {
+    die('Damn it.! Dude you are looking for what?');
 }
 
-if(!defined('I4T3_PATH')){
-	define( 'I4T3_PATH',  plugins_url( '/404-to-301/' ) );
+if (!defined('I4T3_PATH')) {
+    define('I4T3_PATH', plugins_url('/404-to-301/'));
 }
-if(!defined('I4T3_PLUGIN_DIR')) {
-	define( 'I4T3_PLUGIN_DIR', __FILE__ );
+if (!defined('I4T3_PLUGIN_DIR')) {
+    define('I4T3_PLUGIN_DIR', __FILE__);
 }
-if(!defined('I4T3_SETTINGS_PAGE')) {
-	define( 'I4T3_SETTINGS_PAGE', admin_url( 'admin.php?page=i4t3-settings' ) );
+if (!defined('I4T3_SETTINGS_PAGE')) {
+    define('I4T3_SETTINGS_PAGE', admin_url('admin.php?page=i4t3-settings'));
 }
-if(!defined('I4T3_LOGS_PAGE')) {
-	define( 'I4T3_LOGS_PAGE', admin_url( 'admin.php?page=i4t3-logs' ) );
+if (!defined('I4T3_LOGS_PAGE')) {
+    define('I4T3_LOGS_PAGE', admin_url('admin.php?page=i4t3-logs'));
 }
-if(!defined('I4T3_DB_VERSION')) {
-	define( 'I4T3_DB_VERSION', '3' );
+if (!defined('I4T3_DB_VERSION')) {
+    define('I4T3_DB_VERSION', '3');
 }
-if(!defined('I4T3_VERSION')) {
-	define( 'I4T3_VERSION', '2.1.4' );
+if (!defined('I4T3_VERSION')) {
+    define('I4T3_VERSION', '2.1.5');
 }
 // Set who all can access 404 settings. You can change this if you want to give others access.
-if(!defined('I4T3_ADMIN_PERMISSION')) {
-	define( 'I4T3_ADMIN_PERMISSION', 'manage_options' );
+if (!defined('I4T3_ADMIN_PERMISSION')) {
+    define('I4T3_ADMIN_PERMISSION', 'manage_options');
 }
 
 /**
@@ -64,16 +63,17 @@ if(!defined('I4T3_ADMIN_PERMISSION')) {
  * This action is documented in includes/class-dcl-activator.php
  */
 function activate_i4t3() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-404-to-301-activator.php';
-	_404_To_301_Activator::activate();
+    require_once plugin_dir_path(__FILE__) . 'includes/class-404-to-301-activator.php';
+    _404_To_301_Activator::activate();
 }
-register_activation_hook( __FILE__, 'activate_i4t3' );
+
+register_activation_hook(__FILE__, 'activate_i4t3');
 
 /**
  * The core plugin class that is used to define
  * dashboard-specific hooks, and public-facing site hooks.
  */
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-404-to-301.php';
+require_once plugin_dir_path(__FILE__) . 'includes/class-404-to-301.php';
 
 /**
  * Begins execution of the plugin.
@@ -86,10 +86,10 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-404-to-301.php';
  */
 function run_i4t3() {
 
-	$plugin = new _404_To_301();
-	$plugin->run();
-
+    $plugin = new _404_To_301();
+    $plugin->run();
 }
+
 run_i4t3();
 
 //*** Thank you for your interest in 404 to 301 - Developed and managed by Joel James ***// 
