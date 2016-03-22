@@ -3,8 +3,8 @@ Contributors: joelcj91,is_code
 Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo redirect, error redirect, 404 seo, custom 404 page
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
 Requires at least: 3.0
-Tested up to: 4.4.1
-Stable tag: 2.1.4
+Tested up to: 4.4.2
+Stable tag: 2.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -111,6 +111,13 @@ Bug reports for 404 to 301 are always welcome. [Report here](http://iscode.co/bu
 
 
 == Changelog ==
+
+= 2.1.5 (22/03/2016) =
+**Improvements**
+
+- Fixed issues with deprecated functions - Thanks to [Pedro Mendonças](https://github.com/pedro-mendonca).
+- Translated missing strings.
+- Tested with WordPress 4.4.2.
 
 = 2.1.4 (22/01/2016) =
 **Bug Fixes**
@@ -242,7 +249,6 @@ Bug reports for 404 to 301 are always welcome. [Report here](http://iscode.co/bu
 == Upgrade Notice ==
 
 = 2.1.4 (22/01/2016) =
-**Bug Fixes**
-
-- Fixed issues when clearing logs (header already sent..).
-- Tested with WordPress 4.4.1.
+- Fixed issues with deprecated functions - Thanks to [Pedro Mendonças](https://github.com/pedro-mendonca).
+- Translated missing strings.
+- Tested with WordPress 4.4.2.
