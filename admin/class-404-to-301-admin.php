@@ -119,7 +119,7 @@ class _404_To_301_Admin {
      * Run upgrade functions
      *
      * If 404 to 301 is upgraded, we may need to perform few updations in db
-     * 
+     *
      * @since	2.0.0
      * @uses	get_option()	To get the activation redirect option from db.
      * @return	void.
@@ -139,7 +139,7 @@ class _404_To_301_Admin {
      *
      * Using filter to change email notification recipient address from
      * default admin email.
-     * 
+     *
      * @since	2.0.7
      * @uses	get_option()	To get the email address option from db.
      * @return	$email 		Email address to be used for notification.
@@ -185,7 +185,7 @@ class _404_To_301_Admin {
             'i4t3-settings',
             array($this, 'i4t3_admin_page')
         );
-        
+
         do_action('i4t3_admin_page');
     }
 
@@ -324,9 +324,9 @@ class _404_To_301_Admin {
             _e('Thank you for choosing 404 to 301 to improve your website', '404-to-301');
             echo ' | ';
             _e('Kindly give this plugin a', '404-to-301');
-            echo '<a href="https://wordpress.org/support/view/plugin-reviews/404-to-301?filter=5#postform">';
+            echo ' <a href="https://wordpress.org/support/view/plugin-reviews/404-to-301?filter=5#postform">';
             _e('rating', '404-to-301');
-            echo ' &#9733; &#9733;</a>';
+            echo ' &#9733; &#9733; &#9733; &#9733; &#9733;</a>';
         } else {
             return;
         }
