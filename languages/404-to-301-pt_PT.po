@@ -2,11 +2,11 @@
 # This file is distributed under the same license as the Stable (latest release) package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Stable (latest release)\n"
-"POT-Creation-Date: 2016-03-22 22:55+0000\n"
-"PO-Revision-Date: 2016-03-22 22:56+0000\n"
+"Project-Id-Version: 404 to 301\n"
+"POT-Creation-Date: 2016-03-22 23:49+0000\n"
+"PO-Revision-Date: 2016-03-22 23:54+0000\n"
 "Last-Translator: Pedro Mendonça <ped.gaspar@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language: pt_PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -47,65 +47,62 @@ msgid "Thank you for choosing 404 to 301 to improve your website"
 msgstr "Obrigado por escolher o 404 to 301 para optimizar o seu site"
 
 #: admin/class-404-to-301-admin.php:326
-msgid "Kindly give this plugin a"
-msgstr "Por favor, atribua a este plugin uma"
+#, php-format
+msgid "Kindly give this plugin a %srating%s"
+msgstr "Por favor, atribua a este plugin uma %sclassificação%s"
 
-#: admin/class-404-to-301-admin.php:328
-msgid "rating"
-msgstr "classificação"
-
-#: admin/class-404-to-301-admin.php:348
+#: admin/class-404-to-301-admin.php:345
 #: admin/partials/404-to-301-admin-display.php:27
 msgid "Settings"
 msgstr "Definições"
 
-#: admin/class-404-to-301-admin.php:349
+#: admin/class-404-to-301-admin.php:346
 msgid "Logs"
 msgstr "Registos"
 
-#: admin/class-404-to-301-admin.php:378
+#: admin/class-404-to-301-admin.php:375
 msgid "Settings Data"
 msgstr "Dados das definições"
 
-#: admin/class-404-to-301-admin.php:385
+#: admin/class-404-to-301-admin.php:382
 msgid "Basic Details"
 msgstr "Detalhes básicos"
 
-#: admin/class-404-to-301-admin.php:386
+#: admin/class-404-to-301-admin.php:383
 msgid "WordPress Version"
 msgstr "Versão do WordPress"
 
-#: admin/class-404-to-301-admin.php:387
+#: admin/class-404-to-301-admin.php:384
 msgid "PHP Version"
 msgstr "Versão do PHP"
 
-#: admin/class-404-to-301-admin.php:388
+#: admin/class-404-to-301-admin.php:385
 msgid "Plugin Version"
 msgstr "Versão do plugin"
 
-#: admin/class-404-to-301-admin.php:389
+#: admin/class-404-to-301-admin.php:386
 msgid "Home Page"
 msgstr "Página inicial"
 
-#: admin/class-404-to-301-admin.php:393
+#: admin/class-404-to-301-admin.php:390
 msgid "Active Theme Details"
 msgstr "Detalhes do tema activo"
 
-#: admin/class-404-to-301-admin.php:394
+#: admin/class-404-to-301-admin.php:391
 #: admin/partials/404-to-301-admin-credits-tab.php:46
 msgid "Name"
 msgstr "Nome"
 
-#: admin/class-404-to-301-admin.php:395
+#: admin/class-404-to-301-admin.php:392
 #: admin/partials/404-to-301-admin-credits-tab.php:50
 msgid "Version"
 msgstr "Versão"
 
-#: admin/class-404-to-301-admin.php:396
+#: admin/class-404-to-301-admin.php:393
 msgid "Theme URI"
 msgstr "URI do tema"
 
-#: admin/class-404-to-301-admin.php:401
+#: admin/class-404-to-301-admin.php:398
 msgid "Active Plugins"
 msgstr "Plugins activos"
 
@@ -420,7 +417,7 @@ msgid "Need help?"
 msgstr "Precisa de ajuda?"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:67
-msgid "contact support"
+msgid "Contact support"
 msgstr "Contacte o suporte"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:72
