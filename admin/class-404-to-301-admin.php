@@ -323,7 +323,7 @@ class _404_To_301_Admin {
 
             _e('Thank you for choosing 404 to 301 to improve your website', '404-to-301');
             echo ' | ';
-            sprintf(__('Kindly give this plugin a %srating%s', '404-to-301'), '<a href="https://wordpress.org/support/view/plugin-reviews/404-to-301?filter=5#postform">', ' &#9733; &#9733; &#9733; &#9733; &#9733;</a>');
+            printf(__('Kindly give this plugin a %srating%s', '404-to-301'), '<a href="https://wordpress.org/support/view/plugin-reviews/404-to-301?filter=5#postform">', ' &#9733; &#9733; &#9733; &#9733; &#9733;</a>');
         } else {
             return;
         }
