@@ -1,9 +1,13 @@
+# Translation of Stable (latest release) in Portuguese (Portugal)
+# This file is distributed under the same license as the Stable (latest release) package.
 msgid ""
 msgstr ""
 "Project-Id-Version: 404 to 301\n"
 "POT-Creation-Date: 2016-03-22 23:49+0000\n"
-"PO-Revision-Date: 2016-03-22 23:53+0000\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2016-03-22 23:54+0000\n"
+"Last-Translator: Pedro Mendonça <ped.gaspar@gmail.com>\n"
+"Language-Team: Pedro Mendonça <ped.gaspar@gmail.com>\n"
+"Language: pt_PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,222 +23,222 @@ msgstr ""
 #: admin/class-404-to-301-admin.php:168 admin/class-404-to-301-admin.php:169
 #: admin/class-404-to-301-admin.php:247 admin/class-404-to-301-logs.php:60
 msgid "404 Error Logs"
-msgstr ""
+msgstr "Registos de erros 404"
 
 #: admin/class-404-to-301-admin.php:182
 msgid "404 to 301 Settings"
-msgstr ""
+msgstr "Definições de 404 to 301"
 
 #: admin/class-404-to-301-admin.php:183
 msgid "404 Settings"
-msgstr ""
+msgstr "Definições de 404"
 
 #: admin/class-404-to-301-admin.php:215
 msgid "Error Logs"
-msgstr ""
+msgstr "Registos de erros"
 
 #: admin/class-404-to-301-admin.php:277
 #: admin/partials/404-to-301-admin-credits-tab.php:47
 msgid "404 to 301"
-msgstr ""
+msgstr "404 to 301"
 
 #: admin/class-404-to-301-admin.php:324
 msgid "Thank you for choosing 404 to 301 to improve your website"
-msgstr ""
+msgstr "Obrigado por escolher o 404 to 301 para optimizar o seu site"
 
 #: admin/class-404-to-301-admin.php:326
 #, php-format
 msgid "Kindly give this plugin a %srating%s"
-msgstr ""
+msgstr "Por favor, atribua a este plugin uma %sclassificação%s"
 
 #: admin/class-404-to-301-admin.php:345
 #: admin/partials/404-to-301-admin-display.php:27
 msgid "Settings"
-msgstr ""
+msgstr "Definições"
 
 #: admin/class-404-to-301-admin.php:346
 msgid "Logs"
-msgstr ""
+msgstr "Registos"
 
 #: admin/class-404-to-301-admin.php:375
 msgid "Settings Data"
-msgstr ""
+msgstr "Dados das definições"
 
 #: admin/class-404-to-301-admin.php:382
 msgid "Basic Details"
-msgstr ""
+msgstr "Detalhes básicos"
 
 #: admin/class-404-to-301-admin.php:383
 msgid "WordPress Version"
-msgstr ""
+msgstr "Versão do WordPress"
 
 #: admin/class-404-to-301-admin.php:384
 msgid "PHP Version"
-msgstr ""
+msgstr "Versão do PHP"
 
 #: admin/class-404-to-301-admin.php:385
 msgid "Plugin Version"
-msgstr ""
+msgstr "Versão do plugin"
 
 #: admin/class-404-to-301-admin.php:386
 msgid "Home Page"
-msgstr ""
+msgstr "Página inicial"
 
 #: admin/class-404-to-301-admin.php:390
 msgid "Active Theme Details"
-msgstr ""
+msgstr "Detalhes do tema activo"
 
 #: admin/class-404-to-301-admin.php:391
 #: admin/partials/404-to-301-admin-credits-tab.php:46
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: admin/class-404-to-301-admin.php:392
 #: admin/partials/404-to-301-admin-credits-tab.php:50
 msgid "Version"
-msgstr ""
+msgstr "Versão"
 
 #: admin/class-404-to-301-admin.php:393
 msgid "Theme URI"
-msgstr ""
+msgstr "URI do tema"
 
 #: admin/class-404-to-301-admin.php:398
 msgid "Active Plugins"
-msgstr ""
+msgstr "Plugins activos"
 
 #: admin/class-404-to-301-logs.php:59
 msgid "404 Error Log"
-msgstr ""
+msgstr "Registo de erro 404"
 
 #: admin/class-404-to-301-logs.php:184
 msgid "Ulta pulta..! Seems like you had no errors to log."
-msgstr ""
+msgstr "Ena! Parece que não ocorreu nenhum erro para registar."
 
 #: admin/class-404-to-301-logs.php:240
 msgid "Are you sure you want to delete this item?"
-msgstr ""
+msgstr "Tem a certeza que quer eliminar este item?"
 
 #: admin/class-404-to-301-logs.php:242
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 #: admin/class-404-to-301-logs.php:333
 msgid "Date and Time"
-msgstr ""
+msgstr "Data e Hora"
 
 #: admin/class-404-to-301-logs.php:334 public/class-404-to-301-public.php:89
 msgid "404 Path"
-msgstr ""
+msgstr "Caminho de 404"
 
 #: admin/class-404-to-301-logs.php:335
 msgid "Came From"
-msgstr ""
+msgstr "Vindo de"
 
 #: admin/class-404-to-301-logs.php:336 public/class-404-to-301-public.php:85
 msgid "IP Address"
-msgstr ""
+msgstr "Endereço IP"
 
 #: admin/class-404-to-301-logs.php:337 public/class-404-to-301-public.php:93
 msgid "User Agent"
-msgstr ""
+msgstr "Agente do utilizador"
 
 #: admin/class-404-to-301-logs.php:379
 msgid "Delete Selected"
-msgstr ""
+msgstr "Eliminar seleccionados"
 
 #: admin/class-404-to-301-logs.php:380
 msgid "Delete All"
-msgstr ""
+msgstr "Eliminar tudo"
 
 #: admin/class-404-to-301-logs.php:515
 msgid "N/A"
-msgstr ""
+msgstr "Não aplicável"
 
 #: admin/core/class-wp-list-table-4.4.php:162
 #: admin/core/class-wp-list-table-old.php:144
 #: admin/core/class-wp-list-table.php:162
 msgid "List View"
-msgstr ""
+msgstr "Vista de lista"
 
 #: admin/core/class-wp-list-table-4.4.php:163
 #: admin/core/class-wp-list-table-old.php:145
 #: admin/core/class-wp-list-table.php:163
 msgid "Excerpt View"
-msgstr ""
+msgstr "Vista de excerto"
 
 #: admin/core/class-wp-list-table-4.4.php:334
 #: admin/core/class-wp-list-table-old.php:312
 #: admin/core/class-wp-list-table.php:334
 msgid "No items found."
-msgstr ""
+msgstr "Nenhum item encontrado."
 
 #: admin/core/class-wp-list-table-4.4.php:462
 #: admin/core/class-wp-list-table-old.php:438
 #: admin/core/class-wp-list-table.php:462
 msgid "Select bulk action"
-msgstr ""
+msgstr "Seleccionar acção por lotes"
 
 #: admin/core/class-wp-list-table-4.4.php:464
 #: admin/core/class-wp-list-table-old.php:440
 #: admin/core/class-wp-list-table.php:464
 msgid "Bulk Actions"
-msgstr ""
+msgstr "Acções por lotes"
 
 #: admin/core/class-wp-list-table-4.4.php:474
 #: admin/core/class-wp-list-table-old.php:450
 #: admin/core/class-wp-list-table.php:474
 msgid "Apply"
-msgstr ""
+msgstr "Aplicar"
 
 #: admin/core/class-wp-list-table-4.4.php:524
 #: admin/core/class-wp-list-table-4.4.php:1324
 #: admin/core/class-wp-list-table.php:524
 #: admin/core/class-wp-list-table.php:1324
 msgid "Show more details"
-msgstr ""
+msgstr "Ver mais detalhes"
 
 #: admin/core/class-wp-list-table-4.4.php:587
 #: admin/core/class-wp-list-table-old.php:550
 #: admin/core/class-wp-list-table.php:587
 msgid "Filter by date"
-msgstr ""
+msgstr "Filtrar por data"
 
 #: admin/core/class-wp-list-table-4.4.php:589
 #: admin/core/class-wp-list-table-old.php:552
 #: admin/core/class-wp-list-table.php:589
 msgid "All dates"
-msgstr ""
+msgstr "Todas as datas"
 
 #: admin/core/class-wp-list-table-4.4.php:602
 #: admin/core/class-wp-list-table-old.php:565
 #: admin/core/class-wp-list-table.php:602
 #, php-format
 msgid "%1$s %2$d"
-msgstr ""
+msgstr "%1$s de %2$d"
 
 #: admin/core/class-wp-list-table-4.4.php:654
 #: admin/core/class-wp-list-table.php:654
 #, php-format
 msgid "%s comment"
 msgid_plural "%s comments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s comentário"
+msgstr[1] "%s comentários"
 
 #: admin/core/class-wp-list-table-4.4.php:655
 #: admin/core/class-wp-list-table.php:655
 #, php-format
 msgid "%s approved comment"
 msgid_plural "%s approved comments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s comentário aprovado"
+msgstr[1] "%s comentários aprovados"
 
 #: admin/core/class-wp-list-table-4.4.php:656
 #: admin/core/class-wp-list-table.php:656
 #, php-format
 msgid "%s pending comment"
 msgid_plural "%s pending comments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s comentário pendente"
+msgstr[1] "%s comentários pendentes"
 
 #: admin/core/class-wp-list-table-4.4.php:661
 #: admin/core/class-wp-list-table-4.4.php:673
@@ -243,17 +247,17 @@ msgstr[1] ""
 #: admin/core/class-wp-list-table.php:673
 #: admin/core/class-wp-list-table.php:686
 msgid "No comments"
-msgstr ""
+msgstr "Sem comentários"
 
 #: admin/core/class-wp-list-table-4.4.php:673
 #: admin/core/class-wp-list-table.php:673
 msgid "No approved comments"
-msgstr ""
+msgstr "Sem comentários aprovados"
 
 #: admin/core/class-wp-list-table-4.4.php:686
 #: admin/core/class-wp-list-table.php:686
 msgid "No pending comments"
-msgstr ""
+msgstr "Não há comentários pendentes"
 
 #: admin/core/class-wp-list-table-4.4.php:763
 #: admin/core/class-wp-list-table-4.4.php:1349
@@ -262,18 +266,18 @@ msgstr ""
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s item"
+msgstr[1] "%s itens"
 
 #: admin/core/class-wp-list-table-4.4.php:798
 #: admin/core/class-wp-list-table.php:798
 msgid "First page"
-msgstr ""
+msgstr "Primeira página"
 
 #: admin/core/class-wp-list-table-4.4.php:808
 #: admin/core/class-wp-list-table.php:808
 msgid "Previous page"
-msgstr ""
+msgstr "Página anterior"
 
 #: admin/core/class-wp-list-table-4.4.php:815
 #: admin/core/class-wp-list-table-4.4.php:818
@@ -281,7 +285,7 @@ msgstr ""
 #: admin/core/class-wp-list-table.php:815
 #: admin/core/class-wp-list-table.php:818
 msgid "Current Page"
-msgstr ""
+msgstr "Página actual"
 
 #: admin/core/class-wp-list-table-4.4.php:824
 #: admin/core/class-wp-list-table-old.php:733
@@ -289,316 +293,329 @@ msgstr ""
 #, php-format
 msgctxt "paging"
 msgid "%1$s of %2$s"
-msgstr ""
+msgstr "%1$s de %2$s"
 
 #: admin/core/class-wp-list-table-4.4.php:831
 #: admin/core/class-wp-list-table.php:831
 msgid "Next page"
-msgstr ""
+msgstr "Página seguinte"
 
 #: admin/core/class-wp-list-table-4.4.php:841
 #: admin/core/class-wp-list-table.php:841
 msgid "Last page"
-msgstr ""
+msgstr "Última página"
 
 #: admin/core/class-wp-list-table-4.4.php:1069
 #: admin/core/class-wp-list-table-old.php:881
 #: admin/core/class-wp-list-table.php:1069
 msgid "Select All"
-msgstr ""
+msgstr "Seleccionar tudo"
 
 #: admin/core/class-wp-list-table-old.php:612
 #, php-format
 msgid "%s pending"
-msgstr ""
+msgstr "%s pendente(s)"
 
 #: admin/core/class-wp-list-table-old.php:691
 #: admin/core/class-wp-list-table-old.php:1115
 #, php-format
 msgid "1 item"
 msgid_plural "%s items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 item"
+msgstr[1] "%s itens"
 
 #: admin/core/class-wp-list-table-old.php:710
 msgid "Go to the first page"
-msgstr ""
+msgstr "Ir para a primeira página"
 
 #: admin/core/class-wp-list-table-old.php:717
 msgid "Go to the previous page"
-msgstr ""
+msgstr "Ir para a página anterior"
 
 #: admin/core/class-wp-list-table-old.php:726
 msgid "Select Page"
-msgstr ""
+msgstr "Seleccionar página"
 
 #: admin/core/class-wp-list-table-old.php:737
 msgid "Go to the next page"
-msgstr ""
+msgstr "Ir para a página seguinte"
 
 #: admin/core/class-wp-list-table-old.php:744
 msgid "Go to the last page"
-msgstr ""
+msgstr "Ir para a última página"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:7
 msgid "About the plugin & developer"
-msgstr ""
+msgstr "Sobre o plugin e o programador"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:15
 #, php-format
 msgid "Yo %s!"
-msgstr ""
+msgstr "Olá %s!"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:15
 msgid "Thank you for using 404 to 301"
-msgstr ""
+msgstr "Obrigado por utilizar o 404 to 301."
 
 #: admin/partials/404-to-301-admin-credits-tab.php:17
 msgid "This plugin is brought to you by"
-msgstr ""
+msgstr "Este plugin é desenvolvido por"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:17
 #: admin/partials/404-to-301-admin-credits-tab.php:54
 msgid "Visit author website"
-msgstr ""
+msgstr "Visite o website do autor"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:17
 msgid "a web store developed and managed by Joel James."
-msgstr ""
+msgstr "uma loja online desenvolvida e gerida por Joel James."
 
 #: admin/partials/404-to-301-admin-credits-tab.php:23
 msgid "So you installed this plugin and how is it doing? Feel free to"
 msgstr ""
+"Então, instalou este plugin, que tal está a correr? Sinta-se à vontade para"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:23
 msgid "Contact the developer"
-msgstr ""
+msgstr "Contacte o programador"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:23
 msgid "get in touch with me"
-msgstr ""
+msgstr "entrar em contacto comigo"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:23
 msgid "anytime for help. I am always happy to help."
-msgstr ""
+msgstr "a qualquer momento para ajuda. Tenho o maior prazer em ajudar."
 
 #: admin/partials/404-to-301-admin-credits-tab.php:30
 msgid "Debugging Data"
-msgstr ""
+msgstr "Dados de depuração"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:43
 msgid "Plugin Information"
-msgstr ""
+msgstr "Informações do plugin"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:54
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:58
 #: admin/partials/404-to-301-admin-credits-tab.php:62
 msgid "Visit plugin website"
-msgstr ""
+msgstr "Visite o site do plugin"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:58
 msgid "Plugin documentation"
-msgstr ""
+msgstr "Documentação do plugin"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:62
 msgid "More details about the plugin"
-msgstr ""
+msgstr "Mais detalhes sobre o plugin"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:66
 msgid "Need help?"
-msgstr ""
+msgstr "Precisa de ajuda?"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:67
 msgid "Contact support"
-msgstr ""
+msgstr "Contacte o suporte"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:72
 msgid "Like the plugin"
-msgstr ""
+msgstr "Gosta do plugin"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:75
 msgid "Rate now"
-msgstr ""
+msgstr "Classificar agora"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:75
 msgid "Rate this on WordPress"
-msgstr ""
+msgstr "Dê uma classificação no WordPress"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:78
 msgid "Donate now"
-msgstr ""
+msgstr "Fazer donativo agora"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:78
 msgid "Make a small donation"
-msgstr ""
+msgstr "Faça um pequeno donativo"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:81
 msgid "Contribute now"
-msgstr ""
+msgstr "Contribuir agora"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:81
 msgid "Contribute to the Plugin"
-msgstr ""
+msgstr "Contribua para o plugin"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:84
 msgid "Tweet now"
-msgstr ""
+msgstr "Publicar no Twitter agora"
 
 #: admin/partials/404-to-301-admin-credits-tab.php:84
 msgid "Tweet about the Plugin"
-msgstr ""
+msgstr "Publique no Twitter sobre o plugin"
 
 #: admin/partials/404-to-301-admin-display.php:30
 msgid "settings updated successfully"
-msgstr ""
+msgstr "definições actualizadas com sucesso"
 
 #: admin/partials/404-to-301-admin-display.php:34
 msgid "General"
-msgstr ""
+msgstr "Geral"
 
 #: admin/partials/404-to-301-admin-display.php:35
 msgid "Help & Info"
-msgstr ""
+msgstr "Ajuda e informações"
 
 #: admin/partials/404-to-301-admin-general-tab.php:27
 msgid "Redirect type"
-msgstr ""
+msgstr "Tipo de redireccionamento"
 
 #: admin/partials/404-to-301-admin-general-tab.php:30
 msgid "Redirect (SEO)"
-msgstr ""
+msgstr "Redireccionamento (SEO)"
 
 #: admin/partials/404-to-301-admin-general-tab.php:31
 #: admin/partials/404-to-301-admin-general-tab.php:32
 msgid "Redirect"
-msgstr ""
+msgstr "Redireccionamento"
 
 #: admin/partials/404-to-301-admin-general-tab.php:34
 msgid "Learn more"
-msgstr ""
+msgstr "Saiba mais"
 
 #: admin/partials/404-to-301-admin-general-tab.php:34
 msgid "about these redirect types"
-msgstr ""
+msgstr "sobre estes tipos de redireccionamento"
 
 #: admin/partials/404-to-301-admin-general-tab.php:38
 msgid "Redirect to"
-msgstr ""
+msgstr "Redireccionar para"
 
 #: admin/partials/404-to-301-admin-general-tab.php:41
 #: admin/partials/404-to-301-admin-general-tab.php:45
 msgid "Existing Page"
-msgstr ""
+msgstr "Página existente"
 
 #: admin/partials/404-to-301-admin-general-tab.php:42
 #: admin/partials/404-to-301-admin-general-tab.php:46
 #: admin/partials/404-to-301-admin-general-tab.php:62
 msgid "Custom URL"
-msgstr ""
+msgstr "URL personalizado"
 
 #: admin/partials/404-to-301-admin-general-tab.php:43
 #: admin/partials/404-to-301-admin-general-tab.php:47
 msgid "No Redirect"
-msgstr ""
+msgstr "Sem redireccionamento"
 
 #: admin/partials/404-to-301-admin-general-tab.php:45
 msgid "Select any WordPress page as a 404 page"
-msgstr ""
+msgstr "Seleccione qualquer página do WordPress como página 404"
 
 #: admin/partials/404-to-301-admin-general-tab.php:46
 msgid "Redirect 404 requests to a specific URL"
-msgstr ""
+msgstr "Redireccione pedidos 404 para um URL específico"
 
 #: admin/partials/404-to-301-admin-general-tab.php:47
 msgid "To disable redirect"
-msgstr ""
+msgstr "Para desactivar o redireccionamento"
 
 #: admin/partials/404-to-301-admin-general-tab.php:51
 msgid "Select the page"
-msgstr ""
+msgstr "Seleccione a página"
 
 #: admin/partials/404-to-301-admin-general-tab.php:58
 msgid ""
 "The default 404 page will be replaced by the page you choose in this list"
 msgstr ""
+"A página 404 por omissão será substituída por uma página à escolha desta "
+"lista"
 
 #: admin/partials/404-to-301-admin-general-tab.php:65
 msgid "Enter any url"
-msgstr ""
+msgstr "Insira qualquer URL"
 
 #: admin/partials/404-to-301-admin-general-tab.php:65
 msgid "including"
-msgstr ""
+msgstr "incluindo"
 
 #: admin/partials/404-to-301-admin-general-tab.php:69
 msgid "Log 404 Errors"
-msgstr ""
+msgstr "Registar erros 404"
 
 #: admin/partials/404-to-301-admin-general-tab.php:72
 msgid "Enable Error Logs"
-msgstr ""
+msgstr "Activar registos de erros"
 
 #: admin/partials/404-to-301-admin-general-tab.php:73
 msgid "Disable Error Logs"
-msgstr ""
+msgstr "Desactivar registos de erros"
 
 #: admin/partials/404-to-301-admin-general-tab.php:75
 msgid "Enable/Disable Logging"
-msgstr ""
+msgstr "Activar/Desactivar registo"
 
 #: admin/partials/404-to-301-admin-general-tab.php:79
 msgid "Email notifications"
-msgstr ""
+msgstr "Notificações por email"
 
 #: admin/partials/404-to-301-admin-general-tab.php:86
 msgid ""
 "If you check this, an email will be sent on every 404 log on the admin email "
 "account"
 msgstr ""
+"Se activar esta opção, será enviado um email a cada registo de 404 para o "
+"email do administrador"
 
 #: admin/partials/404-to-301-admin-general-tab.php:90
 msgid "Email address"
-msgstr ""
+msgstr "Endereço de email"
 
 #: admin/partials/404-to-301-admin-general-tab.php:94
 msgid "Change the recipient email address for error log notifications"
 msgstr ""
+"Modifique o endereço de email do destinatário para as notificações de "
+"registo de erro"
 
 #: admin/partials/404-to-301-admin-general-tab.php:98
 msgid "Exclude paths"
-msgstr ""
+msgstr "Excluir caminhos"
 
 #: admin/partials/404-to-301-admin-general-tab.php:101
 msgid ""
 "If you want to exclude few paths from error logs, enter here. One per line."
 msgstr ""
+"Se quiser excluir alguns caminhos dos registos de erros, insira aqui, um por "
+"linha."
 
 #: admin/partials/404-to-301-admin-general-tab.php:106
 msgid "Save All Changes"
-msgstr ""
+msgstr "Guardar todas as alterações"
 
 #: public/class-404-to-301-public.php:82
 msgid "Bummer! You have one more 404"
-msgstr ""
+msgstr "Ora bolas! Tem mais um 404."
 
 #: public/class-404-to-301-public.php:98
 msgid "Snap! One more 404 on "
-msgstr ""
+msgstr "Tem mais um 404 em "
 
 msgid ""
 "Automatically redirect all <strong>404 errors</strong> to any page using "
 "<strong>301 redirect for SEO</strong>. You can <strong>redirect and log</"
 "strong> every 404 errors. No more 404 errors in Webmaster tool."
 msgstr ""
+"Redireccione automaticamente todos os <strong>erros 404</strong> para "
+"qualquer página através de <strong>redireccionamento 301 para SEO</strong>. "
+"Pode <strong>redireccionar e registar</strong> todos os erros 404. Ponha fim "
+"aos erros 404 na sua ferramenta de Webmaster."
 
 msgid "Joel James"
-msgstr ""
+msgstr "Joel James"
 
 msgid "http://iscode.co/products/404-to-301/"
-msgstr ""
+msgstr "http://iscode.co/products/404-to-301/"
 
 msgid "http://iscode.co/"
-msgstr ""
+msgstr "http://iscode.co/"

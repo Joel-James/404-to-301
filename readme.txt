@@ -115,7 +115,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](http://iscode.co/bu
 = 2.1.5 (22/03/2016) =
 **Improvements**
 
-- Fixed issues with deprecated functions - Thanks to [Pedro Mendonças](https://github.com/pedro-mendonca).
+- Fixed issues with deprecated functions - Thanks to [Pedro Mendonça](https://github.com/pedro-mendonca).
 - Translated missing strings.
 - Tested with WordPress 4.4.2.
 
@@ -249,6 +249,6 @@ Bug reports for 404 to 301 are always welcome. [Report here](http://iscode.co/bu
 == Upgrade Notice ==
 
 = 2.1.4 (22/01/2016) =
-- Fixed issues with deprecated functions - Thanks to [Pedro Mendonças](https://github.com/pedro-mendonca).
+- Fixed issues with deprecated functions - Thanks to [Pedro Mendonça](https://github.com/pedro-mendonca).
 - Translated missing strings.
 - Tested with WordPress 4.4.2.
