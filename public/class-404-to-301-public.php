@@ -379,7 +379,7 @@ class _404_To_301_Public {
             return '';
         }
         
-        if( is_admin_bar_showing() && $this->is_http_available() ) {
+        if( ! is_admin_bar_showing() && $this->is_http_available() ) {
                 
             $url = 'http://' . $_SERVER[ 'HTTP_HOST' ] . $_SERVER[ 'REQUEST_URI' ];
             $url = @str_replace("?v=1337", "", $url);
