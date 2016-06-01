@@ -19,7 +19,10 @@
                 default:
                     break;
             }
-            ?>
+            if( get_option( 'i4t3_agreement', 2 ) == 2 ) {
+                include_once '404-to-301-admin-agreement-tab.php';
+            }
+        ?>
         <table class="form-table">
             <tbody>
 
@@ -45,6 +48,7 @@
                         <p class="description"><strong><?php _e('Existing Page', '404-to-301'); ?>:</strong> <?php _e('Select any WordPress page as a 404 page', '404-to-301'); ?>.</p>
                         <p class="description"><strong><?php _e('Custom URL', '404-to-301'); ?>:</strong> <?php _e('Redirect 404 requests to a specific URL', '404-to-301'); ?>.</p>
                         <p class="description"><strong><?php _e('No Redirect', '404-to-301'); ?>:</strong> <?php _e('To disable redirect', '404-to-301'); ?>.</p>
+                        <p class="description i4t3-green"><strong><?php _e('You can override this by setting individual custom redirects from error logs list.', '404-to-301'); ?></strong></p>
                     </td>
                 </tr>
                 <tr id="custom_page" <?php echo $cp_style; ?>>

@@ -724,7 +724,7 @@ class WP_List_Table_404 {
 		} else {
 			$html_current_page = sprintf( "%s<input class='current-page' id='current-page-selector' title='%s' type='text' name='paged' value='%s' size='%d' />",
 				'<label for="current-page-selector" class="screen-reader-text">' . __( 'Select Page', '404-to-301' ) . '</label>',
-				esc_attr__( 'Current Page', '404-to-301' ),
+				esc_attr__( 'Current page', '404-to-301' ),
 				$current,
 				strlen( $total_pages )
 			);
