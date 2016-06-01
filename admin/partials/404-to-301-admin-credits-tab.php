@@ -69,7 +69,7 @@ if( get_option( 'i4t3_agreement', 2 ) == 2 ) {
                         </div>
                         <div class="misc-pub-section">
                             <label><?php _e('Need help?', '404-to-301'); ?></label>
-                            <span><strong><a href="https://thefoxe.com/contact/"><?php _e('contact support', '404-to-301'); ?></a></strong></span>
+                            <span><strong><a href="https://thefoxe.com/contact/"><?php _e('Contact support', '404-to-301'); ?></a></strong></span>
                         </div>
                         <div class="misc-pub-section">
                             <?php if( get_option( 'i4t3_agreement', 2 ) == 1 ) { ?>
