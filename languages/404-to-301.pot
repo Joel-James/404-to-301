@@ -15,6 +15,7 @@ msgstr ""
 "esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
+"X-Poedit-WPHeader: 404-to-301.php\n"
 
 #: admin/class-404-to-301-admin.php:168 admin/class-404-to-301-admin.php:169
 #: admin/class-404-to-301-admin.php:247 admin/class-404-to-301-logs.php:60
