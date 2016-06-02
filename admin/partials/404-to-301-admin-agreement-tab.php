@@ -45,8 +45,8 @@
     </div>
 
     <div>
-        <a class="button-primary" href="<?php echo I4T3_SETTINGS_PAGE; ?>&i4t3_agreement=1" id="i4t3-accept-terms">I accept</a>
-        <a class="button-secondary" href="<?php echo I4T3_SETTINGS_PAGE; ?>&i4t3_agreement=0" id="i4t3-hide-admin-notice">I do not accept</a>
+        <a class="button-primary" href="<?php echo I4T3_SETTINGS_PAGE; ?>&i4t3_agreement=1" id="i4t3-accept-terms"><?php _e('I accept', '404-to-301'); ?></a>
+        <a class="button-secondary" href="<?php echo I4T3_SETTINGS_PAGE; ?>&i4t3_agreement=0" id="i4t3-hide-admin-notice"><?php _e('I do not accept', '404-to-301'); ?></a>
     </div>
     </span>
 </div>
