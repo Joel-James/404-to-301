@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 404 to 301\n"
 "POT-Creation-Date: 2016-06-02 14:12+0100\n"
-"PO-Revision-Date: 2016-06-02 14:12+0100\n"
+"PO-Revision-Date: 2016-06-02 14:45+0100\n"
 "Last-Translator: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language-Team: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language: pt_PT\n"
@@ -168,7 +168,7 @@ msgstr "Eliminar tudo"
 
 #: admin/class-404-to-301-logs.php:588
 msgid "N/A"
-msgstr "Não aplicável"
+msgstr "Não disponível"
 
 #: admin/core/class-wp-list-table-4.4.php:162
 #: admin/core/class-wp-list-table-old.php:144
