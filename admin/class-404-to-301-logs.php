@@ -268,7 +268,7 @@ class _404_To_301_Logs extends WP_List_Table_404 {
 
         $title = ( ! empty( $item['redirect'] ) ) ? $item['redirect'] : __( 'Default', '404-to-301' );
         
-        return '<a href="javascript:void(0)" title="' . $title . '" class="i4t3_redirect_thickbox" url_404="' . $item['url'] . '">' . __('Update', '404-to-301') . '</a>';
+        return '<a href="javascript:void(0)" title="' .  __('Customize', '404-to-301') . '" class="i4t3_redirect_thickbox" url_404="' . $item['url'] . '">' . $title . '</a>';
     }
 
     /**
@@ -397,12 +397,12 @@ class _404_To_301_Logs extends WP_List_Table_404 {
 
         $columns = array(
             'cb' => '<input type="checkbox" style="width: 5%;" />',
-            'date' => __( 'When', '404-to-301' ),
+            'date' => __( 'Date', '404-to-301' ),
             'url' => __( '404 Path', '404-to-301' ),
-            'ref' => __( 'Came From', '404-to-301' ), // referer
+            'ref' => __( 'From', '404-to-301' ), // referer
             'ip' => __( 'IP Address', '404-to-301' ),
             'ua' => __('User Agent', '404-to-301'),
-            'redirect' => __( 'Custom Redirect', '404-to-301' )
+            'redirect' => __( 'Redirect', '404-to-301' )
         );
 
         return $columns;
