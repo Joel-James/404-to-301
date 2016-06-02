@@ -52,7 +52,7 @@ class _404_To_301_Activator {
             // loop through each new options
             // to check old value exist for each items.
             foreach ( $options as $key => $value ) {
-                if ( array_key_exists( $old[ $key ] ) ) {
+                if ( array_key_exists( $key, $old ) ) {
                     // if old value exists, update that
                     $options[ $key ] = $old[ $key ];
                 }
@@ -63,7 +63,7 @@ class _404_To_301_Activator {
         // get plugin db version
         $db_version = get_option('i4t3_db_version');
 
-        if ( ! $db_version || ( I4T3_DB_VERSION != $installed_version ) ) {
+        if ( ! $db_version || ( I4T3_DB_VERSION != $db_version ) ) {
 
             global $wpdb;
             
