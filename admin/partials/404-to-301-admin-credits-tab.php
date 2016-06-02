@@ -73,9 +73,9 @@ if( get_option( 'i4t3_agreement', 2 ) == 2 ) {
                         </div>
                         <div class="misc-pub-section">
                             <?php if( get_option( 'i4t3_agreement', 2 ) == 1 ) { ?>
-                            <a class="button-secondary" href="<?php echo I4T3_HELP_PAGE; ?>&i4t3_agreement=0" id="i4t3-hide-admin-notice">Disable UAN</a>
+                            <a class="button-secondary" href="<?php echo I4T3_HELP_PAGE; ?>&i4t3_agreement=0" id="i4t3-hide-admin-notice"><?php _e('Disable UAN', '404-to-301'); ?></a>
                             <?php } else { ?>
-                            <a class="button-primary" href="<?php echo I4T3_HELP_PAGE; ?>&i4t3_agreement=1" id="i4t3-accept-terms">Enable UAN</a>
+                            <a class="button-primary" href="<?php echo I4T3_HELP_PAGE; ?>&i4t3_agreement=1" id="i4t3-accept-terms"><?php _e('Enable UAN', '404-to-301'); ?></a>
                             <?php } ?>
                         </div>
                     </div>
@@ -84,9 +84,9 @@ if( get_option( 'i4t3_agreement', 2 ) == 2 ) {
                     <h3 class="hndle ui-sortable-handle"><span class="dashicons dashicons-admin-plugins"></span> <?php _e('Log Manager Addon', '404-to-301'); ?></h3>
                     <div class="inside">
                         <div class="misc-pub-section">
-                            <p><?php _e('Error Log Manager addon is available for 404 to 301 now. Make 404 error management more easy', '404-to-301'); ?>.</p>
-                            <p><span class="dashicons dashicons-backup"></span> <?php _e('Instead of email alerts on every error, get Hourly, Daily, Twice a day, Weekly, Twice a week email alerts', '404-to-301'); ?>.</p>
-                            <p><span class="dashicons dashicons-trash"></span> <?php _e('Automatically clear old error logs after few days to reduce db load', '404-to-301'); ?>.</p>
+                            <p><?php _e('Error Log Manager addon is available for 404 to 301 now. Make 404 error management more easy.', '404-to-301'); ?></p>
+                            <p><span class="dashicons dashicons-backup"></span> <?php _e('Instead of email alerts on every error, get Hourly, Daily, Twice a day, Weekly, Twice a week email alerts.', '404-to-301'); ?></p>
+                            <p><span class="dashicons dashicons-trash"></span> <?php _e('Automatically clear old error logs after few days to reduce db load.', '404-to-301'); ?></p>
                             <p><a class="i4t3-author-link" href="https://thefoxe.com/products/404-to-301-log-manager/" target="_blank"><span class="dashicons dashicons-external"></span> <?php _e('See More Details', '404-to-301'); ?></a></p>
                         </div>
                     </div>
