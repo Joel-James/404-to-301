@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 404 to 301\n"
-"POT-Creation-Date: 2016-06-02 00:28+0100\n"
+"POT-Creation-Date: 2016-06-02 14:02+0100\n"
 "PO-Revision-Date: 2016-03-22 23:53+0000\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,90 +19,90 @@ msgstr ""
 "Last-Translator: \n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: admin/class-404-to-301-admin.php:169 admin/class-404-to-301-admin.php:170
-#: admin/class-404-to-301-admin.php:260 admin/class-404-to-301-logs.php:64
+#: admin/class-404-to-301-admin.php:171 admin/class-404-to-301-admin.php:172
+#: admin/class-404-to-301-admin.php:262 admin/class-404-to-301-logs.php:64
 msgid "404 Error Logs"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:183
+#: admin/class-404-to-301-admin.php:185
 msgid "404 to 301 Settings"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:184
+#: admin/class-404-to-301-admin.php:186
 msgid "404 Settings"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:222
+#: admin/class-404-to-301-admin.php:224
 msgid "Error Logs"
 msgstr ""
 
 #. Plugin Name of the plugin/theme
-#: admin/class-404-to-301-admin.php:295
+#: admin/class-404-to-301-admin.php:297
 #: admin/partials/404-to-301-admin-credits-tab.php:52
 msgid "404 to 301"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:351
+#: admin/class-404-to-301-admin.php:353
 msgid "Thank you for choosing 404 to 301 to improve your website"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:353
+#: admin/class-404-to-301-admin.php:355
 #, php-format
 msgid "Kindly give this plugin a %srating%s"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:375
+#: admin/class-404-to-301-admin.php:377
 #: admin/partials/404-to-301-admin-display.php:27
 msgid "Settings"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:376
+#: admin/class-404-to-301-admin.php:378
 msgid "Logs"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:533
+#: admin/class-404-to-301-admin.php:535
 msgid "Settings Data"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:540
+#: admin/class-404-to-301-admin.php:542
 msgid "Basic Details"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:541
+#: admin/class-404-to-301-admin.php:543
 msgid "WordPress Version"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:542
+#: admin/class-404-to-301-admin.php:544
 msgid "PHP Version"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:543
+#: admin/class-404-to-301-admin.php:545
 msgid "Plugin Version"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:544
+#: admin/class-404-to-301-admin.php:546
 msgid "Home Page"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:548
+#: admin/class-404-to-301-admin.php:550
 msgid "Active Theme Details"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:549
+#: admin/class-404-to-301-admin.php:551
 #: admin/partials/404-to-301-admin-credits-tab.php:51
 msgid "Name"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:550
+#: admin/class-404-to-301-admin.php:552
 #: admin/partials/404-to-301-admin-credits-tab.php:55
 msgid "Version"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:551
+#: admin/class-404-to-301-admin.php:553
 msgid "Theme URI"
 msgstr ""
 
-#: admin/class-404-to-301-admin.php:556
+#: admin/class-404-to-301-admin.php:558
 msgid "Active Plugins"
 msgstr ""
 
@@ -119,7 +119,7 @@ msgid "Default"
 msgstr ""
 
 #: admin/class-404-to-301-logs.php:271
-msgid "Update"
+msgid "Customize"
 msgstr ""
 
 #: admin/class-404-to-301-logs.php:293
@@ -131,7 +131,7 @@ msgid "Delete"
 msgstr ""
 
 #: admin/class-404-to-301-logs.php:400
-msgid "When"
+msgid "Date"
 msgstr ""
 
 #: admin/class-404-to-301-logs.php:401 public/class-404-to-301-public.php:68
@@ -139,7 +139,7 @@ msgid "404 Path"
 msgstr ""
 
 #: admin/class-404-to-301-logs.php:402
-msgid "Came From"
+msgid "From"
 msgstr ""
 
 #: admin/class-404-to-301-logs.php:403 public/class-404-to-301-public.php:64
@@ -151,7 +151,9 @@ msgid "User Agent"
 msgstr ""
 
 #: admin/class-404-to-301-logs.php:405
-msgid "Custom Redirect"
+#: admin/partials/404-to-301-admin-general-tab.php:34
+#: admin/partials/404-to-301-admin-general-tab.php:35
+msgid "Redirect"
 msgstr ""
 
 #: admin/class-404-to-301-logs.php:448
@@ -221,6 +223,7 @@ msgstr ""
 msgid "All dates"
 msgstr ""
 
+#. translators: 1: month name, 2: 4-digit year
 #: admin/core/class-wp-list-table-4.4.php:602
 #: admin/core/class-wp-list-table-old.php:565
 #: admin/core/class-wp-list-table.php:602
@@ -356,6 +359,14 @@ msgstr ""
 msgid "Go to the last page"
 msgstr ""
 
+#: admin/partials/404-to-301-admin-agreement-tab.php:48
+msgid "I accept"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-agreement-tab.php:49
+msgid "I do not accept"
+msgstr ""
+
 #: admin/partials/404-to-301-admin-credits-tab.php:12
 msgid "About the plugin & developer"
 msgstr ""
@@ -431,6 +442,14 @@ msgstr ""
 msgid "Contact support"
 msgstr ""
 
+#: admin/partials/404-to-301-admin-credits-tab.php:76
+msgid "Disable UAN"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:78
+msgid "Enable UAN"
+msgstr ""
+
 #: admin/partials/404-to-301-admin-credits-tab.php:84
 msgid "Log Manager Addon"
 msgstr ""
@@ -438,17 +457,17 @@ msgstr ""
 #: admin/partials/404-to-301-admin-credits-tab.php:87
 msgid ""
 "Error Log Manager addon is available for 404 to 301 now. Make 404 error "
-"management more easy"
+"management more easy."
 msgstr ""
 
 #: admin/partials/404-to-301-admin-credits-tab.php:88
 msgid ""
 "Instead of email alerts on every error, get Hourly, Daily, Twice a day, "
-"Weekly, Twice a week email alerts"
+"Weekly, Twice a week email alerts."
 msgstr ""
 
 #: admin/partials/404-to-301-admin-credits-tab.php:89
-msgid "Automatically clear old error logs after few days to reduce db load"
+msgid "Automatically clear old error logs after few days to reduce db load."
 msgstr ""
 
 #: admin/partials/404-to-301-admin-credits-tab.php:90
@@ -529,11 +548,6 @@ msgstr ""
 
 #: admin/partials/404-to-301-admin-general-tab.php:33
 msgid "Redirect (SEO)"
-msgstr ""
-
-#: admin/partials/404-to-301-admin-general-tab.php:34
-#: admin/partials/404-to-301-admin-general-tab.php:35
-msgid "Redirect"
 msgstr ""
 
 #: admin/partials/404-to-301-admin-general-tab.php:37
