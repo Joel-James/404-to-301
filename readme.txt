@@ -4,7 +4,7 @@ Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
 Requires at least: 3.5
 Tested up to: 4.5.2
-Stable tag: 2.2.2
+Stable tag: 2.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,11 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 
 
 == Changelog ==
+
+= 2.2.3 (02/06/2016) =
+**Bug Fixes**
+
+- Fixed custom redirect issue.
 
 = 2.2.2 (01/06/2016) =
 **New Feature**
@@ -292,13 +297,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 
 == Upgrade Notice ==
 
-= 2.2.2 (01/06/2016) =
-**New Feature**
+= 2.2.3 (02/06/2016) =
+**Bug Fixes**
 
-- Now you can set **custom redirects** for reach error path.
-- Goto error logs list and set custom redirect.
-- Fixed issues with BuddyPress
-
-**Improvements**
-
-- Improved code.
+- Fixed custom redirect issue.

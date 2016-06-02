@@ -121,9 +121,11 @@ class _404_To_301_Admin {
     public function i4t3_upgrade_if_new() {
 
         if( ! get_option( 'i4t3_version_no' ) || ( get_option( 'i4t3_version_no' ) < I4T3_VERSION ) ) {
-            if( class_exists( '_404_To_301_Activator' ) ) {
-                _404_To_301_Activator::activate();
+            // call activator class once more
+            if( ! class_exists( '_404_To_301_Activator' ) ) {
+                include_once I4T3_PLUGIN_DIR . '/includes/class-404-to-301-activator.php';
             }
+            _404_To_301_Activator::activate();
             // update plugin version
             update_option('i4t3_version_no', I4T3_VERSION );
         }
