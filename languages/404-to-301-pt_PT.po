@@ -3,8 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 404 to 301\n"
-"POT-Creation-Date: 2016-06-02 01:38+0100\n"
-"PO-Revision-Date: 2016-06-02 01:38+0100\n"
+"POT-Creation-Date: 2016-06-02 14:12+0100\n"
+"PO-Revision-Date: 2016-06-02 14:12+0100\n"
 "Last-Translator: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language-Team: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language: pt_PT\n"
@@ -21,90 +21,90 @@ msgstr ""
 "X-Poedit-WPHeader: 404-to-301.php\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: admin/class-404-to-301-admin.php:169 admin/class-404-to-301-admin.php:170
-#: admin/class-404-to-301-admin.php:260 admin/class-404-to-301-logs.php:64
+#: admin/class-404-to-301-admin.php:171 admin/class-404-to-301-admin.php:172
+#: admin/class-404-to-301-admin.php:262 admin/class-404-to-301-logs.php:64
 msgid "404 Error Logs"
 msgstr "Registos de erros 404"
 
-#: admin/class-404-to-301-admin.php:183
+#: admin/class-404-to-301-admin.php:185
 msgid "404 to 301 Settings"
 msgstr "Definições de 404 to 301"
 
-#: admin/class-404-to-301-admin.php:184
+#: admin/class-404-to-301-admin.php:186
 msgid "404 Settings"
 msgstr "Definições de 404"
 
-#: admin/class-404-to-301-admin.php:222
+#: admin/class-404-to-301-admin.php:224
 msgid "Error Logs"
 msgstr "Registos de erros"
 
 #. Plugin Name of the plugin/theme
-#: admin/class-404-to-301-admin.php:295
+#: admin/class-404-to-301-admin.php:297
 #: admin/partials/404-to-301-admin-credits-tab.php:52
 msgid "404 to 301"
 msgstr "404 to 301"
 
-#: admin/class-404-to-301-admin.php:351
+#: admin/class-404-to-301-admin.php:353
 msgid "Thank you for choosing 404 to 301 to improve your website"
 msgstr "Obrigado por escolher o 404 to 301 para optimizar o seu site"
 
-#: admin/class-404-to-301-admin.php:353
+#: admin/class-404-to-301-admin.php:355
 #, php-format
 msgid "Kindly give this plugin a %srating%s"
 msgstr "Por favor, atribua a este plugin uma %sclassificação%s"
 
-#: admin/class-404-to-301-admin.php:375
+#: admin/class-404-to-301-admin.php:377
 #: admin/partials/404-to-301-admin-display.php:27
 msgid "Settings"
 msgstr "Definições"
 
-#: admin/class-404-to-301-admin.php:376
+#: admin/class-404-to-301-admin.php:378
 msgid "Logs"
 msgstr "Registos"
 
-#: admin/class-404-to-301-admin.php:533
+#: admin/class-404-to-301-admin.php:535
 msgid "Settings Data"
 msgstr "Dados das definições"
 
-#: admin/class-404-to-301-admin.php:540
+#: admin/class-404-to-301-admin.php:542
 msgid "Basic Details"
 msgstr "Detalhes básicos"
 
-#: admin/class-404-to-301-admin.php:541
+#: admin/class-404-to-301-admin.php:543
 msgid "WordPress Version"
 msgstr "Versão do WordPress"
 
-#: admin/class-404-to-301-admin.php:542
+#: admin/class-404-to-301-admin.php:544
 msgid "PHP Version"
 msgstr "Versão do PHP"
 
-#: admin/class-404-to-301-admin.php:543
+#: admin/class-404-to-301-admin.php:545
 msgid "Plugin Version"
 msgstr "Versão do plugin"
 
-#: admin/class-404-to-301-admin.php:544
+#: admin/class-404-to-301-admin.php:546
 msgid "Home Page"
 msgstr "Página inicial"
 
-#: admin/class-404-to-301-admin.php:548
+#: admin/class-404-to-301-admin.php:550
 msgid "Active Theme Details"
 msgstr "Detalhes do tema activo"
 
-#: admin/class-404-to-301-admin.php:549
+#: admin/class-404-to-301-admin.php:551
 #: admin/partials/404-to-301-admin-credits-tab.php:51
 msgid "Name"
 msgstr "Nome"
 
-#: admin/class-404-to-301-admin.php:550
+#: admin/class-404-to-301-admin.php:552
 #: admin/partials/404-to-301-admin-credits-tab.php:55
 msgid "Version"
 msgstr "Versão"
 
-#: admin/class-404-to-301-admin.php:551
+#: admin/class-404-to-301-admin.php:553
 msgid "Theme URI"
 msgstr "URI do tema"
 
-#: admin/class-404-to-301-admin.php:556
+#: admin/class-404-to-301-admin.php:558
 msgid "Active Plugins"
 msgstr "Plugins activos"
 
@@ -141,8 +141,8 @@ msgid "404 Path"
 msgstr "Caminho de 404"
 
 #: admin/class-404-to-301-logs.php:402
-msgid "Came From"
-msgstr "Origem"
+msgid "From"
+msgstr "De"
 
 #: admin/class-404-to-301-logs.php:403 public/class-404-to-301-public.php:64
 msgid "IP Address"
@@ -225,6 +225,7 @@ msgstr "Filtrar por data"
 msgid "All dates"
 msgstr "Todas as datas"
 
+#. translators: 1: month name, 2: 4-digit year
 #: admin/core/class-wp-list-table-4.4.php:602
 #: admin/core/class-wp-list-table-old.php:565
 #: admin/core/class-wp-list-table.php:602
@@ -707,30 +708,3 @@ msgstr "Joel James"
 #. Author URI of the plugin/theme
 msgid "https://thefoxe.com/"
 msgstr "https://thefoxe.com/"
-
-#~ msgid "Update"
-#~ msgstr "Actualizar"
-
-#~ msgid "When"
-#~ msgstr "Data"
-
-#~ msgid "Custom Redirect"
-#~ msgstr "Redireccionamento personalizado"
-
-#~ msgid ""
-#~ "Error Log Manager addon is available for 404 to 301 now. Make 404 error "
-#~ "management more easy"
-#~ msgstr ""
-#~ "O addon Log Manager está agora disponível para o 404 to 301. Torne a "
-#~ "gestão de erros 404 mais fácil."
-
-#~ msgid "Automatically clear old error logs after few days to reduce db load"
-#~ msgstr ""
-#~ "Limpeza automática de registos de erros antigos após alguns dias, para "
-#~ "reduzir o peso da base de dados.\n"
-#~ "\n"
-#~ "Em vez de emails de alerta por cada erro, receba emails de alerta a cada "
-#~ "hora, uma a duas vezes por dia, ou uma a duas vezes por semana.\n"
-#~ "\n"
-#~ "O addon Log Manager está agora disponível para o 404 to 301. Torne a "
-#~ "gestão de erros 404 mais fácil.\n"
