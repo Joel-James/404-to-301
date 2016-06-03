@@ -3,8 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 404 to 301\n"
-"POT-Creation-Date: 2016-06-02 14:12+0100\n"
-"PO-Revision-Date: 2016-06-02 14:45+0100\n"
+"POT-Creation-Date: 2016-06-03 18:46+0100\n"
+"PO-Revision-Date: 2016-06-03 18:46+0100\n"
 "Last-Translator: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language-Team: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language: pt_PT\n"
@@ -21,90 +21,94 @@ msgstr ""
 "X-Poedit-WPHeader: 404-to-301.php\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: admin/class-404-to-301-admin.php:171 admin/class-404-to-301-admin.php:172
-#: admin/class-404-to-301-admin.php:262 admin/class-404-to-301-logs.php:64
+#: admin/class-404-to-301-admin.php:112
+msgid "Custom Redirect"
+msgstr "Redireccionamento personalizado"
+
+#: admin/class-404-to-301-admin.php:179 admin/class-404-to-301-admin.php:180
+#: admin/class-404-to-301-admin.php:270 admin/class-404-to-301-logs.php:64
 msgid "404 Error Logs"
 msgstr "Registos de erros 404"
 
-#: admin/class-404-to-301-admin.php:185
+#: admin/class-404-to-301-admin.php:193
 msgid "404 to 301 Settings"
 msgstr "Definições de 404 to 301"
 
-#: admin/class-404-to-301-admin.php:186
+#: admin/class-404-to-301-admin.php:194
 msgid "404 Settings"
 msgstr "Definições de 404"
 
-#: admin/class-404-to-301-admin.php:224
+#: admin/class-404-to-301-admin.php:232
 msgid "Error Logs"
 msgstr "Registos de erros"
 
 #. Plugin Name of the plugin/theme
-#: admin/class-404-to-301-admin.php:297
+#: admin/class-404-to-301-admin.php:305
 #: admin/partials/404-to-301-admin-credits-tab.php:52
 msgid "404 to 301"
 msgstr "404 to 301"
 
-#: admin/class-404-to-301-admin.php:353
+#: admin/class-404-to-301-admin.php:361
 msgid "Thank you for choosing 404 to 301 to improve your website"
 msgstr "Obrigado por escolher o 404 to 301 para optimizar o seu site"
 
-#: admin/class-404-to-301-admin.php:355
+#: admin/class-404-to-301-admin.php:363
 #, php-format
 msgid "Kindly give this plugin a %srating%s"
 msgstr "Por favor, atribua a este plugin uma %sclassificação%s"
 
-#: admin/class-404-to-301-admin.php:377
+#: admin/class-404-to-301-admin.php:385
 #: admin/partials/404-to-301-admin-display.php:27
 msgid "Settings"
 msgstr "Definições"
 
-#: admin/class-404-to-301-admin.php:378
+#: admin/class-404-to-301-admin.php:386
 msgid "Logs"
 msgstr "Registos"
 
-#: admin/class-404-to-301-admin.php:535
+#: admin/class-404-to-301-admin.php:543
 msgid "Settings Data"
 msgstr "Dados das definições"
 
-#: admin/class-404-to-301-admin.php:542
+#: admin/class-404-to-301-admin.php:550
 msgid "Basic Details"
 msgstr "Detalhes básicos"
 
-#: admin/class-404-to-301-admin.php:543
+#: admin/class-404-to-301-admin.php:551
 msgid "WordPress Version"
 msgstr "Versão do WordPress"
 
-#: admin/class-404-to-301-admin.php:544
+#: admin/class-404-to-301-admin.php:552
 msgid "PHP Version"
 msgstr "Versão do PHP"
 
-#: admin/class-404-to-301-admin.php:545
+#: admin/class-404-to-301-admin.php:553
 msgid "Plugin Version"
 msgstr "Versão do plugin"
 
-#: admin/class-404-to-301-admin.php:546
+#: admin/class-404-to-301-admin.php:554
 msgid "Home Page"
 msgstr "Página inicial"
 
-#: admin/class-404-to-301-admin.php:550
+#: admin/class-404-to-301-admin.php:558
 msgid "Active Theme Details"
 msgstr "Detalhes do tema activo"
 
-#: admin/class-404-to-301-admin.php:551
+#: admin/class-404-to-301-admin.php:559
 #: admin/partials/404-to-301-admin-credits-tab.php:51
 msgid "Name"
 msgstr "Nome"
 
-#: admin/class-404-to-301-admin.php:552
+#: admin/class-404-to-301-admin.php:560
 #: admin/partials/404-to-301-admin-credits-tab.php:55
 msgid "Version"
 msgstr "Versão"
 
-#: admin/class-404-to-301-admin.php:553
+#: admin/class-404-to-301-admin.php:561
 msgid "Theme URI"
 msgstr "URI do tema"
 
-#: admin/class-404-to-301-admin.php:558
+#: admin/class-404-to-301-admin.php:566
 msgid "Active Plugins"
 msgstr "Plugins activos"
 
@@ -172,69 +176,56 @@ msgstr "Não disponível"
 
 #: admin/core/class-wp-list-table-4.4.php:162
 #: admin/core/class-wp-list-table-old.php:144
-#: admin/core/class-wp-list-table.php:162
 msgid "List View"
 msgstr "Vista de lista"
 
 #: admin/core/class-wp-list-table-4.4.php:163
 #: admin/core/class-wp-list-table-old.php:145
-#: admin/core/class-wp-list-table.php:163
 msgid "Excerpt View"
 msgstr "Vista de excerto"
 
 #: admin/core/class-wp-list-table-4.4.php:334
 #: admin/core/class-wp-list-table-old.php:312
-#: admin/core/class-wp-list-table.php:334
 msgid "No items found."
 msgstr "Nenhum item encontrado."
 
 #: admin/core/class-wp-list-table-4.4.php:462
 #: admin/core/class-wp-list-table-old.php:438
-#: admin/core/class-wp-list-table.php:462
 msgid "Select bulk action"
 msgstr "Seleccionar acção por lotes"
 
 #: admin/core/class-wp-list-table-4.4.php:464
 #: admin/core/class-wp-list-table-old.php:440
-#: admin/core/class-wp-list-table.php:464
 msgid "Bulk Actions"
 msgstr "Acções por lotes"
 
 #: admin/core/class-wp-list-table-4.4.php:474
 #: admin/core/class-wp-list-table-old.php:450
-#: admin/core/class-wp-list-table.php:474
 msgid "Apply"
 msgstr "Aplicar"
 
 #: admin/core/class-wp-list-table-4.4.php:524
 #: admin/core/class-wp-list-table-4.4.php:1324
-#: admin/core/class-wp-list-table.php:524
-#: admin/core/class-wp-list-table.php:1324
 msgid "Show more details"
 msgstr "Ver mais detalhes"
 
 #: admin/core/class-wp-list-table-4.4.php:587
 #: admin/core/class-wp-list-table-old.php:550
-#: admin/core/class-wp-list-table.php:587
 msgid "Filter by date"
 msgstr "Filtrar por data"
 
 #: admin/core/class-wp-list-table-4.4.php:589
 #: admin/core/class-wp-list-table-old.php:552
-#: admin/core/class-wp-list-table.php:589
 msgid "All dates"
 msgstr "Todas as datas"
 
-#. translators: 1: month name, 2: 4-digit year
 #: admin/core/class-wp-list-table-4.4.php:602
 #: admin/core/class-wp-list-table-old.php:565
-#: admin/core/class-wp-list-table.php:602
 #, php-format
 msgid "%1$s %2$d"
 msgstr "%1$s de %2$d"
 
 #: admin/core/class-wp-list-table-4.4.php:654
-#: admin/core/class-wp-list-table.php:654
 #, php-format
 msgid "%s comment"
 msgid_plural "%s comments"
@@ -242,7 +233,6 @@ msgstr[0] "%s comentário"
 msgstr[1] "%s comentários"
 
 #: admin/core/class-wp-list-table-4.4.php:655
-#: admin/core/class-wp-list-table.php:655
 #, php-format
 msgid "%s approved comment"
 msgid_plural "%s approved comments"
@@ -250,7 +240,6 @@ msgstr[0] "%s comentário aprovado"
 msgstr[1] "%s comentários aprovados"
 
 #: admin/core/class-wp-list-table-4.4.php:656
-#: admin/core/class-wp-list-table.php:656
 #, php-format
 msgid "%s pending comment"
 msgid_plural "%s pending comments"
@@ -260,26 +249,19 @@ msgstr[1] "%s comentários pendentes"
 #: admin/core/class-wp-list-table-4.4.php:661
 #: admin/core/class-wp-list-table-4.4.php:673
 #: admin/core/class-wp-list-table-4.4.php:686
-#: admin/core/class-wp-list-table.php:661
-#: admin/core/class-wp-list-table.php:673
-#: admin/core/class-wp-list-table.php:686
 msgid "No comments"
 msgstr "Sem comentários"
 
 #: admin/core/class-wp-list-table-4.4.php:673
-#: admin/core/class-wp-list-table.php:673
 msgid "No approved comments"
 msgstr "Sem comentários aprovados"
 
 #: admin/core/class-wp-list-table-4.4.php:686
-#: admin/core/class-wp-list-table.php:686
 msgid "No pending comments"
 msgstr "Não há comentários pendentes"
 
 #: admin/core/class-wp-list-table-4.4.php:763
 #: admin/core/class-wp-list-table-4.4.php:1349
-#: admin/core/class-wp-list-table.php:763
-#: admin/core/class-wp-list-table.php:1349
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
@@ -287,44 +269,36 @@ msgstr[0] "%s item"
 msgstr[1] "%s itens"
 
 #: admin/core/class-wp-list-table-4.4.php:798
-#: admin/core/class-wp-list-table.php:798
 msgid "First page"
 msgstr "Primeira página"
 
 #: admin/core/class-wp-list-table-4.4.php:808
-#: admin/core/class-wp-list-table.php:808
 msgid "Previous page"
 msgstr "Página anterior"
 
 #: admin/core/class-wp-list-table-4.4.php:815
 #: admin/core/class-wp-list-table-4.4.php:818
 #: admin/core/class-wp-list-table-old.php:727
-#: admin/core/class-wp-list-table.php:815
-#: admin/core/class-wp-list-table.php:818
 msgid "Current Page"
 msgstr "Página actual"
 
 #: admin/core/class-wp-list-table-4.4.php:824
 #: admin/core/class-wp-list-table-old.php:733
-#: admin/core/class-wp-list-table.php:824
 #, php-format
 msgctxt "paging"
 msgid "%1$s of %2$s"
 msgstr "%1$s de %2$s"
 
 #: admin/core/class-wp-list-table-4.4.php:831
-#: admin/core/class-wp-list-table.php:831
 msgid "Next page"
 msgstr "Página seguinte"
 
 #: admin/core/class-wp-list-table-4.4.php:841
-#: admin/core/class-wp-list-table.php:841
 msgid "Last page"
 msgstr "Última página"
 
 #: admin/core/class-wp-list-table-4.4.php:1069
 #: admin/core/class-wp-list-table-old.php:881
-#: admin/core/class-wp-list-table.php:1069
 msgid "Select All"
 msgstr "Seleccionar tudo"
 
