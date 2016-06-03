@@ -1,7 +1,7 @@
 <?php
 
 // If this file is called directly, abort.
-if (!defined('WPINC')) {
+if ( ! defined( 'WPINC' ) ) {
     die('Damn it.! Dude you are looking for what?');
 }
 
@@ -10,7 +10,7 @@ if (!defined('WPINC')) {
  * Details here - https://codex.wordpress.org/Class_Reference/WP_List_Table
  * So we have copied this class and using independently to avoid future issues. 
  */
-if (!class_exists('WP_List_Table_404')) {
+if ( ! class_exists('WP_List_Table_404') ) {
 
     global $wp_version;
     if( $wp_version >= 4.4 ) {
