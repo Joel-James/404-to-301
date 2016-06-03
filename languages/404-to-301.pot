@@ -1,0 +1,684 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 404 to 301\n"
+"POT-Creation-Date: 2016-06-02 14:02+0100\n"
+"PO-Revision-Date: 2016-03-22 23:53+0000\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
+"esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: 404-to-301.php\n"
+"Last-Translator: \n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: admin/class-404-to-301-admin.php:171 admin/class-404-to-301-admin.php:172
+#: admin/class-404-to-301-admin.php:262 admin/class-404-to-301-logs.php:64
+msgid "404 Error Logs"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:185
+msgid "404 to 301 Settings"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:186
+msgid "404 Settings"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:224
+msgid "Error Logs"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+#: admin/class-404-to-301-admin.php:297
+#: admin/partials/404-to-301-admin-credits-tab.php:52
+msgid "404 to 301"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:353
+msgid "Thank you for choosing 404 to 301 to improve your website"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:355
+#, php-format
+msgid "Kindly give this plugin a %srating%s"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:377
+#: admin/partials/404-to-301-admin-display.php:27
+msgid "Settings"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:378
+msgid "Logs"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:535
+msgid "Settings Data"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:542
+msgid "Basic Details"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:543
+msgid "WordPress Version"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:544
+msgid "PHP Version"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:545
+msgid "Plugin Version"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:546
+msgid "Home Page"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:550
+msgid "Active Theme Details"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:551
+#: admin/partials/404-to-301-admin-credits-tab.php:51
+msgid "Name"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:552
+#: admin/partials/404-to-301-admin-credits-tab.php:55
+msgid "Version"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:553
+msgid "Theme URI"
+msgstr ""
+
+#: admin/class-404-to-301-admin.php:558
+msgid "Active Plugins"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:63
+msgid "404 Error Log"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:203
+msgid "Ulta pulta..! Seems like you had no errors to log."
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:269
+msgid "Default"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:271
+msgid "Customize"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:293
+msgid "Are you sure you want to delete this item?"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:296
+msgid "Delete"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:400
+msgid "Date"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:401 public/class-404-to-301-public.php:68
+msgid "404 Path"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:402
+msgid "From"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:403 public/class-404-to-301-public.php:64
+msgid "IP Address"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:404 public/class-404-to-301-public.php:72
+msgid "User Agent"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:405
+#: admin/partials/404-to-301-admin-general-tab.php:34
+#: admin/partials/404-to-301-admin-general-tab.php:35
+msgid "Redirect"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:448
+msgid "Delete Selected"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:449
+msgid "Delete All"
+msgstr ""
+
+#: admin/class-404-to-301-logs.php:588
+msgid "N/A"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:162
+#: admin/core/class-wp-list-table-old.php:144
+#: admin/core/class-wp-list-table.php:162
+msgid "List View"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:163
+#: admin/core/class-wp-list-table-old.php:145
+#: admin/core/class-wp-list-table.php:163
+msgid "Excerpt View"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:334
+#: admin/core/class-wp-list-table-old.php:312
+#: admin/core/class-wp-list-table.php:334
+msgid "No items found."
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:462
+#: admin/core/class-wp-list-table-old.php:438
+#: admin/core/class-wp-list-table.php:462
+msgid "Select bulk action"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:464
+#: admin/core/class-wp-list-table-old.php:440
+#: admin/core/class-wp-list-table.php:464
+msgid "Bulk Actions"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:474
+#: admin/core/class-wp-list-table-old.php:450
+#: admin/core/class-wp-list-table.php:474
+msgid "Apply"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:524
+#: admin/core/class-wp-list-table-4.4.php:1324
+#: admin/core/class-wp-list-table.php:524
+#: admin/core/class-wp-list-table.php:1324
+msgid "Show more details"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:587
+#: admin/core/class-wp-list-table-old.php:550
+#: admin/core/class-wp-list-table.php:587
+msgid "Filter by date"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:589
+#: admin/core/class-wp-list-table-old.php:552
+#: admin/core/class-wp-list-table.php:589
+msgid "All dates"
+msgstr ""
+
+#. translators: 1: month name, 2: 4-digit year
+#: admin/core/class-wp-list-table-4.4.php:602
+#: admin/core/class-wp-list-table-old.php:565
+#: admin/core/class-wp-list-table.php:602
+#, php-format
+msgid "%1$s %2$d"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:654
+#: admin/core/class-wp-list-table.php:654
+#, php-format
+msgid "%s comment"
+msgid_plural "%s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/core/class-wp-list-table-4.4.php:655
+#: admin/core/class-wp-list-table.php:655
+#, php-format
+msgid "%s approved comment"
+msgid_plural "%s approved comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/core/class-wp-list-table-4.4.php:656
+#: admin/core/class-wp-list-table.php:656
+#, php-format
+msgid "%s pending comment"
+msgid_plural "%s pending comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/core/class-wp-list-table-4.4.php:661
+#: admin/core/class-wp-list-table-4.4.php:673
+#: admin/core/class-wp-list-table-4.4.php:686
+#: admin/core/class-wp-list-table.php:661
+#: admin/core/class-wp-list-table.php:673
+#: admin/core/class-wp-list-table.php:686
+msgid "No comments"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:673
+#: admin/core/class-wp-list-table.php:673
+msgid "No approved comments"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:686
+#: admin/core/class-wp-list-table.php:686
+msgid "No pending comments"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:763
+#: admin/core/class-wp-list-table-4.4.php:1349
+#: admin/core/class-wp-list-table.php:763
+#: admin/core/class-wp-list-table.php:1349
+#, php-format
+msgid "%s item"
+msgid_plural "%s items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/core/class-wp-list-table-4.4.php:798
+#: admin/core/class-wp-list-table.php:798
+msgid "First page"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:808
+#: admin/core/class-wp-list-table.php:808
+msgid "Previous page"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:815
+#: admin/core/class-wp-list-table-4.4.php:818
+#: admin/core/class-wp-list-table-old.php:727
+#: admin/core/class-wp-list-table.php:815
+#: admin/core/class-wp-list-table.php:818
+msgid "Current Page"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:824
+#: admin/core/class-wp-list-table-old.php:733
+#: admin/core/class-wp-list-table.php:824
+#, php-format
+msgctxt "paging"
+msgid "%1$s of %2$s"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:831
+#: admin/core/class-wp-list-table.php:831
+msgid "Next page"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:841
+#: admin/core/class-wp-list-table.php:841
+msgid "Last page"
+msgstr ""
+
+#: admin/core/class-wp-list-table-4.4.php:1069
+#: admin/core/class-wp-list-table-old.php:881
+#: admin/core/class-wp-list-table.php:1069
+msgid "Select All"
+msgstr ""
+
+#: admin/core/class-wp-list-table-old.php:612
+#, php-format
+msgid "%s pending"
+msgstr ""
+
+#: admin/core/class-wp-list-table-old.php:691
+#: admin/core/class-wp-list-table-old.php:1115
+#, php-format
+msgid "1 item"
+msgid_plural "%s items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/core/class-wp-list-table-old.php:710
+msgid "Go to the first page"
+msgstr ""
+
+#: admin/core/class-wp-list-table-old.php:717
+msgid "Go to the previous page"
+msgstr ""
+
+#: admin/core/class-wp-list-table-old.php:726
+msgid "Select Page"
+msgstr ""
+
+#: admin/core/class-wp-list-table-old.php:737
+msgid "Go to the next page"
+msgstr ""
+
+#: admin/core/class-wp-list-table-old.php:744
+msgid "Go to the last page"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-agreement-tab.php:48
+msgid "I accept"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-agreement-tab.php:49
+msgid "I do not accept"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:12
+msgid "About the plugin & developer"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:20
+#, php-format
+msgid "Yo %s!"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:20
+msgid "Thank you for using 404 to 301"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:22
+msgid "This plugin is brought to you by"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:22
+#: admin/partials/404-to-301-admin-credits-tab.php:59
+msgid "Visit author website"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:22
+msgid "a web store developed and managed by Joel James."
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:28
+msgid "So you installed this plugin and how is it doing? Feel free to"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:28
+msgid "Contact the developer"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:28
+msgid "get in touch with me"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:28
+msgid "anytime for help. I am always happy to help."
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:35
+msgid "Debugging Data"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:48
+msgid "Plugin Information"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:59
+msgid "Author"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:63
+#: admin/partials/404-to-301-admin-credits-tab.php:67
+msgid "Visit plugin website"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:63
+msgid "Plugin documentation"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:67
+msgid "More details about the plugin"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:71
+msgid "Need help?"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:72
+msgid "Contact support"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:76
+msgid "Disable UAN"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:78
+msgid "Enable UAN"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:84
+msgid "Log Manager Addon"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:87
+msgid ""
+"Error Log Manager addon is available for 404 to 301 now. Make 404 error "
+"management more easy."
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:88
+msgid ""
+"Instead of email alerts on every error, get Hourly, Daily, Twice a day, "
+"Weekly, Twice a week email alerts."
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:89
+msgid "Automatically clear old error logs after few days to reduce db load."
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:90
+msgid "See More Details"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:95
+msgid "Like the plugin"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:98
+msgid "Rate now"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:98
+msgid "Rate this on WordPress"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:101
+msgid "Donate now"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:101
+msgid "Make a small donation"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:104
+msgid "Contribute now"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:104
+msgid "Contribute to the Plugin"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:107
+msgid "Tweet now"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-credits-tab.php:107
+msgid "Tweet about the Plugin"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-custom-redirect.php:6
+msgid "Redirecting from"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-custom-redirect.php:10
+#: admin/partials/404-to-301-admin-general-tab.php:41
+msgid "Redirect to"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-custom-redirect.php:13
+msgid ""
+"Enter the url if you want to set custom redirect for above 404 path. Enter "
+"the full url including http://. Leave empty if you want to follow deafult "
+"settings"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-custom-redirect.php:23
+msgid "Save Redirect"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-display.php:30
+msgid "settings updated successfully"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-display.php:34
+msgid "General"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-display.php:35
+msgid "Help & Info"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:30
+msgid "Redirect type"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:33
+msgid "Redirect (SEO)"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:37
+msgid "Learn more"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:37
+msgid "about these redirect types"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:44
+#: admin/partials/404-to-301-admin-general-tab.php:48
+msgid "Existing Page"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:45
+#: admin/partials/404-to-301-admin-general-tab.php:49
+#: admin/partials/404-to-301-admin-general-tab.php:66
+msgid "Custom URL"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:46
+#: admin/partials/404-to-301-admin-general-tab.php:50
+msgid "No Redirect"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:48
+msgid "Select any WordPress page as a 404 page"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:49
+msgid "Redirect 404 requests to a specific URL"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:50
+msgid "To disable redirect"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:51
+msgid ""
+"You can override this by setting individual custom redirects from error logs "
+"list."
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:55
+msgid "Select the page"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:62
+msgid ""
+"The default 404 page will be replaced by the page you choose in this list"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:69
+msgid "Enter any url"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:69
+msgid "including"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:73
+msgid "Log 404 Errors"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:76
+msgid "Enable Error Logs"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:77
+msgid "Disable Error Logs"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:79
+msgid "Enable/Disable Logging"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:83
+msgid "Email notifications"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:90
+msgid ""
+"If you check this, an email will be sent on every 404 log on the admin email "
+"account"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:94
+msgid "Email address"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:98
+msgid "Change the recipient email address for error log notifications"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:102
+msgid "Exclude paths"
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:105
+msgid ""
+"If you want to exclude few paths from error logs, enter here. One per line."
+msgstr ""
+
+#: admin/partials/404-to-301-admin-general-tab.php:110
+msgid "Save All Changes"
+msgstr ""
+
+#: public/class-404-to-301-public.php:61
+msgid "Bummer! You have one more 404"
+msgstr ""
+
+#: public/class-404-to-301-public.php:77
+msgid "Snap! One more 404 on "
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://thefoxe.com/products/404-to-301/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Automatically redirect all <strong>404 errors</strong> to any page using "
+"<strong>301 redirect for SEO</strong>. You can <strong>redirect and log</"
+"strong> every 404 errors. No more 404 errors in Webmaster tool."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Joel James"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://thefoxe.com/"
+msgstr ""

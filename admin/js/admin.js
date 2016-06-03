@@ -47,7 +47,7 @@
 
             // since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
             $.post(ajaxurl, data, function(response) {
-                tb_show("Redirect","#TB_inline?width=700&height=300&inlineId=i4t3-redirect-modal");
+                tb_show(i4t3strings.redirect,"#TB_inline?width=700&height=300&inlineId=i4t3-redirect-modal");
                 $('#i4t3_redirect_404').val(response.url_404);
                 $('#i4t3_redirect_404_text').html(response.url_404);
                 $('#i4t3_redirect_url').val(response.url);

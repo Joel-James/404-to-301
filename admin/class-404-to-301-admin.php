@@ -104,6 +104,14 @@ class _404_To_301_Admin {
                 I4T3_VERSION,
                 false
             );
+            // Internationalization
+            wp_localize_script(
+                I4T3_NAME,
+                'i4t3strings',
+                array(
+                    'redirect' => esc_html__( 'Custom Redirect', I4T3_DOMAIN ),
+                )
+            );
         }
     }
 
