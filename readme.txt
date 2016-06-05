@@ -4,7 +4,7 @@ Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
 Requires at least: 3.5
 Tested up to: 4.5.2
-Stable tag: 2.2.4
+Stable tag: 2.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,11 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 
 
 == Changelog ==
+
+= 2.2.5 (05/06/2016) =
+**Bug Fixes**
+
+- Fixed issue - Front end was slow.
 
 = 2.2.4 (02/06/2016) =
 **Bug Fixes**
@@ -298,8 +303,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 
 == Upgrade Notice ==
 
-= 2.2.4 (02/06/2016) =
+= 2.2.5 (05/06/2016) =
 **Bug Fixes**
 
-- Fixed custom redirect issue.
-- Fixed issues when activating.
+- Fixed issue - Front end was slow.

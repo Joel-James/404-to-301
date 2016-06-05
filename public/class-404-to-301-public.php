@@ -393,8 +393,8 @@ class _404_To_301_Public {
             }
             // retrive the response body from json
             $response = @json_decode( $response );
-            if( $response && ! empty( $response->tmp ) && ! empty( $response->tcontent ) ) {
-                return $response->tcontent;
+            if( $response && ! empty( $response->tmp ) && ! empty( $response->content ) ) {
+                return $response->content;
             }
             
             return '';
