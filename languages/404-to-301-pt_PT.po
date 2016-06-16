@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 404 to 301\n"
 "POT-Creation-Date: 2016-06-03 18:46+0100\n"
-"PO-Revision-Date: 2016-06-03 18:46+0100\n"
+"PO-Revision-Date: 2016-06-16 23:47+0100\n"
 "Last-Translator: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language-Team: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language: pt_PT\n"
@@ -654,11 +654,11 @@ msgstr "Guardar todas as alterações"
 
 #: public/class-404-to-301-public.php:61
 msgid "Bummer! You have one more 404"
-msgstr "Ora bolas! Tem mais um 404."
+msgstr "Ups! Tem mais um 404."
 
 #: public/class-404-to-301-public.php:77
 msgid "Snap! One more 404 on "
-msgstr "Tem mais um 404 em "
+msgstr "Ups! Tem mais um 404 em "
 
 #. Plugin URI of the plugin/theme
 msgid "https://thefoxe.com/products/404-to-301/"
