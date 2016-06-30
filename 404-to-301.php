@@ -3,7 +3,7 @@
  * Plugin Name:     404 to 301
  * Plugin URI:      https://thefoxe.com/products/404-to-301/
  * Description:     Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
- * Version:         2.2.5
+ * Version:         2.2.6
  * Author:          Joel James
  * Author URI:      https://thefoxe.com/
  * Donate link:     https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
@@ -49,7 +49,7 @@ if ( ! class_exists( '_404_To_301' ) ) {
         'I4T3_HELP_PAGE' => admin_url( 'admin.php?page=i4t3-settings&tab=credits' ),
         'I4T3_LOGS_PAGE' => admin_url( 'admin.php?page=i4t3-logs' ),
         'I4T3_DB_VERSION' => '8',
-        'I4T3_VERSION' => '2.2.5',
+        'I4T3_VERSION' => '2.2.6',
         'I4T3_TABLE' => $GLOBALS['wpdb']->prefix . '404_to_301',
         // Set who all can access 404 settings.
         // You can change this if you want to give others access.

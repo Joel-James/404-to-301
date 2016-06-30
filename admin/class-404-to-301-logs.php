@@ -83,7 +83,7 @@ class _404_To_301_Logs extends WP_List_Table_404 {
      * 
      * @return array $error_data Array of error log data.
      */
-    public static function i4t3_get_log_data($per_page = 5, $page_number = 1) {
+    public static function i4t3_get_log_data($per_page = 20, $page_number = 1) {
 
         global $wpdb;
 
