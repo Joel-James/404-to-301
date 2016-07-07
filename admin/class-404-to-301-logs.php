@@ -336,7 +336,7 @@ class _404_To_301_Logs extends WP_List_Table_404 {
     public function column_ref( $item ) {
 
         // Apply filter - i4t3_log_list_ref_column
-        $ref_data = apply_filters( 'i4t3_log_list_ref_column', $this->get_empty_text('<a href="' . $item['ref'] . '">' . $item['ref'] . '</a>', $item['ref'] ) );
+        $ref_data = apply_filters( 'i4t3_log_list_ref_column', $this->get_empty_text('<a href="' . $item['ref'] . '" target="_blank">' . $item['ref'] . '</a>', $item['ref'] ) );
 
         return $ref_data;
     }
