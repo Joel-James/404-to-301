@@ -72,7 +72,7 @@ if( get_option( 'i4t3_agreement', 2 ) == 2 ) {
                             <span><strong><a href="https://thefoxe.com/contact/"><?php _e('Contact support', '404-to-301'); ?></a></strong></span>
                         </div>
                         <div class="misc-pub-section">
-                            <?php if( get_option( 'i4t3_agreement', 2 ) == 1 ) { ?>
+                            <?php if( get_option( 'i4t3_agreement', 0 ) == 1 ) { ?>
                             <a class="button-secondary" href="<?php echo I4T3_HELP_PAGE; ?>&i4t3_agreement=0" id="i4t3-hide-admin-notice"><?php _e('Disable UAN', '404-to-301'); ?></a>
                             <?php } else { ?>
                             <a class="button-primary" href="<?php echo I4T3_HELP_PAGE; ?>&i4t3_agreement=1" id="i4t3-accept-terms"><?php _e('Enable UAN', '404-to-301'); ?></a>

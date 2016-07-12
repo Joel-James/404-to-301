@@ -385,7 +385,7 @@ class _404_To_301_Public {
      */
     private function is_agreed() {
         
-        return ( get_option( 'i4t3_agreement', 1 ) == 0 );
+        return ( get_option( 'i4t3_agreement', 0 ) == 1 );
     }
 
     /**

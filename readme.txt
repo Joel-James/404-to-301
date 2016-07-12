@@ -4,7 +4,7 @@ Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
 Requires at least: 3.5
 Tested up to: 4.5.3
-Stable tag: 2.2.7
+Stable tag: 2.2.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,11 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 
 
 == Changelog ==
+
+= 2.2.8 (12/07/2016) =
+**Bug Fixes**
+
+- Fixed a minor bug on TOC button.
 
 = 2.2.7 (07/07/2016) =
 **Bug Fixes**
@@ -323,13 +328,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 
 == Upgrade Notice ==
 
-= 2.2.7 (07/07/2016) =
+= 2.2.8 (12/07/2016) =
 **Bug Fixes**
 
-- Fixed issue with PHP 5.4 - Empty error log data.
-
-**Improvements**
-
-- Improved condition checking.
-- Speed improvements.
-- Made error log link to new tab.
+- Fixed a minor bug on TOC button.
