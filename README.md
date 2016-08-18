@@ -12,11 +12,11 @@ Automatically redirect all 404 errors to any page using 301 redirect to boost yo
 <h4>Important Links and Documentation</h4>
 
 <ul>
-<li><a href="https://iscode.co/products/404-to-301/"><strong>Plugin Website</strong></a></li>
+<li><a href="https://thefoxe.com/products/404-to-301/"><strong>Plugin Website</strong></a></li>
 <li><a href="https://wordpress.org/plugins/404-to-301/"><strong>WordPress Page</strong></a></li>
 <li><a href="https://wordpress.org/support/plugin/404-to-301/"><strong>Plugin Support Forum</strong></a></li>
-<li><a href="https://iscode.co/support/"><strong>Plugin Direct Support</strong></a></li>
-<li><a href="https://iscode.co/docs/category/404-to-301/"><strong>Documentation</strong></a></li>
+<li><a href="https://thefoxe.com/contact/"><strong>Plugin Direct Support</strong></a></li>
+<li><a href="https://thefoxe.com/docs/docs/category/404-to-301/"><strong>Documentation</strong></a></li>
 </ul>
 
 

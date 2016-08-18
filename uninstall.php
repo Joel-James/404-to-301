@@ -1,36 +1,38 @@
 <?php
 
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+    die('Damn it.! Dude you are looking for what?');
+}
+
 /**
- * Fired only when the 404 to 301 is un-installed.
+ * Fired during plugin activation.
  *
- * Removes everything that 404 to 301 added to your db.
+ * This class defines all code necessary to run during the plugin's activation.
  *
- *
- * @link		http://iscode.co/products/404-to-301/
- * @since		2.0.0
- * @author		Joel James
- * @package		I4T3
+ * @category   Core
+ * @package    I4T3
+ * @subpackage Uninstaller
+ * @author     Joel James <me@joelsays.com>
+ * @license    http://www.gnu.org/licenses/ GNU General Public License
+ * @link       https://thefoxe.com/products/404-to-301
  */
 
-// If uninstall not called from WordPress, then exit. That's it!
-
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	exit;
+// Deletes plugin options
+$options = array(
+    'i4t3_gnrl_options',
+    'i4t3_db_version',
+    'i4t3_version_no',
+    'i4t3_agreement'
+);
+foreach ( $options as $option ) {
+    if ( get_option( $option ) ) {
+        delete_option( $option );
+    }
 }
 
-// Delete plugin options
-if( get_option( 'i4t3_gnrl_options' ) ) {
-	delete_option( 'i4t3_gnrl_options' );
-}
-if( get_option( 'i4t3_db_version' ) ) {
-	delete_option( 'i4t3_db_version' );
-}
-if( get_option( 'i4t3_version_no' ) ) {
-	delete_option( 'i4t3_version_no' );
-}
-
-// Drop tables
 global $wpdb;
+
+// drop our custom table
 $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "404_to_301" );
 
 /******* The end. Thanks for using 404 to 301 plugin ********/
