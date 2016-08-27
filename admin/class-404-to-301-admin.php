@@ -469,7 +469,7 @@ class _404_To_301_Admin {
         }
         // get the required values from request
         $url_404 = $_POST['url_404'];
-        $url = $_POST['url'];
+        $url = esc_url( $_POST['url'] );
         
         global $wpdb;
         // make sure that the errors are hidden

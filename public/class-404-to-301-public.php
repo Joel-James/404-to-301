@@ -186,7 +186,7 @@ class _404_To_301_Public {
         
         $link = ( ! preg_match("~^(?:f|ht)tps?://~i", $link ) ) ? "http://" . $link : $link;
         
-        return $link;
+        return trailingslashit( $link );
     }
     
     /**
@@ -263,7 +263,11 @@ class _404_To_301_Public {
         $data['ip'] = $this->get_ip();
         foreach ( $server as $key => $value ) {
             if ( ! empty( $_SERVER[ $value ] ) ) {
-                $string = $_SERVER[ $value ];
+                if ($key === 'url') {
+                    $string = trailingslashit( $_SERVER[ $value ] );
+                } else {
+                    $string = $_SERVER[ $value ];
+                }
             } else {
                 $string = '';
             }
@@ -370,7 +374,9 @@ class _404_To_301_Public {
      */
     private function get_clear_empty($data = null) {
 
-        return ( $data == null || empty($data) ) ? 'N/A' : substr( $data, 0, 512 );
+        $data = ( $data == null || empty($data) ) ? 'N/A' : substr( $data, 0, 512 );
+        
+        return htmlspecialchars( $data );
     }
 
 }

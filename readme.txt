@@ -4,7 +4,7 @@ Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
 Requires at least: 3.5
 Tested up to: 4.6
-Stable tag: 2.3.0
+Stable tag: 2.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,17 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 
 
 == Changelog ==
+
+= 2.3.1 (27/08/2016) =
+**Bug Fixes**
+
+- Fixed Cross Site Scripting vulnerability - Thanks to [Summer of Pwnage](https://www.sumofpwn.nl/) & Louis Dion-Marcil.
+- Fixed sorting issue in error log (Changed default order to Date Descending order).
+- Fixed issues when trailing slash found at the end of custom redirect.
+
+**Improvements**
+
+- Tested with WordPress 4.6.
 
 = 2.3.0 (17/08/2016) =
 **Bug Fixes**
@@ -341,8 +352,13 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 
 == Upgrade Notice ==
 
- 2.3.0 (17/08/2016) =
+ = 2.3.1 (27/08/2016) =
 **Bug Fixes**
 
-- Removed unused UAN button from help page.
-- Tracking completely removed from the plugin since it was detected as spam. Read more [here](https://thefoxe.com/blog/404-to-301-plugin-detected-by-wordfence-here-is-what-actually-happened/).
+- Fixed Cross Site Scripting vulnerability - Thanks to [Summer of Pwnage](https://www.sumofpwn.nl/) & Louis Dion-Marcil.
+- Fixed sorting issue in error log (Changed default order to Date Descending order).
+- Fixed issues when trailing slash found at the end of custom redirect.
+
+**Improvements**
+
+- Tested with WordPress 4.6.

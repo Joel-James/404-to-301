@@ -93,7 +93,7 @@ class _404_To_301_Logs extends WP_List_Table_404 {
         $orderby = ( isset( $_REQUEST['orderby']) ) ? self::i4t3_get_sort_column_filtered( $_REQUEST['orderby']) : 'date';
 
         // If no order, default to asc
-        $order = ( isset( $_REQUEST['order']) && 'desc' == $_REQUEST['order'] ) ? 'DESC' : 'ASC';
+        $order = ( isset( $_REQUEST['order']) && 'asc' == $_REQUEST['order'] ) ? 'ASC' : 'DESC';
 
         $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . self::$table . " ORDER BY $orderby $order LIMIT %d OFFSET %d", array( $per_page, $offset ) ), 'ARRAY_A' );
 
@@ -268,7 +268,7 @@ class _404_To_301_Logs extends WP_List_Table_404 {
 
         $title = ( ! empty( $item['redirect'] ) ) ? $item['redirect'] : __( 'Default', '404-to-301' );
         
-        return '<a href="javascript:void(0)" title="' .  __('Customize', '404-to-301') . '" class="i4t3_redirect_thickbox" url_404="' . $item['url'] . '">' . $title . '</a>';
+        return '<a href="javascript:void(0)" title="' .  __('Customize', '404-to-301') . '" class="i4t3_redirect_thickbox" url_404="' . esc_url( $item['url'] ) . '">' . $title . '</a>';
     }
 
     /**
@@ -313,9 +313,11 @@ class _404_To_301_Logs extends WP_List_Table_404 {
      * @return string $url_data Url column text data.
      */
     public function column_url( $item ) {
+        
+        $url = sanitize_text_field( $item['url'] );
 
         // Apply filter - i4t3_log_list_url_column
-        $url_data = apply_filters( 'i4t3_log_list_url_column', $this->get_empty_text('<p class="i4t3-url-p">' . $item['url'] . '</p>', $item['url']));
+        $url_data = apply_filters( 'i4t3_log_list_url_column', $this->get_empty_text('<p class="i4t3-url-p">' . $url . '</p>', $url));
 
         return $url_data;
     }
@@ -334,9 +336,11 @@ class _404_To_301_Logs extends WP_List_Table_404 {
      * @return string $ref_data Ref column text data.
      */
     public function column_ref( $item ) {
+        
+        $ref = sanitize_text_field( $item['ref'] );
 
         // Apply filter - i4t3_log_list_ref_column
-        $ref_data = apply_filters( 'i4t3_log_list_ref_column', $this->get_empty_text('<a href="' . $item['ref'] . '" target="_blank">' . $item['ref'] . '</a>', $item['ref'] ) );
+        $ref_data = apply_filters( 'i4t3_log_list_ref_column', $this->get_empty_text('<a href="' . $ref . '" target="_blank">' . $ref . '</a>', $ref ) );
 
         return $ref_data;
     }
@@ -356,8 +360,10 @@ class _404_To_301_Logs extends WP_List_Table_404 {
      */
     public function column_ua($item) {
 
+        $ua = sanitize_text_field( $item['ua'] );
+        
         // Apply filter - i4t3_log_list_ref_column
-        $ua_data = apply_filters( 'i4t3_log_list_ua_column', $this->get_empty_text( $item['ua'], $item['ua'] ) );
+        $ua_data = apply_filters( 'i4t3_log_list_ua_column', $this->get_empty_text( $ua, $ua ) );
 
         return $ua_data;
     }
@@ -377,8 +383,10 @@ class _404_To_301_Logs extends WP_List_Table_404 {
      */
     public function column_ip( $item ) {
 
+        $ip = sanitize_text_field( $item['ip'] );
+                
         // Apply filter - i4t3_log_list_ref_column
-        $ip = apply_filters( 'i4t3_log_list_ip_column', $this->get_empty_text( $item['ip'], $item['ip'] ) );
+        $ip = apply_filters( 'i4t3_log_list_ip_column', $this->get_empty_text( $ip, $ip ) );
 
         return $ip;
     }
