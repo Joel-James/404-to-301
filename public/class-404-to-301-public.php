@@ -210,7 +210,7 @@ class _404_To_301_Public {
             return false;
         }
         
-        $uri = $server['REQUEST_URI'];
+        $uri = trailingslashit( $server['REQUEST_URI'] );
         
         global $wpdb;
         // make sure that the errors are hidden
@@ -252,28 +252,17 @@ class _404_To_301_Public {
      * @return array $data
      */
     private function get_error_data() {
-        
-        $server = array(
-            'url' => 'REQUEST_URI',
-            'ref' => 'HTTP_REFERER',
-            'ua' => 'HTTP_USER_AGENT',
-        );
+
+        // Get request data.
+        $url = empty( $_SERVER['REQUEST_URI'] ) ? '' : trailingslashit( esc_url( $_SERVER['REQUEST_URI'] ) );
+        $ref = empty( $_SERVER['HTTP_REFERER'] ) ? '' : esc_url( $_SERVER['HTTP_REFERER'] );
+        $ua = empty( $_SERVER['HTTP_USER_AGENT'] ) ? '' : $_SERVER['HTTP_USER_AGENT'];
         
         $data['date'] = current_time('mysql');
         $data['ip'] = $this->get_ip();
-        foreach ( $server as $key => $value ) {
-            if ( ! empty( $_SERVER[ $value ] ) ) {
-                if ($key === 'url') {
-                    $string = trailingslashit( $_SERVER[ $value ] );
-                } else {
-                    $string = $_SERVER[ $value ];
-                }
-            } else {
-                $string = '';
-            }
-
-            $data[ $key ] = $this->get_clear_empty( $string );
-        }
+        $data['url'] = $this->get_clear_empty( $url );
+        $data['ref'] = $this->get_clear_empty( $ref );
+        $data['ua'] = $this->get_clear_empty( $ua );
         
         return $data;
     }
