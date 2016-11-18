@@ -1,33 +1,33 @@
 <?php
 
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-    die('Damn it.! Dude you are looking for what?');
-}
+// If this file is called directly, abort.
+defined( 'ABSPATH' ) or exit;
 
 /**
- * Fired during plugin activation.
+ * Fired during plugin uninstall.
  *
- * This class defines all code necessary to run during the plugin's activation.
+ * Remove all our settings, and custom database tables of user removes
+ * our plugin.
  *
  * @category   Core
- * @package    I4T3
+ * @package    JJ4T3
  * @subpackage Uninstaller
- * @author     Joel James <me@joelsays.com>
+ * @author     Joel James <mail@cjoel.com>
  * @license    http://www.gnu.org/licenses/ GNU General Public License
- * @link       https://thefoxe.com/products/404-to-301
+ * @link       https://duckdev.com/products/404-to-301/
  */
 
-// Deletes plugin options
+// Plugin option names.
 $options = array(
-    'i4t3_gnrl_options',
-    'i4t3_db_version',
-    'i4t3_version_no',
-    'i4t3_agreement'
+	'i4t3_gnrl_options',
+	'i4t3_activated_time',
+	'i4t3_db_version',
+	'i4t3_version_no',
 );
+
+// Delete all options.
 foreach ( $options as $option ) {
-    if ( get_option( $option ) ) {
-        delete_option( $option );
-    }
+	delete_option( $option );
 }
 
 global $wpdb;

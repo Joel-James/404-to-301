@@ -1,10 +1,10 @@
 === 404 to 301 ===
-Contributors: joelcj91,foxe
+Contributors: joelcj91,duckdev
 Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo redirect, error redirect, 404 seo, custom 404 page
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
+Donate link: https://www.paypal.me/JoelCJ
 Requires at least: 3.5
-Tested up to: 4.6
-Stable tag: 2.3.3
+Tested up to: 4.7
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,7 +26,7 @@ If you care about your website, you should take steps to avoid 404 errors as it 
 > - **Automatically clear** old error logs based on time period.<br />
 > - Get email alerts to multiple email recipients.<br />
 >
-> [Get this add-on now](https://thefoxe.com/products/404-to-301-log-manager/) | [See Docs](https://thefoxe.com/docs/docs/category/404-to-301/log-manager/)
+> [Get this add-on now](https://duckdev.com/products/404-to-301-log-manager/) | [See Docs](https://duckdev.com/support/docs/category/404-to-301/)
 
 404 to 301 is a simple but amazing plugin which handles all 404 errors for you. It will redirect all 404 errors to any page that you set, using 301 (or any other) status. That means no more 404 errors! Even in Google webmaster tool you are safe!
 You will not see any 404 error reports in your webmaster tool dashboard.
@@ -50,18 +50,18 @@ You will not see any 404 error reports in your webmaster tool dashboard.
 > - Follows best WordPress coding standards.<br />
 > - Of course, available in [GitHub](https://github.com/joel-james/404-to-301)<br />
 >
-> [Installation](https://wordpress.org/plugins/404-to-301/installation/) | [Docs](https://thefoxe.com/docs/docs/category/404-to-301/) | [Screenshots](https://wordpress.org/plugins/404-to-301/screenshots/)
+> [Installation](https://wordpress.org/plugins/404-to-301/installation/) | [Docs](https://duckdev.com/support/docs/category/404-to-301/) | [Screenshots](https://wordpress.org/plugins/404-to-301/screenshots/)
 
 
 **Bug Reports**
 
-Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com/bug-report/).
+Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com/support/).
 
 **More information**
 
-- [404 to 301 - Plugin Homepage](https://thefoxe.com/products/404-to-301), containing more details and docs.
+- [404 to 301 - Plugin Homepage](https://duckdev.com/products/404-to-301), containing more details and docs.
 - Follow the developer [@Twitter](https://twitter.com/Joel_James)
-- Other [WordPress plugins](https://profiles.wordpress.org/joelcj91/#content-plugins) by Joel James for [The Foxe](https://thefoxe.com)
+- Other [WordPress plugins](https://profiles.wordpress.org/joelcj91/#content-plugins) by Joel James for [Duck Dev](https://duckdev.com)
 
 **404 Errors and Redirect - More Details**
 
@@ -80,10 +80,10 @@ If you are confused with these terms 404,301, redirect etc, [refer this page](ht
 
 
 = Need more help? =
-Please take a look at the [plugin documentation](https://thefoxe.com/docs/docs/category/404-to-301/) or [open a support request](http://wordpress.org/support/plugin/404-to-301/).
+Please take a look at the [plugin documentation](https://duckdev.com/support/docs/category/404-to-301/) or [open a support request](http://wordpress.org/support/plugin/404-to-301/).
 
 = Missing something? =
-If you would like to have an additional feature for this plugin, [let me know](http://thefoxe.com/support/)
+If you would like to have an additional feature for this plugin, [let me know](https://duckdev.com/support/)
 
 == Frequently Asked Questions ==
 
@@ -109,14 +109,14 @@ Yes. You can set that from error logs table.
 
 = I need more details =
 
-Please take a look at the [plugin documentation](https://thefoxe.com/docs/docs/category/404-to-301/) or [open a support request](http://wordpress.org/support/plugin/404-to-301/).
+Please take a look at the [plugin documentation](https://duckdev.com/support/docs/category/404-to-301/) or [open a support request](http://wordpress.org/support/plugin/404-to-301/).
 
 
 == Other Notes ==
 
 = Bug Reports =
 
-Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com/bug-report/).
+Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com/support/).
 
 
 == Screenshots ==
@@ -127,6 +127,20 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 
 
 == Changelog ==
+
+= 3.0.0 (21/11/2016) =
+**New Features**
+
+- Individual optional settings for each error log item (Individual redirec, log, email alert can be set).
+- Clear error logs without removing custom redirects.
+- Added error logs grouping with count.
+- [WPML compatible](https://wpml.org/plugin/404-to-301/).
+
+**Improvements**
+
+- Complete code revamp. More improved structure.
+- Set custom options from previous logs if same item exists.
+- Made 3rd party integration easier.
 
 = 2.3.3 (31/08/2016) =
 **Bug Fixes**
@@ -150,7 +164,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 
 - Removed unused UAN button from help page.
 - Completely safe to use.
-- Tracking completely removed from the plugin since it was detected as spam. Read more [here](https://thefoxe.com/blog/404-to-301-plugin-detected-by-wordfence-here-is-what-actually-happened/).
+- Tracking completely removed from the plugin since it was detected as spam. Read more [here](https://duckdev.com/blog/404-to-301-plugin-detected-by-wordfence-here-is-what-actually-happened/).
 
 = 2.2.9 (16/08/2016) =
 **Bug Fixes**
@@ -208,7 +222,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 = 2.1.7 (20/04/2016) =
 **New Add-on**
 
-- New [Log Manager](https://thefoxe.com/products/404-to-301-log-manager/) add-on available now.
+- New [Log Manager](https://duckdev.com/products/404-to-301-log-manager/) add-on available now.
 - Get periodic email alerts instead of instant email alerts for every errors (add-on).
 - Automatically clear error logs (add-on).
 
@@ -264,7 +278,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 = 2.0.8 (28/10/2015) =
 **New Feature**
 
-- New option to exclude paths from error logs and redirect - [See details](https://thefoxe.com/docs/items/excluding-paths-from-error-logs-and-redirects/).
+- New option to exclude paths from error logs and redirect.
 
 **Bug Fixes**
 
@@ -358,8 +372,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://thefoxe.com
 
 == Upgrade Notice ==
 
-= 2.3.3 (31/08/2016) =
+= 3.0.0 (21/11/2016) =
 **Bug Fixes**
 
-- Using esc_url() for Ref and Url fields.
-- Fixed Cross Site Scripting vulnerability in "From" column - Thanks to [Plugin Vulnerabilities](https://www.pluginvulnerabilities.com/).
+- New features and improvements.

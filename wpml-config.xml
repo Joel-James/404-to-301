@@ -1,0 +1,7 @@
+<wpml-config>
+  <admin-texts>
+    <key name="i4t3_gnrl_options">
+      <key name="redirect_link"/>
+    </key>
+  </admin-texts>
+</wpml-config>

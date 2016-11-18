@@ -1,14 +1,14 @@
 <?php
 /**
  * Plugin Name:     404 to 301
- * Plugin URI:      https://thefoxe.com/products/404-to-301/
+ * Plugin URI:      https://duckdev.com/products/404-to-301/
  * Description:     Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
- * Version:         2.3.3
+ * Version:         3.0.0
  * Author:          Joel James
- * Author URI:      https://thefoxe.com/
- * Donate link:     https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XUVWY8HUBUXY4
+ * Author URI:      https://duckdev.com/
+ * Donate link:     https://paypal.me/JoelCJ
  * License:         GPL-2.0+
- * License URI:     http://www.gnu.org/licenses/gpl-2.0.txt
+ * License URI:     http://www.gnu.org/licenses/gpl-3.0.txt
  * Text Domain:     404-to-301
  * Domain Path:     /languages
  *
@@ -24,89 +24,82 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with 404 to 301. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @category Core
- * @package  I4T3
- * @author   Joel James <me@joelsays.com>
+ * @package  JJ4T33
+ * @author   Joel James <mail@cjoel.com>
  * @license  http://www.gnu.org/licenses/ GNU General Public License
- * @link     https://thefoxe.com/products/404-to-301
+ * @link     https://duckdev.com/products/404-to-301/
  */
+
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-    die( 'Damn it.! Dude you are looking for what?' );
-}
+defined( 'ABSPATH' ) or exit;
 
-if ( ! class_exists( '_404_To_301' ) ) {
-    
-    // Constants array
-    $constants = array(
-        'I4T3_NAME' => '404-to-301',
-        'I4T3_DOMAIN' => '404-to-301',
-        'I4T3_PATH' => plugins_url( '/404-to-301/' ),
-        'I4T3_PLUGIN_DIR' => dirname(__FILE__),
-        'I4T3_BASE' => __FILE__,
-        'I4T3_SETTINGS_PAGE' => admin_url( 'admin.php?page=i4t3-settings' ),
-        'I4T3_HELP_PAGE' => admin_url( 'admin.php?page=i4t3-settings&tab=credits' ),
-        'I4T3_LOGS_PAGE' => admin_url( 'admin.php?page=i4t3-logs' ),
-        'I4T3_DB_VERSION' => '8',
-        'I4T3_VERSION' => '2.3.3',
-        'I4T3_TABLE' => $GLOBALS['wpdb']->prefix . '404_to_301',
-        // Set who all can access 404 settings.
-        // You can change this if you want to give others access.
-        'I4T3_ADMIN_PERMISSION' => 'manage_options'
-    );
+// Stay lazy if our class is already there.
+if ( ! class_exists( 'JJ_404_to_301' ) ) :
 
-    foreach ($constants as $constant => $value) {
-        // Define constants if not defined already
-        if ( ! defined( $constant ) ) {
-            define( $constant, $value );
-        }
-    }
+	/**
+	 * File that contains main plugin class.
+	 */
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-jj-404-to-301.php';
 
-    /**
-     * The function that runs during plugin activation.
-     * 
-     * @since  2.0.0
-     * @access public
-     * 
-     * @return void
-     */
-    function activate_i4t3() {
-        
-        include_once I4T3_PLUGIN_DIR . '/includes/class-404-to-301-activator.php';
-        
-        _404_To_301_Activator::activate();
-    }
-    
-    // plugin activation hook
-    register_activation_hook(__FILE__, 'activate_i4t3');
+	/**
+	 * Setup plugin constants.
+	 *
+	 * We need a few constants in our plugin.
+	 * These values should be constant and con't
+	 * be altered later.
+	 *
+	 * @since  2.0.0
+	 * @access private
+	 *
+	 * @return void
+	 */
+	function jj4t3_set_constants() {
 
-    /**
-     * The core plugin class that is used to define
-     * dashboard-specific hooks, and public-facing site hooks.
-     */
-    require_once plugin_dir_path(__FILE__) . 'includes/class-404-to-301.php';
+		$constants = array(
+			'JJ4T3_NAME' => '404-to-301',
+			'JJ4T3_DOMAIN' => '404-to-301',
+			'JJ4T3_DIR' => plugin_dir_path( __FILE__ ),
+			'JJ4T3_URL' => plugin_dir_url( __FILE__ ),
+			'JJ4T3_BASE_FILE' => __FILE__,
+			'JJ4T3_VERSION' => '3.0.0',
+			'JJ4T3_DB_VERSION' => '11.0',
+			'JJ4T3_TABLE' => $GLOBALS['wpdb']->prefix . '404_to_301',
+			// Set who all can access plugin settings.
+			// You can change this if you want to give others access.
+			'JJ4T3_ACCESS' => 'manage_options',
+		);
 
-    /**
-     * Begins execution of the plugin.
-     *
-     * Since everything within the plugin is registered via hooks,
-     * then kicking off the plugin from this point in the file does
-     * not affect the page life cycle.
-     *
-     * @since  2.0.0
-     * @access public
-     * 
-     * @return void
-     */
-    function run_i4t3() {
+		foreach ( $constants as $constant => $value ) {
+			if ( ! defined( $constant ) ) {
+				define( $constant, $value );
+			}
+		}
+	}
 
-        $plugin = new _404_To_301();
-        $plugin->run();
-    }
+	/**
+	 * The main function for that returns JJ_404_to_301
+	 *
+	 * The main function responsible for returning the one true JJ_404_to_301
+	 * instance to functions everywhere.
+	 *
+	 * Use this function like you would a global variable, except without needing
+	 * to declare the global.
+	 *
+	 * Example: <?php $jj4t3 = JJ_404_to_301(); ?>
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return JJ_404_to_301|object
+	 */
+	function JJ_404_to_301() {
 
-    run_i4t3();
+		jj4t3_set_constants();
 
-}
+		return JJ_404_to_301::instance();
+	}
 
-//*** Thank you for your interest in 404 to 301 - Developed and managed by Joel James ***// 
+	JJ_404_to_301();
+
+endif; // End if class_exists check.
