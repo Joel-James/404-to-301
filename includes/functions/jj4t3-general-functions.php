@@ -283,7 +283,6 @@ function jj4t3_redirect_statuses() {
 		301 => __( '301 Redirect (SEO)', JJ4T3_DOMAIN ),
 		302 => __( '302 Redirect', JJ4T3_DOMAIN ),
 		307 => __( '307 Redirect', JJ4T3_DOMAIN ),
-		404 => __( '404 Page not found', JJ4T3_DOMAIN ),
 	);
 
 	/**
