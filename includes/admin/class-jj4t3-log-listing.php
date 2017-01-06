@@ -671,7 +671,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	private function get_empty_content( $value ) {
 
 		// Get default error text.
-		if ( $value === 'n/a' || empty( $value ) ) {
+		if ( strtolower( $value ) === 'n/a' || empty( $value ) ) {
 			return '<span class="jj4t3-url-p">n/a</span>';
 		}
 

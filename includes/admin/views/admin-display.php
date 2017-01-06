@@ -23,6 +23,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php $tab = ( isset( $_GET['tab'] ) ) ? $_GET['tab'] : 'general'; ?>
 
+	<!-- Settings updated message -->
+	<?php settings_errors(); ?>
+
 	<h2 class="nav-tab-wrapper">
 		<a href="?page=jj4t3-settings" class="nav-tab <?php echo $tab === 'general' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Settings', JJ4T3_DOMAIN ); ?></a>
 		<a href="?page=jj4t3-settings&tab=help" class="nav-tab <?php echo $tab === 'help' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-editor-help"></span> <?php _e( 'Help & Info', JJ4T3_DOMAIN ); ?></a>

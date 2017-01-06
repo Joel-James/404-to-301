@@ -31,6 +31,28 @@ function jj4t3_get_sysinfo() {
 	$return = apply_filters( 'jj4t3_sysinfo_after_site_info', $return );
 
 	// WordPress configuration.
+	$return .= "\n" . '-- 404 to 301 Configuration' . "\n\n";
+	$return .= 'Version:                  ' . JJ4T3_VERSION . "\n";
+	$return .= 'DB Version:               ' . JJ4T3_DB_VERSION . "\n";
+	$return .= 'Permission:               ' . JJ4T3_ACCESS . "\n";
+	$return .= 'Options:' . "\n";
+	// Get plugin settings values.
+	$jj4t3_options = get_option( 'i4t3_gnrl_options' );
+	if ( $jj4t3_options ) {
+		foreach ( $jj4t3_options as $jj4t3_key => $jj4t3_value ) {
+			$return .= '                          ' . $jj4t3_key . ' : ' . $jj4t3_value . "\n";
+		}
+	}
+	// Get column names of our error logs table.
+	$jj4t3_columns = $wpdb->get_results( "SHOW columns FROM " . JJ4T3_TABLE, ARRAY_A );
+	if ( ! empty( $jj4t3_columns ) ) {
+		$columns = array_column( $jj4t3_columns, 'Field' );
+		$return .= 'Log Table Fields:         ' . implode( ", ", $columns ) . "\n";
+	}
+
+	$return = apply_filters( 'jj4t3_sysinfo_after_4t3_info', $return );
+
+	// WordPress configuration.
 	$return .= "\n" . '-- WordPress Configuration' . "\n\n";
 	$return .= 'Version:                  ' . get_bloginfo( 'version' ) . "\n";
 	$return .= 'Language:                 ' . ( defined( 'WPLANG' ) && WPLANG ? WPLANG : 'en_US' ) . "\n";
