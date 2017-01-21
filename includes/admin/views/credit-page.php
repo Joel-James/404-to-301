@@ -26,7 +26,7 @@
 									<li><label><span class="dashicons dashicons-star-filled"></span> <strong><a href="https://wordpress.org/support/plugin/404-to-301/reviews/?filter=5#new-post" target="_blank" title="<?php _e( 'Rate now', JJ4T3_DOMAIN ); ?>"><?php _e( 'Rate this on WordPress', JJ4T3_DOMAIN ); ?></a></strong></label></li>
 									<li><label><span class="dashicons dashicons-heart"></span> <strong><a href="https://www.paypal.me/JoelCJ" target="_blank" title="<?php _e( 'Donate now', JJ4T3_DOMAIN ); ?>"><?php _e( 'Make a small donation', JJ4T3_DOMAIN ); ?></a></strong></label></li>
 									<li><label><span class="dashicons dashicons-admin-plugins"></span> <strong><a href="https://github.com/joel-james/404-to-301/" target="_blank" title="<?php _e( 'Contribute now', JJ4T3_DOMAIN ); ?>"><?php _e( 'Contribute to the Plugin', JJ4T3_DOMAIN ); ?></a></strong></label></li>
-									<li><label><span class="dashicons dashicons-twitter"></span> <strong><a href="https://goo.gl/ClXlpf" target="_blank" title="<?php _e( 'Tweet now', JJ4T3_DOMAIN ); ?>"><?php _e( 'Tweet about the Plugin', JJ4T3_DOMAIN ); ?></a></strong></label></li>
+									<li><label><span class="dashicons dashicons-twitter"></span> <strong><a href="https://twitter.com/intent/tweet?text=I am using 404 to 301 plugin by @Joel_James to handle all 404 errors in my @WordPress site - it is awesome! > https://wordpress.org/plugins/404-to-301/&source=webclient" target="_blank" title="<?php _e( 'Tweet now', JJ4T3_DOMAIN ); ?>"><?php _e( 'Tweet about the Plugin', JJ4T3_DOMAIN ); ?></a></strong></label></li>
 							</div>
 						</div>
 					</div>

@@ -347,13 +347,15 @@ class JJ4T3_Admin {
 	}
 
 	/**
-	 * Upgrade plugin.
+	 * Upgrade plugin on updates.
 	 *
 	 * If there are structural changes to make after new version release,
 	 * make required changes.
 	 *
 	 * @since  3.0.0
 	 * @access public
+	 *
+	 * @return void
 	 */
 	public function upgrade() {
 
