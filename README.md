@@ -1,3 +1,5 @@
+> ####WARNING: This latest version is not live yet. Use with caution!
+
 # [404 to 301](https://wordpress.org/plugins/404-to-301) - No more 404 errors!
 
 Automatically redirect all 404 errors to any page using 301 redirect to boost your SEO in WordPress. This plugin also can log all 404 erros and list it to you. Also you can optionally get email alerts on 404 errors!
