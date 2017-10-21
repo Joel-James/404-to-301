@@ -220,13 +220,13 @@ class JJ4T3_404_Data {
 	 * @return void
 	 */
 
-    private function set_geo_country() {
-	if (array_key_exists('HTTP_X_GEO_COUNTRY', $_SERVER)) {
-           	return  $_SERVER["HTTP_X_GEO_COUNTRY"];  
-     	} else { 
-       		return 'N/A';
-	}    
-    }
+	 private function set_geo_country() {
+		if (array_key_exists('HTTP_X_GEO_COUNTRY', $_SERVER)) {
+           		$this->geo_country = apply_filters( 'jj4t3_404_geo_country', $_SERVER["HTTP_X_GEO_COUNTRY"]);  
+		} else { 
+        	      	$this->geo_country = apply_filters( 'jj4t3_404_geo_country', 'N/A');
+		}    
+	}
 	
 	
 	
