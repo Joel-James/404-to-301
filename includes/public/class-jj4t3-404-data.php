@@ -221,11 +221,15 @@ class JJ4T3_404_Data {
 	 */
 
 	 private function set_geo_country() {
-		if (array_key_exists('HTTP_X_GEO_COUNTRY', $_SERVER)) {
-           		$this->geo_country = apply_filters( 'jj4t3_404_geo_country', $_SERVER["HTTP_X_GEO_COUNTRY"]);  
-		} else { 
-        	      	$this->geo_country = apply_filters( 'jj4t3_404_geo_country', 'N/A');
-		}    
+
+		if ( isset( $_SERVER['HTTP_X_GEO_COUNTRY'] ) ) {
+			$geo_country = esc_geo_country( $_SERVER['HTTP_X_GEO_COUNTRY'] );
+		} else {
+			$geo_country = 'N/A';
+		}
+		 
+           	$this->geo_country = apply_filters( 'jj4t3_404_geo_country', $geo_country);  
+	
 	}
 	
 	
