@@ -209,6 +209,8 @@ class JJ4T3_404_Email {
 		$message .= '<td align="left">' . $this->error_data->ref . '</td>';
 		$message .= '</tr>';
 		$message .= '</table>';
+		// Who sent me this alert?
+		$message .= '<p>Alert sent by the <strong>404 to 301</strong> plugin for WordPress.</p>';
 
 		/**
 		 * Filter to alter email content.
