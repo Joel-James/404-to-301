@@ -1,3 +1,8 @@
+<?php
+
+// If this file is called directly, abort.
+defined( 'ABSPATH' ) or exit; ?>
+
 <div id="jj4t3-redirect-modal" style="display:none;">
 	<div id="jj4t3-thickbox-content" class="wrap">
 		<form id="jj4t3_custom_redirect_form" action="javascript:void(0)">

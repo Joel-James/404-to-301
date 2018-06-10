@@ -88,7 +88,7 @@ final class JJ_404_to_301 {
 
 		include_once JJ4T3_DIR . 'includes/functions/jj4t3-general-functions.php';
 		include_once JJ4T3_DIR . 'includes/class-jj4t3-i18n.php';
-		include_once JJ4T3_DIR . 'includes/class-jj4t3-activator.php';
+		include_once JJ4T3_DIR . 'includes/class-jj4t3-activator-deactivator-uninstaller.php';
 
 		// Required only when not admin.
 		if ( ! is_admin() ) {
@@ -119,7 +119,7 @@ final class JJ_404_to_301 {
 	 */
 	private function activate() {
 
-		register_activation_hook( JJ4T3_BASE_FILE, array( 'JJ4T3_Activator', 'activate' ) );
+		register_activation_hook( JJ4T3_BASE_FILE, array( 'JJ4T3_Activator_Deactivator_Uninstaller', 'activate' ) );
 	}
 
 	/**
@@ -136,5 +136,4 @@ final class JJ_404_to_301 {
 
 		return new JJ4T3_I18n();
 	}
-
 }

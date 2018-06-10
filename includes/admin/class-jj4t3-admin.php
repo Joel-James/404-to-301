@@ -302,7 +302,7 @@ class JJ4T3_Admin {
 	 */
 	public function admin_page() {
 
-		include_once JJ4T3_DIR . 'includes/admin/views/admin-display.php';
+		include_once JJ4T3_DIR . 'includes/admin/views/admin.php';
 	}
 
 	/**
@@ -362,12 +362,12 @@ class JJ4T3_Admin {
 		$current_version = get_option( 'i4t3_version_no', false );
 
 		if ( ! $current_version || ( $current_version < JJ4T3_VERSION ) ) {
-			if ( ! class_exists( 'JJ4T3_Activator' ) ) {
-				include_once JJ4T3_DIR . 'includes/class-jj4t3-activator.php';
+			if ( ! class_exists( 'JJ4T3_Activator_Deactivator_Uninstaller' ) ) {
+				include_once JJ4T3_DIR . 'includes/class-jj4t3-activator-deactivator-uninstaller.php';
 			}
 
 			// Run upgrade actions.
-			JJ4T3_Activator::activate();
+			JJ4T3_Activator_Deactivator_Uninstaller::activate();
 
 			// Update the plugin version number.
 			update_option( 'i4t3_version_no', JJ4T3_VERSION );

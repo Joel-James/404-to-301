@@ -26,7 +26,7 @@
  * along with 404 to 301. If not, see <http://www.gnu.org/licenses/>.
  *
  * @category Core
- * @package  JJ4T33
+ * @package  JJ4T3
  * @author   Joel James <mail@cjoel.com>
  * @license  http://www.gnu.org/licenses/ GNU General Public License
  * @link     https://duckdev.com/products/404-to-301/
@@ -58,17 +58,17 @@ if ( ! class_exists( 'JJ_404_to_301' ) ) :
 	function jj4t3_set_constants() {
 
 		$constants = array(
-			'JJ4T3_NAME' => '404-to-301',
-			'JJ4T3_DOMAIN' => '404-to-301',
-			'JJ4T3_DIR' => plugin_dir_path( __FILE__ ),
-			'JJ4T3_URL' => plugin_dir_url( __FILE__ ),
-			'JJ4T3_BASE_FILE' => __FILE__,
-			'JJ4T3_VERSION' => '3.0.0',
+			'JJ4T3_NAME'       => '404-to-301',
+			'JJ4T3_DOMAIN'     => '404-to-301',
+			'JJ4T3_DIR'        => plugin_dir_path( __FILE__ ),
+			'JJ4T3_URL'        => plugin_dir_url( __FILE__ ),
+			'JJ4T3_BASE_FILE'  => __FILE__,
+			'JJ4T3_VERSION'    => '3.0.0',
 			'JJ4T3_DB_VERSION' => '11.0',
-			'JJ4T3_TABLE' => $GLOBALS['wpdb']->prefix . '404_to_301',
+			'JJ4T3_TABLE'      => $GLOBALS['wpdb']->prefix . '404_to_301',
 			// Set who all can access plugin settings.
 			// You can change this if you want to give others access.
-			'JJ4T3_ACCESS' => 'manage_options',
+			'JJ4T3_ACCESS'     => 'manage_options',
 		);
 
 		foreach ( $constants as $constant => $value ) {
@@ -95,11 +95,66 @@ if ( ! class_exists( 'JJ_404_to_301' ) ) :
 	 */
 	function JJ_404_to_301() {
 
-		jj4t3_set_constants();
-
 		return JJ_404_to_301::instance();
 	}
 
+	/**
+	 * Create a helper function for easy SDK access.
+	 *
+	 * This function is used to integrate Freemius SDK to 404 to 301 plugin
+	 * for addons, support and analytics (if allowed).
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return Freemius
+	 */
+	function jj4t3_freemius() {
+
+		global $jj4t3_fs;
+
+		// If freemius is already initialized.
+		if ( ! isset( $jj4t3_fs ) ) {
+
+			// Include Freemius SDK.
+			require_once dirname( __FILE__ ) . '/freemius/start.php';
+
+			// Initialize freemius sdk.
+			$jj4t3_fs = fs_dynamic_init( array(
+				'id'               => '2192',
+				'slug'             => '404-to-301',
+				'type'             => 'plugin',
+				'public_key'       => 'pk_9d470f3128e5e491ea5a2da6bf4bf',
+				'is_premium'       => false,
+				'has_addons'       => true,
+				'has_paid_plans'   => false,
+				'is_org_compliant' => true,
+				'menu'             => array(
+					'slug'    => 'jj4t3-logs',
+					'account' => false,
+					'support' => false,
+				),
+			) );
+		}
+
+		return $jj4t3_fs;
+	}
+
+	// Set constants.
+	jj4t3_set_constants();
+
+	// Init Freemius.
+	jj4t3_freemius();
+
+	// Init 404 to 301.
 	JJ_404_to_301();
+
+	// Uninstaller for 404 to 301.
+	jj4t3_freemius()->add_action( 'after_uninstall', array(
+		'JJ4T3_Activator_Deactivator_Uninstaller',
+		'jj4t3_fs_uninstall_cleanup'
+	) );
+
+	// Signal that SDK was initiated.
+	do_action( 'jj4t3_fs_loaded' );
 
 endif; // End if class_exists check.

@@ -149,7 +149,8 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 		}
 
 		// Error logging class.
-		( new JJ4T3_404_Logging( $this ) )->log_error();
+		$logging = new JJ4T3_404_Logging( $this );
+		$logging->log_error();
 	}
 
 	/**
@@ -162,13 +163,19 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 	 */
 	public function email_alert() {
 
-		// Only if we can.
-		if ( ! $this->alert_enabled ) {
+		/**
+		 * Filter to completely disable email alerts.
+		 *
+		 * @since 3.0.0
+		 */
+		if ( ! apply_filters( 'jj4t3_can_email_alert', $this->alert_enabled ) ) {
 			return;
 		}
 
+
 		// Email alert class.
-		( new JJ4T3_404_Email( $this ) )->send_email();
+		$email = new JJ4T3_404_Email( $this );
+		$email->send_email();
 	}
 
 	/**

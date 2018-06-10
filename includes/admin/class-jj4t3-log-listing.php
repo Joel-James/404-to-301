@@ -394,7 +394,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		 *
 		 * @since 3.0.0
 		 */
-		_e( apply_filters( 'jj4t3_log_list_no_items_message', __( 'Ulta pulta! Seems like you had no errors to log.', JJ4T3_DOMAIN ) ) );
+		_e( apply_filters( 'jj4t3_log_list_no_items_message', __( 'Ah! You are so clean that you still got ZERO errors.', JJ4T3_DOMAIN ) ) );
 	}
 
 	/**
@@ -719,7 +719,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 *
 	 * @return void
 	 */
-	protected function extra_tablenav( $which ) {
+	public function extra_tablenav( $which ) {
 
 		if ( $this->has_items() && 'top' == $which ) {
 
@@ -844,7 +844,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 			$query = "DELETE FROM " . JJ4T3_TABLE . " WHERE id IN($ids)";
 		} elseif ( 'bulk_delete_all' === $action ) {
 			// If deleting all logs except custom redirected ones.
-			// Delete the duplicate entries fro custom redirects.
+			// Delete the duplicate entries from custom redirects.
 			$query = "DELETE t1 FROM " . JJ4T3_TABLE . " t1, " . JJ4T3_TABLE . " t2 WHERE (t1.id < t2.id AND t1.url = t2.url) OR t1.redirect IS NULL OR t1.redirect = ''";
 		} elseif ( 'bulk_clean' === $action ) {
 			// If deleting all logs.

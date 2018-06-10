@@ -1,0 +1,35 @@
+<?php
+
+// If this file is called directly, abort.
+defined( 'ABSPATH' ) or exit;
+
+/**
+ * Provide a dashboard view for the plugin.
+ *
+ * This file is used to markup the dashboard pages of the plugin.
+ *
+ * @category   Core
+ * @package    I4T3
+ * @subpackage Admin View
+ * @author     Joel James <mail@cjoel.com>
+ * @license    http://www.gnu.org/licenses/ GNU General Public License
+ * @link       https://duckdev.com/products/404-to-301
+ */
+?>
+<div class="wrap">
+
+	<h2 class="jj4t3-h2"><?php _e( '404 to 301', JJ4T3_DOMAIN ); ?> <span class="subtitle"><?php printf( __( 'by <a href="%s">Joel James</a>', JJ4T3_DOMAIN ), 'https://duckdev.com' ); ?> ( v<?php echo JJ4T3_VERSION; ?> )</span></h2><br/>
+
+	<!-- Settings updated message -->
+	<?php settings_errors(); ?>
+
+	<h2 class="nav-tab-wrapper">
+		<a href="?page=jj4t3-settings" class="nav-tab nav-tab-active"><span class="dashicons dashicons-admin-generic"></span> <?php _e( 'Settings', JJ4T3_DOMAIN ); ?></a>
+		<?php if ( function_exists( 'jj4t3_freemius' ) ) : ?>
+			<a href="<?php echo admin_url( 'admin.php?page=jj4t3-logs-contact' ); ?>" class="nav-tab"><span class="dashicons dashicons-email"></span> <?php _e( 'Contact Us', JJ4T3_DOMAIN ); ?></a>
+		<?php endif; ?>
+	</h2>
+
+	<?php require_once 'settings.php'; ?>
+
+</div><!-- /.wrap -->
