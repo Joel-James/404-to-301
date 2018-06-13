@@ -25,9 +25,7 @@ defined( 'ABSPATH' ) or exit;
 
 	<h2 class="nav-tab-wrapper">
 		<a href="?page=jj4t3-settings" class="nav-tab nav-tab-active"><span class="dashicons dashicons-admin-generic"></span> <?php _e( 'Settings', JJ4T3_DOMAIN ); ?></a>
-		<?php if ( function_exists( 'jj4t3_freemius' ) ) : ?>
-			<a href="<?php echo admin_url( 'admin.php?page=jj4t3-logs-contact' ); ?>" class="nav-tab"><span class="dashicons dashicons-email"></span> <?php _e( 'Contact Us', JJ4T3_DOMAIN ); ?></a>
-		<?php endif; ?>
+		<?php do_action( 'jj4t3_settings_tab' ); // Action hook to add new items to tab. ?>
 	</h2>
 
 	<?php require_once 'settings.php'; ?>

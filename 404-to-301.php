@@ -116,7 +116,7 @@ if ( ! class_exists( 'JJ_404_to_301' ) ) :
 		if ( ! isset( $jj4t3_fs ) ) {
 
 			// Include Freemius SDK.
-			require_once dirname( __FILE__ ) . '/freemius/start.php';
+			require_once dirname( __FILE__ ) . '/vendor/freemius/start.php';
 
 			// Initialize freemius sdk.
 			$jj4t3_fs = fs_dynamic_init( array(
@@ -127,11 +127,11 @@ if ( ! class_exists( 'JJ_404_to_301' ) ) :
 				'is_premium'       => false,
 				'has_addons'       => true,
 				'has_paid_plans'   => false,
-				'is_org_compliant' => true,
 				'menu'             => array(
 					'slug'    => 'jj4t3-logs',
 					'account' => false,
 					'support' => false,
+					'contact' => false,
 				),
 			) );
 		}
@@ -151,7 +151,7 @@ if ( ! class_exists( 'JJ_404_to_301' ) ) :
 	// Uninstaller for 404 to 301.
 	jj4t3_freemius()->add_action( 'after_uninstall', array(
 		'JJ4T3_Activator_Deactivator_Uninstaller',
-		'jj4t3_fs_uninstall_cleanup'
+		'uninstall'
 	) );
 
 	// Signal that SDK was initiated.
