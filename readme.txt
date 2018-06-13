@@ -5,6 +5,7 @@ Donate link: https://www.paypal.me/JoelCJ
 Requires at least: 3.5
 Tested up to: 4.7
 Stable tag: 3.0.0
+Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,7 +44,6 @@ You will not see any 404 error reports in your webmaster tool dashboard.
 > - You can optionally enable email notification on all 404 errors.<br />
 > - You can choose which redirect method to be used (301,302,307).<br />
 > - Will not irritate your visitors if they land on a non-existing page/url.<br />
-> - Super Light weight.<br />
 > - Increase your SEO by telling Google that all 404 pages are moved to some other page.<br />
 > - Completely free to use with lifetime updates.<br />
 > - Developer friendly.<br />
@@ -128,13 +128,14 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com
 
 == Changelog ==
 
-= 3.0.0 (21/11/2016) =
+= 3.0.0 (18/06/2018) =
 **New Features**
 
 - Individual optional settings for each error log item (Individual redirec, log, email alert can be set).
 - Clear error logs without removing custom redirects.
 - Added error logs grouping with count.
 - [WPML compatible](https://wpml.org/plugin/404-to-301/).
+- Integrated Freemius for addon, support and analytics (optional).
 
 **Improvements**
 
