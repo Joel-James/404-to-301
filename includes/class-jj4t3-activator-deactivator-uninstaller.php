@@ -33,14 +33,14 @@ class JJ4T3_Activator_Deactivator_Uninstaller {
 
 		// Default settings for our plugin.
 		$options = array(
-			'redirect_type' => '301',
-			'redirect_link' => home_url(),
-			'redirect_log' => 1,
-			'redirect_to' => 'link',
-			'redirect_page' => '',
-			'email_notify' => 0,
+			'redirect_type'        => '301',
+			'redirect_link'        => home_url(),
+			'redirect_log'         => 1,
+			'redirect_to'          => 'link',
+			'redirect_page'        => '',
+			'email_notify'         => 0,
 			'email_notify_address' => get_option( 'admin_email' ),
-			'exclude_paths' => '/wp-content',
+			'exclude_paths'        => '/wp-content',
 		);
 
 		// Get existing options if exists.
@@ -124,17 +124,22 @@ class JJ4T3_Activator_Deactivator_Uninstaller {
 	 */
 	public function uninstall() {
 
-		// Deletes plugin options
+		// Plugin option names.
 		$options = array(
-			'i4t3lm_options',
-			'i4t3lm_license_key',
-			'i4t3lm_license_status',
-			'i4t3lm_license_expiry'
+			'i4t3_gnrl_options',
+			'i4t3_activated_time',
+			'i4t3_db_version',
+			'i4t3_version_no',
 		);
 
 		// Loop through each options.
 		foreach ( $options as $option ) {
 			delete_option( $option );
 		}
+
+		global $wpdb;
+
+		// Drop our custom table.
+		$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "404_to_301" );
 	}
 }
