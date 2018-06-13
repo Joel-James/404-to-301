@@ -373,5 +373,4 @@ class JJ4T3_Admin {
 			update_option( 'i4t3_version_no', JJ4T3_VERSION );
 		}
 	}
-
 }
