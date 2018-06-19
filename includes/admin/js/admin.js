@@ -68,9 +68,9 @@
 				$( '#jj4t3_redirect_url' ).val( response.url );
 				$( '#jj4t3_custom_redirect_type' ).val( response.type );
 
-				jj4t3Check( $( '#jj4t3_custom_redirect_redirect' ), response.redirect );
-				jj4t3Check( $( '#jj4t3_custom_redirect_log' ), response.log );
-				jj4t3Check( $( '#jj4t3_custom_redirect_alert' ), response.alert );
+				jj4t3Check( 'jj4t3_custom_redirect_redirect', response.redirect );
+				jj4t3Check( 'jj4t3_custom_redirect_log', response.log );
+				jj4t3Check( 'jj4t3_custom_redirect_alert', response.alert );
 			} );
 		} );
 
@@ -103,9 +103,9 @@
 		 * @param object selecter Current selector element.
 		 * @param mixed val Value.
 		 */
-		var jj4t3Check = function ( selecter, val ) {
+		var jj4t3Check = function ( name, val ) {
 
-			selecter.prop( 'checked', val === 1 ? true : false );
+			$( 'input[name=' + name + '][value=' + val + ']' ).prop( 'checked', true );
 		}
 	} );
 

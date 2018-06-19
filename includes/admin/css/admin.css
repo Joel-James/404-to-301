@@ -34,13 +34,3 @@ h2 .subtitle a {
 .jj4t3-handle {
     cursor: default !important;
 }
-
-#system-info-textarea {
-    background: 0 0;
-    font-family: Menlo, Monaco, monospace;
-    display: block;
-    overflow: auto;
-    white-space: pre;
-    width: 100%;
-    height: 400px;
-}
