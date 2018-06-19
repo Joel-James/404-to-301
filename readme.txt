@@ -27,7 +27,7 @@ If you care about your website, you should take steps to avoid 404 errors as it 
 > - **Automatically clear** old error logs based on time period.<br />
 > - Get email alerts to multiple email recipients.<br />
 >
-> [Get this add-on now](https://duckdev.com/products/404-to-301-log-manager/) | [See Docs](https://duckdev.com/support/docs/category/404-to-301/)
+> [Get this add-on now](https://duckdev.com/products/404-to-301-log-manager/) | [See Docs](https://duckdev.com/support/docs/404-to-301-log-manager/)
 
 404 to 301 is a simple but amazing plugin which handles all 404 errors for you. It will redirect all 404 errors to any page that you set, using 301 (or any other) status. That means no more 404 errors! Even in Google webmaster tool you are safe!
 You will not see any 404 error reports in your webmaster tool dashboard.
@@ -50,7 +50,7 @@ You will not see any 404 error reports in your webmaster tool dashboard.
 > - Follows best WordPress coding standards.<br />
 > - Of course, available in [GitHub](https://github.com/joel-james/404-to-301)<br />
 >
-> [Installation](https://wordpress.org/plugins/404-to-301/installation/) | [Docs](https://duckdev.com/support/docs/category/404-to-301/) | [Screenshots](https://wordpress.org/plugins/404-to-301/screenshots/)
+> [Installation](https://wordpress.org/plugins/404-to-301/installation/) | [Docs](https://duckdev.com/support/docs/404-to-301/) | [Screenshots](https://wordpress.org/plugins/404-to-301/screenshots/)
 
 
 **Bug Reports**
@@ -80,7 +80,7 @@ If you are confused with these terms 404,301, redirect etc, [refer this page](ht
 
 
 = Need more help? =
-Please take a look at the [plugin documentation](https://duckdev.com/support/docs/category/404-to-301/) or [open a support request](http://wordpress.org/support/plugin/404-to-301/).
+Please take a look at the [plugin documentation](https://duckdev.com/support/docs/404-to-301/) or [open a support request](http://wordpress.org/support/plugin/404-to-301/).
 
 = Missing something? =
 If you would like to have an additional feature for this plugin, [let me know](https://duckdev.com/support/)
@@ -109,7 +109,7 @@ Yes. You can set that from error logs table.
 
 = I need more details =
 
-Please take a look at the [plugin documentation](https://duckdev.com/support/docs/category/404-to-301/) or [open a support request](http://wordpress.org/support/plugin/404-to-301/).
+Please take a look at the [plugin documentation](https://duckdev.com/support/docs/404-to-301/) or [open a support request](http://wordpress.org/support/plugin/404-to-301/).
 
 
 == Other Notes ==
@@ -128,7 +128,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com
 
 == Changelog ==
 
-= 3.0.0 (18/06/2018) =
+= 3.0.0 (20/06/2018) =
 **New Features**
 
 - Individual optional settings for each error log item (Individual redirec, log, email alert can be set).
