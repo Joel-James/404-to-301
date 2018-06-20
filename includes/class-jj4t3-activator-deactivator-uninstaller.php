@@ -122,7 +122,7 @@ class JJ4T3_Activator_Deactivator_Uninstaller {
 	 *
 	 * @return void
 	 */
-	public function uninstall() {
+	public static function uninstall() {
 
 		// Plugin option names.
 		$options = array(
