@@ -3,7 +3,7 @@ Contributors: joelcj91,duckdev
 Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo redirect, error redirect, 404 seo, custom 404 page
 Donate link: https://www.paypal.me/JoelCJ
 Requires at least: 3.5
-Tested up to: 4.7
+Tested up to: 4.9
 Stable tag: 3.0.0
 Requires PHP: 5.6
 License: GPLv2 or later
