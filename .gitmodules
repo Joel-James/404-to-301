@@ -1,0 +1,3 @@
+[submodule "vendor/freemius"]
+	path = vendor/freemius
+	url = git@github.com:Freemius/wordpress-sdk.git
