@@ -92,7 +92,7 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 		parent::__construct();
 
 		// Main filter that handles 404.
-		add_filter( 'wp', array( $this, 'handle_404' ) );
+		add_filter( 'template_redirect', array( $this, 'handle_404' ) );
 	}
 
 	/**
