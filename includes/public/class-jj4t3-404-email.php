@@ -210,7 +210,7 @@ class JJ4T3_404_Email {
 		$message .= '</tr>';
 		$message .= '</table>';
 		// Who sent me this alert?
-		$message .= '<p>' . __( 'Alert sent by the <strong>404 to 301</strong> plugin for WordPress.', JJ4T3_DOMAIN ) . '</p>';
+		$message .= '<p>' . sprintf( __( 'Alert sent by the %s404 to 301%s plugin for WordPress.', JJ4T3_DOMAIN ), '<strong>', '</strong>' ) . '</p>';
 
 		/**
 		 * Filter to alter email content.
