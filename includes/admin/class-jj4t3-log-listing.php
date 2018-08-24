@@ -43,8 +43,8 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 
 		parent::__construct(
 			array(
-				'singular' => __( '404 Error Log', JJ4T3_DOMAIN ),
-				'plural' => __( '404 Error Logs', JJ4T3_DOMAIN ),
+				'singular' => __( '404 Error Log', '404-to-301' ),
+				'plural' => __( '404 Error Logs', '404-to-301' ),
 				'ajax' => false,
 			)
 		);
@@ -325,12 +325,12 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 
 		$columns = array(
 			'cb' => '<input type="checkbox" style="width: 5%;" />',
-			'date' => __( 'Date', JJ4T3_DOMAIN ),
-			'url' => __( '404 Path', JJ4T3_DOMAIN ),
-			'ref' => __( 'From', JJ4T3_DOMAIN ),
-			'ip' => __( 'IP Address', JJ4T3_DOMAIN ),
-			'ua' => __( 'User Agent', JJ4T3_DOMAIN ),
-			'redirect' => __( 'Customization', JJ4T3_DOMAIN )
+			'date' => __( 'Date', '404-to-301' ),
+			'url' => __( '404 Path', '404-to-301' ),
+			'ref' => __( 'From', '404-to-301' ),
+			'ip' => __( 'IP Address', '404-to-301' ),
+			'ua' => __( 'User Agent', '404-to-301' ),
+			'redirect' => __( 'Customization', '404-to-301' )
 		);
 
 		/**
@@ -394,7 +394,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		 *
 		 * @since 3.0.0
 		 */
-		_e( apply_filters( 'jj4t3_log_list_no_items_message', __( 'Ah! You are so clean that you still got ZERO errors.', JJ4T3_DOMAIN ) ) );
+		_e( apply_filters( 'jj4t3_log_list_no_items_message', __( 'Ah! You are so clean that you still got ZERO errors.', '404-to-301' ) ) );
 	}
 
 	/**
@@ -472,9 +472,9 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 
 		$title = mysql2date( "j M Y, g:i a", $item['date'] );
 
-		$confirm = __( 'Are you sure you want to delete this item?', JJ4T3_DOMAIN );
+		$confirm = __( 'Are you sure you want to delete this item?', '404-to-301' );
 
-		$actions = array( 'delete' => sprintf( '<a href="?page=jj4t3-logs&action=%s&bulk-delete=%s&_wpnonce=%s" onclick="return confirm(\'%s\');">' . __( 'Delete', JJ4T3_DOMAIN ) . '</a>', 'delete', absint( $item['id'] ), $delete_nonce, $confirm ) );
+		$actions = array( 'delete' => sprintf( '<a href="?page=jj4t3-logs&action=%s&bulk-delete=%s&_wpnonce=%s" onclick="return confirm(\'%s\');">' . __( 'Delete', '404-to-301' ) . '</a>', 'delete', absint( $item['id'] ), $delete_nonce, $confirm ) );
 
 		/**
 		 * Filter to change date colum html content.
@@ -621,9 +621,9 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		$link = esc_url( $item['redirect'] );
 
 		// Get default text if empty value.
-		$title = empty( $link ) ? __( 'Default', JJ4T3_DOMAIN ) : $link;
+		$title = empty( $link ) ? __( 'Default', '404-to-301' ) : $link;
 
-		$redirect = '<a href="javascript:void(0)" title="' . __( 'Customize', JJ4T3_DOMAIN ) . '" class="jj4t3_redirect_thickbox" url_404="' . esc_url( $item['url'] ) . '" wpnonce="' . wp_create_nonce( "jj4t3_redirect_nonce" ) . '">' . $title . '</a>';
+		$redirect = '<a href="javascript:void(0)" title="' . __( 'Customize', '404-to-301' ) . '" class="jj4t3_redirect_thickbox" url_404="' . esc_url( $item['url'] ) . '" wpnonce="' . wp_create_nonce( "jj4t3_redirect_nonce" ) . '">' . $title . '</a>';
 
 		return $redirect;
 	}
@@ -693,9 +693,9 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	public function get_bulk_actions() {
 
 		$actions = array(
-			'bulk_delete' => __( 'Delete Selected', JJ4T3_DOMAIN ),
-			'bulk_clean' => __( 'Delete All', JJ4T3_DOMAIN ),
-			'bulk_delete_all' => __( 'Delete All (Keep redirects)', JJ4T3_DOMAIN ),
+			'bulk_delete' => __( 'Delete Selected', '404-to-301' ),
+			'bulk_clean' => __( 'Delete All', '404-to-301' ),
+			'bulk_delete_all' => __( 'Delete All (Keep redirects)', '404-to-301' ),
 		);
 
 		/**
@@ -732,13 +732,21 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 			// Add dropdown.
 			echo '<div class="alignleft actions bulkactions">';
 			echo '<select name="group_by_top" class="404_group_by">';
-			echo '<option value="">' . __( 'Group by', JJ4T3_DOMAIN ) . '</option>';
+			echo '<option value="">' . __( 'Group by', '404-to-301' ) . '</option>';
 			foreach ( $column_names as $column ) {
 				echo '<option value="' . $column . '" ' . selected( $column, $this->group_by ) . '>' . $available_columns[ $column ] . '</option>';
 			}
 			echo '</select>';
-			submit_button( __( 'Apply', JJ4T3_DOMAIN ), 'button', 'filter_action', false, array( 'id' => 'post-query' ) );
+			submit_button( __( 'Apply', '404-to-301' ), 'button', 'filter_action', false, array( 'id' => 'post-query' ) );
 			echo '</div>';
+
+			/**
+			 * Action hook to add extra items in actions area.
+			 *
+			 * @param object $this Class instance.
+			 * @param string $which Current location (top or bottom).
+			 */
+			do_action( 'jj4t3_log_list_extra_tablenav', $this, $which );
 		}
 	}
 

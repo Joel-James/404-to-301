@@ -124,7 +124,7 @@ class JJ4T3_Admin {
 			wp_enqueue_script( JJ4T3_NAME, JJ4T3_URL . 'includes/admin/js/admin' . $suffix . '.js', array( 'jquery' ), JJ4T3_VERSION, false );
 
 			// Strings to translate in js.
-			$strings = array( 'redirect' => esc_html__( 'Custom Redirect', JJ4T3_DOMAIN ) );
+			$strings = array( 'redirect' => esc_html__( 'Custom Redirect', '404-to-301' ) );
 
 			wp_localize_script( JJ4T3_NAME, 'jj4t3strings', $strings );
 		}
@@ -148,13 +148,13 @@ class JJ4T3_Admin {
 	public function admin_menu() {
 
 		// Main menu for error logs list.
-		$hook = add_menu_page( __( '404 Error Logs', JJ4T3_DOMAIN ), __( '404 Errors', JJ4T3_DOMAIN ), JJ4T3_ACCESS, 'jj4t3-logs', array( $this, 'error_list' ), 'dashicons-redo', 90 );
+		$hook = add_menu_page( __( '404 Error Logs', '404-to-301' ), __( '404 Errors', '404-to-301' ), JJ4T3_ACCESS, 'jj4t3-logs', array( $this, 'error_list' ), 'dashicons-redo', 90 );
 
 		// Render screen options on listing table.
 		add_action( "load-$hook", array( $this, 'screen_option' ) );
 
 		// 404 to 301 settings menu.
-		add_submenu_page( 'jj4t3-logs', __( '404 to 301 Settings', JJ4T3_DOMAIN ), __( '404 Settings', JJ4T3_DOMAIN ), JJ4T3_ACCESS, 'jj4t3-settings', array( $this, 'admin_page' ) );
+		add_submenu_page( 'jj4t3-logs', __( '404 to 301 Settings', '404-to-301' ), __( '404 Settings', '404-to-301' ), JJ4T3_ACCESS, 'jj4t3-settings', array( $this, 'admin_page' ) );
 
 		/**
 		 * Action hook to register new submenu item.
@@ -183,7 +183,7 @@ class JJ4T3_Admin {
 	public function screen_option() {
 
 		$args = array(
-			'label' => __( 'Error Logs', JJ4T3_DOMAIN ),
+			'label' => __( 'Error Logs', '404-to-301' ),
 			'default' => 20,
 			'option' => 'logs_per_page'
 		);
@@ -209,7 +209,7 @@ class JJ4T3_Admin {
 	public function error_list() {
 		?>
 		<div class="wrap">
-			<h2><?php _e( '404 Error Logs', JJ4T3_DOMAIN ); ?></h2>
+			<h2><?php _e( '404 Error Logs', '404-to-301' ); ?></h2>
 			<div id="poststuff">
 				<div id="post-body" class="metabox-holder">
 					<div id="post-body-content">
@@ -267,7 +267,7 @@ class JJ4T3_Admin {
 
 		global $menu;
 
-		$menu[90][0] = __( '404 to 301', JJ4T3_DOMAIN );
+		$menu[90][0] = __( '404 to 301', '404-to-301' );
 	}
 
 	/**
@@ -336,8 +336,8 @@ class JJ4T3_Admin {
 		$plugin_file = basename( '404-to-301.php' );
 
 		if ( basename( $file ) === $plugin_file ) {
-			$settings_link = '<a href="admin.php?page=jj4t3-settings">' . __( 'Settings', JJ4T3_DOMAIN ) . '</a>';
-			$settings_link .= ' | <a href="admin.php?page=jj4t3-logs">' . __( 'Logs', JJ4T3_DOMAIN ) . '</a>';
+			$settings_link = '<a href="admin.php?page=jj4t3-settings">' . __( 'Settings', '404-to-301' ) . '</a>';
+			$settings_link .= ' | <a href="admin.php?page=jj4t3-logs">' . __( 'Logs', '404-to-301' ) . '</a>';
 
 			// Add quick links to plugins listing page.
 			array_unshift( $links, $settings_link );

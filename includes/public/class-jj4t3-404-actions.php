@@ -119,7 +119,7 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 			// Set options for current 404.
 			$this->set_options();
 
-			// Log errotr details to database.
+			// Log error details to database.
 			$this->log_error();
 
 			// Send email alert about the error.
@@ -129,28 +129,8 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 			$this->redirect();
 
 		} catch ( Exception $ex ) {
-			// Stay cool.
+			// Who cares?
 		}
-	}
-
-	/**
-	 * Log details of error to the database.
-	 *
-	 * @since  3.0.0
-	 * @access public
-	 *
-	 * @return void
-	 */
-	public function log_error() {
-
-		// Only if we can.
-		if ( ! $this->log_enabled ) {
-			return;
-		}
-
-		// Error logging class.
-		$logging = new JJ4T3_404_Logging( $this );
-		$logging->log_error();
 	}
 
 	/**
@@ -176,6 +156,26 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 		// Email alert class.
 		$email = new JJ4T3_404_Email( $this );
 		$email->send_email();
+	}
+
+	/**
+	 * Log details of error to the database.
+	 *
+	 * @since  3.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	public function log_error() {
+
+		// Only if we can.
+		if ( ! $this->log_enabled ) {
+			return;
+		}
+
+		// Error logging class.
+		$logging = new JJ4T3_404_Logging( $this );
+		$logging->log_error();
 	}
 
 	/**

@@ -1,23 +1,28 @@
-#, fuzzy
+# Copyright (C) 2018 Joel James
+# This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: 404 to 301\n"
-"POT-Creation-Date: 2018-06-20 00:50+0530\n"
-"PO-Revision-Date: 2016-03-22 23:53+0000\n"
-"Language-Team: \n"
+"Project-Id-Version: 404 to 301 3.0.1\n"
+"Report-Msgid-Bugs-To: https://duckdev.com/products/404-to-301/\n"
+"POT-Creation-Date: 2018-08-24 06:50:20+00:00\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Joel James <me@joelsays.com>\n"
+"Language-Team: Joel James <me@joelsays.com>\n"
+"Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-Country: United States\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
-"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
-"esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-WPHeader: 404-to-301.php\n"
-"Last-Translator: \n"
+"X-Poedit-KeywordsList: "
+"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
+"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
+"X-Poedit-Basepath: ../\n"
 "X-Poedit-SearchPath-0: .\n"
+"X-Poedit-Bookmarks: \n"
+"X-Textdomain-Support: yes\n"
+"X-Generator: grunt-wp-i18n1.0.2\n"
 
 #: includes/admin/class-jj4t3-admin.php:127
 msgid "Custom Redirect"
@@ -45,7 +50,7 @@ msgstr ""
 msgid "Error Logs"
 msgstr ""
 
-#: includes/admin/class-jj4t3-admin.php:270 includes/admin/views/admin.php:21
+#. Plugin Name of the plugin/theme
 msgid "404 to 301"
 msgstr ""
 
@@ -92,10 +97,6 @@ msgstr ""
 msgid "Customization"
 msgstr ""
 
-#: includes/admin/class-jj4t3-log-listing.php:397
-msgid "Ah! You are so clean that you still got ZERO errors."
-msgstr ""
-
 #: includes/admin/class-jj4t3-log-listing.php:475
 msgid "Are you sure you want to delete this item?"
 msgstr ""
@@ -136,7 +137,6 @@ msgid "Apply"
 msgstr ""
 
 #: includes/admin/views/admin.php:21
-#, php-format
 msgid "by <a href=\"%s\">Joel James</a>"
 msgstr ""
 
@@ -229,8 +229,8 @@ msgstr ""
 
 #: includes/admin/views/settings.php:40
 msgid ""
-"You can override this by setting individual custom redirects from error logs "
-"list."
+"You can override this by setting individual custom redirects from error "
+"logs list."
 msgstr ""
 
 #: includes/admin/views/settings.php:44
@@ -238,12 +238,10 @@ msgid "Select the page"
 msgstr ""
 
 #: includes/admin/views/settings.php:47
-msgid ""
-"The default 404 page will be replaced by the page you choose in this list."
+msgid "The default 404 page will be replaced by the page you choose in this list."
 msgstr ""
 
 #: includes/admin/views/settings.php:48
-#, php-format
 msgid ""
 "You can <a href=\"%s\" target=\"_blank\">create a custom 404</a> page and "
 "assign that page here."
@@ -267,8 +265,8 @@ msgstr ""
 
 #: includes/admin/views/settings.php:69
 msgid ""
-"If you check this, an email will be sent on every 404 log on the admin email "
-"account."
+"If you check this, an email will be sent on every 404 log on the admin "
+"email account."
 msgstr ""
 
 #: includes/admin/views/settings.php:73
@@ -284,8 +282,7 @@ msgid "Exclude paths"
 msgstr ""
 
 #: includes/admin/views/settings.php:84
-msgid ""
-"If you want to exclude few paths from error logs, enter here. One per line."
+msgid "If you want to exclude few paths from error logs, enter here. One per line."
 msgstr ""
 
 #: includes/admin/views/settings.php:89
@@ -318,4 +315,27 @@ msgstr ""
 
 #: includes/public/class-jj4t3-404-email.php:208
 msgid "Referral Page"
+msgstr ""
+
+#: includes/public/class-jj4t3-404-email.php:213
+msgid "Alert sent by the %s404 to 301%s plugin for WordPress."
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://duckdev.com/products/404-to-301/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Automatically redirect all <strong>404 errors</strong> to any page using "
+"<strong>301 redirect for SEO</strong>. You can <strong>redirect and "
+"log</strong> every 404 errors. No more 404 errors in Webmaster tool."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Joel James"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://duckdev.com/"
 msgstr ""

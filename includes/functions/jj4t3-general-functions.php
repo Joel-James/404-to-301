@@ -280,9 +280,9 @@ function jj4t3_is_human() {
 function jj4t3_redirect_statuses() {
 
 	$statuses = array(
-		301 => __( '301 Redirect (SEO)', JJ4T3_DOMAIN ),
-		302 => __( '302 Redirect', JJ4T3_DOMAIN ),
-		307 => __( '307 Redirect', JJ4T3_DOMAIN ),
+		301 => __( '301 Redirect (SEO)', '404-to-301' ),
+		302 => __( '302 Redirect', '404-to-301' ),
+		307 => __( '307 Redirect', '404-to-301' ),
 	);
 
 	/**
@@ -314,12 +314,12 @@ function jj4t3_redirect_statuses() {
 function jj4t3_log_columns() {
 
 	$columns = array(
-		'date' => __( 'Date', JJ4T3_DOMAIN ),
-		'url' => __( '404 Path', JJ4T3_DOMAIN ),
-		'ref' => __( 'From', JJ4T3_DOMAIN ),
-		'ip' => __( 'IP Address', JJ4T3_DOMAIN ),
-		'ua' => __( 'User Agent', JJ4T3_DOMAIN ),
-		'redirect' => __( 'Redirect', JJ4T3_DOMAIN ),
+		'date' => __( 'Date', '404-to-301' ),
+		'url' => __( '404 Path', '404-to-301' ),
+		'ref' => __( 'From', '404-to-301' ),
+		'ip' => __( 'IP Address', '404-to-301' ),
+		'ua' => __( 'User Agent', '404-to-301' ),
+		'redirect' => __( 'Redirect', '404-to-301' ),
 	);
 
 	/**

@@ -138,7 +138,7 @@ class JJ4T3_404_Email {
 	private function set_subject() {
 
 		// Include site title.
-		$message = __( 'Snap! One more 404 on ', JJ4T3_DOMAIN ) . get_bloginfo( 'name' );
+		$message = __( 'Snap! One more 404 on ', '404-to-301' ) . get_bloginfo( 'name' );
 
 		/**
 		 * Filter to alter email subject text.
@@ -186,31 +186,31 @@ class JJ4T3_404_Email {
 	 */
 	private function set_body() {
 
-		$message = "<p>" . __( 'Bummer! You have one more 404', JJ4T3_DOMAIN ) . "</p>";
+		$message = "<p>" . __( 'Bummer! You have one more 404', '404-to-301' ) . "</p>";
 		$message .= '<table>';
 		// 404 path.
 		$message .= '<tr>';
-		$message .= '<th align="left">' . __( '404 Path', JJ4T3_DOMAIN ) . '</th>';
+		$message .= '<th align="left">' . __( '404 Path', '404-to-301' ) . '</th>';
 		$message .= '<td align="left">' . $this->error_data->url . '</td>';
 		$message .= '</tr>';
 		// IP Address.
 		$message .= '<tr>';
-		$message .= '<th align="left">' . __( 'IP Address', JJ4T3_DOMAIN ) . '</th>';
+		$message .= '<th align="left">' . __( 'IP Address', '404-to-301' ) . '</th>';
 		$message .= '<td align="left">' . $this->error_data->ip . '</td>';
 		$message .= '</tr>';
 		// Date and time.
 		$message .= '<tr>';
-		$message .= '<th align="left">' . __( 'Time', JJ4T3_DOMAIN ) . '</th>';
+		$message .= '<th align="left">' . __( 'Time', '404-to-301' ) . '</th>';
 		$message .= '<td align="left">' . $this->error_data->time . '</td>';
 		$message .= '</tr>';
 		// Referral url.
 		$message .= '<tr>';
-		$message .= '<th align="left">' . __( 'Referral Page', JJ4T3_DOMAIN ) . '</th>';
+		$message .= '<th align="left">' . __( 'Referral Page', '404-to-301' ) . '</th>';
 		$message .= '<td align="left">' . $this->error_data->ref . '</td>';
 		$message .= '</tr>';
 		$message .= '</table>';
 		// Who sent me this alert?
-		$message .= '<p>' . sprintf( __( 'Alert sent by the %s404 to 301%s plugin for WordPress.', JJ4T3_DOMAIN ), '<strong>', '</strong>' ) . '</p>';
+		$message .= '<p>' . sprintf( __( 'Alert sent by the %s404 to 301%s plugin for WordPress.', '404-to-301' ), '<strong>', '</strong>' ) . '</p>';
 
 		/**
 		 * Filter to alter email content.

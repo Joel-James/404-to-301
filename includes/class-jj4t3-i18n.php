@@ -37,7 +37,7 @@ class JJ4T3_i18n {
 	 */
 	public function textdomain() {
 
-		load_plugin_textdomain( JJ4T3_DOMAIN, false, JJ4T3_DIR . '/languages/' );
+		load_plugin_textdomain( '404-to-301', false, JJ4T3_DIR . '/languages/' );
 	}
 
 }
