@@ -360,7 +360,7 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 			$enabled = jj4t3_log_enabled();
 		}
 
-		if ( $enabled && jj4t3_is_human() ) {
+		if ( $enabled && jj4t3_is_human() && $this->common_check_passed ) {
 			$this->log_enabled = true;
 		}
 	}
@@ -387,7 +387,7 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 			$enabled = jj4t3_email_notify_enabled();
 		}
 
-		if ( $enabled && jj4t3_is_human() ) {
+		if ( $enabled && jj4t3_is_human() && $this->common_check_passed ) {
 			$this->alert_enabled = true;
 		}
 	}

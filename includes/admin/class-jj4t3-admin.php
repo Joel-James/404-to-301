@@ -87,11 +87,11 @@ class JJ4T3_Admin {
 		global $pagenow;
 
 		// Use minified assets if SCRIPT_DEBUG is turned off.
-		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+		$file = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? 'assets/src/css/admin.css' : 'assets/css/admin.min.css';
 
 		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && in_array( $_GET['page'], array( 'jj4t3-settings', 'jj4t3-logs' ) ) ) {
 
-			wp_enqueue_style( JJ4T3_NAME, JJ4T3_URL . 'includes/admin/css/admin' . $suffix . '.css', array(), JJ4T3_VERSION, 'all' );
+			wp_enqueue_style( JJ4T3_NAME, JJ4T3_URL . $file, array(), JJ4T3_VERSION, 'all' );
 		}
 	}
 
@@ -117,11 +117,11 @@ class JJ4T3_Admin {
 		global $pagenow;
 
 		// Use minified scripts if SCRIPT_DEBUG is turned off.
-		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+		$file = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? 'assets/src/js/admin.js' : 'assets/js/admin.min.js';
 
 		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && in_array( $_GET['page'], array( 'jj4t3-settings', 'jj4t3-logs' ) ) ) {
 
-			wp_enqueue_script( JJ4T3_NAME, JJ4T3_URL . 'includes/admin/js/admin' . $suffix . '.js', array( 'jquery' ), JJ4T3_VERSION, false );
+			wp_enqueue_script( JJ4T3_NAME, JJ4T3_URL . $file, array( 'jquery' ), JJ4T3_VERSION, false );
 
 			// Strings to translate in js.
 			$strings = array( 'redirect' => esc_html__( 'Custom Redirect', '404-to-301' ) );
