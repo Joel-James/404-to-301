@@ -133,6 +133,10 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com
 
 * Make release automated.
 
+**🐛 Bug Fixes**
+
+* Do not include exclude path items.
+
 = 3.0.0.1 (25/06/2018) =
 **Bug Fixes**
 
@@ -388,3 +392,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com
 **👌 Improvements**
 
 * Make release automated.
+
+**🐛 Bug Fixes**
+
+* Do not include exclude path items.
