@@ -65,7 +65,7 @@ class JJ4T3_404_Data {
 	 * @since  3.0.0
 	 * @access private
 	 */
-	public function __construct() {
+	public function init() {
 
 		$this->set_ip();
 		$this->set_ref();

@@ -89,10 +89,8 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 	 */
 	public function __construct() {
 
-		parent::__construct();
-
 		// Main filter that handles 404.
-		add_filter( 'template_redirect', array( $this, 'handle_404' ) );
+		add_action( 'template_redirect', array( $this, 'handle_404' ) );
 	}
 
 	/**
@@ -115,6 +113,9 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 
 		// Let's try folks.
 		try {
+
+			// Initialize.
+			$this->init();
 
 			// Set options for current 404.
 			$this->set_options();
