@@ -91,6 +91,7 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 
 		// Main filter that handles 404.
 		add_action( 'template_redirect', array( $this, 'handle_404' ) );
+		add_filter( 'redirect_canonical', array( $this, 'url_guessing' ) );
 	}
 
 	/**
@@ -443,4 +444,23 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 		}
 	}
 
+	/**
+	 * Disable URL guessing if enabled.
+	 *
+	 * @param bool $guess Current status.
+	 *
+	 * @since 3.0.4
+	 *
+	 * @return bool
+	 */
+	public function url_guessing( $guess ) {
+		// Check if guessing is disabled.
+		$disable_guessing = jj4t3_get_option( 'disable_guessing' );
+		// Disable only on 404.
+		if ( $disable_guessing && is_404() && ! isset( $_GET['p'] ) ) {
+			$guess = false;
+		}
+
+		return $guess;
+	}
 }

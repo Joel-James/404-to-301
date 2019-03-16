@@ -39,6 +39,7 @@ class JJ4T3_Activator_Deactivator_Uninstaller {
 			'redirect_to'          => 'link',
 			'redirect_page'        => '',
 			'email_notify'         => 0,
+			'disable_guessing'     => 0,
 			'email_notify_address' => get_option( 'admin_email' ),
 			'exclude_paths'        => '/wp-content',
 		);
@@ -57,6 +58,9 @@ class JJ4T3_Activator_Deactivator_Uninstaller {
 		// Update/create our settings.
 		// We are using older prefix for our option names.
 		update_option( 'i4t3_gnrl_options', $options );
+
+		// Set review notice time for 1 week.
+		add_option( 'i4t3_review_notice', time() + 604800 );
 
 		// Manage error log table.
 		self::log_table();
@@ -130,6 +134,7 @@ class JJ4T3_Activator_Deactivator_Uninstaller {
 			'i4t3_activated_time',
 			'i4t3_db_version',
 			'i4t3_version_no',
+			'i4t3_review_notice',
 		);
 
 		// Loop through each options.

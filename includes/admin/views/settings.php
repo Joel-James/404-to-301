@@ -70,6 +70,13 @@ defined( 'ABSPATH' ) or exit; ?>
 				</td>
 			</tr>
 			<tr>
+				<th><?php _e( 'Disable URL guessing', '404-to-301' ); ?></th>
+				<td>
+					<input type="checkbox" name="i4t3_gnrl_options[disable_guessing]" value="1" <?php checked( jj4t3_get_option( 'disable_guessing' ), 0 ); ?> />
+					<p class="description jj4t3-p-desc"><?php printf( __( 'If you disable URL guessing, it will stop WordPress from autocorrecting incorrect URLs. %1$sLearn more%2$s about canonical redirect.', '404-to-301' ), '<a href="https://developer.wordpress.org/reference/functions/redirect_canonical/" target="_blank">', '</a>' ); ?></p>
+				</td>
+			</tr>
+			<tr>
 				<th><?php _e( 'Email address', '404-to-301' ); ?></th>
 				<td>
 					<?php $notify_address = ( isset( $options['email_notify_address'] ) ) ? $options['email_notify_address'] : get_option( 'admin_email' ); ?>
