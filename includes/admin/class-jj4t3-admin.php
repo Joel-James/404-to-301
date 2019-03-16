@@ -403,39 +403,53 @@ class JJ4T3_Admin {
 	 * @return void|bool
 	 */
 	public function review_notice() {
-		// Get the notice time.
-		$notice_time = get_option( 'i4t3_review_notice' );
-		// If not set, set now and bail.
-		if ( ! $notice_time ) {
-			// Set to next week.
-			return add_option( 'i4t3_review_notice', time() + 604800 );
-		}
+		global $pagenow;
 
-		// Current logged in user.
-		$current_user = wp_get_current_user();
-		// Did the current user already dismiss?.
-		$dismissed = get_user_meta( $current_user->ID, 'i4t3_review_notice_dismissed', true );
-		// Continue only when allowed.
-		if ( (int) $notice_time <= time() && ! $dismissed ) {
-			?>
-			<div class="notice notice-success">
-				<p><?php printf( __( 'Hey %1$s, I noticed you\'ve been using %2$s404 to 301%3$s for more than 1 week – that’s awesome! Could you please do me a BIG favor and give it a 5-star rating on WordPress? Just to help us spread the word and boost our motivation.', '404-to-301' ),
-						empty( $current_user->display_name ) ? __( 'there', '404-to-301' ) : ucwords( $current_user->display_name ),
-						'<strong>',
-						'</strong>'
-					); ?>
-				</p>
-				<p>
-					<a href="https://wordpress.org/support/plugin/404-to-301/reviews/#new-post" target="_blank"><?php esc_html_e( 'Ok, you deserve it', '404-to-301' ); ?></a>
-				</p>
-				<p>
-					<a href="<?php echo add_query_arg( 'jj4t3_rating', 'later' ); // later. ?>"><?php esc_html_e( 'Nope, maybe later', '404-to-301' ); ?></a>
-				</p>
-				<p>
-					<a href="<?php echo add_query_arg( 'jj4t3_rating', 'dismiss' ); // dismiss link. ?>"><?php esc_html_e( 'I already did', '404-to-301' ); ?></a>
-				</p>
-			</div>
-			<?php
+		// Only on our page.
+		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && in_array( $_GET['page'], array(
+				'jj4t3-settings',
+				'jj4t3-logs',
+				'jj4t3-logs-addons',
+			) )
+		) {
+			// Only for admins.
+			if ( ! current_user_can( 'manage_options' ) ) {
+				return false;
+			}
+			// Get the notice time.
+			$notice_time = get_option( 'i4t3_review_notice' );
+			// If not set, set now and bail.
+			if ( ! $notice_time ) {
+				// Set to next week.
+				return add_option( 'i4t3_review_notice', time() + 604800 );
+			}
+
+			// Current logged in user.
+			$current_user = wp_get_current_user();
+			// Did the current user already dismiss?.
+			$dismissed = get_user_meta( $current_user->ID, 'i4t3_review_notice_dismissed', true );
+			// Continue only when allowed.
+			if ( (int) $notice_time <= time() && ! $dismissed ) {
+				?>
+				<div class="notice notice-success">
+					<p><?php printf( __( 'Hey %1$s, I noticed you\'ve been using %2$s404 to 301%3$s for more than 1 week – that’s awesome! Could you please do me a BIG favor and give it a 5-star rating on WordPress? Just to help us spread the word and boost our motivation.', '404-to-301' ),
+							empty( $current_user->display_name ) ? __( 'there', '404-to-301' ) : ucwords( $current_user->display_name ),
+							'<strong>',
+							'</strong>'
+						); ?>
+					</p>
+					<p>
+						<a href="https://wordpress.org/support/plugin/404-to-301/reviews/#new-post" target="_blank"><?php esc_html_e( 'Ok, you deserve it', '404-to-301' ); ?></a>
+					</p>
+					<p>
+						<a href="<?php echo add_query_arg( 'jj4t3_rating', 'later' ); // later. ?>"><?php esc_html_e( 'Nope, maybe later', '404-to-301' ); ?></a>
+					</p>
+					<p>
+						<a href="<?php echo add_query_arg( 'jj4t3_rating', 'dismiss' ); // dismiss link. ?>"><?php esc_html_e( 'I already did', '404-to-301' ); ?></a>
+					</p>
+				</div>
+				<?php
+			}
 		}
 	}
 
