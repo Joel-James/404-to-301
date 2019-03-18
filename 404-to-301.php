@@ -1,16 +1,30 @@
 <?php
 /**
+ * The plugin bootstrap file
+ *
+ * This file is read by WordPress to generate the plugin information in the plugin
+ * admin area. This file also includes all of the dependencies used by the plugin,
+ * registers the activation and deactivation functions, and defines a function
+ * that starts the plugin.
+ *
+ * @link            https://duckdev.com
+ * @since           4.0
+ * @package         404-to-301
+ *
+ * @wordpress-plugin
  * Plugin Name:     404 to 301
- * Plugin URI:      https://duckdev.com/products/404-to-301/
- * Description:     Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
- * Version:         3.0.0
+ * Plugin URI:      https://duckdev.com/
+ * Description:     The boilerplate plugin for WordPress plugin development.
+ * Version:         4.0
  * Author:          Joel James
  * Author URI:      https://duckdev.com/
- * Donate link:     https://paypal.me/JoelCJ
  * License:         GPL-2.0+
  * License URI:     http://www.gnu.org/licenses/gpl-3.0.txt
- * Text Domain:     404-to-301
+ * Text Domain:     dd-boilerplate
  * Domain Path:     /languages
+ *
+ * Copyright 2017-2018 Duck Dev (http://duckdev.com)
+ * Author - Joel James
  *
  * 404 to 301 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,82 +38,32 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with 404 to 301. If not, see <http://www.gnu.org/licenses/>.
- *
- * @category Core
- * @package  JJ4T33
- * @author   Joel James <mail@cjoel.com>
- * @license  http://www.gnu.org/licenses/ GNU General Public License
- * @link     https://duckdev.com/products/404-to-301/
  */
 
 // If this file is called directly, abort.
-defined( 'ABSPATH' ) or exit;
+defined( 'WPINC' ) || die;
 
-// Stay lazy if our class is already there.
-if ( ! class_exists( 'JJ_404_to_301' ) ) :
+// Define DD404_PLUGIN_FILE.
+define( 'DD404_PLUGIN_FILE', __FILE__ );
 
-	/**
-	 * File that contains main plugin class.
-	 */
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-jj-404-to-301.php';
+// Auto load classes.
+require_once dirname( __FILE__ ) . '/inc/vendor/autoloader.php';
 
-	/**
-	 * Setup plugin constants.
-	 *
-	 * We need a few constants in our plugin.
-	 * These values should be constant and con't
-	 * be altered later.
-	 *
-	 * @since  2.0.0
-	 * @access private
-	 *
-	 * @return void
-	 */
-	function jj4t3_set_constants() {
+/**
+ * Main instance of Main.
+ *
+ * Returns the main instance of DD Boilerplate to prevent the need to use globals
+ * and to maintain a single copy of the plugin app object.
+ *
+ * @since  4.0
+ *
+ * @return \DuckDev404\Inc\Main
+ */
+function duckdev_404() {
+	return DuckDev404\Inc\Main::instance();
+}
 
-		$constants = array(
-			'JJ4T3_NAME' => '404-to-301',
-			'JJ4T3_DOMAIN' => '404-to-301',
-			'JJ4T3_DIR' => plugin_dir_path( __FILE__ ),
-			'JJ4T3_URL' => plugin_dir_url( __FILE__ ),
-			'JJ4T3_BASE_FILE' => __FILE__,
-			'JJ4T3_VERSION' => '3.0.0',
-			'JJ4T3_DB_VERSION' => '11.0',
-			'JJ4T3_TABLE' => $GLOBALS['wpdb']->prefix . '404_to_301',
-			// Set who all can access plugin settings.
-			// You can change this if you want to give others access.
-			'JJ4T3_ACCESS' => 'manage_options',
-		);
-
-		foreach ( $constants as $constant => $value ) {
-			if ( ! defined( $constant ) ) {
-				define( $constant, $value );
-			}
-		}
-	}
-
-	/**
-	 * The main function for that returns JJ_404_to_301
-	 *
-	 * The main function responsible for returning the one true JJ_404_to_301
-	 * instance to functions everywhere.
-	 *
-	 * Use this function like you would a global variable, except without needing
-	 * to declare the global.
-	 *
-	 * Example: <?php $jj4t3 = JJ_404_to_301(); ?>
-	 *
-	 * @since 3.0.0
-	 *
-	 * @return JJ_404_to_301|object
-	 */
-	function JJ_404_to_301() {
-
-		jj4t3_set_constants();
-
-		return JJ_404_to_301::instance();
-	}
-
-	JJ_404_to_301();
-
-endif; // End if class_exists check.
+// Check the minimum required PHP version and run the plugin.
+if ( version_compare( PHP_VERSION, '5.6', '>=' ) ) {
+	duckdev_404();
+}

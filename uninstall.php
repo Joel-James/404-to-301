@@ -1,38 +1,29 @@
 <?php
 
-// If this file is called directly, abort.
-defined( 'ABSPATH' ) or exit;
-
 /**
- * Fired during plugin uninstall.
+ * Fired when the plugin is uninstalled.
  *
- * Remove all our settings, and custom database tables of user removes
- * our plugin.
+ * When populating this file, consider the following flow
+ * of control:
  *
- * @category   Core
- * @package    JJ4T3
- * @subpackage Uninstaller
- * @author     Joel James <mail@cjoel.com>
- * @license    http://www.gnu.org/licenses/ GNU General Public License
- * @link       https://duckdev.com/products/404-to-301/
+ * - This method should be static
+ * - Check if the $_REQUEST content actually is the plugin name
+ * - Run an admin referrer check to make sure it goes through authentication
+ * - Verify the output of $_GET makes sense
+ * - Repeat with other user roles. Best directly by using the links/query string parameters.
+ * - Repeat things for multisite. Once for a single site in the network, once sitewide.
+ *
+ * This file may be updated more in future version of the Boilerplate; however, this is the
+ * general skeleton and outline for how the file should work.
+ *
+ * For more information, see the following discussion:
+ * https://github.com/tommcfarlin/WordPress-Plugin-Boilerplate/pull/123#issuecomment-28541913
+ *
+ * @link   https://duckdev.com
+ * @since  4.0
+ *
+ * @author Joel James <me@joelsays.com>
  */
 
-// Plugin option names.
-$options = array(
-	'i4t3_gnrl_options',
-	'i4t3_activated_time',
-	'i4t3_db_version',
-	'i4t3_version_no',
-);
-
-// Delete all options.
-foreach ( $options as $option ) {
-	delete_option( $option );
-}
-
-global $wpdb;
-
-// drop our custom table
-$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "404_to_301" );
-
-/******* The end. Thanks for using 404 to 301 plugin ********/
+// If uninstall not called from WordPress, then exit.
+defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
