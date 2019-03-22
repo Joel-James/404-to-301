@@ -28,7 +28,7 @@ class Activator {
 		// Check PHP Version and deactivate & die if it doesn't meet minimum requirements.
 		if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( printf( __( 'This plugin requires a minimum PHP Version of %s', '404-to-301' ), '5.6' ) );
+			wp_die( __( 'This plugin requires a minimum PHP Version of 5.6', '404-to-301' ) );
 		}
 
 		// Create tables.
