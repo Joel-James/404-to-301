@@ -7,15 +7,15 @@ module.exports = function ( grunt ) {
 			include_files: [
 				'inc/**',
 				'assets/**',
-				'_src/**',
-				'ddb-boilerplate.php',
+				'views/**',
+				'404-to-301.php',
 				'uninstall.php',
 				'LICENSE.txt'
 			]
 		},
 
-		plugin_dir: 'ddb-boilerplate/',
-		plugin_file: 'ddb-boilerplate.php'
+		plugin_dir: '404-to-301/',
+		plugin_file: '404-to-301.php'
 	};
 
 	// Project configuration.
@@ -30,13 +30,13 @@ module.exports = function ( grunt ) {
 				exclude: [
 					'inc/vendor/.*'
 				],
-				mainFile: 'ddb-boilerplate.php',
-				potFilename: 'ddb-boilerplate.pot',
+				mainFile: '404-to-301.php',
+				potFilename: '404-to-301.pot',
 				potHeaders: {
 					'poedit': true,
-					'language-team': 'WPMU DEV <support@wpmudev.org>',
+					'language-team': 'Duck Dev <contact@duckdev.org>',
 					'report-msgid-bugs-to': 'https://duckdev.com/',
-					'last-translator': 'WPMU DEV <support@wpmudev.org>',
+					'last-translator': 'Joel James <contact@duckdev.org>',
 					'x-generator': 'grunt-wp-i18n'
 				},
 				type: 'wp-plugin',
@@ -52,7 +52,7 @@ module.exports = function ( grunt ) {
 			// Make .pot file for the release.
 			release: {
 				options: {
-					cwd: 'releases/ddb-boilerplate'
+					cwd: 'releases/404-to-301'
 				}
 			}
 		},
@@ -61,13 +61,13 @@ module.exports = function ( grunt ) {
 		po2mo: {
 			// Make .mo file for the plugin.
 			main: {
-				src: 'languages/ddb-boilerplate.pot',
-				dest: 'languages/ddb-boilerplate.mo'
+				src: 'languages/404-to-301.pot',
+				dest: 'languages/404-to-301.mo'
 			},
 			// Make .mo file for the release.
 			release: {
-				src: 'releases/ddb-boilerplate/languages/ddb-boilerplate.pot',
-				dest: 'releases/ddb-boilerplate/languages/ddb-boilerplate.mo'
+				src: 'releases/404-to-301/languages/404-to-301.pot',
+				dest: 'releases/404-to-301/languages/404-to-301.mo'
 			}
 		},
 
@@ -113,12 +113,13 @@ module.exports = function ( grunt ) {
 			},
 			files: {
 				src: [
-					'inc/controllers/*.php',
-					'inc/gateways/*.php',
+					'inc/admin/*.php',
+					'inc/core/*.php',
+					'inc/front/*.php',
 					'inc/helpers/*.php',
-					'inc/models/*.php',
-					'inc/views/*.php',
-					'ddb-boilerplate.php'
+					'inc/utils/*.php',
+					'404-to-301.php',
+					'uninstall.php'
 				],
 				expand: true
 			}
