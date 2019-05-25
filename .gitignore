@@ -54,7 +54,7 @@ Thumbs.db
 ## Directory-based project format:
 .idea/
 
-# Netbeans
+# Netbeans #
 nbproject/private/
 build/
 nbbuild/
@@ -64,5 +64,9 @@ nbactions.xml
 nb-configuration.xml
 
 
-# Releases folder
+# Releases folder #
 releases/
+
+# Generated assets #
+assets/js
+assets/css
