@@ -39,7 +39,7 @@ defined( 'ABSPATH' ) or exit; ?>
 					<th><?php _e( 'Redirect to', '404-to-301' ); ?> :</th>
 					<td>
 						<input type="text" size="40" name="jj4t3_custom_redirect" id="jj4t3_redirect_url" value="">
-						<p class="description"><?php _e( 'Enter the url if you want to set custom redirect for above 404 path. Enter the full url including http://. Leave empty if you want to follow deafult settings.', '404-to-301' ); ?></p>
+						<p class="description"><?php _e( 'Enter the url if you want to set custom redirect for above 404 path. Enter the full url including http://. Leave empty if you want to follow default settings.', '404-to-301' ); ?></p>
 						<input type="hidden" value="" id="jj4t3_redirect_404" name="jj4t3_redirect_404">
 						<input type="hidden" value="<?php echo wp_create_nonce( "jj4t3_redirect_nonce" ); ?>" id="jj4t3_redirect_nonce" name="jj4t3_redirect_nonce">
 						<input type="hidden" value="jj4t3_redirect_form" name="action">
