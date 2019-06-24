@@ -5,9 +5,8 @@ module.exports = function ( grunt ) {
 	var conf = {
 		plugin_branches: {
 			include_files: [
-				'inc/**',
-				'assets/**',
-				'views/**',
+				'core/**',
+				'app/**',
 				'404-to-301.php',
 				'uninstall.php',
 				'LICENSE.txt'

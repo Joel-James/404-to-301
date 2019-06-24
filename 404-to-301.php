@@ -1,21 +1,9 @@
 <?php
 /**
- * The plugin bootstrap file
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
- * @link            https://duckdev.com
- * @since           4.0
- * @package         404-to-301
- *
- * @wordpress-plugin
  * Plugin Name:     404 to 301
  * Plugin URI:      https://duckdev.com/
  * Description:     The boilerplate plugin for WordPress plugin development.
- * Version:         4.0
+ * Version:         4.0.0
  * Author:          Joel James
  * Author URI:      https://duckdev.com/
  * License:         GPL-2.0+
@@ -46,7 +34,7 @@ defined( 'WPINC' ) || die;
 define( 'DD404_PLUGIN_FILE', __FILE__ );
 
 // Auto load classes.
-require_once dirname( __FILE__ ) . '/inc/vendor/autoloader.php';
+require_once dirname( __FILE__ ) . '/core/vendor/autoloader.php';
 
 /**
  * Main instance of plugin.
@@ -55,17 +43,21 @@ require_once dirname( __FILE__ ) . '/inc/vendor/autoloader.php';
  * and to maintain a single copy of the plugin object.
  * You can simply call duckdev_404() to access the object.
  *
- * @since  4.0
+ * @since  4.0.0
  *
- * @return object \DuckDev404\Inc\Main
+ * @return DuckDev404\Core\Main
  */
 function duckdev_404() {
-	return DuckDev404\Inc\Main::instance();
+	return DuckDev404\Core\Main::get();
 }
 
 // Check the minimum required PHP version (5.6) and run the plugin.
 if ( version_compare( PHP_VERSION, '5.6', '>=' ) ) {
+	// Run the plugin.
 	duckdev_404();
+
+	// Activation hook.
+	register_activation_hook( DD404_PLUGIN_FILE, array( duckdev_404(), 'activate' ) );
 } else {
 	// Show an admin notice.
 	add_action( 'admin_notices', function() {
