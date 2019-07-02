@@ -131,6 +131,13 @@ module.exports = function ( grunt ) {
 			files: {
 				src: conf.plugin_branches.include_files,
 				dest: 'releases/<%= pkg.name %>/'
+			},
+			freemius: {
+				expand: true,
+				flatten: true,
+				src: '.freemius_assets/**',
+				dest: 'releases/<%= pkg.name %>/vendor/freemius/assets/img/',
+				filter: 'isFile'
 			}
 		},
 
@@ -159,7 +166,8 @@ module.exports = function ( grunt ) {
 	grunt.registerTask( 'build', 'Run all tasks.', function () {
 		grunt.task.run( 'clean' );
 		grunt.task.run( 'translate' );
-		grunt.task.run( 'copy' );
+		grunt.task.run( 'copy:files' );
+		grunt.task.run( 'copy:freemius' );
 		grunt.task.run( 'makepot:release' );
 		grunt.task.run( 'po2mo:release' );
 		grunt.task.run( 'compress' );

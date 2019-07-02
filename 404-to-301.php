@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:     404 to 301
+ * Plugin Name:     404 to 301 - Redirect, Log and Notify 404 Errors
  * Plugin URI:      https://duckdev.com/products/404-to-301/
  * Description:     Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
- * Version:         3.0.4
+ * Version:         3.0.5
  * Author:          Joel James
  * Author URI:      https://duckdev.com/
  * Donate link:     https://paypal.me/JoelCJ
@@ -25,11 +25,11 @@
  * You should have received a copy of the GNU General Public License
  * along with 404 to 301. If not, see <http://www.gnu.org/licenses/>.
  *
- * @category Core
- * @package  JJ4T3
  * @author   Joel James <mail@cjoel.com>
- * @license  http://www.gnu.org/licenses/ GNU General Public License
  * @link     https://duckdev.com/products/404-to-301/
+ * @license  http://www.gnu.org/licenses/ GNU General Public License
+ * @package  JJ4T3
+ * @category Core
  */
 
 // If this file is called directly, abort.
@@ -63,7 +63,7 @@ if ( ! class_exists( 'JJ_404_to_301' ) ) :
 			'JJ4T3_DIR'        => plugin_dir_path( __FILE__ ),
 			'JJ4T3_URL'        => plugin_dir_url( __FILE__ ),
 			'JJ4T3_BASE_FILE'  => __FILE__,
-			'JJ4T3_VERSION'    => '3.0.4',
+			'JJ4T3_VERSION'    => '3.0.5',
 			'JJ4T3_DB_VERSION' => '11.0',
 			'JJ4T3_TABLE'      => $GLOBALS['wpdb']->prefix . '404_to_301',
 			// Set who all can access plugin settings.
@@ -120,15 +120,15 @@ if ( ! class_exists( 'JJ_404_to_301' ) ) :
 
 			// Initialize freemius sdk.
 			$jj4t3_fs = fs_dynamic_init( array(
-				'id'               => '2192',
-				'slug'             => '404-to-301',
-				'type'             => 'plugin',
-				'public_key'       => 'pk_9d470f3128e5e491ea5a2da6bf4bf',
-				'is_premium'       => false,
-				'has_addons'       => true,
-				'has_paid_plans'   => false,
-				'anonymous_mode'   => true, // Temporary fix.
-				'menu'             => array(
+				'id'             => '2192',
+				'slug'           => '404-to-301',
+				'type'           => 'plugin',
+				'public_key'     => 'pk_9d470f3128e5e491ea5a2da6bf4bf',
+				'is_premium'     => false,
+				'has_addons'     => true,
+				'has_paid_plans' => false,
+				'anonymous_mode' => true, // Temporary fix.
+				'menu'           => array(
 					'slug'    => 'jj4t3-logs',
 					'account' => false,
 					'support' => false,
@@ -152,7 +152,7 @@ if ( ! class_exists( 'JJ_404_to_301' ) ) :
 	// Uninstaller for 404 to 301.
 	jj4t3_freemius()->add_action( 'after_uninstall', array(
 		'JJ4T3_Activator_Deactivator_Uninstaller',
-		'uninstall'
+		'uninstall',
 	) );
 
 	// Signal that SDK was initiated.
