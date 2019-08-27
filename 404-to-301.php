@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:     404 to 301
+ * Plugin Name:     404 to 301 - Redirect, Log and Notify 404 Errors
  * Plugin URI:      https://duckdev.com/
  * Description:     Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
  * Version:         4.0.0
