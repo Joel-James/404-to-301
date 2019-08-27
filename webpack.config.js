@@ -1,8 +1,8 @@
-const _ = require( 'lodash' ),
-	path = require( 'path' ),
-	webpack = require( 'webpack' ),
-	ATP = require( 'autoprefixer' ),
-	CSSExtract = require( "mini-css-extract-plugin" );
+const _ = require('lodash'),
+	path = require('path'),
+	webpack = require('webpack'),
+	ATP = require('autoprefixer'),
+	CSSExtract = require("mini-css-extract-plugin");
 
 // The path where the Shared UI fonts & images should be sent.
 const config = {
@@ -26,15 +26,15 @@ const sharedConfig = {
 	}
 };
 
-const scssConfig = _.assign( _.cloneDeep( sharedConfig ), {
+const scssConfig = _.assign(_.cloneDeep(sharedConfig), {
 	entry: {
-		'admin': './assets/src/scss/admin/admin.scss',
-		'public': './assets/src/scss/public/frontend.scss'
+		'admin': './app/src/scss/admin/admin.scss',
+		'public': './app/src/scss/public/frontend.scss'
 	},
 
 	output: {
 		filename: '[name].min.css',
-		path: path.resolve( __dirname, 'assets/css' )
+		path: path.resolve(__dirname, 'app/assets/css')
 	},
 
 	module: {
@@ -50,9 +50,9 @@ const scssConfig = _.assign( _.cloneDeep( sharedConfig ), {
 						loader: 'postcss-loader',
 						options: {
 							plugins: [
-								ATP( {
+								ATP({
 									browsers: ['ie > 9', '> 1%']
-								} )
+								})
 							],
 							sourceMap: true
 						}
@@ -92,37 +92,37 @@ const scssConfig = _.assign( _.cloneDeep( sharedConfig ), {
 	},
 
 	plugins: [
-		new CSSExtract( {
+		new CSSExtract({
 			filename: '../css/[name].min.css'
-		} )
+		})
 	]
-} );
+});
 
-const jsConfig = _.assign( _.cloneDeep( sharedConfig ), {
+const jsConfig = _.assign(_.cloneDeep(sharedConfig), {
 	entry: {
-		'admin/admin': './assets/src/js/admin/admin.js',
-		'public/frontend': './assets/src/js/public/frontend.js'
+		'admin/admin': path.resolve(__dirname, 'app/src/js/admin.js'),
 	},
 
 	output: {
-		filename: '[name].min.js',
-		path: path.resolve( __dirname, 'assets/js' )
+		filename: '[name].js',
+		path: path.resolve(__dirname, 'app/assets/js'),
+	},
+
+	devtool: sharedConfig.mode,
+
+	resolve: {
+		extensions: [".js", ".jsx", ".json"],
 	},
 
 	module: {
 		rules: [
 			{
-				test: /\.js$/,
+				test: /\.jsx?$/,
 				exclude: /node_modules/,
-				use: {
-					loader: 'babel-loader',
-					options: {
-						presets: ['env', 'react']
-					}
-				}
-			}
-		]
-	}
-} );
+				loader: 'babel-loader',
+			},
+		],
+	},
+});
 
 module.exports = [scssConfig, jsConfig];

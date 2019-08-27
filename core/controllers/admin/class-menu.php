@@ -1,12 +1,12 @@
 <?php
 
-namespace DuckDev404\Core\Controllers\Admin;
+namespace DuckDev\WP404\Controllers\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev404\Core\Utils\Abstracts\Base;
-use DuckDev404\Core\Views\Admin\Pages;
+use DuckDev\WP404\Utils\Abstracts\Base;
+use DuckDev\WP404\Views\Admin\Pages;
 
 /**
  * The menu-specific functionality of the plugin.
@@ -25,7 +25,17 @@ class Menu extends Base {
 	 * @since 4.0
 	 *
 	 */
-	private $slug = '404-to-301';
+	private $slug = DD404_SLUG;
+
+	/**
+	 * Initilize the class by registering the hooks.
+	 *
+	 * @since 4.0.0
+	 */
+	public function init() {
+		add_action( 'admin_menu', [ $this, 'admin_menu' ] );
+		add_action( 'admin_menu', [ $this, 'rename_menu' ] );
+	}
 
 	/**
 	 * Register the menu for the admin settings.
@@ -69,7 +79,7 @@ class Menu extends Base {
 		$page_hook = add_menu_page(
 			__( '404 Error Logs', '404-to-301' ),
 			__( 'Error Logs', '404-to-301' ),
-			DD404_ACCESS, // Menu permission.
+			'manage_options', // Menu permission.
 			$this->slug,
 			[ Pages::get(), 'logs' ],
 			'dashicons-redo',
@@ -101,7 +111,7 @@ class Menu extends Base {
 			$this->slug,
 			__( '404 to 301 Settings', '404-to-301' ),
 			__( 'Settings', '404-to-301' ),
-			DD404_ACCESS, // Menu permission.
+			'manage_options', // Menu permission.
 			'404-to-301-settings',
 			[ Pages::get(), 'settings' ]
 		);

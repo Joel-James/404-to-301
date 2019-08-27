@@ -1,11 +1,12 @@
 <?php
 
-namespace DuckDev404\Core\Front;
+namespace DuckDev\WP404\Controllers\Front;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev404\Core\Core\Base;
+use DuckDev\WP404\Controllers\Front\Redirect\Redirect_404;
+use DuckDev\WP404\Utils\Abstracts\Base;
 
 /**
  * The redirect functionality of the plugin.
@@ -17,12 +18,7 @@ use DuckDev404\Core\Core\Base;
  */
 class Redirect extends Base {
 
-	/**
-	 * Redirect class object.
-	 *
-	 * @var object
-	 */
-	protected $redirect;
+	protected $url;
 
 	/**
 	 * Initialize the redirect functionality.
@@ -31,16 +27,50 @@ class Redirect extends Base {
 	 *
 	 * @return void
 	 */
-	public function init() {
-		$settings = duckdev_404()->core()->settings;
-
-		switch ( $settings['type'] ) {
-			case 404:
-				$this->redirect = Redirect\_404::instance();
+	public function process( $type = '301' ) {
+		switch ( $type ) {
+			case '404':
+				$this->handle_404();
 				break;
-
 			default:
-				$this->redirect = Redirect\General::instance();
+				$this->redirect( $type );
+				break;
 		}
+	}
+
+	public function set_url( $url ) {
+		$this->url = $url;
+	}
+
+	public function set_status( $type ) {
+		$this->type = $type;
+	}
+
+	/**
+	 * Redirect the page to custom page.
+	 *
+	 * @param int $type Redirect type.
+	 *
+	 * @since 4.0
+	 *
+	 * @return void
+	 */
+	public function redirect( $type ) {
+		// Redirect to custom page.
+		if ( ! empty( $this->url ) ) {
+			wp_redirect( $this->url, $type );
+			// We need to exit because WP is lazy.
+			exit;
+		}
+	}
+
+
+	/**
+	 * Handle 404 redirect request.
+	 *
+	 * @since 4.0
+	 */
+	public function handle_404() {
+		Redirect_404::get()->init();
 	}
 }

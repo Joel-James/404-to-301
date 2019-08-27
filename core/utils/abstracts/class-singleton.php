@@ -1,6 +1,6 @@
 <?php
 
-namespace DuckDev404\Core\Utils\Abstracts;
+namespace DuckDev\WP404\Utils\Abstracts;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -41,6 +41,11 @@ abstract class Singleton {
 
 		if ( ! isset( $instances[ $called_class_name ] ) ) {
 			$instances[ $called_class_name ] = new $called_class_name();
+
+			// Run the initialization method.
+			if ( method_exists( $instances[ $called_class_name ], 'init' ) ) {
+				$instances[ $called_class_name ]->init();
+			}
 		}
 
 		return $instances[ $called_class_name ];

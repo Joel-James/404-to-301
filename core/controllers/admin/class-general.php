@@ -1,11 +1,11 @@
 <?php
 
-namespace DuckDev404\Core\Controllers\Admin;
+namespace DuckDev\WP404\Controllers\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev404\Core\Utils\Abstracts\Base;
+use DuckDev\WP404\Utils\Abstracts\Base;
 
 /**
  * The general functionality of the admin side of plugin.
@@ -16,6 +16,16 @@ use DuckDev404\Core\Utils\Abstracts\Base;
  * @author Joel James <me@joelsays.com>
  */
 class General extends Base {
+
+	/**
+	 * Initilize the class by registering the hooks.
+	 *
+	 * @since 4.0.0
+	 */
+	public function init() {
+		add_action( 'admin_init', [ $this, 'register_settings' ] );
+		add_filter( 'plugin_action_links', [ $this, 'action_links' ], 10, 2 );
+	}
 
 	/**
 	 * Registering i4t3 options.
@@ -31,8 +41,8 @@ class General extends Base {
 	 */
 	public function register_settings() {
 		register_setting(
-			'i4t3_gnrl_options',
-			'i4t3_gnrl_options'
+			'404_to_301_settings',
+			'404_to_301_settings'
 		);
 	}
 

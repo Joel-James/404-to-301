@@ -1,6 +1,6 @@
 <?php
 
-namespace DuckDev404\Core\Utils\Abstracts;
+namespace DuckDev\WP404\Utils\Abstracts;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -14,6 +14,15 @@ defined( 'WPINC' ) || die;
  * @author Joel James <me@joelsays.com>
  */
 abstract class Base extends Singleton {
+
+	/**
+	 * This is an empty constructor.
+	 *
+	 * @since 4.0.0
+	 */
+	protected function __construct() {
+		parent::__construct();
+	}
 
 	/**
 	 * Setter method.

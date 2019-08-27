@@ -1,6 +1,6 @@
 <?php
 
-namespace DuckDev404\Core\Helpers;
+namespace DuckDev\WP404\Helpers;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -119,14 +119,15 @@ class Settings {
 	/**
 	 * Update a setting group value.
 	 *
-	 * @param array $values Setting values.
+	 * @param array  $values Setting values.
+	 * @param string $group  Setting group.
 	 *
 	 * @since  4.0
 	 * @access public
 	 *
 	 * @return bool False if value was not updated. True if value was updated.
 	 */
-	private static function update_options( $values ) {
+	public static function update_options( $values, $group = '' ) {
 		// We need values.
 		if ( empty( $values ) ) {
 			return false;
@@ -141,6 +142,17 @@ class Settings {
 		 */
 		$values = apply_filters( '404_to_301_update_options', $values );
 
-		return update_site_option( self::$key, $values );
+		// We need values.
+		if ( empty( $group ) ) {
+			return update_site_option( self::$key, $values );
+		} else {
+			// Get all settings.
+			$settings = (array) self::get_options();
+
+			// Update group values.
+			$settings[ $group ] = $values;
+
+			return update_site_option( self::$key, $settings );
+		}
 	}
 }

@@ -2,13 +2,13 @@
 /**
  * Plugin Name:     404 to 301
  * Plugin URI:      https://duckdev.com/
- * Description:     The boilerplate plugin for WordPress plugin development.
+ * Description:     Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
  * Version:         4.0.0
  * Author:          Joel James
  * Author URI:      https://duckdev.com/
  * License:         GPL-2.0+
  * License URI:     http://www.gnu.org/licenses/gpl-3.0.txt
- * Text Domain:     dd-boilerplate
+ * Text Domain:     404-to-301
  * Domain Path:     /languages
  *
  * Copyright 2017-2018 Duck Dev (http://duckdev.com)
@@ -27,11 +27,23 @@
  * along with 404 to 301. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// If this file is called directly, abort.
+// Direct hit? Rest in peace.
 defined( 'WPINC' ) || die;
 
-// Define DD404_PLUGIN_FILE.
+// Define plugin version.
+define( 'DD404_VERSION', '4.0.0' );
+
+// Define plugin file.
 define( 'DD404_PLUGIN_FILE', __FILE__ );
+
+// Define plugin directory path.
+define( 'DD404_DIR', plugin_dir_path( __FILE__ ) );
+
+// Define plugin directory url.
+define( 'DD404_URL', plugin_dir_url( __FILE__ ) );
+
+// Define plugin slug name.
+define( 'DD404_SLUG', '404-to-301' );
 
 // Auto load classes.
 require_once dirname( __FILE__ ) . '/core/vendor/autoloader.php';
@@ -45,28 +57,17 @@ require_once dirname( __FILE__ ) . '/core/vendor/autoloader.php';
  *
  * @since  4.0.0
  *
- * @return DuckDev404\Core\Main
+ * @return DuckDev\WP404\Plugin
  */
-function duckdev_404() {
-	return DuckDev404\Core\Main::get();
+function duckdev_404_to_301() {
+	return DuckDev\WP404\Plugin::get();
 }
 
 // Check the minimum required PHP version (5.6) and run the plugin.
 if ( version_compare( PHP_VERSION, '5.6', '>=' ) ) {
-	// Run the plugin.
-	duckdev_404();
-
 	// Activation hook.
-	register_activation_hook( DD404_PLUGIN_FILE, array( duckdev_404(), 'activate' ) );
-} else {
-	// Show an admin notice.
-	add_action( 'admin_notices', function() {
-		printf(
-			__( '%1$sUh oh! %2$s requires a minimum PHP version of 5.6. WordPress core also %3$sbumps minimum required PHP version to 5.6.%4$s', '404-to-301' ),
-			'<div class="notice notice-error"><p>',
-			'<strong>404 to 301</strong>',
-			'<a href="https://make.wordpress.org/core/2018/12/08/updating-the-minimum-php-version/" target="_blank">',
-			'</a></p></div>'
-		);
-	} );
+	register_activation_hook( DD404_PLUGIN_FILE, array( duckdev_404_to_301(), 'activate' ) );
+
+	// Run the plugin.
+	add_action( 'plugins_loaded', 'duckdev_404_to_301' );
 }

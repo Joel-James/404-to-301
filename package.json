@@ -26,11 +26,19 @@
   "main": "404-to-301.php",
   "repository": "git+https://github.com/Joel-James/404-to-301.git",
   "scripts": {
+    "watch": "clear && webpack --watch --mode development",
     "compile": "clear && grunt clean && webpack -p --progress",
     "translate": "clear && grunt translate",
-    "build": "npm run compile && grunt prepare && grunt build"
+    "build": "npm run compile && grunt prepare && grunt build",
+    "prod": "webpack -p --progress --config webpack.config.js --mode=production"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0",
+    "isomorphic-fetch": "^2.2.1",
+    "prop-types": "^15.6.2",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2"
+  },
   "devDependencies": {
     "grunt": "^1.0.3",
     "grunt-checktextdomain": "^1.0.1",
@@ -42,10 +50,6 @@
     "grunt-po2mo": "^0.1.2",
     "ajv": "6.5.2",
     "ajv-keywords": "^3.2.0",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.11",
     "to-string-loader": "^1.1.4",
     "file-loader": "^1.1.11",
@@ -56,7 +60,17 @@
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
     "url-loader": "^1.0.1",
-    "webpack": "^4.16.2",
-    "webpack-command": "^0.3.1"
+    "webpack-command": "^0.3.1",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.4",
+    "eslint": "^5.6.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-react": "^7.11.1",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
   }
 }

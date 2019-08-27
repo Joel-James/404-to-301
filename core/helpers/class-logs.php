@@ -1,6 +1,6 @@
 <?php
 
-namespace DuckDev404\Core\Helpers;
+namespace DuckDev\WP404\Helpers;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;

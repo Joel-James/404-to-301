@@ -1,12 +1,12 @@
 <?php
 
-namespace DuckDev404\Core\Controllers\Admin;
+namespace DuckDev\WP404\Controllers\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev404\Core\Utils\Abstracts\Base;
-use DuckDev404\Core\Helpers;
+use DuckDev\WP404\Utils\Abstracts\Base;
+use DuckDev\WP404\Helpers;
 
 /**
  * The review notice functionality of the plugin.
@@ -17,6 +17,16 @@ use DuckDev404\Core\Helpers;
  * @author Joel James <me@joelsays.com>
  */
 class Review extends Base {
+
+	/**
+	 * Initilize the class by registering the hooks.
+	 *
+	 * @since 4.0.0
+	 */
+	public function init() {
+		add_action( 'admin_notices', [ $this, 'notice' ] );
+		add_action( 'admin_init', [ $this, 'action' ] );
+	}
 
 	/**
 	 * Show admin to ask for review in wp.org.
@@ -36,18 +46,18 @@ class Review extends Base {
 				return false;
 			}
 			// Get the notice time.
-			$notice_time = get_option( 'i4t3_review_notice' );
+			$notice_time = get_option( '404_to_301_review_notice' );
 			// If not set, set now and bail.
 			if ( ! $notice_time ) {
 				// Set to next week.
-				return update_option( 'i4t3_review_notice', time() + 604800 );
+				return update_option( '404_to_301_review_notice', time() + 604800 );
 			}
 
 			// Current logged in user.
 			$current_user = wp_get_current_user();
 
 			// Did the current user already dismiss?.
-			$dismissed = get_user_meta( $current_user->ID, 'i4t3_review_notice_dismissed', true );
+			$dismissed = get_user_meta( $current_user->ID, '404_to_301_review_notice_dismissed', true );
 
 			// Continue only when allowed.
 			if ( (int) $notice_time <= time() && ! $dismissed ) {
@@ -79,11 +89,11 @@ class Review extends Base {
 		switch ( $action ) {
 			case 'later':
 				// Let's show after another 2 weeks.
-				update_option( 'i4t3_review_notice', time() + 1209600 );
+				update_option( '404_to_301_review_notice', time() + 1209600 );
 				break;
 			case 'dismiss':
 				// Do not show again to this user.
-				update_user_meta( get_current_user_id(), 'i4t3_review_notice_dismissed', 1 );
+				update_user_meta( get_current_user_id(), '404_to_301_review_notice_dismissed', 1 );
 				break;
 		}
 	}

@@ -1,35 +1,47 @@
 <?php
 
-namespace DuckDev404\Core\Controllers\Admin;
+namespace DuckDev\WP404\Controllers\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev404\Core\Utils\Abstracts\Base;
+use DuckDev\WP404\Utils\Abstracts\Base;
 
 /**
- * The assets-specific functionality of the plugin.
+ * The admin assets specific functionality of the plugin
  *
- * @link   https://duckdev.com
- * @since  4.0
+ * @link       https://duckdev.com
+ * @since      4.0.0
+ * @package    Assets
+ * @subpackage Admin
  *
- * @author Joel James <me@joelsays.com>
+ * @author     Joel James <me@joelsays.com>
  */
 class Assets extends Base {
 
 	/**
-	 * Register the assets for the admin area.
+	 * Initilize the class by registering the hooks.
+	 *
+	 * @since 4.0.0
+	 */
+	public function init() {
+		// Asset hooks.
+		add_action( 'admin_enqueue_scripts', [ $this, 'register_settings' ] );
+	}
+
+	/**
+	 * Register the assets for the admin settings area.
 	 *
 	 * @since  4.0
 	 *
 	 * @return void
 	 */
-	public function register_admin() {
-		// Enqueue scripts.
-		$this->admin_scripts();
+	public function register_settings() {
+		// Register scripts.
+		$this->settings_scripts();
 
-		// Enqueue styles.
-		$this->admin_styles();
+		// Register styles.
+		$this->settings_styles();
 
 		/**
 		 * Action hook to enqueue settings assets.
@@ -39,42 +51,49 @@ class Assets extends Base {
 		 *
 		 * @since 4.0
 		 */
-		do_action( 'dd404_assets_register_admin' );
+		do_action( 'dd404_assets_register_admin_settings' );
 	}
 
 	/**
-	 * Admin pages specific scripts.
+	 * Admin settings page specific scripts.
 	 *
-	 * @since  4.0
+	 * @since  4.0.0
 	 * @access private
 	 *
 	 * @return void
 	 */
-	private function admin_scripts() {
+	private function settings_scripts() {
 		// Settings page script.
-		wp_enqueue_script(
-			DD404_NAME . '-settings',
-			DD404_URL . 'assets/js/admin/admin.min.js',
-			array( 'jquery' ),
+		wp_register_script(
+			'dd404-settings',
+			DD404_URL . 'app/assets/js/admin/admin.js',
+			[],
 			DD404_VERSION,
-			false
+			true
+		);
+
+		// Localizing items.
+		wp_localize_script( 'dd404-settings', 'dd404_settings', array(
+				'api_nonce' => wp_create_nonce( 'wp_rest' ),
+				'api_url'   => rest_url( '404-to-301/v1/' ),
+			)
 		);
 	}
 
 	/**
-	 * Admin pages specific styles.
+	 * Admin settings page specific styles.
 	 *
-	 * @since  4.0
+	 * @since  4.0.0
 	 * @access private
 	 *
 	 * @return void
 	 */
-	private function admin_styles() {
+	private function settings_styles() {
 		// Settings page style.
-		wp_enqueue_style(
-			DD404_NAME . '-settings',
-			DD404_URL . 'assets/css/admin.min.css',
-			array(),
+		wp_register_style(
+			'dd404-settings',
+			DD404_URL . 'app/assets/css/admin.min.css',
+			[],
 			DD404_VERSION,
 			'all'
 		);

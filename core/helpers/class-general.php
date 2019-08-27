@@ -1,6 +1,6 @@
 <?php
 
-namespace DuckDev404\Core\Helpers;
+namespace DuckDev\WP404\Helpers;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -83,34 +83,5 @@ class General {
 			// Log error.
 			Logs::error_log( sprintf( __( '%1$s, view missing or not readable: %2$s', '404-to-301' ), DD404_NAME, $file_name ) );
 		}
-	}
-
-	/**
-	 * Render admin menu for Pro Sites dashboard.
-	 *
-	 * @param string $current_item Current active item.
-	 *
-	 * @since  4.0
-	 *
-	 * @return void
-	 */
-	public static function render_menu( $current_item ) {
-		$tabs = array(
-			'default' => __( 'Settings', '404-to-301' ),
-		);
-
-		/**
-		 * Filter to add/remove menu items in admin pages.
-		 *
-		 * @param array $menu_items Menu items.
-		 *
-		 * @since 4.0
-		 */
-		$tabs = apply_filters( 'dd404_admin_menu_items', $tabs );
-
-		self::view( 'admin/common/menu', array(
-			'tabs' => $tabs,
-			'tab'  => $current_item,
-		) );
 	}
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace DuckDev404\Core\Views\Admin;
+namespace DuckDev\WP404\Views\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev404\Core\Utils\Abstracts\Base;
-use DuckDev404\Core\Helpers;
+use DuckDev\WP404\Helpers;
+use DuckDev\WP404\Utils\Abstracts\Base;
 
 
 /**
@@ -46,13 +46,8 @@ class Pages extends Base {
 	 * @return void
 	 */
 	public function settings() {
-		// Get args for the page.
-		$args = array(
-			'tab' => Helpers\Menu::current_tab( 'sub_page' ),
-		);
+		Helpers\General::view( 'admin/settings' );
 
-		Helpers\General::view( 'admin/common/header' );
-		Helpers\General::view( 'admin/settings', $args );
-		Helpers\General::view( 'admin/common/footer' );
+		wp_enqueue_script( 'dd404-settings' );
 	}
 }

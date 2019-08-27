@@ -1,24 +1,21 @@
 <?php
 
-// If this file is called directly, abort.
+// Direct hit? You must die.
 defined( 'WPINC' ) || die;
 
 /**
- * Provide modules admin area view for the plugin
+ * Provide settings page view template.
  *
- * @var string $tab Current tab.
+ * We will load the content using react.
  *
  * @author Joel James <me@joelsays.com>
  * @link   https://duckdev.com
- * @since  4.0
+ * @since  4.0.0
  */
 ?>
 
-<?php DuckDev404\Core\Helpers\General::render_menu( $tab ); // Render admin menu. ?>
+<div class="wrap">
 
-<form method="post" action="options.php">
+    <div id="dd404-settings"></div>
 
-	<?php settings_fields( 'i4t3_gnrl_options' ); // Hidden fields. ?>
-
-	<?php submit_button( __( 'Save Settings', '404-to-301' ) ); ?>
-</form>
+</div><!-- /.wrap -->
