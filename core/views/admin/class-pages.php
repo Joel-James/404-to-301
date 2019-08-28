@@ -53,10 +53,13 @@ class Pages extends Base {
 	 * @return void
 	 */
 	public function settings() {
-		Helpers\General::view( 'admin/settings' );
-
 		// Enqueue the scripts.
 		wp_enqueue_script( 'dd404-settings' );
+
+		// Settings page content.
+		Helpers\General::view( 'admin/common/header' );
+		Helpers\General::view( 'admin/settings' );
+		Helpers\General::view( 'admin/common/footer' );
 
 		/**
 		 * Action hook to run after printing settings page content.

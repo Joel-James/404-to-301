@@ -1,6 +1,3 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
 /**
  * WordPress admin notice component.
  *
@@ -8,9 +5,23 @@ import PropTypes from 'prop-types';
  * The resulting notice class and message will depend on the contents of the 'notice' prop object,
  * passed down from Admin.jsx.
  *
- * @since 4.0.0
+ * 404 to 301, Copyright 2019 Duck Dev.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-export default class adminNotice extends React.Component {
+
+import React from 'react';
+import PropTypes from 'prop-types';
+
+export default class Notice extends React.Component {
 
 	/**
 	 * As soon as the component has mounted.
@@ -77,14 +88,14 @@ export default class adminNotice extends React.Component {
 }
 
 // Set default values for some of our props.
-adminNotice.defaultProps = {
+Notice.defaultProps = {
 	duration: 4000,
 	showDismiss: true,
 	onDismissClick: null,
 };
 
 // And define our propTypes.
-adminNotice.propTypes = {
+Notice.propTypes = {
 	duration: PropTypes.number,
 	showDismiss: PropTypes.bool,
 	onDismissClick: PropTypes.func,
