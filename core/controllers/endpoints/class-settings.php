@@ -41,7 +41,7 @@ class Settings extends Endpoint {
 	 * @return string
 	 */
 	public function get_url() {
-		return $this->get_namespace() . $this->endpoint;
+		return rest_url( $this->get_namespace() . $this->endpoint );
 	}
 
 	/**
@@ -106,7 +106,7 @@ class Settings extends Endpoint {
 		// Send response.
 		return new WP_REST_Response( [
 			'success' => true,
-			'value'   => $value,
+			'settings'   => ['name' => 'Joel'],
 		], 200 );
 	}
 

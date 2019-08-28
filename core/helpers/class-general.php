@@ -2,7 +2,7 @@
 
 namespace DuckDev\WP404\Helpers;
 
-// If this file is called directly, abort.
+// Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
 /**
@@ -81,7 +81,7 @@ class General {
 			include $file_name;
 		} else {
 			// Log error.
-			Logs::error_log( sprintf( __( '%1$s, view missing or not readable: %2$s', '404-to-301' ), DD404_NAME, $file_name ) );
+			Logs::error_log( sprintf( __( '%1$s, view missing or not readable: %2$s', '404-to-301' ), '404 to 301', $file_name ) );
 		}
 	}
 }

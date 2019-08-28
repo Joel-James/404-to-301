@@ -2,7 +2,7 @@
 
 namespace DuckDev\WP404\Controllers\Front;
 
-// If this file is called directly, abort.
+// Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
 use DuckDev\WP404\Utils\Abstracts\Base;

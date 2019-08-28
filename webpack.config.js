@@ -100,7 +100,7 @@ const scssConfig = _.assign(_.cloneDeep(sharedConfig), {
 
 const jsConfig = _.assign(_.cloneDeep(sharedConfig), {
 	entry: {
-		'admin/admin': path.resolve(__dirname, 'app/src/js/admin.js'),
+		'settings': path.resolve(__dirname, 'app/src/js/settings.js'),
 	},
 
 	output: {

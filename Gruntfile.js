@@ -83,9 +83,9 @@ module.exports = function ( grunt ) {
 			},
 			folder_v2: [
 				'releases/**',
-				'assets/css/**',
-				'assets/js/**',
-				'assets/fonts/**'
+				'app/assets/css/**',
+				'app/assets/js/**',
+				'app/assets/fonts/**'
 			]
 		},
 

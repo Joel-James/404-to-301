@@ -1,6 +1,6 @@
 <?php
 
-// If this file is called directly, abort.
+// Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
 /**

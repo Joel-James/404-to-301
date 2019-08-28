@@ -2,7 +2,7 @@
 
 namespace DuckDev\WP404\Views\Admin;
 
-// If this file is called directly, abort.
+// Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
 use DuckDev\WP404\Helpers;
@@ -36,18 +36,33 @@ class Pages extends Base {
 		Helpers\General::view( 'admin/common/header' );
 		Helpers\General::view( 'admin/logs', $args );
 		Helpers\General::view( 'admin/common/footer' );
+
+		/**
+		 * Action hook to run after printing logs page content.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( '404_to_301_after_logs_page_content' );
 	}
 
 	/**
 	 * View for the plugin settings page.
 	 *
-	 * @since  4.0
+	 * @since 4.0.0
 	 *
 	 * @return void
 	 */
 	public function settings() {
 		Helpers\General::view( 'admin/settings' );
 
+		// Enqueue the scripts.
 		wp_enqueue_script( 'dd404-settings' );
+
+		/**
+		 * Action hook to run after printing settings page content.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( '404_to_301_after_setting_page_content' );
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace DuckDev\WP404\Controllers\Admin;
 
-// If this file is called directly, abort.
+// Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
 use DuckDev\WP404\Utils\Abstracts\Base;
@@ -66,7 +66,7 @@ class Assets extends Base {
 		// Settings page script.
 		wp_register_script(
 			'dd404-settings',
-			DD404_URL . 'app/assets/js/admin/admin.js',
+			DD404_URL . 'app/assets/js/settings.js',
 			[],
 			DD404_VERSION,
 			true
@@ -92,7 +92,7 @@ class Assets extends Base {
 		// Settings page style.
 		wp_register_style(
 			'dd404-settings',
-			DD404_URL . 'app/assets/css/admin.min.css',
+			DD404_URL . 'app/assets/css/settings.min.css',
 			[],
 			DD404_VERSION,
 			'all'
