@@ -143,7 +143,7 @@ export default class Settings extends Component {
 		}
 
 		return (
-			<div className={ 'wrap' }>
+			<div className={ 'dd404-wrap' }>
 				{ notice }
 				<Tabs>
 					<div label="Tab 1">

@@ -59,29 +59,10 @@ export default class Notice extends React.Component {
 	 * @since 4.0.0
 	 */
 	render() {
-		// Define dismiss as an empty variable.
-		let dismiss;
-
-		// if our showDismiss prop is set to true.
-		if ( this.props.showDismiss ) {
-			// Set the dismiss variable to contain our dismiss button markup.
-			dismiss = (
-				<span
-					tabIndex="0"
-					className="notice_dismiss"
-					onClick={ this.props.onDismissClick }
-				>
-					<span className="dashicons dashicons-dismiss" />
-					<span className="screen-reader-text">Dismiss</span>
-				</span>
-			);
-		}
-
 		// Return the markup.
 		return (
 			<div className={ `notice is-dismissible notice-${ this.props.notice.type }` }>
 				<p><strong>{ this.props.notice.message }</strong></p>
-				{ dismiss }
 			</div>
 		);
 	}
@@ -89,16 +70,12 @@ export default class Notice extends React.Component {
 
 // Set default values for some of our props.
 Notice.defaultProps = {
-	duration: 4000,
-	showDismiss: true,
-	onDismissClick: null,
+	duration: 3000,
 };
 
 // And define our propTypes.
 Notice.propTypes = {
 	duration: PropTypes.number,
-	showDismiss: PropTypes.bool,
-	onDismissClick: PropTypes.func,
 	notice: PropTypes.oneOfType( [
 		PropTypes.bool,
 		PropTypes.shape( {
