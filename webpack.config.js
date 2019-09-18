@@ -1,128 +1,128 @@
-const _ = require('lodash'),
-	path = require('path'),
-	webpack = require('webpack'),
-	ATP = require('autoprefixer'),
-	CSSExtract = require("mini-css-extract-plugin");
+const webpack = require('webpack');
+const path = require('path');
+const packages = require('./package.json');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+const BrowserSyncPlugin = require( 'browser-sync-webpack-plugin' );
 
-// The path where the Shared UI fonts & images should be sent.
-const config = {
-	output: {
-		imagesDirectory: '../images',
-		fontsDirectory: '../fonts'
-	}
+// Naming and path settings
+var appName = 'app';
+var entryPoint = {
+	frontend: './app/src/js/frontend/main.js',
+	admin: './app/src/js/admin/main.js',
+	vendor: Object.keys(packages.dependencies),
+	style: './app/src/less/style.less',
 };
 
-const sharedConfig = {
-	mode: 'production',
+var exportPath = path.resolve(__dirname, './app/assets/js');
 
-	stats: {
-		colors: true,
-		entrypoints: true
-	},
+// Enviroment flag
+var plugins = [];
+var env = process.env.WEBPACK_ENV;
 
-	watchOptions: {
-		ignored: /node_modules/,
-		poll: 1000
+function isProduction() {
+	return process.env.WEBPACK_ENV === 'production';
+}
+
+// extract css into its own file
+const extractCss = new ExtractTextPlugin({
+	filename: "../css/[name].css",
+});
+
+plugins.push( extractCss );
+
+// Extract all 3rd party modules into a separate 'vendor' chunk
+plugins.push(new webpack.optimize.CommonsChunkPlugin({
+	name: 'vendor',
+	minChunks: ({ resource }) => /node_modules/.test(resource),
+}));
+
+// Generate a 'manifest' chunk to be inlined in the HTML template
+// plugins.push(new webpack.optimize.CommonsChunkPlugin('manifest'));
+
+// Compress extracted CSS. We are using this plugin so that possible
+// duplicated CSS from different components can be deduped.
+plugins.push(new OptimizeCSSPlugin({
+	cssProcessorOptions: {
+		safe: true,
+		map: {
+			inline: false
+		}
 	}
-};
+}));
 
-const scssConfig = _.assign(_.cloneDeep(sharedConfig), {
-	entry: {
-		'admin': './app/src/scss/admin/admin.scss',
-		'public': './app/src/scss/public/frontend.scss'
-	},
+// Differ settings based on production flag
+if ( isProduction() ) {
 
+	plugins.push(new UglifyJsPlugin({
+		sourceMap: true,
+	}));
+
+	plugins.push(new webpack.DefinePlugin({
+		'process.env': env
+	}));
+
+	appName = '[name].min.js';
+} else {
+	appName = '[name].js';
+}
+
+module.exports = {
+	entry: entryPoint,
 	output: {
-		filename: '[name].min.css',
-		path: path.resolve(__dirname, 'app/assets/css')
+		path: exportPath,
+		filename: appName,
+		chunkFilename: 'chunks/[chunkhash].js',
+		jsonpFunction: 'pluginWebpack'
 	},
 
-	module: {
-		rules: [
-			{
-				test: /\.scss$/,
-				exclude: /node_modules/,
-				use: [CSSExtract.loader,
-					{
-						loader: 'css-loader'
-					},
-					{
-						loader: 'postcss-loader',
-						options: {
-							plugins: [
-								ATP({
-									browsers: ['ie > 9', '> 1%']
-								})
-							],
-							sourceMap: true
-						}
-					},
-					{
-						loader: 'resolve-url-loader'
-					},
-					{
-						loader: 'sass-loader',
-						options: {
-							sourceMap: true
-						}
-					}
-				]
-			},
-			{
-				test: /\.(png|jpg|gif)$/,
-				use: {
-					loader: 'file-loader', // Instructs webpack to emit the required object as file and to return its public URL.
-					options: {
-						name: '[name].[ext]',
-						outputPath: config.output.imagesDirectory
-					}
-				}
-			},
-			{
-				test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
-				use: {
-					loader: 'file-loader', // Instructs webpack to emit the required object as file and to return its public URL.
-					options: {
-						name: '[name].[ext]',
-						outputPath: config.output.fontsDirectory
-					}
-				}
-			}
+	resolve: {
+		alias: {
+			'vue$': 'vue/dist/vue.esm.js',
+			'@': path.resolve('./app/src/js/'),
+			'frontend': path.resolve('./app/src/js/frontend/'),
+			'admin': path.resolve('./app/src/js/admin/'),
+		},
+		modules: [
+			path.resolve('./node_modules'),
+			path.resolve(path.join(__dirname, 'app/src/js/')),
 		]
 	},
 
-	plugins: [
-		new CSSExtract({
-			filename: '../css/[name].min.css'
-		})
-	]
-});
-
-const jsConfig = _.assign(_.cloneDeep(sharedConfig), {
-	entry: {
-		'settings': path.resolve(__dirname, 'app/src/js/settings.js'),
-	},
-
-	output: {
-		filename: '[name].js',
-		path: path.resolve(__dirname, 'app/assets/js'),
-	},
-
-	devtool: sharedConfig.mode,
-
-	resolve: {
-		extensions: [".js", ".jsx", ".json"],
-	},
+	plugins,
 
 	module: {
 		rules: [
 			{
-				test: /\.jsx?$/,
-				exclude: /node_modules/,
+				test: /\.js$/,
+				exclude: /(node_modules|bower_components)/,
 				loader: 'babel-loader',
+				query: {
+					presets: ['es2015']
+				}
 			},
-		],
+			{
+				test: /\.vue$/,
+				loader: 'vue-loader',
+				options: {
+					extractCSS: true
+				}
+			},
+			{
+				test: /\.less$/,
+				use: extractCss.extract({
+					use: [{
+						loader: "css-loader"
+					}, {
+						loader: "less-loader"
+					}]
+				})
+			},
+			{
+				test: /\.css$/,
+				use: [ 'style-loader', 'css-loader' ]
+			}
+		]
 	},
-});
-
-module.exports = [scssConfig, jsConfig];
+}
