@@ -1,21 +1,23 @@
-const webpack = require('webpack');
-const path = require('path');
-const packages = require('./package.json');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+const webpack = require( 'webpack' );
+const path = require( 'path' );
+const packages = require( './package.json' );
+const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
+const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
+const OptimizeCSSPlugin = require( 'optimize-css-assets-webpack-plugin' );
 const BrowserSyncPlugin = require( 'browser-sync-webpack-plugin' );
+
+const config = require( './config.json' );
 
 // Naming and path settings
 var appName = 'app';
 var entryPoint = {
-	frontend: './app/src/js/frontend/main.js',
-	admin: './app/src/js/admin/main.js',
-	vendor: Object.keys(packages.dependencies),
-	style: './app/src/less/style.less',
+	frontend: './assets/src/frontend/main.js',
+	admin: './assets/src/admin/main.js',
+	vendor: Object.keys( packages.dependencies ),
+	style: './assets/less/style.less',
 };
 
-var exportPath = path.resolve(__dirname, './app/assets/js');
+var exportPath = path.resolve( __dirname, './assets/js' );
 
 // Enviroment flag
 var plugins = [];
@@ -26,42 +28,53 @@ function isProduction() {
 }
 
 // extract css into its own file
-const extractCss = new ExtractTextPlugin({
+const extractCss = new ExtractTextPlugin( {
 	filename: "../css/[name].css",
-});
+} );
 
 plugins.push( extractCss );
 
 // Extract all 3rd party modules into a separate 'vendor' chunk
-plugins.push(new webpack.optimize.CommonsChunkPlugin({
+plugins.push( new webpack.optimize.CommonsChunkPlugin( {
 	name: 'vendor',
-	minChunks: ({ resource }) => /node_modules/.test(resource),
-}));
+	minChunks: ( { resource } ) => /node_modules/.test( resource ),
+} ) );
+
+plugins.push( new BrowserSyncPlugin( {
+	proxy: {
+		target: config.proxyURL
+	},
+	files: [
+		'**/*.php'
+	],
+	cors: true,
+	reloadDelay: 0
+} ) );
 
 // Generate a 'manifest' chunk to be inlined in the HTML template
 // plugins.push(new webpack.optimize.CommonsChunkPlugin('manifest'));
 
 // Compress extracted CSS. We are using this plugin so that possible
 // duplicated CSS from different components can be deduped.
-plugins.push(new OptimizeCSSPlugin({
+plugins.push( new OptimizeCSSPlugin( {
 	cssProcessorOptions: {
 		safe: true,
 		map: {
 			inline: false
 		}
 	}
-}));
+} ) );
 
 // Differ settings based on production flag
 if ( isProduction() ) {
 
-	plugins.push(new UglifyJsPlugin({
+	plugins.push( new UglifyJsPlugin( {
 		sourceMap: true,
-	}));
+	} ) );
 
-	plugins.push(new webpack.DefinePlugin({
+	plugins.push( new webpack.DefinePlugin( {
 		'process.env': env
-	}));
+	} ) );
 
 	appName = '[name].min.js';
 } else {
@@ -80,13 +93,13 @@ module.exports = {
 	resolve: {
 		alias: {
 			'vue$': 'vue/dist/vue.esm.js',
-			'@': path.resolve('./app/src/js/'),
-			'frontend': path.resolve('./app/src/js/frontend/'),
-			'admin': path.resolve('./app/src/js/admin/'),
+			'@': path.resolve( './assets/src/' ),
+			'frontend': path.resolve( './assets/src/frontend/' ),
+			'admin': path.resolve( './assets/src/admin/' ),
 		},
 		modules: [
-			path.resolve('./node_modules'),
-			path.resolve(path.join(__dirname, 'app/src/js/')),
+			path.resolve( './node_modules' ),
+			path.resolve( path.join( __dirname, 'assets/src/' ) ),
 		]
 	},
 
@@ -99,7 +112,7 @@ module.exports = {
 				exclude: /(node_modules|bower_components)/,
 				loader: 'babel-loader',
 				query: {
-					presets: ['es2015']
+					presets: [ 'es2015' ]
 				}
 			},
 			{
@@ -111,13 +124,13 @@ module.exports = {
 			},
 			{
 				test: /\.less$/,
-				use: extractCss.extract({
-					use: [{
+				use: extractCss.extract( {
+					use: [ {
 						loader: "css-loader"
 					}, {
 						loader: "less-loader"
-					}]
-				})
+					} ]
+				} )
 			},
 			{
 				test: /\.css$/,
