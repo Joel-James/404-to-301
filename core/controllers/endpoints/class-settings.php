@@ -106,7 +106,7 @@ class Settings extends Endpoint {
 		// Send response.
 		return new WP_REST_Response( [
 			'success' => true,
-			'settings'   => ['name' => 'Joel'],
+			'settings'   => $value,
 		], 200 );
 	}
 

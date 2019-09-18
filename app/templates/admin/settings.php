@@ -14,8 +14,4 @@ defined( 'WPINC' ) || die;
  */
 ?>
 
-<div class="wrap">
-
-    <div id="dd404-settings"></div>
-
-</div><!-- /.wrap -->
+<div id="dd404-settings"></div>

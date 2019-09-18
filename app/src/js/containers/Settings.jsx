@@ -19,6 +19,8 @@ import PropTypes from 'prop-types';
 import fetchWP from '../utils/fetchWP';
 import Notice from '../components/notice';
 import Tabs from '../components/tabs';
+import General from './tabs/General';
+import Email from './tabs/Email';
 
 export default class Settings extends Component {
 	constructor( props ) {
@@ -146,68 +148,12 @@ export default class Settings extends Component {
 			<div className={ 'dd404-wrap' }>
 				{ notice }
 				<Tabs>
-					<div label="Tab 1">
-						<form>
-							<table className="form-table">
-								<tbody>
-								<tr>
-									<th>
-										<label>Tab 1:</label>
-									</th>
-									<td>
-										<input type="text"
-											   name={ 'name' }
-											   value={ this.state.settings.name }
-											   onChange={ this.updateInput }
-										/>
-									</td>
-								</tr>
-								<tr>
-									<td colSpan={ 2 }>
-										<button
-											id="save"
-											className="button button-primary"
-											onClick={ this.handleSave }
-										>
-											Save Settings
-										</button>
-									</td>
-								</tr>
-								</tbody>
-							</table>
-						</form>
-					</div>
-					<div label="Tab 2">
-						<form>
-							<table className="form-table">
-								<tbody>
-								<tr>
-									<th>
-										<label>Tab 2:</label>
-									</th>
-									<td>
-										<input type="text"
-											   name={ 'name' }
-											   value={ this.state.settings.name }
-											   onChange={ this.updateInput }
-										/>
-									</td>
-								</tr>
-								<tr>
-									<td colSpan={ 2 }>
-										<button
-											id="save"
-											className="button button-primary"
-											onClick={ this.handleSave }
-										>
-											Save Settings
-										</button>
-									</td>
-								</tr>
-								</tbody>
-							</table>
-						</form>
-					</div>
+					<General
+						label="Tab 1"
+					/>
+					<Email
+						label="Tab 2"
+					/>
 				</Tabs>
 			</div>
 		);
