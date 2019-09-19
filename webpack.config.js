@@ -11,13 +11,13 @@ const config = require( './config.json' );
 // Naming and path settings
 var appName = 'app';
 var entryPoint = {
-	frontend: './assets/src/frontend/main.js',
-	admin: './assets/src/admin/main.js',
+	frontend: './app/src/js/frontend/main.js',
+	settings: './app/src/js/admin/main.js',
 	vendor: Object.keys( packages.dependencies ),
-	style: './assets/less/style.less',
+	style: './app/src/less/style.less',
 };
 
-var exportPath = path.resolve( __dirname, './assets/js' );
+var exportPath = path.resolve( __dirname, './app/assets/js' );
 
 // Enviroment flag
 var plugins = [];
@@ -93,13 +93,13 @@ module.exports = {
 	resolve: {
 		alias: {
 			'vue$': 'vue/dist/vue.esm.js',
-			'@': path.resolve( './assets/src/' ),
-			'frontend': path.resolve( './assets/src/frontend/' ),
-			'admin': path.resolve( './assets/src/admin/' ),
+			'@': path.resolve( './app/src/js/' ),
+			'frontend': path.resolve( './app/src/js/frontend/' ),
+			'settings': path.resolve( './app/src/js/admin/' ),
 		},
 		modules: [
 			path.resolve( './node_modules' ),
-			path.resolve( path.join( __dirname, 'assets/src/' ) ),
+			path.resolve( path.join( __dirname, 'app/src/js/' ) ),
 		]
 	},
 
