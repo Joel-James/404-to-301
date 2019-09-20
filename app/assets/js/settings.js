@@ -134,7 +134,40 @@ var render = function() {
   return _c(
     "div",
     { attrs: { id: "dd404-admin-settings" } },
-    [_c("router-view")],
+    [
+      _vm.alert
+        ? _c("div", { staticClass: "notice notice-success is-dismissible" }, [
+            _c("p", [_vm._v(_vm._s(_vm.alert))])
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "nav",
+        { staticClass: "nav-tab-wrapper" },
+        [
+          _c(
+            "router-link",
+            { staticClass: "nav-tab", attrs: { to: "/", exact: "" } },
+            [
+              _c("span", { staticClass: "dashicons dashicons-admin-generic" }),
+              _vm._v("\n            General\n        ")
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "router-link",
+            { staticClass: "nav-tab", attrs: { to: "/email" } },
+            [
+              _c("span", { staticClass: "dashicons dashicons-email" }),
+              _vm._v("\n            Email\n        ")
+            ]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("router-view")
+    ],
     1
   )
 }
@@ -182,6 +215,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _vue2.default.use(_vueRouter2.default);
 
 exports.default = new _vueRouter2.default({
+	linkActiveClass: 'nav-tab-active',
 	routes: [{
 		path: '/',
 		name: 'General',
@@ -205,9 +239,29 @@ exports.default = new _vueRouter2.default({
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-	name: 'SettingsApp'
+	name: 'SettingsApp',
+	data() {
+		return {
+			alert: false
+		};
+	}
 });
 
 /***/ }),
@@ -222,16 +276,90 @@ exports.default = new _vueRouter2.default({
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 
-    name: 'General',
+	name: 'General',
 
-    data() {
-        return {
-            msg: 'These are the general settings'
-        };
-    }
+	data() {
+		return {
+			alert: false,
+			redirectType: null,
+			redirectTo: null,
+			redirectPage: null,
+			redirectLink: null,
+			redirectLog: null,
+			emailNotification: null,
+			disableGuessing: null,
+			emailRecipient: null,
+			excludePaths: null,
+			waiting: false
+		};
+	},
+
+	methods: {
+		/**
+   * Handle settings for submit.
+   *
+   * Validate the form before submitting it.
+   *
+   * @param e Event.
+   *
+   * @returns {boolean}
+   */
+		submitForm: function (e) {
+			this.showSuccess();
+			this.waiting = true;
+
+			// Do not submit form.
+			e.preventDefault();
+		},
+
+		showSuccess: function () {
+			this.$parent.alert = 'Thanks for the message, Joel.';
+
+			setTimeout(() => {
+				this.$parent.alert = false;
+			}, 3000);
+		}
+	}
 });
 
 /***/ }),
@@ -309,11 +437,152 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "home" }, [
-    _c("span", [_vm._v(_vm._s(_vm.msg))])
-  ])
+  return _c(
+    "form",
+    {
+      attrs: { id: "general-settings", action: "options.php", method: "post" },
+      on: { submit: _vm.submitForm }
+    },
+    [
+      _c("table", { staticClass: "form-table" }, [
+        _c("tbody", [
+          _c("tr", [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("td", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.redirectType,
+                    expression: "redirectType"
+                  }
+                ],
+                attrs: { id: "name", type: "text", name: "name" },
+                domProps: { value: _vm.redirectType },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.redirectType = $event.target.value
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _vm._m(1),
+            _vm._v(" "),
+            _c("td", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.redirectTo,
+                    expression: "redirectTo"
+                  }
+                ],
+                attrs: { id: "age", type: "number", name: "age", min: "0" },
+                domProps: { value: _vm.redirectTo },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.redirectTo = $event.target.value
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _vm._m(2),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.redirectPage,
+                      expression: "redirectPage"
+                    }
+                  ],
+                  attrs: { id: "movie", name: "movie" },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.redirectPage = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    }
+                  }
+                },
+                [
+                  _c("option", [_vm._v("Star Wars")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("Vanilla Sky")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("Atomic Blonde")])
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("tr", [
+            _c("th", { attrs: { colspan: "2" } }, [
+              _c("input", {
+                staticClass: "button button-primary",
+                attrs: {
+                  type: "submit",
+                  name: "submit",
+                  value: "Save Changes",
+                  disabled: _vm.waiting
+                }
+              })
+            ])
+          ])
+        ])
+      ])
+    ]
+  )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [_c("label", { attrs: { for: "name" } }, [_vm._v("Name")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [_c("label", { attrs: { for: "age" } }, [_vm._v("Age")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("label", { attrs: { for: "movie" } }, [_vm._v("Favorite Movie")])
+    ])
+  }
+]
 render._withStripped = true
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -343,7 +612,15 @@ if (false) {
 
 	data() {
 		return {
-			msg: 'These are the email settings'
+			redirectType: null,
+			redirectTo: null,
+			redirectPage: null,
+			redirectLink: null,
+			redirectLog: null,
+			emailNotification: null,
+			disableGuessing: null,
+			emailRecipient: null,
+			excludePaths: null
 		};
 	}
 });

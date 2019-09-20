@@ -11,7 +11,15 @@ export default {
 
 	data () {
 		return {
-			msg: 'These are the email settings'
+			redirectType: null,
+			redirectTo: null,
+			redirectPage: null,
+			redirectLink: null,
+			redirectLog: null,
+			emailNotification: null,
+			disableGuessing: null,
+			emailRecipient: null,
+			excludePaths: null,
 		}
 	}
 };

@@ -6,6 +6,7 @@ import Email from 'admin/settings/components/Email.vue'
 Vue.use( Router );
 
 export default new Router( {
+	linkActiveClass: 'nav-tab-active',
 	routes: [
 		{
 			path: '/',
