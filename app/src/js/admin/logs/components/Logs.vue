@@ -7,11 +7,11 @@
 <script>
 export default {
 
-    name: 'Home',
+    name: 'Logs',
 
     data () {
         return {
-            msg: 'Welcome to Your Vue.js Admin App'
+            msg: 'These are the logs'
         }
     }
 }

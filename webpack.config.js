@@ -12,7 +12,8 @@ const config = require( './config.json' );
 var appName = 'app';
 var entryPoint = {
 	frontend: './app/src/js/frontend/main.js',
-	settings: './app/src/js/admin/main.js',
+	settings: './app/src/js/admin/settings/settings.js',
+	logs: './app/src/js/admin/logs/logs.js',
 	vendor: Object.keys( packages.dependencies ),
 	style: './app/src/less/style.less',
 };
@@ -95,7 +96,8 @@ module.exports = {
 			'vue$': 'vue/dist/vue.esm.js',
 			'@': path.resolve( './app/src/js/' ),
 			'frontend': path.resolve( './app/src/js/frontend/' ),
-			'settings': path.resolve( './app/src/js/admin/' ),
+			'settings': path.resolve( './app/src/js/admin/settings/' ),
+			'logs': path.resolve( './app/src/js/admin/logs/' ),
 		},
 		modules: [
 			path.resolve( './node_modules' ),

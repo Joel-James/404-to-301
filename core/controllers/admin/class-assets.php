@@ -115,6 +115,11 @@ class Assets extends Base {
 				'deps'      => [ 'jquery', 'dd404-vendor' ],
 				'in_footer' => true,
 			],
+			'dd404-logs' => [
+				'src'       => DD404_URL . '/app/assets/js/logs.js',
+				'deps'      => [ 'jquery', 'dd404-vendor' ],
+				'in_footer' => true,
+			],
 		];
 
 		/**

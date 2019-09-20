@@ -29,6 +29,10 @@ class Pages extends Base {
 	 * @return void
 	 */
 	public function logs() {
+		// Enqueue the assets.
+		//wp_enqueue_style( 'dd404-logs' );
+		wp_enqueue_script( 'dd404-logs' );
+
 		// Get args for the page.
 		$args = array();
 

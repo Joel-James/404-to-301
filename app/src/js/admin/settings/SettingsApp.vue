@@ -1,12 +1,12 @@
 <template>
-    <div id="dd404-admin-app">
+    <div id="dd404-admin-settings">
         <router-view/>
     </div>
 </template>
 
 <script>
 	export default {
-		name: 'App'
+		name: 'SettingsApp'
 	}
 </script>
 
