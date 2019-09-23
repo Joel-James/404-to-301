@@ -2,6 +2,11 @@
 
 namespace DuckDev\WP404\Utils\Abstracts;
 
+// Direct hit? Rest in peace..
+defined( 'WPINC' ) || die;
+
+use WP_REST_Response;
+
 /**
  * Base class for all endpoint classes.
  *
@@ -78,6 +83,26 @@ abstract class Endpoint extends Base {
 	 */
 	public function get_version() {
 		return $this->version;
+	}
+
+	/**
+	 * Get formatted response for the current request.
+	 *
+	 * @param array $data    Response data.
+	 * @param bool  $success Is request success.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function get_response( $data = [], $success = true ) {
+		// Response status.
+		$status = $success ? 200 : 400;
+
+		return new WP_REST_Response( array(
+			'success' => $success,
+			'data'    => $data,
+		), $status );
 	}
 
 	/**

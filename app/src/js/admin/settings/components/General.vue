@@ -66,11 +66,6 @@
                             value="Save Changes"
                             v-bind:disabled="waiting"
                     >
-                    <span
-                            class="spinner"
-                            v-bind:class="{ 'is-active' : waiting }"
-                    >
-                    </span>
                 </th>
             </tr>
             </tbody>
@@ -80,19 +75,20 @@
 
 <script>
 	import { __ } from '@wordpress/i18n';
-	import { restRequest } from '../../../helpers/utils';
+	import { restPost, restGet } from '../../../helpers/utils';
 
 	export default {
 
 		name: 'General',
 
 		data() {
+
 			return {
 				alert: false,
 				redirectType: '301',
-				redirectTo: 'link',
-				redirectPage: 'link',
-				redirectLink: 'http://google.com',
+				redirectTo: null,
+				redirectPage: null,
+				redirectLink: null,
 				redirectLog: 1,
 				disableGuessing: 1,
 				excludePaths: '',
@@ -109,6 +105,11 @@
 			}
 		},
 
+		created() {
+			// Retrieve the selected form.
+			this.getSettings();
+		},
+
 		methods: {
 			/**
 			 * Handle settings for submit.
@@ -120,19 +121,52 @@
 			 * @returns {boolean}
 			 */
 			submitForm: function ( e ) {
-				this.showSuccess();
 				this.waiting = true;
 
-				restRequest( { path: 'settings' } ).then( response => {
-					console.log( response );
-				} );
+				this.updateSettings();
 
 				// Do not submit form.
 				e.preventDefault();
 			},
 
+			updateSettings: function () {
+				restPost( {
+					path: 'settings',
+					data: {
+						group: 'general',
+						value: {
+							redirect_type: this.redirectType,
+							redirect_to: this.redirectTo,
+							redirect_page: this.redirectPage,
+							redirect_link: this.redirectLink,
+							redirect_log: this.redirectLog,
+							disable_guessing: this.disableGuessing,
+							exclude_paths: this.excludePaths,
+						}
+					}
+				} ).then( response => {
+					this.showSuccess();
+					this.waiting = false;
+				} );
+				this.showSuccess();
+			},
+
+			getSettings: function () {
+				restGet( {
+					path: 'settings/general/'
+				} ).then( response => {
+					this.redirectType = response.data.redirect_type;
+					this.redirectTo = response.data.redirect_to;
+					this.redirectPage = response.data.redirect_page;
+					this.redirectLink = response.data.redirect_link;
+					this.redirectLog = response.data.redirect_log;
+					this.disableGuessing = response.data.disable_guessing;
+					this.excludePaths = response.data.exclude_paths;
+				} );
+			},
+
 			showSuccess: function () {
-				this.$parent.showAlert( __( 'Thanks for the message, Joel.', '404-to-301' ), 'info' );
+				this.$parent.showAlert( __( 'General settings updated successfully.', '404-to-301' ) );
 			},
 		}
 	}

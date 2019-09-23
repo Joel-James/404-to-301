@@ -28,6 +28,7 @@
 
 <script>
 	import { __ } from '@wordpress/i18n';
+	import { restPost, restGet } from '../../../helpers/utils';
 
 	export default {
 
@@ -36,13 +37,18 @@
 		data() {
 			return {
 				emailNotify: 0,
-				emailRecipient: 'joel@joel.com',
+				emailRecipient: null,
 				waiting: false,
 				labels: {
 					emailNotify: __( 'Email notifications', '404-to-301' ),
 					emailRecipient: __( 'Email address', '404-to-301' ),
 				}
 			}
+		},
+
+		created() {
+			// Retrieve the selected form.
+			this.getSettings();
 		},
 
 		methods: {
@@ -56,21 +62,43 @@
 			 * @returns {boolean}
 			 */
 			submitForm: function ( e ) {
-				this.showSuccess();
 				this.waiting = true;
+
+				this.updateSettings();
 
 				// Do not submit form.
 				e.preventDefault();
 			},
 
-			showSuccess: function () {
-				this.$parent.alert = __( 'Thanks for the message, Joel.' );
-
-				setTimeout( () => {
-					this.$parent.alert = false;
+			updateSettings: function () {
+				restPost( {
+					path: 'settings',
+					data: {
+						group: 'email',
+						value: {
+							email_notify: this.emailNotify,
+							email_notify_address: this.emailRecipient,
+						}
+					}
+				} ).then( response => {
+					this.showSuccess();
 					this.waiting = false;
-				}, 3000 );
-			}
+				} );
+				this.showSuccess();
+			},
+
+			getSettings: function () {
+				restGet( {
+					path: 'settings/email/'
+				} ).then( response => {
+					this.emailNotify = response.data.email_notify;
+					this.emailRecipient = response.data.email_notify_address;
+				} );
+			},
+
+			showSuccess: function () {
+				this.$parent.showAlert( __( 'Email settings updated successfully.', '404-to-301' ) );
+			},
 		}
 	}
 </script>

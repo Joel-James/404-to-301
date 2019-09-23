@@ -89,13 +89,8 @@ pluginWebpack([0],{
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__);
-//
-//
-//
-//
-//
 //
 //
 //
@@ -180,12 +175,13 @@ pluginWebpack([0],{
 	name: 'General',
 
 	data() {
+
 		return {
 			alert: false,
 			redirectType: '301',
-			redirectTo: 'link',
-			redirectPage: 'link',
-			redirectLink: 'http://google.com',
+			redirectTo: null,
+			redirectPage: null,
+			redirectLink: null,
 			redirectLog: 1,
 			disableGuessing: 1,
 			excludePaths: '',
@@ -202,86 +198,9 @@ pluginWebpack([0],{
 		};
 	},
 
-	methods: {
-		/**
-   * Handle settings for submit.
-   *
-   * Validate the form before submitting it.
-   *
-   * @param e Event.
-   *
-   * @returns {boolean}
-   */
-		submitForm: function (e) {
-			this.showSuccess();
-			this.waiting = true;
-
-			Object(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__["restRequest"])({ path: 'settings' }).then(response => {
-				console.log(response);
-			});
-
-			// Do not submit form.
-			e.preventDefault();
-		},
-
-		showSuccess: function () {
-			this.$parent.showAlert(Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Thanks for the message, Joel.', '404-to-301'), 'info');
-		}
-	}
-});
-
-/***/ }),
-
-/***/ 17:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__ = __webpack_require__(3);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["a"] = ({
-
-	name: 'Email',
-
-	data() {
-		return {
-			emailNotify: 0,
-			emailRecipient: 'joel@joel.com',
-			waiting: false,
-			labels: {
-				emailNotify: Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Email notifications', '404-to-301'),
-				emailRecipient: Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Email address', '404-to-301')
-			}
-		};
+	created() {
+		// Retrieve the selected form.
+		this.getSettings();
 	},
 
 	methods: {
@@ -295,27 +214,256 @@ pluginWebpack([0],{
    * @returns {boolean}
    */
 		submitForm: function (e) {
-			this.showSuccess();
 			this.waiting = true;
+
+			this.updateSettings();
 
 			// Do not submit form.
 			e.preventDefault();
 		},
 
-		showSuccess: function () {
-			this.$parent.alert = Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Thanks for the message, Joel.');
-
-			setTimeout(() => {
-				this.$parent.alert = false;
+		updateSettings: function () {
+			Object(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__["restPost"])({
+				path: 'settings',
+				data: {
+					group: 'general',
+					value: {
+						redirect_type: this.redirectType,
+						redirect_to: this.redirectTo,
+						redirect_page: this.redirectPage,
+						redirect_link: this.redirectLink,
+						redirect_log: this.redirectLog,
+						disable_guessing: this.disableGuessing,
+						exclude_paths: this.excludePaths
+					}
+				}
+			}).then(response => {
+				this.showSuccess();
 				this.waiting = false;
-			}, 3000);
+			});
+			this.showSuccess();
+		},
+
+		getSettings: function () {
+			Object(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__["restGet"])({
+				path: 'settings/general/'
+			}).then(response => {
+				this.redirectType = response.data.redirect_type;
+				this.redirectTo = response.data.redirect_to;
+				this.redirectPage = response.data.redirect_page;
+				this.redirectLink = response.data.redirect_link;
+				this.redirectLog = response.data.redirect_log;
+				this.disableGuessing = response.data.disable_guessing;
+				this.excludePaths = response.data.exclude_paths;
+			});
+		},
+
+		showSuccess: function () {
+			this.$parent.showAlert(Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('General settings updated successfully.', '404-to-301'));
 		}
 	}
 });
 
 /***/ }),
 
-/***/ 35:
+/***/ 12:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.restGet = restGet;
+exports.restPost = restPost;
+exports.restDelete = restDelete;
+
+var _apiFetch = __webpack_require__(13);
+
+var _apiFetch2 = _interopRequireDefault(_apiFetch);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Send API rest GET request using apiFetch.
+ *
+ * This is a wrapper function to include nonce and
+ * our custom route base url.
+ *
+ * @param {object} options apiFetch options.
+ *
+ * @since 4.0.0
+ *
+ * @return {string}
+ **/
+function restGet(options) {
+  options = options || {};
+
+  options.method = 'GET';
+
+  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
+  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
+
+  return (0, _apiFetch2.default)(options);
+}
+
+/**
+ * Send API rest POST request using apiFetch.
+ *
+ * @param {object} options apiFetch options.
+ *
+ * @since 4.0.0
+ *
+ * @return {string}
+ **/
+function restPost(options) {
+  options = options || {};
+
+  options.method = 'POST';
+
+  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
+  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
+
+  return (0, _apiFetch2.default)(options);
+}
+
+/**
+ * Send API rest DELETE request using apiFetch.
+ *
+ * @param {object} options apiFetch options.
+ *
+ * @since 4.0.0
+ *
+ * @return {string}
+ **/
+function restDelete(options) {
+  options = options || {};
+
+  options.method = 'DELETE';
+
+  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
+  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
+
+  return (0, _apiFetch2.default)(options);
+}
+
+/***/ }),
+
+/***/ 18:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+	name: 'Email',
+
+	data() {
+		return {
+			emailNotify: 0,
+			emailRecipient: null,
+			waiting: false,
+			labels: {
+				emailNotify: Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Email notifications', '404-to-301'),
+				emailRecipient: Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Email address', '404-to-301')
+			}
+		};
+	},
+
+	created() {
+		// Retrieve the selected form.
+		this.getSettings();
+	},
+
+	methods: {
+		/**
+   * Handle settings for submit.
+   *
+   * Validate the form before submitting it.
+   *
+   * @param e Event.
+   *
+   * @returns {boolean}
+   */
+		submitForm: function (e) {
+			this.waiting = true;
+
+			this.updateSettings();
+
+			// Do not submit form.
+			e.preventDefault();
+		},
+
+		updateSettings: function () {
+			Object(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__["restPost"])({
+				path: 'settings',
+				data: {
+					group: 'email',
+					value: {
+						email_notify: this.emailNotify,
+						email_notify_address: this.emailRecipient
+					}
+				}
+			}).then(response => {
+				this.showSuccess();
+				this.waiting = false;
+			});
+			this.showSuccess();
+		},
+
+		getSettings: function () {
+			Object(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__["restGet"])({
+				path: 'settings/email/'
+			}).then(response => {
+				this.emailNotify = response.data.email_notify;
+				this.emailRecipient = response.data.email_notify_address;
+			});
+		},
+
+		showSuccess: function () {
+			this.$parent.showAlert(Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Email settings updated successfully.', '404-to-301'));
+		}
+	}
+});
+
+/***/ }),
+
+/***/ 36:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -325,11 +473,11 @@ var _vue = __webpack_require__(1);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _SettingsApp = __webpack_require__(36);
+var _SettingsApp = __webpack_require__(37);
 
 var _SettingsApp2 = _interopRequireDefault(_SettingsApp);
 
-var _router = __webpack_require__(47);
+var _router = __webpack_require__(48);
 
 var _router2 = _interopRequireDefault(_router);
 
@@ -348,18 +496,18 @@ new _vue2.default({
 
 /***/ }),
 
-/***/ 36:
+/***/ 37:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_SettingsApp_vue__ = __webpack_require__(10);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_309372c1_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SettingsApp_vue__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_309372c1_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SettingsApp_vue__ = __webpack_require__(47);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(37)
+  __webpack_require__(38)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -406,14 +554,14 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 37:
+/***/ 38:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 46:
+/***/ 47:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -478,7 +626,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 47:
+/***/ 48:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -496,7 +644,7 @@ var _vueRouter = __webpack_require__(5);
 
 var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
-var _General = __webpack_require__(48);
+var _General = __webpack_require__(49);
 
 var _General2 = _interopRequireDefault(_General);
 
@@ -523,7 +671,7 @@ exports.default = new _vueRouter2.default({
 
 /***/ }),
 
-/***/ 48:
+/***/ 49:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -534,7 +682,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(49)
+  __webpack_require__(50)
 }
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -581,48 +729,10 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 49:
+/***/ 50:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 50:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.restRequest = restRequest;
-
-var _apiFetch = __webpack_require__(12);
-
-var _apiFetch2 = _interopRequireDefault(_apiFetch);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Send API rest request using apiFetch.
- *
- * This is a wrapper function to include nonce and
- * our custom route base url.
- *
- * @param {object} options apiFetch options.
- *
- * @since 4.0.0
- *
- * @return {string}
- **/
-function restRequest(options) {
-  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
-  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
-
-  return (0, _apiFetch2.default)(options);
-}
 
 /***/ }),
 
@@ -974,11 +1084,6 @@ var render = function() {
                   value: "Save Changes",
                   disabled: _vm.waiting
                 }
-              }),
-              _vm._v(" "),
-              _c("span", {
-                staticClass: "spinner",
-                class: { "is-active": _vm.waiting }
               })
             ])
           ])
@@ -1005,7 +1110,7 @@ if (false) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Email_vue__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Email_vue__ = __webpack_require__(18);
 /* empty harmony namespace reexport */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ce397a20_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Email_vue__ = __webpack_require__(68);
 var disposed = false
@@ -1192,4 +1297,4 @@ if (false) {
 
 /***/ })
 
-},[35]);
+},[36]);

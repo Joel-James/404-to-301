@@ -10,10 +10,9 @@ use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
 use DuckDev\WP404\Utils\Abstracts\Endpoint;
-use DuckDev\WP404\Helpers\Settings as Settings_Helper;
 
 /**
- * Settings functionality REST endpoint.
+ * Logs functionality REST endpoint.
  *
  * @link       https://duckdev.com
  * @since      4.0.0
@@ -22,7 +21,7 @@ use DuckDev\WP404\Helpers\Settings as Settings_Helper;
  *
  * @author     Joel James <me@joelsays.com>
  */
-class Settings extends Endpoint {
+class Logs extends Endpoint {
 
 	/**
 	 * API endpoint for the current endpoint.
@@ -31,7 +30,7 @@ class Settings extends Endpoint {
 	 *
 	 * @since 4.0.0
 	 */
-	private $endpoint = '/settings/';
+	private $endpoint = '/logs/';
 
 	/**
 	 * Get current API endpoint url.
@@ -54,43 +53,69 @@ class Settings extends Endpoint {
 	 * @since 4.0.0
 	 */
 	public function register_routes() {
-		// Route to get all settings.
+		// Route to get the logs list.
 		register_rest_route(
 			$this->get_namespace(),
 			$this->endpoint, [
 				[
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => [ $this, 'get_settings' ],
-					'permission_callback' => [ $this, 'permissions_check' ],
-					'args'                => [],
-				],
-				[
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => [ $this, 'update_settings' ],
+					'callback'            => [ $this, 'get_logs' ],
 					'permission_callback' => [ $this, 'permissions_check' ],
 					'args'                => [],
 				],
 			]
 		);
 
-		// Route to get a group settings.
+		// Route to get a single log.
 		register_rest_route(
 			$this->get_namespace(),
-			$this->endpoint . '(?P<group>[a-zA-Z0-9-]+)(?:/(?P<option>[a-zA-Z0-9-]+))?', [
+			$this->endpoint . '(?P<id>\d+)', [
 				[
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => [ $this, 'get_settings' ],
+					'callback'            => [ $this, 'get_log' ],
 					'permission_callback' => [ $this, 'permissions_check' ],
 					'args'                => [
-						'group'  => [
-							'required'          => true,
+						'id' => [
 							'validate_callback' => function ( $param ) {
-								return is_string( $param );
+								return is_numeric( $param );
 							},
 						],
-						'option' => [
+					],
+				],
+			]
+		);
+
+		// Route to update a log.
+		register_rest_route(
+			$this->get_namespace(),
+			$this->endpoint . '(?P<id>\d+)', [
+				[
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => [ $this, 'update_log' ],
+					'permission_callback' => [ $this, 'permissions_check' ],
+					'args'                => [
+						'id' => [
 							'validate_callback' => function ( $param ) {
-								return is_string( $param );
+								return is_numeric( $param );
+							},
+						],
+					],
+				],
+			]
+		);
+
+		// Route to delete a log.
+		register_rest_route(
+			$this->get_namespace(),
+			$this->endpoint . '(?P<id>\d+)', [
+				[
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => [ $this, 'delete_log' ],
+					'permission_callback' => [ $this, 'permissions_check' ],
+					'args'                => [
+						'id' => [
+							'validate_callback' => function ( $param ) {
+								return is_numeric( $param );
 							},
 						],
 					],
@@ -100,7 +125,7 @@ class Settings extends Endpoint {
 	}
 
 	/**
-	 * Get the settings data.
+	 * Get the logs list from db.
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 *
@@ -108,25 +133,18 @@ class Settings extends Endpoint {
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
-	public function get_settings( $request ) {
-		// Get key and group.
-		$option = $request->get_param( 'option' );
-		$group  = $request->get_param( 'group' );
-
-		if ( $option && $group ) {
-			// If a single setting is requested.
-			$value = Settings_Helper::get_option( $option, $group );
-		} else {
-			// If a group or whole settings are requested.
-			$value = Settings_Helper::get_options( $group );
-		}
+	public function get_logs( $request ) {
+		// Get the optional params.
+		$page  = $request->get_param( 'page' );
+		$size  = $request->get_param( 'per_page' );
+		$order = $request->get_param( 'order_by' );
 
 		// Send response.
-		return $this->get_response( $value );
+		return $this->get_response( [] );
 	}
 
 	/**
-	 * Add or update the settings data.
+	 * Get a single log item data.
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 *
@@ -134,31 +152,46 @@ class Settings extends Endpoint {
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
-	public function update_settings( $request ) {
-		// We need value.
-		if ( ! $request->offsetExists( 'value' ) ) {
-			// Send response.
-			return $this->get_response( [
-				'error' => __( 'Value is not found in the request.', '404-to-301' ),
-				false,
-			] );
-		}
-
-		// Get key and group.
-		$option = $request->get_param( 'option' );
-		$group  = $request->get_param( 'group' );
-		$value  = $request->get_param( 'value' );
-
-		if ( $option && $group ) {
-			// If a single setting is requested.
-			$updated = Settings_Helper::update_option( $option, $value, $group );
-		} else {
-			// If a group or whole settings are requested.
-			$updated = Settings_Helper::update_options( $value, $group );
-		}
+	public function get_log( $request ) {
+		// Get the log ID.
+		$id = $request->get_param( 'id' );
 
 		// Send response.
-		return $this->get_response( Settings_Helper::get_options( $group ), $updated );
+		return $this->get_response( [] );
+	}
+
+	/**
+	 * Update a single log item data.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function update_log( $request ) {
+		// Get the log ID.
+		$id = $request->get_param( 'id' );
+
+		// Send response.
+		return $this->get_response( [] );
+	}
+
+	/**
+	 * Delete a single log item.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function delete_log( $request ) {
+		// Get the log ID.
+		$id = $request->get_param( 'id' );
+
+		// Send response.
+		return $this->get_response( [] );
 	}
 
 	/**
