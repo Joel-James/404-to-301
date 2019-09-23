@@ -30,6 +30,9 @@ class Assets extends Base {
 		} else {
 			add_action( 'wp_enqueue_scripts', [ $this, 'register' ], 5 );
 		}
+
+		// Localization.
+		add_filter( '404_to_301_scripts_localize_dd404-settings', [ $this, 'localize_settings' ] );
 	}
 
 	/**
@@ -67,6 +70,20 @@ class Assets extends Base {
 
 			// Now register.
 			wp_register_script( $handle, $script['src'], $deps, $version, $in_footer );
+
+			/**
+			 * Filter hook to add localization items to script.
+			 *
+			 * @param array $data Localized items.
+			 *
+			 * @since 4.0.0
+			 */
+			$localize = apply_filters( "404_to_301_scripts_localize_$handle", [] );
+
+			// Only if not empty.
+			if ( ! empty( $localize ) ) {
+				wp_localize_script( $handle, 'dd404', $localize );
+			}
 		}
 	}
 
@@ -115,7 +132,7 @@ class Assets extends Base {
 				'deps'      => [ 'jquery', 'dd404-vendor' ],
 				'in_footer' => true,
 			],
-			'dd404-logs' => [
+			'dd404-logs'     => [
 				'src'       => DD404_URL . '/app/assets/js/logs.js',
 				'deps'      => [ 'jquery', 'dd404-vendor' ],
 				'in_footer' => true,
@@ -160,5 +177,21 @@ class Assets extends Base {
 		 * @since 4.0.0
 		 */
 		return apply_filters( 'dd404_styles_list', $styles );
+	}
+
+	/**
+	 * Add localization items to the array.
+	 *
+	 * @param array $data Existing items.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public function localize_settings( $data ) {
+		$data['rest_nonce'] = wp_create_nonce( 'wp_rest' );
+		$data['rest_url']   = rest_url( '404-to-301/v1/' );
+
+		return $data;
 	}
 }

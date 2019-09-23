@@ -98,7 +98,7 @@
 /******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 55);
+/******/ 	return __webpack_require__(__webpack_require__.s = 80);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -12189,7 +12189,7 @@ Vue.compile = compileToFunctions;
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3), __webpack_require__(5), __webpack_require__(20).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4), __webpack_require__(6), __webpack_require__(22).setImmediate))
 
 /***/ }),
 /* 2 */
@@ -12197,7 +12197,7 @@ Vue.compile = compileToFunctions;
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = _objectSpread;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defineProperty__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defineProperty__ = __webpack_require__(38);
 
 function _objectSpread(target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -12220,6 +12220,201 @@ function _objectSpread(target) {
 
 /***/ }),
 /* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["setLocaleData"] = setLocaleData;
+/* harmony export (immutable) */ __webpack_exports__["__"] = __;
+/* harmony export (immutable) */ __webpack_exports__["_x"] = _x;
+/* harmony export (immutable) */ __webpack_exports__["_n"] = _n;
+/* harmony export (immutable) */ __webpack_exports__["_nx"] = _nx;
+/* harmony export (immutable) */ __webpack_exports__["sprintf"] = sprintf;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_tannin__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_memize__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_memize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_memize__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_sprintf_js__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_sprintf_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_sprintf_js__);
+
+
+/**
+ * External dependencies
+ */
+
+
+
+/**
+ * Default locale data to use for Tannin domain when not otherwise provided.
+ * Assumes an English plural forms expression.
+ *
+ * @type {Object}
+ */
+
+var DEFAULT_LOCALE_DATA = {
+  '': {
+    plural_forms: function plural_forms(n) {
+      return n === 1 ? 0 : 1;
+    }
+  }
+};
+/**
+ * Log to console, once per message; or more precisely, per referentially equal
+ * argument set. Because Jed throws errors, we log these to the console instead
+ * to avoid crashing the application.
+ *
+ * @param {...*} args Arguments to pass to `console.error`
+ */
+
+var logErrorOnce = __WEBPACK_IMPORTED_MODULE_2_memize___default()(console.error); // eslint-disable-line no-console
+
+/**
+ * The underlying instance of Tannin to which exported functions interface.
+ *
+ * @type {Tannin}
+ */
+
+var i18n = new __WEBPACK_IMPORTED_MODULE_1_tannin__["a" /* default */]({});
+/**
+ * Merges locale data into the Tannin instance by domain. Accepts data in a
+ * Jed-formatted JSON object shape.
+ *
+ * @see http://messageformat.github.io/Jed/
+ *
+ * @param {?Object} data   Locale data configuration.
+ * @param {?string} domain Domain for which configuration applies.
+ */
+
+function setLocaleData(data) {
+  var domain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'default';
+  i18n.data[domain] = Object(__WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__["a" /* default */])({}, DEFAULT_LOCALE_DATA, i18n.data[domain], data); // Populate default domain configuration (supported locale date which omits
+  // a plural forms expression).
+
+  i18n.data[domain][''] = Object(__WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__["a" /* default */])({}, DEFAULT_LOCALE_DATA[''], i18n.data[domain]['']);
+}
+/**
+ * Wrapper for Tannin's `dcnpgettext`. Populates default locale data if not
+ * otherwise previously assigned.
+ *
+ * @param {?string} domain  Domain to retrieve the translated text.
+ * @param {?string} context Context information for the translators.
+ * @param {string}  single  Text to translate if non-plural. Used as fallback
+ *                          return value on a caught error.
+ * @param {?string} plural  The text to be used if the number is plural.
+ * @param {?number} number  The number to compare against to use either the
+ *                          singular or plural form.
+ *
+ * @return {string} The translated string.
+ */
+
+function dcnpgettext() {
+  var domain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
+  var context = arguments.length > 1 ? arguments[1] : undefined;
+  var single = arguments.length > 2 ? arguments[2] : undefined;
+  var plural = arguments.length > 3 ? arguments[3] : undefined;
+  var number = arguments.length > 4 ? arguments[4] : undefined;
+
+  if (!i18n.data[domain]) {
+    setLocaleData(undefined, domain);
+  }
+
+  return i18n.dcnpgettext(domain, context, single, plural, number);
+}
+/**
+ * Retrieve the translation of text.
+ *
+ * @see https://developer.wordpress.org/reference/functions/__/
+ *
+ * @param {string}  text   Text to translate.
+ * @param {?string} domain Domain to retrieve the translated text.
+ *
+ * @return {string} Translated text.
+ */
+
+
+function __(text, domain) {
+  return dcnpgettext(domain, undefined, text);
+}
+/**
+ * Retrieve translated string with gettext context.
+ *
+ * @see https://developer.wordpress.org/reference/functions/_x/
+ *
+ * @param {string}  text    Text to translate.
+ * @param {string}  context Context information for the translators.
+ * @param {?string} domain  Domain to retrieve the translated text.
+ *
+ * @return {string} Translated context string without pipe.
+ */
+
+function _x(text, context, domain) {
+  return dcnpgettext(domain, context, text);
+}
+/**
+ * Translates and retrieves the singular or plural form based on the supplied
+ * number.
+ *
+ * @see https://developer.wordpress.org/reference/functions/_n/
+ *
+ * @param {string}  single The text to be used if the number is singular.
+ * @param {string}  plural The text to be used if the number is plural.
+ * @param {number}  number The number to compare against to use either the
+ *                         singular or plural form.
+ * @param {?string} domain Domain to retrieve the translated text.
+ *
+ * @return {string} The translated singular or plural form.
+ */
+
+function _n(single, plural, number, domain) {
+  return dcnpgettext(domain, undefined, single, plural, number);
+}
+/**
+ * Translates and retrieves the singular or plural form based on the supplied
+ * number, with gettext context.
+ *
+ * @see https://developer.wordpress.org/reference/functions/_nx/
+ *
+ * @param {string}  single  The text to be used if the number is singular.
+ * @param {string}  plural  The text to be used if the number is plural.
+ * @param {number}  number  The number to compare against to use either the
+ *                          singular or plural form.
+ * @param {string}  context Context information for the translators.
+ * @param {?string} domain  Domain to retrieve the translated text.
+ *
+ * @return {string} The translated singular or plural form.
+ */
+
+function _nx(single, plural, number, context, domain) {
+  return dcnpgettext(domain, context, single, plural, number);
+}
+/**
+ * Returns a formatted string. If an error occurs in applying the format, the
+ * original format string is returned.
+ *
+ * @param {string}   format  The format of the string to generate.
+ * @param {...string} args Arguments to apply to the format.
+ *
+ * @see http://www.diveintojavascript.com/projects/javascript-sprintf
+ *
+ * @return {string} The formatted string.
+ */
+
+function sprintf(format) {
+  try {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return __WEBPACK_IMPORTED_MODULE_3_sprintf_js___default.a.sprintf.apply(__WEBPACK_IMPORTED_MODULE_3_sprintf_js___default.a, [format].concat(args));
+  } catch (error) {
+    logErrorOnce('sprintf error: \n\n' + error.toString());
+    return format;
+  }
+}
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -12409,7 +12604,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15297,10 +15492,10 @@ if (inBrowser && window.Vue) {
 
 /* harmony default export */ __webpack_exports__["default"] = (VueRouter);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4)))
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 var g;
@@ -15327,21 +15522,204 @@ module.exports = g;
 
 
 /***/ }),
-/* 6 */,
 /* 7 */,
 /* 8 */,
 /* 9 */,
 /* 10 */,
 /* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_runtime_helpers_esm_objectWithoutProperties__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wordpress_i18n__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__middlewares_nonce__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__middlewares_root_url__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__middlewares_preloading__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__middlewares_fetch_all_middleware__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__middlewares_namespace_endpoint__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__middlewares_http_v1__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__middlewares_user_locale__ = __webpack_require__(64);
+
+
+
+/**
+ * WordPress dependencies
+ */
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+
+
+
+
+/**
+ * Default set of header values which should be sent with every request unless
+ * explicitly provided through apiFetch options.
+ *
+ * @type {Object}
+ */
+
+var DEFAULT_HEADERS = {
+  // The backend uses the Accept header as a condition for considering an
+  // incoming request as a REST request.
+  //
+  // See: https://core.trac.wordpress.org/ticket/44534
+  Accept: 'application/json, */*;q=0.1'
+};
+/**
+ * Default set of fetch option values which should be sent with every request
+ * unless explicitly provided through apiFetch options.
+ *
+ * @type {Object}
+ */
+
+var DEFAULT_OPTIONS = {
+  credentials: 'include'
+};
+var middlewares = [__WEBPACK_IMPORTED_MODULE_9__middlewares_user_locale__["a" /* default */], __WEBPACK_IMPORTED_MODULE_7__middlewares_namespace_endpoint__["a" /* default */], __WEBPACK_IMPORTED_MODULE_8__middlewares_http_v1__["a" /* default */], __WEBPACK_IMPORTED_MODULE_6__middlewares_fetch_all_middleware__["a" /* default */]];
+
+function registerMiddleware(middleware) {
+  middlewares.unshift(middleware);
+}
+
+var checkStatus = function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  }
+
+  throw response;
+};
+
+var defaultFetchHandler = function defaultFetchHandler(nextOptions) {
+  var url = nextOptions.url,
+      path = nextOptions.path,
+      data = nextOptions.data,
+      _nextOptions$parse = nextOptions.parse,
+      parse = _nextOptions$parse === void 0 ? true : _nextOptions$parse,
+      remainingOptions = Object(__WEBPACK_IMPORTED_MODULE_1__babel_runtime_helpers_esm_objectWithoutProperties__["a" /* default */])(nextOptions, ["url", "path", "data", "parse"]);
+
+  var body = nextOptions.body,
+      headers = nextOptions.headers; // Merge explicitly-provided headers with default values.
+
+  headers = Object(__WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__["a" /* default */])({}, DEFAULT_HEADERS, headers); // The `data` property is a shorthand for sending a JSON body.
+
+  if (data) {
+    body = JSON.stringify(data);
+    headers['Content-Type'] = 'application/json';
+  }
+
+  var responsePromise = window.fetch(url || path, Object(__WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__["a" /* default */])({}, DEFAULT_OPTIONS, remainingOptions, {
+    body: body,
+    headers: headers
+  }));
+
+  var parseResponse = function parseResponse(response) {
+    if (parse) {
+      if (response.status === 204) {
+        return null;
+      }
+
+      return response.json ? response.json() : Promise.reject(response);
+    }
+
+    return response;
+  };
+
+  return responsePromise.then(checkStatus).then(parseResponse).catch(function (response) {
+    if (!parse) {
+      throw response;
+    }
+
+    var invalidJsonError = {
+      code: 'invalid_json',
+      message: Object(__WEBPACK_IMPORTED_MODULE_2__wordpress_i18n__["__"])('The response is not a valid JSON response.')
+    };
+
+    if (!response || !response.json) {
+      throw invalidJsonError;
+    }
+
+    return response.json().catch(function () {
+      throw invalidJsonError;
+    }).then(function (error) {
+      var unknownError = {
+        code: 'unknown_error',
+        message: Object(__WEBPACK_IMPORTED_MODULE_2__wordpress_i18n__["__"])('An unknown error occurred.')
+      };
+      throw error || unknownError;
+    });
+  });
+};
+
+var fetchHandler = defaultFetchHandler;
+/**
+ * Defines a custom fetch handler for making the requests that will override
+ * the default one using window.fetch
+ *
+ * @param {Function} newFetchHandler The new fetch handler
+ */
+
+function setFetchHandler(newFetchHandler) {
+  fetchHandler = newFetchHandler;
+}
+
+function apiFetch(options) {
+  var steps = [].concat(middlewares, [fetchHandler]);
+
+  var createRunStep = function createRunStep(index) {
+    return function (workingOptions) {
+      var step = steps[index];
+
+      if (index === steps.length - 1) {
+        return step(workingOptions);
+      }
+
+      var next = createRunStep(index + 1);
+      return step(workingOptions, next);
+    };
+  };
+
+  return new Promise(function (resolve, reject) {
+    createRunStep(0)(options).then(resolve).catch(function (error) {
+      if (error.code !== 'rest_cookie_invalid_nonce') {
+        return reject(error);
+      } // If the nonce is invalid, refresh it and try again.
+
+
+      window.fetch(apiFetch.nonceEndpoint).then(checkStatus).then(function (data) {
+        return data.text();
+      }).then(function (text) {
+        apiFetch.nonceMiddleware.nonce = text;
+        apiFetch(options).then(resolve).catch(reject);
+      }).catch(reject);
+    });
+  });
+}
+
+apiFetch.use = registerMiddleware;
+apiFetch.setFetchHandler = setFetchHandler;
+apiFetch.createNonceMiddleware = __WEBPACK_IMPORTED_MODULE_3__middlewares_nonce__["a" /* default */];
+apiFetch.createPreloadingMiddleware = __WEBPACK_IMPORTED_MODULE_5__middlewares_preloading__["a" /* default */];
+apiFetch.createRootURLMiddleware = __WEBPACK_IMPORTED_MODULE_4__middlewares_root_url__["a" /* default */];
+apiFetch.fetchAllMiddleware = __WEBPACK_IMPORTED_MODULE_6__middlewares_fetch_all_middleware__["a" /* default */];
+/* harmony default export */ __webpack_exports__["default"] = (apiFetch);
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = _objectWithoutProperties;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__objectWithoutPropertiesLoose__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__objectWithoutPropertiesLoose__ = __webpack_require__(51);
 
 function _objectWithoutProperties(source, excluded) {
   if (source == null) return {};
@@ -15363,7 +15741,7 @@ function _objectWithoutProperties(source, excluded) {
 }
 
 /***/ }),
-/* 16 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15396,7 +15774,7 @@ var namespaceAndEndpointMiddleware = function namespaceAndEndpointMiddleware(opt
 //# sourceMappingURL=namespace-endpoint.js.map
 
 /***/ }),
-/* 17 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15420,7 +15798,7 @@ var namespaceAndEndpointMiddleware = function namespaceAndEndpointMiddleware(opt
 /* unused harmony export safeDecodeURI */
 /* unused harmony export filterURLForDisplay */
 /* unused harmony export safeDecodeURIComponent */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_qs__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_qs__ = __webpack_require__(60);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_qs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_qs__);
 /**
  * External dependencies
@@ -15867,7 +16245,7 @@ function safeDecodeURIComponent(uriComponent) {
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 18 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16042,8 +16420,12 @@ exports.isBuffer = function (obj) {
 
 
 /***/ }),
+/* 17 */,
+/* 18 */,
 /* 19 */,
-/* 20 */
+/* 20 */,
+/* 21 */,
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -16099,7 +16481,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(21);
+__webpack_require__(23);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -16110,10 +16492,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -16303,12 +16685,12 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(4)))
 
 /***/ }),
-/* 22 */,
-/* 23 */,
-/* 24 */
+/* 24 */,
+/* 25 */,
+/* 26 */
 /***/ (function(module, exports) {
 
 /**
@@ -16341,8 +16723,6 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 25 */,
-/* 26 */,
 /* 27 */,
 /* 28 */,
 /* 29 */,
@@ -16354,220 +16734,7 @@ module.exports = function listToStyles (parentId, list) {
 /* 35 */,
 /* 36 */,
 /* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(56);
-__webpack_require__(1);
-module.exports = __webpack_require__(4);
-
-
-/***/ }),
-/* 56 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_runtime_helpers_esm_objectWithoutProperties__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wordpress_i18n__ = __webpack_require__(59);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__middlewares_nonce__ = __webpack_require__(67);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__middlewares_root_url__ = __webpack_require__(68);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__middlewares_preloading__ = __webpack_require__(69);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__middlewares_fetch_all_middleware__ = __webpack_require__(70);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__middlewares_namespace_endpoint__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__middlewares_http_v1__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__middlewares_user_locale__ = __webpack_require__(79);
-
-
-
-/**
- * WordPress dependencies
- */
-
-/**
- * Internal dependencies
- */
-
-
-
-
-
-
-
-
-/**
- * Default set of header values which should be sent with every request unless
- * explicitly provided through apiFetch options.
- *
- * @type {Object}
- */
-
-var DEFAULT_HEADERS = {
-  // The backend uses the Accept header as a condition for considering an
-  // incoming request as a REST request.
-  //
-  // See: https://core.trac.wordpress.org/ticket/44534
-  Accept: 'application/json, */*;q=0.1'
-};
-/**
- * Default set of fetch option values which should be sent with every request
- * unless explicitly provided through apiFetch options.
- *
- * @type {Object}
- */
-
-var DEFAULT_OPTIONS = {
-  credentials: 'include'
-};
-var middlewares = [__WEBPACK_IMPORTED_MODULE_9__middlewares_user_locale__["a" /* default */], __WEBPACK_IMPORTED_MODULE_7__middlewares_namespace_endpoint__["a" /* default */], __WEBPACK_IMPORTED_MODULE_8__middlewares_http_v1__["a" /* default */], __WEBPACK_IMPORTED_MODULE_6__middlewares_fetch_all_middleware__["a" /* default */]];
-
-function registerMiddleware(middleware) {
-  middlewares.unshift(middleware);
-}
-
-var checkStatus = function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
-
-  throw response;
-};
-
-var defaultFetchHandler = function defaultFetchHandler(nextOptions) {
-  var url = nextOptions.url,
-      path = nextOptions.path,
-      data = nextOptions.data,
-      _nextOptions$parse = nextOptions.parse,
-      parse = _nextOptions$parse === void 0 ? true : _nextOptions$parse,
-      remainingOptions = Object(__WEBPACK_IMPORTED_MODULE_1__babel_runtime_helpers_esm_objectWithoutProperties__["a" /* default */])(nextOptions, ["url", "path", "data", "parse"]);
-
-  var body = nextOptions.body,
-      headers = nextOptions.headers; // Merge explicitly-provided headers with default values.
-
-  headers = Object(__WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__["a" /* default */])({}, DEFAULT_HEADERS, headers); // The `data` property is a shorthand for sending a JSON body.
-
-  if (data) {
-    body = JSON.stringify(data);
-    headers['Content-Type'] = 'application/json';
-  }
-
-  var responsePromise = window.fetch(url || path, Object(__WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__["a" /* default */])({}, DEFAULT_OPTIONS, remainingOptions, {
-    body: body,
-    headers: headers
-  }));
-
-  var parseResponse = function parseResponse(response) {
-    if (parse) {
-      if (response.status === 204) {
-        return null;
-      }
-
-      return response.json ? response.json() : Promise.reject(response);
-    }
-
-    return response;
-  };
-
-  return responsePromise.then(checkStatus).then(parseResponse).catch(function (response) {
-    if (!parse) {
-      throw response;
-    }
-
-    var invalidJsonError = {
-      code: 'invalid_json',
-      message: Object(__WEBPACK_IMPORTED_MODULE_2__wordpress_i18n__["a" /* __ */])('The response is not a valid JSON response.')
-    };
-
-    if (!response || !response.json) {
-      throw invalidJsonError;
-    }
-
-    return response.json().catch(function () {
-      throw invalidJsonError;
-    }).then(function (error) {
-      var unknownError = {
-        code: 'unknown_error',
-        message: Object(__WEBPACK_IMPORTED_MODULE_2__wordpress_i18n__["a" /* __ */])('An unknown error occurred.')
-      };
-      throw error || unknownError;
-    });
-  });
-};
-
-var fetchHandler = defaultFetchHandler;
-/**
- * Defines a custom fetch handler for making the requests that will override
- * the default one using window.fetch
- *
- * @param {Function} newFetchHandler The new fetch handler
- */
-
-function setFetchHandler(newFetchHandler) {
-  fetchHandler = newFetchHandler;
-}
-
-function apiFetch(options) {
-  var steps = [].concat(middlewares, [fetchHandler]);
-
-  var createRunStep = function createRunStep(index) {
-    return function (workingOptions) {
-      var step = steps[index];
-
-      if (index === steps.length - 1) {
-        return step(workingOptions);
-      }
-
-      var next = createRunStep(index + 1);
-      return step(workingOptions, next);
-    };
-  };
-
-  return new Promise(function (resolve, reject) {
-    createRunStep(0)(options).then(resolve).catch(function (error) {
-      if (error.code !== 'rest_cookie_invalid_nonce') {
-        return reject(error);
-      } // If the nonce is invalid, refresh it and try again.
-
-
-      window.fetch(apiFetch.nonceEndpoint).then(checkStatus).then(function (data) {
-        return data.text();
-      }).then(function (text) {
-        apiFetch.nonceMiddleware.nonce = text;
-        apiFetch(options).then(resolve).catch(reject);
-      }).catch(reject);
-    });
-  });
-}
-
-apiFetch.use = registerMiddleware;
-apiFetch.setFetchHandler = setFetchHandler;
-apiFetch.createNonceMiddleware = __WEBPACK_IMPORTED_MODULE_3__middlewares_nonce__["a" /* default */];
-apiFetch.createPreloadingMiddleware = __WEBPACK_IMPORTED_MODULE_5__middlewares_preloading__["a" /* default */];
-apiFetch.createRootURLMiddleware = __WEBPACK_IMPORTED_MODULE_4__middlewares_root_url__["a" /* default */];
-apiFetch.fetchAllMiddleware = __WEBPACK_IMPORTED_MODULE_6__middlewares_fetch_all_middleware__["a" /* default */];
-/* harmony default export */ __webpack_exports__["default"] = (apiFetch);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-/* 57 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16588,227 +16755,12 @@ function _defineProperty(obj, key, value) {
 }
 
 /***/ }),
-/* 58 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = _objectWithoutPropertiesLoose;
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-
-  return target;
-}
-
-/***/ }),
-/* 59 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export setLocaleData */
-/* harmony export (immutable) */ __webpack_exports__["a"] = __;
-/* unused harmony export _x */
-/* unused harmony export _n */
-/* unused harmony export _nx */
-/* unused harmony export sprintf */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_tannin__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_memize__ = __webpack_require__(65);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_memize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_memize__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_sprintf_js__ = __webpack_require__(66);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_sprintf_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_sprintf_js__);
-
-
-/**
- * External dependencies
- */
-
-
-
-/**
- * Default locale data to use for Tannin domain when not otherwise provided.
- * Assumes an English plural forms expression.
- *
- * @type {Object}
- */
-
-var DEFAULT_LOCALE_DATA = {
-  '': {
-    plural_forms: function plural_forms(n) {
-      return n === 1 ? 0 : 1;
-    }
-  }
-};
-/**
- * Log to console, once per message; or more precisely, per referentially equal
- * argument set. Because Jed throws errors, we log these to the console instead
- * to avoid crashing the application.
- *
- * @param {...*} args Arguments to pass to `console.error`
- */
-
-var logErrorOnce = __WEBPACK_IMPORTED_MODULE_2_memize___default()(console.error); // eslint-disable-line no-console
-
-/**
- * The underlying instance of Tannin to which exported functions interface.
- *
- * @type {Tannin}
- */
-
-var i18n = new __WEBPACK_IMPORTED_MODULE_1_tannin__["a" /* default */]({});
-/**
- * Merges locale data into the Tannin instance by domain. Accepts data in a
- * Jed-formatted JSON object shape.
- *
- * @see http://messageformat.github.io/Jed/
- *
- * @param {?Object} data   Locale data configuration.
- * @param {?string} domain Domain for which configuration applies.
- */
-
-function setLocaleData(data) {
-  var domain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'default';
-  i18n.data[domain] = Object(__WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__["a" /* default */])({}, DEFAULT_LOCALE_DATA, i18n.data[domain], data); // Populate default domain configuration (supported locale date which omits
-  // a plural forms expression).
-
-  i18n.data[domain][''] = Object(__WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__["a" /* default */])({}, DEFAULT_LOCALE_DATA[''], i18n.data[domain]['']);
-}
-/**
- * Wrapper for Tannin's `dcnpgettext`. Populates default locale data if not
- * otherwise previously assigned.
- *
- * @param {?string} domain  Domain to retrieve the translated text.
- * @param {?string} context Context information for the translators.
- * @param {string}  single  Text to translate if non-plural. Used as fallback
- *                          return value on a caught error.
- * @param {?string} plural  The text to be used if the number is plural.
- * @param {?number} number  The number to compare against to use either the
- *                          singular or plural form.
- *
- * @return {string} The translated string.
- */
-
-function dcnpgettext() {
-  var domain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
-  var context = arguments.length > 1 ? arguments[1] : undefined;
-  var single = arguments.length > 2 ? arguments[2] : undefined;
-  var plural = arguments.length > 3 ? arguments[3] : undefined;
-  var number = arguments.length > 4 ? arguments[4] : undefined;
-
-  if (!i18n.data[domain]) {
-    setLocaleData(undefined, domain);
-  }
-
-  return i18n.dcnpgettext(domain, context, single, plural, number);
-}
-/**
- * Retrieve the translation of text.
- *
- * @see https://developer.wordpress.org/reference/functions/__/
- *
- * @param {string}  text   Text to translate.
- * @param {?string} domain Domain to retrieve the translated text.
- *
- * @return {string} Translated text.
- */
-
-
-function __(text, domain) {
-  return dcnpgettext(domain, undefined, text);
-}
-/**
- * Retrieve translated string with gettext context.
- *
- * @see https://developer.wordpress.org/reference/functions/_x/
- *
- * @param {string}  text    Text to translate.
- * @param {string}  context Context information for the translators.
- * @param {?string} domain  Domain to retrieve the translated text.
- *
- * @return {string} Translated context string without pipe.
- */
-
-function _x(text, context, domain) {
-  return dcnpgettext(domain, context, text);
-}
-/**
- * Translates and retrieves the singular or plural form based on the supplied
- * number.
- *
- * @see https://developer.wordpress.org/reference/functions/_n/
- *
- * @param {string}  single The text to be used if the number is singular.
- * @param {string}  plural The text to be used if the number is plural.
- * @param {number}  number The number to compare against to use either the
- *                         singular or plural form.
- * @param {?string} domain Domain to retrieve the translated text.
- *
- * @return {string} The translated singular or plural form.
- */
-
-function _n(single, plural, number, domain) {
-  return dcnpgettext(domain, undefined, single, plural, number);
-}
-/**
- * Translates and retrieves the singular or plural form based on the supplied
- * number, with gettext context.
- *
- * @see https://developer.wordpress.org/reference/functions/_nx/
- *
- * @param {string}  single  The text to be used if the number is singular.
- * @param {string}  plural  The text to be used if the number is plural.
- * @param {number}  number  The number to compare against to use either the
- *                          singular or plural form.
- * @param {string}  context Context information for the translators.
- * @param {?string} domain  Domain to retrieve the translated text.
- *
- * @return {string} The translated singular or plural form.
- */
-
-function _nx(single, plural, number, context, domain) {
-  return dcnpgettext(domain, context, single, plural, number);
-}
-/**
- * Returns a formatted string. If an error occurs in applying the format, the
- * original format string is returned.
- *
- * @param {string}   format  The format of the string to generate.
- * @param {...string} args Arguments to apply to the format.
- *
- * @see http://www.diveintojavascript.com/projects/javascript-sprintf
- *
- * @return {string} The formatted string.
- */
-
-function sprintf(format) {
-  try {
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    return __WEBPACK_IMPORTED_MODULE_3_sprintf_js___default.a.sprintf.apply(__WEBPACK_IMPORTED_MODULE_3_sprintf_js___default.a, [format].concat(args));
-  } catch (error) {
-    logErrorOnce('sprintf error: \n\n' + error.toString());
-    return format;
-  }
-}
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-/* 60 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = Tannin;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tannin_plural_forms__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tannin_plural_forms__ = __webpack_require__(40);
 
 
 /**
@@ -16963,12 +16915,12 @@ Tannin.prototype.dcnpgettext = function( domain, context, singular, plural, n ) 
 
 
 /***/ }),
-/* 61 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = pluralForms;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tannin_compile__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tannin_compile__ = __webpack_require__(41);
 
 
 /**
@@ -16990,13 +16942,13 @@ function pluralForms( expression ) {
 
 
 /***/ }),
-/* 62 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = compile;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tannin_postfix__ = __webpack_require__(63);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tannin_evaluate__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tannin_postfix__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tannin_evaluate__ = __webpack_require__(43);
 
 
 
@@ -17029,7 +16981,7 @@ function compile( expression ) {
 
 
 /***/ }),
-/* 63 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17161,7 +17113,7 @@ function postfix( expression ) {
 
 
 /***/ }),
-/* 64 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17279,7 +17231,7 @@ function evaluate( postfix, variables ) {
 
 
 /***/ }),
-/* 65 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {module.exports = function memize( fn, options ) {
@@ -17400,10 +17352,10 @@ function evaluate( postfix, variables ) {
 	return memoized;
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 66 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function(window) {
@@ -17617,7 +17569,33 @@ function evaluate( postfix, variables ) {
 
 
 /***/ }),
-/* 67 */
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = _objectWithoutPropertiesLoose;
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+/***/ }),
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17651,12 +17629,12 @@ function createNonceMiddleware(nonce) {
 //# sourceMappingURL=nonce.js.map
 
 /***/ }),
-/* 68 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_runtime_helpers_esm_objectSpread__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__namespace_endpoint__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__namespace_endpoint__ = __webpack_require__(14);
 
 
 /**
@@ -17699,7 +17677,7 @@ var createRootURLMiddleware = function createRootURLMiddleware(rootURL) {
 //# sourceMappingURL=root-url.js.map
 
 /***/ }),
-/* 69 */
+/* 54 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17751,16 +17729,16 @@ var createPreloadingMiddleware = function createPreloadingMiddleware(preloadedDa
 //# sourceMappingURL=preloading.js.map
 
 /***/ }),
-/* 70 */
+/* 55 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_runtime_regenerator__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_runtime_regenerator__ = __webpack_require__(56);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__babel_runtime_regenerator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_runtime_helpers_esm_asyncToGenerator__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_runtime_helpers_esm_asyncToGenerator__ = __webpack_require__(59);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__babel_runtime_helpers_esm_objectSpread__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__babel_runtime_helpers_esm_objectWithoutProperties__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__wordpress_url__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__babel_runtime_helpers_esm_objectWithoutProperties__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__wordpress_url__ = __webpack_require__(15);
 
 
 
@@ -17925,14 +17903,14 @@ function () {
 //# sourceMappingURL=fetch-all-middleware.js.map
 
 /***/ }),
-/* 71 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(72);
+module.exports = __webpack_require__(57);
 
 
 /***/ }),
-/* 72 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -17957,7 +17935,7 @@ var oldRuntime = hadRuntime && g.regeneratorRuntime;
 // Force reevalutation of runtime.js.
 g.regeneratorRuntime = undefined;
 
-module.exports = __webpack_require__(73);
+module.exports = __webpack_require__(58);
 
 if (hadRuntime) {
   // Restore the original runtime.
@@ -17973,7 +17951,7 @@ if (hadRuntime) {
 
 
 /***/ }),
-/* 73 */
+/* 58 */
 /***/ (function(module, exports) {
 
 /**
@@ -18706,7 +18684,7 @@ if (hadRuntime) {
 
 
 /***/ }),
-/* 74 */
+/* 59 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18748,14 +18726,14 @@ function _asyncToGenerator(fn) {
 }
 
 /***/ }),
-/* 75 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Stringify = __webpack_require__(76);
-var Parse = __webpack_require__(77);
+var Stringify = __webpack_require__(61);
+var Parse = __webpack_require__(62);
 
 module.exports = {
     stringify: Stringify,
@@ -18764,13 +18742,13 @@ module.exports = {
 
 
 /***/ }),
-/* 76 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Utils = __webpack_require__(18);
+var Utils = __webpack_require__(16);
 
 var arrayPrefixGenerators = {
     brackets: function brackets(prefix) {
@@ -18908,13 +18886,13 @@ module.exports = function (object, opts) {
 
 
 /***/ }),
-/* 77 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Utils = __webpack_require__(18);
+var Utils = __webpack_require__(16);
 
 var has = Object.prototype.hasOwnProperty;
 
@@ -19082,7 +19060,7 @@ module.exports = function (str, opts) {
 
 
 /***/ }),
-/* 78 */
+/* 63 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19139,11 +19117,11 @@ function httpV1Middleware(options, next) {
 //# sourceMappingURL=http-v1.js.map
 
 /***/ }),
-/* 79 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__wordpress_url__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__wordpress_url__ = __webpack_require__(15);
 /**
  * WordPress dependencies
  */
@@ -19169,8 +19147,33 @@ function userLocaleMiddleware(options, next) {
 //# sourceMappingURL=user-locale.js.map
 
 /***/ }),
-/* 80 */,
-/* 81 */
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */,
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(12);
+__webpack_require__(3);
+__webpack_require__(1);
+module.exports = __webpack_require__(5);
+
+
+/***/ }),
+/* 81 */,
+/* 82 */
 /***/ (function(module, exports) {
 
 /*
@@ -19252,7 +19255,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -19271,7 +19274,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(24)
+var listToStyles = __webpack_require__(26)
 
 /*
 type StyleObject = {
