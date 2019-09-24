@@ -1,4 +1,4 @@
-pluginWebpack([0],{
+pluginWebpack([2],{
 
 /***/ 10:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -26,24 +26,49 @@ pluginWebpack([0],{
 //
 //
 //
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
+
+	/**
+  * Current template name.
+  *
+  * @since 4.0.0
+  */
 	name: 'SettingsApp',
+
+	/**
+  * Get the default set of data for the template.
+  *
+  * @since 4.0.0
+  *
+  * @returns {object}
+  */
 	data() {
 		return {
 			alert: false,
 			alertType: 'success',
 			labels: {
 				general: Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('General', '404-to-301'),
-				email: Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Email', '404-to-301'),
-				logs: Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Logs', '404-to-301')
+				email: Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Email', '404-to-301')
 			}
 		};
 	},
 
 	computed: {
+		/**
+   * Get the notice class based on the alert type.
+   *
+   * We use inbuilt WP admin notice classes.
+   *
+   * @since 4.0.0
+   *
+   * @returns {string}
+   */
 		noticeClass: function () {
 			return {
 				'notice-success': this.alertType === 'success',
@@ -56,28 +81,38 @@ pluginWebpack([0],{
 
 	methods: {
 		/**
-   * Show an alter message on top of the page.
+   * Show an notice message on top of the page.
    *
    * Alter messages uses WP's admin notice classes.
    *
-   * @param {string} message Altert content.
-   * @param {string} alertType Alert type (error, success, warning, info).
+   * @param {boolean} success Alert type success or error.
    * @param {boolean} autoHide Should hide automatically.
-            *
-            * @since 4.0.0
+   *
+   * @since 4.0.0
    *
    * @returns {boolean}
    */
-		showAlert: function (message, alertType = 'success', autoHide = true) {
-			this.alert = message;
-			this.alertType = alertType;
+		showNotice: function (success = true, autoHide = true) {
+			this.alertType = success ? 'success' : 'error';
 
+			// Set meesage.
+			if (success) {
+				this.alert = Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Settings updated successfully.', '404-to-301');
+			} else {
+				this.alert = Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Oops! Something went wrong.', '404-to-301');
+			}
+
+			// Auto hide if required.
 			if (autoHide) {
 				setTimeout(() => {
 					this.alert = false;
 					this.alertType = 'success';
 				}, 3000);
 			}
+		},
+
+		updateSettings: function (settings, group) {
+			window.dd404.settings[group] = settings;
 		}
 	}
 });
@@ -172,19 +207,30 @@ pluginWebpack([0],{
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 
+	/**
+  * Current template name.
+  *
+  * @since 4.0.0
+  */
 	name: 'General',
 
+	/**
+  * Get the default set of data for the template.
+  *
+  * @since 4.0.0
+  *
+  * @returns {object}
+  */
 	data() {
 
 		return {
-			alert: false,
-			redirectType: '301',
-			redirectTo: null,
-			redirectPage: null,
-			redirectLink: null,
-			redirectLog: 1,
-			disableGuessing: 1,
-			excludePaths: '',
+			redirectType: dd404.settings.general.redirect_type,
+			redirectTo: dd404.settings.general.redirect_to,
+			redirectPage: dd404.settings.general.redirect_page,
+			redirectLink: dd404.settings.general.redirect_link,
+			redirectLog: dd404.settings.general.redirect_log,
+			disableGuessing: dd404.settings.general.disable_guessing,
+			excludePaths: dd404.settings.general.exclude_paths,
 			waiting: false,
 			labels: {
 				redirectType: Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Redirect type', '404-to-301'),
@@ -198,11 +244,6 @@ pluginWebpack([0],{
 		};
 	},
 
-	created() {
-		// Retrieve the selected form.
-		this.getSettings();
-	},
-
 	methods: {
 		/**
    * Handle settings for submit.
@@ -211,9 +252,12 @@ pluginWebpack([0],{
    *
    * @param e Event.
    *
+   * @since 4.0.0
+   *
    * @returns {boolean}
    */
 		submitForm: function (e) {
+			// Start waiting mode.
 			this.waiting = true;
 
 			this.updateSettings();
@@ -222,6 +266,16 @@ pluginWebpack([0],{
 			e.preventDefault();
 		},
 
+		/**
+   * Update the settings by sending the value to DB.
+   *
+   * Should handle the error response properly and disply
+   * a generic error message.
+   *
+   * @since 4.0.0
+   *
+   * @returns {boolean}
+   */
 		updateSettings: function () {
 			Object(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__["restPost"])({
 				path: 'settings',
@@ -238,28 +292,20 @@ pluginWebpack([0],{
 					}
 				}
 			}).then(response => {
-				this.showSuccess();
+				if (response.success === true) {
+					// Show success message.
+					this.$parent.showNotice();
+
+					// Update settings in DOM.
+					this.$parent.updateSettings(response.data, 'general');
+				} else {
+					// Show error message.
+					this.$parent.showNotice(false);
+				}
+
+				// End waiting mode.
 				this.waiting = false;
 			});
-			this.showSuccess();
-		},
-
-		getSettings: function () {
-			Object(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__["restGet"])({
-				path: 'settings/general/'
-			}).then(response => {
-				this.redirectType = response.data.redirect_type;
-				this.redirectTo = response.data.redirect_to;
-				this.redirectPage = response.data.redirect_page;
-				this.redirectLink = response.data.redirect_link;
-				this.redirectLog = response.data.redirect_log;
-				this.disableGuessing = response.data.disable_guessing;
-				this.excludePaths = response.data.exclude_paths;
-			});
-		},
-
-		showSuccess: function () {
-			this.$parent.showAlert(Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('General settings updated successfully.', '404-to-301'));
 		}
 	}
 });
@@ -385,29 +431,41 @@ function restDelete(options) {
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 
+	/**
+  * Current template name.
+  *
+  * @since 4.0.0
+  */
 	name: 'Email',
 
+	/**
+  * Get the default set of data for the template.
+  *
+  * @since 4.0.0
+  *
+  * @returns {object}
+  */
 	data() {
 		return {
-			emailNotify: 0,
-			emailRecipient: null,
+			emailNotify: dd404.settings.email.email_notify,
+			emailRecipient: dd404.settings.email.email_notify_address,
 			waiting: false,
 			labels: {
 				emailNotify: Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Email notifications', '404-to-301'),
 				emailRecipient: Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Email address', '404-to-301')
 			}
 		};
-	},
-
-	created() {
-		// Retrieve the selected form.
-		this.getSettings();
 	},
 
 	methods: {
@@ -417,6 +475,8 @@ function restDelete(options) {
    * Validate the form before submitting it.
    *
    * @param e Event.
+   *
+   * @since 4.0.0
    *
    * @returns {boolean}
    */
@@ -429,6 +489,16 @@ function restDelete(options) {
 			e.preventDefault();
 		},
 
+		/**
+   * Update the settings by sending the value to DB.
+   *
+   * Should handle the error response properly and disply
+   * a generic error message.
+   *
+   * @since 4.0.0
+   *
+   * @returns {boolean}
+   */
 		updateSettings: function () {
 			Object(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__["restPost"])({
 				path: 'settings',
@@ -440,23 +510,20 @@ function restDelete(options) {
 					}
 				}
 			}).then(response => {
-				this.showSuccess();
+				if (response.success === true) {
+					// Show success message.
+					this.$parent.showNotice();
+
+					// Update settings in DOM.
+					this.$parent.updateSettings(response.data, 'general');
+				} else {
+					// Show error message.
+					this.$parent.showNotice(false);
+				}
+
+				// End waiting mode.
 				this.waiting = false;
 			});
-			this.showSuccess();
-		},
-
-		getSettings: function () {
-			Object(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__["restGet"])({
-				path: 'settings/email/'
-			}).then(response => {
-				this.emailNotify = response.data.email_notify;
-				this.emailRecipient = response.data.email_notify_address;
-			});
-		},
-
-		showSuccess: function () {
-			this.$parent.showAlert(Object(__WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__["__"])('Email settings updated successfully.', '404-to-301'));
 		}
 	}
 });
@@ -477,7 +544,7 @@ var _SettingsApp = __webpack_require__(37);
 
 var _SettingsApp2 = _interopRequireDefault(_SettingsApp);
 
-var _router = __webpack_require__(48);
+var _router = __webpack_require__(47);
 
 var _router2 = _interopRequireDefault(_router);
 
@@ -503,12 +570,8 @@ new _vue2.default({
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_SettingsApp_vue__ = __webpack_require__(10);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_309372c1_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SettingsApp_vue__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_309372c1_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SettingsApp_vue__ = __webpack_require__(46);
 var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(38)
-}
 var normalizeComponent = __webpack_require__(0)
 /* script */
 
@@ -518,7 +581,7 @@ var normalizeComponent = __webpack_require__(0)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = injectStyle
+var __vue_styles__ = null
 /* scopeId */
 var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
@@ -554,14 +617,7 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 38:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 47:
+/***/ 46:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -626,7 +682,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 48:
+/***/ 47:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -644,11 +700,11 @@ var _vueRouter = __webpack_require__(5);
 
 var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
-var _General = __webpack_require__(49);
+var _General = __webpack_require__(48);
 
 var _General2 = _interopRequireDefault(_General);
 
-var _Email = __webpack_require__(66);
+var _Email = __webpack_require__(64);
 
 var _Email2 = _interopRequireDefault(_Email);
 
@@ -671,19 +727,15 @@ exports.default = new _vueRouter2.default({
 
 /***/ }),
 
-/***/ 49:
+/***/ 48:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_General_vue__ = __webpack_require__(11);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1f5e8988_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_General_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1f5e8988_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_General_vue__ = __webpack_require__(63);
 var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(50)
-}
 var normalizeComponent = __webpack_require__(0)
 /* script */
 
@@ -693,14 +745,14 @@ var normalizeComponent = __webpack_require__(0)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = injectStyle
+var __vue_styles__ = null
 /* scopeId */
-var __vue_scopeId__ = "data-v-1f5e8988"
+var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_General_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1f5e8988_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_General_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1f5e8988_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_General_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -729,14 +781,7 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 50:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 65:
+/***/ 63:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1105,19 +1150,15 @@ if (false) {
 
 /***/ }),
 
-/***/ 66:
+/***/ 64:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Email_vue__ = __webpack_require__(18);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ce397a20_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Email_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ce397a20_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Email_vue__ = __webpack_require__(65);
 var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(67)
-}
 var normalizeComponent = __webpack_require__(0)
 /* script */
 
@@ -1127,14 +1168,14 @@ var normalizeComponent = __webpack_require__(0)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = injectStyle
+var __vue_styles__ = null
 /* scopeId */
-var __vue_scopeId__ = "data-v-ce397a20"
+var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Email_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ce397a20_hasScoped_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Email_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ce397a20_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Email_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -1163,14 +1204,7 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 67:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 68:
+/***/ 65:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

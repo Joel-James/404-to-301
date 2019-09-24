@@ -1,20 +1,20 @@
 <template>
-    <div class="home">
-        <span>{{ msg }}</span>
+    <div class="notice notice-success is-dismissible">
+        <p>{{ message }}</p>
     </div>
 </template>
 
 <script>
-export default {
+	export default {
 
-    name: 'Logs',
+		name: 'Logs',
 
-    data () {
-        return {
-            msg: 'These are the logs'
-        }
-    }
-}
+		data() {
+			return {
+				message: 'Error logs logs will be here soon.'
+            }
+		}
+	}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

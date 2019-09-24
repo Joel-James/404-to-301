@@ -5,6 +5,7 @@ namespace DuckDev\WP404\Controllers\Admin;
 // Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
+use DuckDev\WP404\Helpers\Settings;
 use DuckDev\WP404\Utils\Abstracts\Base;
 
 /**
@@ -189,9 +190,13 @@ class Assets extends Base {
 	 * @return array
 	 */
 	public function localize_settings( $data ) {
-		$data['rest_nonce'] = wp_create_nonce( 'wp_rest' );
-		$data['rest_url']   = rest_url( '404-to-301/v1/' );
+		// Localized strings.
+		$strings = [
+			'rest_nonce' => wp_create_nonce( 'wp_rest' ),
+			'rest_url'   => rest_url( '404-to-301/v1/' ),
+			'settings'   => Settings::get_options(),
+		];
 
-		return $data;
+		return array_merge( $strings, $data );
 	}
 }

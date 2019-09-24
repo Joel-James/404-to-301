@@ -64,7 +64,7 @@ class Menu extends Base {
 		global $menu, $submenu;
 
 		// Rename the menu name.
-		$menu[90][0] = __( '404 to 301', '404-to-301' );
+		$menu[89][0] = __( '404 to 301', '404-to-301' );
 	}
 
 	/**
@@ -83,7 +83,7 @@ class Menu extends Base {
 			$this->slug,
 			[ Pages::get(), 'logs' ],
 			'dashicons-redo',
-			90
+			89
 		);
 
 		/**

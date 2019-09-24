@@ -75,23 +75,34 @@
 
 <script>
 	import { __ } from '@wordpress/i18n';
-	import { restPost, restGet } from '../../../helpers/utils';
+	import { restPost } from '../../../helpers/utils';
 
 	export default {
 
+		/**
+		 * Current template name.
+		 *
+		 * @since 4.0.0
+		 */
 		name: 'General',
 
+		/**
+		 * Get the default set of data for the template.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @returns {object}
+		 */
 		data() {
 
 			return {
-				alert: false,
-				redirectType: '301',
-				redirectTo: null,
-				redirectPage: null,
-				redirectLink: null,
-				redirectLog: 1,
-				disableGuessing: 1,
-				excludePaths: '',
+				redirectType: dd404.settings.general.redirect_type,
+				redirectTo: dd404.settings.general.redirect_to,
+				redirectPage: dd404.settings.general.redirect_page,
+				redirectLink: dd404.settings.general.redirect_link,
+				redirectLog: dd404.settings.general.redirect_log,
+				disableGuessing: dd404.settings.general.disable_guessing,
+				excludePaths: dd404.settings.general.exclude_paths,
 				waiting: false,
 				labels: {
 					redirectType: __( 'Redirect type', '404-to-301' ),
@@ -105,11 +116,6 @@
 			}
 		},
 
-		created() {
-			// Retrieve the selected form.
-			this.getSettings();
-		},
-
 		methods: {
 			/**
 			 * Handle settings for submit.
@@ -118,9 +124,12 @@
 			 *
 			 * @param e Event.
 			 *
+			 * @since 4.0.0
+			 *
 			 * @returns {boolean}
 			 */
 			submitForm: function ( e ) {
+				// Start waiting mode.
 				this.waiting = true;
 
 				this.updateSettings();
@@ -129,6 +138,16 @@
 				e.preventDefault();
 			},
 
+			/**
+			 * Update the settings by sending the value to DB.
+			 *
+			 * Should handle the error response properly and disply
+			 * a generic error message.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @returns {boolean}
+			 */
 			updateSettings: function () {
 				restPost( {
 					path: 'settings',
@@ -145,34 +164,21 @@
 						}
 					}
 				} ).then( response => {
-					this.showSuccess();
+					if ( response.success === true ) {
+						// Show success message.
+						this.$parent.showNotice();
+
+						// Update settings in DOM.
+						this.$parent.updateSettings( response.data, 'general' );
+					} else {
+						// Show error message.
+						this.$parent.showNotice( false );
+					}
+
+					// End waiting mode.
 					this.waiting = false;
 				} );
-				this.showSuccess();
-			},
-
-			getSettings: function () {
-				restGet( {
-					path: 'settings/general/'
-				} ).then( response => {
-					this.redirectType = response.data.redirect_type;
-					this.redirectTo = response.data.redirect_to;
-					this.redirectPage = response.data.redirect_page;
-					this.redirectLink = response.data.redirect_link;
-					this.redirectLog = response.data.redirect_log;
-					this.disableGuessing = response.data.disable_guessing;
-					this.excludePaths = response.data.exclude_paths;
-				} );
-			},
-
-			showSuccess: function () {
-				this.$parent.showAlert( __( 'General settings updated successfully.', '404-to-301' ) );
 			},
 		}
 	}
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>

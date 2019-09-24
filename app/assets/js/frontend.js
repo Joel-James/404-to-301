@@ -1,4 +1,4 @@
-pluginWebpack([1],[
+pluginWebpack([0],[
 /* 0 */,
 /* 1 */,
 /* 2 */,

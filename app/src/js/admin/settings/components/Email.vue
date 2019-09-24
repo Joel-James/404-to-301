@@ -17,8 +17,13 @@
             </tr>
             <tr>
                 <th colspan="2">
-                    <input type="submit" name="submit" class="button button-primary" value="Save Changes"
-                           v-bind:disabled="waiting">
+                    <input
+                            type="submit"
+                            name="submit"
+                            class="button button-primary"
+                            value="Save Changes"
+                            v-bind:disabled="waiting"
+                    >
                 </th>
             </tr>
             </tbody>
@@ -28,27 +33,34 @@
 
 <script>
 	import { __ } from '@wordpress/i18n';
-	import { restPost, restGet } from '../../../helpers/utils';
+	import { restPost } from '../../../helpers/utils';
 
 	export default {
 
+		/**
+		 * Current template name.
+		 *
+		 * @since 4.0.0
+		 */
 		name: 'Email',
 
+		/**
+		 * Get the default set of data for the template.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @returns {object}
+		 */
 		data() {
 			return {
-				emailNotify: 0,
-				emailRecipient: null,
+				emailNotify: dd404.settings.email.email_notify,
+				emailRecipient: dd404.settings.email.email_notify_address,
 				waiting: false,
 				labels: {
 					emailNotify: __( 'Email notifications', '404-to-301' ),
 					emailRecipient: __( 'Email address', '404-to-301' ),
 				}
 			}
-		},
-
-		created() {
-			// Retrieve the selected form.
-			this.getSettings();
 		},
 
 		methods: {
@@ -58,6 +70,8 @@
 			 * Validate the form before submitting it.
 			 *
 			 * @param e Event.
+			 *
+			 * @since 4.0.0
 			 *
 			 * @returns {boolean}
 			 */
@@ -70,6 +84,16 @@
 				e.preventDefault();
 			},
 
+			/**
+			 * Update the settings by sending the value to DB.
+			 *
+			 * Should handle the error response properly and disply
+			 * a generic error message.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @returns {boolean}
+			 */
 			updateSettings: function () {
 				restPost( {
 					path: 'settings',
@@ -81,29 +105,21 @@
 						}
 					}
 				} ).then( response => {
-					this.showSuccess();
+					if ( response.success === true ) {
+						// Show success message.
+						this.$parent.showNotice();
+
+						// Update settings in DOM.
+						this.$parent.updateSettings( response.data, 'general' );
+					} else {
+						// Show error message.
+						this.$parent.showNotice( false );
+					}
+
+					// End waiting mode.
 					this.waiting = false;
 				} );
-				this.showSuccess();
-			},
-
-			getSettings: function () {
-				restGet( {
-					path: 'settings/email/'
-				} ).then( response => {
-					this.emailNotify = response.data.email_notify;
-					this.emailRecipient = response.data.email_notify_address;
-				} );
-			},
-
-			showSuccess: function () {
-				this.$parent.showAlert( __( 'Email settings updated successfully.', '404-to-301' ) );
 			},
 		}
 	}
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>
