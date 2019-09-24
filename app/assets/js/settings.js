@@ -111,6 +111,19 @@ pluginWebpack([2],{
 			}
 		},
 
+		/**
+   * Update the settings section in DOM.
+   *
+   * Once we update the settings in db, router will still
+   * access to old data from DOM. So update DOM also.
+   *
+   * @param {object} settings New settings data.
+   * @param {string} group Settings group.
+   *
+   * @since 4.0.0
+   *
+   * @returns {void}
+   */
 		updateSettings: function (settings, group) {
 			window.dd404.settings[group] = settings;
 		}
