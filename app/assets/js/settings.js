@@ -528,7 +528,7 @@ function restDelete(options) {
 					this.$parent.showNotice();
 
 					// Update settings in DOM.
-					this.$parent.updateSettings(response.data, 'general');
+					this.$parent.updateSettings(response.data, 'email');
 				} else {
 					// Show error message.
 					this.$parent.showNotice(false);
