@@ -21,6 +21,10 @@
                         <option value="link">Custom URL</option>
                         <option value="none">No Redirect</option>
                     </select>
+                    <p class="description" v-if="'page' === redirectTo">Select any WordPress page as a 404 page.</p>
+                    <p class="description" v-if="'link' === redirectTo">Redirect 404 requests to a specific URL.</p>
+                    <p class="description" v-if="'none' === redirectTo">To disable redirect.</p>
+                    <p class="description"><strong>You can override this by setting individual custom redirects from error logs list.</strong></p>
                 </td>
             </tr>
             <tr v-if="'page' === redirectTo">

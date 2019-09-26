@@ -1,12 +1,14 @@
 <template>
+    <thead>
     <tr>
-        <Column v-if="showCb" :columnClass="['check-column']" :isHead="true" :scope="'row'">
-            <input type="checkbox" name="item[]" :value="id" v-model="checkedItems">
+        <Column v-if="showCb" :columnClass="['manage-column', 'column-cb', 'check-column']">
+            <input type="checkbox" v-model="selectAll">
         </Column>
-        <Column v-for="(value, key) in columns" :columnClass="['column', key]" :isHead="false">
-            {{ row[key] }}
+        <Column v-for="(value, key) in columns" :columnClass="['column', key]">
+            {{ value.label }}
         </Column>
     </tr>
+    </thead>
 </template>
 
 <script>
@@ -19,7 +21,7 @@
 		 *
 		 * @since 4.0.0
 		 */
-		name: 'Row',
+		name: 'Header',
 
 		/**
 		 * Required components in this component.
@@ -38,16 +40,7 @@
 		 * @returns {object}
 		 */
 		props: {
-			id: {
-				type: Number,
-				required: true,
-			},
 			columns: {
-				type: Object,
-				required: true,
-				default: {},
-			},
-			row: {
 				type: Object,
 				required: true,
 				default: {},
@@ -55,20 +48,28 @@
 			showCb: {
 				type: Boolean,
 				default: true,
-			}
+			},
 		},
 
 		/**
-		 * Get the default set of data for the template.
+		 * Dynamic methods to handle table.
 		 *
 		 * @since 4.0.0
 		 *
 		 * @returns {object}
 		 */
-		data() {
-			return {
-				checkedItems: [],
-			};
+		computed: {
+			/**
+			 * Select and unselect all child items.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @returns {object}
+			 */
+			selectAll: {
+				get: function () {},
+				set: function () {}
+			}
 		}
 	};
 </script>

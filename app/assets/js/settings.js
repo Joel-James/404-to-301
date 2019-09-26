@@ -214,6 +214,10 @@ pluginWebpack([2],{
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -543,7 +547,7 @@ function restDelete(options) {
 
 /***/ }),
 
-/***/ 37:
+/***/ 42:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -553,11 +557,11 @@ var _vue = __webpack_require__(1);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _SettingsApp = __webpack_require__(38);
+var _SettingsApp = __webpack_require__(43);
 
 var _SettingsApp2 = _interopRequireDefault(_SettingsApp);
 
-var _router = __webpack_require__(48);
+var _router = __webpack_require__(53);
 
 var _router2 = _interopRequireDefault(_router);
 
@@ -576,14 +580,14 @@ new _vue2.default({
 
 /***/ }),
 
-/***/ 38:
+/***/ 43:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_SettingsApp_vue__ = __webpack_require__(10);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_309372c1_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SettingsApp_vue__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_309372c1_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SettingsApp_vue__ = __webpack_require__(52);
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -630,7 +634,7 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 47:
+/***/ 52:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -695,7 +699,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 48:
+/***/ 53:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -713,11 +717,11 @@ var _vueRouter = __webpack_require__(5);
 
 var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
-var _General = __webpack_require__(49);
+var _General = __webpack_require__(54);
 
 var _General2 = _interopRequireDefault(_General);
 
-var _Email = __webpack_require__(65);
+var _Email = __webpack_require__(70);
 
 var _Email2 = _interopRequireDefault(_Email);
 
@@ -740,14 +744,14 @@ exports.default = new _vueRouter2.default({
 
 /***/ }),
 
-/***/ 49:
+/***/ 54:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_General_vue__ = __webpack_require__(11);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1f5e8988_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_General_vue__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1f5e8988_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_General_vue__ = __webpack_require__(69);
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -794,7 +798,7 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 64:
+/***/ 69:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -913,7 +917,27 @@ var render = function() {
                     _vm._v("No Redirect")
                   ])
                 ]
-              )
+              ),
+              _vm._v(" "),
+              "page" === _vm.redirectTo
+                ? _c("p", { staticClass: "description" }, [
+                    _vm._v("Select any WordPress page as a 404 page.")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              "link" === _vm.redirectTo
+                ? _c("p", { staticClass: "description" }, [
+                    _vm._v("Redirect 404 requests to a specific URL.")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              "none" === _vm.redirectTo
+                ? _c("p", { staticClass: "description" }, [
+                    _vm._v("To disable redirect.")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm._m(0)
             ])
           ]),
           _vm._v(" "),
@@ -1150,7 +1174,20 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "description" }, [
+      _c("strong", [
+        _vm._v(
+          "You can override this by setting individual custom redirects from error logs list."
+        )
+      ])
+    ])
+  }
+]
 render._withStripped = true
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -1163,14 +1200,14 @@ if (false) {
 
 /***/ }),
 
-/***/ 65:
+/***/ 70:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_Email_vue__ = __webpack_require__(19);
 /* empty harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ce397a20_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Email_vue__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ce397a20_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_Email_vue__ = __webpack_require__(71);
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
@@ -1217,7 +1254,7 @@ if (false) {(function () {
 
 /***/ }),
 
-/***/ 66:
+/***/ 71:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1299,7 +1336,11 @@ var render = function() {
                     expression: "emailRecipient"
                   }
                 ],
-                attrs: { type: "email", id: "emailRecipient" },
+                attrs: {
+                  type: "email",
+                  id: "emailRecipient",
+                  disabled: !_vm.emailNotify
+                },
                 domProps: { value: _vm.emailRecipient },
                 on: {
                   input: function($event) {
@@ -1344,4 +1385,4 @@ if (false) {
 
 /***/ })
 
-},[37]);
+},[42]);

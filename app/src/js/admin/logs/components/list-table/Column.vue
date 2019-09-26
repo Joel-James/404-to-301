@@ -1,21 +1,42 @@
 <template>
-    <div class="app-settings">
-        The Settings Page
-    </div>
+    <th v-if="isHead" :class="columnClass" v-bind:scope="scope">
+        <slot></slot>
+    </th>
+    <td v-else :class="columnClass" v-bind:scope="scope">
+        <slot></slot>
+    </td>
 </template>
 
 <script>
-export default {
+	export default {
 
-    name: 'Settings',
+		/**
+		 * Current component name.
+		 *
+		 * @since 4.0.0
+		 */
+		name: 'Column',
 
-    data () {
-        return {
-
-        };
-    }
-};
+		/**
+		 * Define properties of this component.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @returns {object}
+		 */
+		props: {
+			isHead: {
+				type: Boolean,
+				default: false,
+			},
+			columnClass: {
+				type: Array,
+				default: [ 'column' ],
+			},
+			scope: {
+				type: String,
+				default: null
+			}
+		},
+	};
 </script>
-
-<style lang="css" scoped>
-</style>

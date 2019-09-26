@@ -12,7 +12,7 @@
             <tr>
                 <th><label for="emailRecipient">{{ labels.emailRecipient }}</label></th>
                 <td>
-                    <input type="email" id="emailRecipient" v-model="emailRecipient">
+                    <input type="email" id="emailRecipient" v-model="emailRecipient" v-bind:disabled="!emailNotify">
                 </td>
             </tr>
             <tr>
