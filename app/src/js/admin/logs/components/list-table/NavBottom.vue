@@ -1,44 +1,109 @@
 <template>
     <div class="tablenav bottom">
-        <div class="alignleft actions bulkactions">
-            <label for="bulk-action-selector-bottom" class="screen-reader-text">Select bulk action</label><select name="action2" id="bulk-action-selector-bottom">
-            <option value="-1">Bulk Actions</option>
-            <option value="edit" class="hide-if-no-js">Edit</option>
-            <option value="trash">Move to Trash</option>
-        </select>
-            <input type="submit" id="doaction2" class="button action" value="Apply">
-        </div>
-        <div class="alignleft actions">
-        </div>
-        <div class="tablenav-pages"><span class="displaying-num">4 items</span>
-            <span class="pagination-links">
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
-                <span class="screen-reader-text">Current Page</span>
-                <span id="table-paging" class="paging-input">
-                    <span class="tablenav-paging-text">1 of <span class="total-pages">2</span></span>
-                </span>
-                <a class="next-page button" href="//localhost:3000/development/wordpress/wp_404/wp-admin/edit.php?post_type=page&amp;paged=2">
-                    <span class="screen-reader-text">Next page</span><span aria-hidden="true">›</span>
-                </a>
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">»</span>
-            </span>
-        </div>
+        <BulkAction
+                v-if="hasBulkActions"
+                action-key="bulk-actions"
+                action-label="Bulk Actions"
+                :action-options="bulkActions"
+                :is-top="false"
+        />
+        <Pagination
+                v-if="canPaginate"
+                :total-items="totalItems"
+                :current-page="currentPage"
+                :per-page="perPage"
+                :is-top="false"
+        />
         <br class="clear">
     </div>
 </template>
 
 <script>
-export default {
+	import BulkAction from './BulkAction.vue'
+	import Pagination from './Pagination.vue'
 
-    name: 'Settings',
+	export default {
 
-    data () {
-        return {
+		/**
+		 * Current component name.
+		 *
+		 * @since 4.0.0
+		 */
+		name: 'Settings',
 
-        };
-    }
-};
+		/**
+		 * Required components in this component.
+		 *
+		 * @since 4.0.0
+		 */
+		components: {
+			BulkAction, Pagination
+		},
+
+		/**
+		 * Define properties of this component.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @returns {object}
+		 */
+		props: {
+			bulkActions: {
+				type: Array,
+				required: false,
+				default: [],
+			},
+			totalItems: {
+				type: Number,
+				default: 0,
+			},
+			perPage: {
+				type: Number,
+				default: 20,
+			},
+			currentPage: {
+				type: Number,
+				default: 1,
+			},
+		},
+
+		/**
+		 * Dynamic methods to handle table.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @returns {object}
+		 */
+		computed: {
+			/**
+			 * Is there bulk actions available.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @returns {object}
+			 */
+			hasBulkActions() {
+				return this.bulkActions.length > 0;
+			},
+
+			/**
+			 * Check if we can paginate.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @returns {object}
+			 */
+			canPaginate() {
+				return this.perPage < this.totalItems;
+			}
+		},
+
+		data() {
+			return {
+				bulkAction: -1,
+			}
+		}
+	};
 </script>
 
 <style lang="css" scoped>

@@ -1,46 +1,32 @@
 <template>
     <div class="tablenav top">
-        <div class="alignleft actions bulkactions" v-if="hasBulkActions">
-            <label for="bulk-action-selector-top" class="screen-reader-text">Select bulk action</label>
-            <select name="action" id="bulk-action-selector-top" v-model="bulkAction">
-                <option value="-1">Bulk Actions</option>
-                <option v-for="action in bulkActions" :value="action.key">{{ action.label }}</option>
-            </select>
-            <input type="submit" id="doaction" class="button action" value="Apply" v-if="hasBulkActions">
-        </div>
-        <div class="alignleft actions bulkactions" v-if="hasExtraActions" v-for="action in extraActions">
-            <select name="group_by_top" class="404_group_by">
-                <option value="">Group by</option>
-                <option value="url">404 Path</option>
-                <option value="ref">From</option>
-                <option value="ip">IP Address</option>
-                <option value="ua">User Agent</option>
-            </select>
-            <input type="submit" name="filter_action" id="post-query" class="button" value="Apply">
-        </div>
-        <div class="tablenav-pages">
-            <span class="displaying-num">4 items</span>
-            <span class="pagination-links">
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
-                <span class="paging-input">
-                    <label for="current-page-selector" class="screen-reader-text">Current Page</label>
-                    <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="1"
-                           aria-describedby="table-paging">
-                    <span class="tablenav-paging-text"> of <span class="total-pages">2</span></span>
-                </span>
-                <a class="next-page button"
-                   href="//localhost:3000/development/wordpress/wp_404/wp-admin/edit.php?post_type=page&amp;paged=2">
-                    <span class="screen-reader-text">Next page</span>
-                    <span aria-hidden="true">›</span>
-                </a>
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">»</span></span>
-        </div>
+        <BulkAction
+                v-if="hasBulkActions"
+                action-key="bulk-actions"
+                action-label="Bulk Actions"
+                :action-options="bulkActions"
+        />
+        <BulkAction
+                v-if="hasExtraActions"
+                v-for="action in extraActions"
+                :action-key="action.key"
+                :action-label="action.label"
+                :action-options="action.options"
+        />
+        <Pagination
+                v-if="canPaginate"
+                :total-items="totalItems"
+                :current-page="currentPage"
+                :per-page="perPage"
+        />
         <br class="clear">
     </div>
 </template>
 
 <script>
+	import BulkAction from './BulkAction.vue'
+	import Pagination from './Pagination.vue'
+
 	export default {
 
 		/**
@@ -49,6 +35,15 @@
 		 * @since 4.0.0
 		 */
 		name: 'NavTop',
+
+		/**
+		 * Required components in this component.
+		 *
+		 * @since 4.0.0
+		 */
+		components: {
+			BulkAction, Pagination
+		},
 
 		/**
 		 * Define properties of this component.
@@ -65,9 +60,21 @@
 			},
 			extraActions: {
 				type: Array,
-                required: false,
-                default: []
-            }
+				required: false,
+				default: [ {} ]
+			},
+			totalItems: {
+				type: Number,
+				default: 0,
+			},
+			perPage: {
+				type: Number,
+				default: 20,
+			},
+			currentPage: {
+				type: Number,
+				default: 1,
+			},
 		},
 
 		/**
@@ -77,7 +84,7 @@
 		 *
 		 * @returns {object}
 		 */
-        computed: {
+		computed: {
 			/**
 			 * Is there bulk actions available.
 			 *
@@ -99,13 +106,24 @@
 			hasExtraActions() {
 				return this.extraActions.length > 0;
 			},
-        },
 
-        data() {
-        	return {
+			/**
+			 * Check if we can paginate.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @returns {object}
+			 */
+			canPaginate() {
+				return this.perPage < this.totalItems;
+			}
+		},
+
+		data() {
+			return {
 				bulkAction: -1,
-            }
-        }
+			}
+		}
 	};
 </script>
 

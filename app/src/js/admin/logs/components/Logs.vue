@@ -3,7 +3,7 @@
         <div id="post-body">
             <div id="post-body-content">
                 <div class="meta-box-sortables ui-sortable">
-                    <Table :columns="columns" :rows="rows" :bulk-actions="bulkActions"/>
+                    <Table :columns="columns" :rows="rows" :bulk-actions="bulkActions" :extra-actions="extraActions"/>
                 </div>
             </div>
         </div>
@@ -82,6 +82,18 @@
 					{
 						key: 'trash',
 						label: 'Move to Trash'
+					}
+				],
+				extraActions: [
+					{
+						key: 'group_by',
+						label: 'Group by',
+						options: [
+							{ key: 'path', label: '404 Path' },
+							{ key: 'referral', label: 'Referral' },
+							{ key: 'ip', label: 'IP' },
+							{ key: 'ua', label: 'User Agent' },
+						]
 					}
 				]
 			}

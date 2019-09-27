@@ -1,13 +1,24 @@
 <template>
     <form method="post">
-        <NavTop :bulkActions="bulkActions"/>
+        <NavTop
+                :bulk-actions="bulkActions"
+                :extra-actions="extraActions"
+                :per-page="perPage"
+                :current-page="currentPage"
+                :total-items="totalItems"
+        />
         <table :class="tableClass">
-            <Header :columns="columns" :showCb="showCb"/>
+            <Header :columns="columns" :show-cb="showCb"/>
             <tbody>
-            <Row v-for="row in rows" :row="row" :id="row.id" :columns="columns" :showCb="showCb"/>
+            <Row v-for="row in rows" :row="row" :id="row.id" :columns="columns" :show-cb="showCb"/>
             </tbody>
         </table>
-        <NavBottom/>
+        <NavBottom
+                :bulk-actions="bulkActions"
+                :per-page="perPage"
+                :current-page="currentPage"
+                :total-items="totalItems"
+        />
     </form>
 </template>
 
@@ -59,11 +70,7 @@
 			},
 			totalItems: {
 				type: Number,
-				default: 0,
-			},
-			totalPages: {
-				type: Number,
-				default: 1,
+				default: 41,
 			},
 			perPage: {
 				type: Number,
@@ -71,7 +78,7 @@
 			},
 			currentPage: {
 				type: Number,
-				default: 1,
+				default: 2,
 			},
 			sortBy: {
 				type: String,
@@ -90,6 +97,11 @@
 				required: false,
 				default: [],
 			},
+			extraActions: {
+				type: Array,
+				required: false,
+				default: []
+			}
 		},
 	};
 </script>

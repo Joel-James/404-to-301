@@ -1,9 +1,9 @@
 <template>
     <tr>
-        <Column v-if="showCb" :columnClass="['check-column']" :isHead="true" :scope="'row'">
+        <Column v-if="showCb" :column-class="['check-column']" :is-head="true" :scope="'row'">
             <input type="checkbox" name="item[]" :value="id" v-model="checkedItems">
         </Column>
-        <Column v-for="(value, key) in columns" :columnClass="['column', key]" :isHead="false">
+        <Column v-for="(value, key) in columns" :column-class="['column', key]" :is-head="false">
             {{ row[key] }}
         </Column>
     </tr>
