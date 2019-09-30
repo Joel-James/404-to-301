@@ -3,7 +3,13 @@
         <div id="post-body">
             <div id="post-body-content">
                 <div class="meta-box-sortables ui-sortable">
-                    <Table :columns="columns" :rows="rows" :bulk-actions="bulkActions" :extra-actions="extraActions"/>
+                    <Table
+                            :columns="columns"
+                            :rows="rows"
+                            :bulk-actions="bulkActions"
+                            :extra-actions="extraActions"
+                            :pagination-callback="updateRows"
+                    />
                 </div>
             </div>
         </div>
@@ -97,6 +103,12 @@
 					}
 				]
 			}
-		}
+		},
+
+        methods: {
+			updateRows( page ) {
+				window.console.log('page : ' + page);
+            }
+        }
 	}
 </script>

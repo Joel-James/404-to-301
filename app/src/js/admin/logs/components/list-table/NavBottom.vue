@@ -8,11 +8,11 @@
                 :is-top="false"
         />
         <Pagination
-                v-if="canPaginate"
                 :total-items="totalItems"
                 :current-page="currentPage"
                 :per-page="perPage"
                 :is-top="false"
+                :pagination-callback="paginationCallback"
         />
         <br class="clear">
     </div>
@@ -65,6 +65,10 @@
 				type: Number,
 				default: 1,
 			},
+			paginationCallback: {
+				type: Function,
+				required: false,
+			}
 		},
 
 		/**
@@ -84,17 +88,6 @@
 			 */
 			hasBulkActions() {
 				return this.bulkActions.length > 0;
-			},
-
-			/**
-			 * Check if we can paginate.
-			 *
-			 * @since 4.0.0
-			 *
-			 * @returns {object}
-			 */
-			canPaginate() {
-				return this.perPage < this.totalItems;
 			}
 		},
 

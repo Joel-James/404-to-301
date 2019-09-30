@@ -6,6 +6,7 @@
                 :per-page="perPage"
                 :current-page="currentPage"
                 :total-items="totalItems"
+                :pagination-callback="paginationCallback"
         />
         <table :class="tableClass">
             <Header :columns="columns" :show-cb="showCb"/>
@@ -18,6 +19,7 @@
                 :per-page="perPage"
                 :current-page="currentPage"
                 :total-items="totalItems"
+                :pagination-callback="paginationCallback"
         />
     </form>
 </template>
@@ -70,7 +72,7 @@
 			},
 			totalItems: {
 				type: Number,
-				default: 41,
+				default: 101,
 			},
 			perPage: {
 				type: Number,
@@ -78,7 +80,7 @@
 			},
 			currentPage: {
 				type: Number,
-				default: 2,
+				default: 1,
 			},
 			sortBy: {
 				type: String,
@@ -101,6 +103,10 @@
 				type: Array,
 				required: false,
 				default: []
+			},
+			paginationCallback: {
+				type: Function,
+				required: false,
 			}
 		},
 	};
