@@ -368,6 +368,13 @@ function restGet(options) {
   _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
   _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
 
+  // Add param support.
+  if (options.params) {
+    var urlParams = new URLSearchParams(Object.entries(options.params));
+
+    options.path = options.path + '?' + urlParams;
+  }
+
   return (0, _apiFetch2.default)(options);
 }
 

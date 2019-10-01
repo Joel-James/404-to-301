@@ -140,7 +140,24 @@ class Logs extends Endpoint {
 		$order = $request->get_param( 'order_by' );
 
 		// Send response.
-		return $this->get_response( [] );
+		return $this->get_response( [
+			[
+				'id'       => 1,
+				'path'     => 'test',
+				'date'     => '25-12-2019',
+				'referral' => 'none',
+				'ip'       => '127.0.0.1',
+				'ua'       => 'none',
+			],
+			[
+				'id'       => 2,
+				'path'     => 'test/test',
+				'date'     => '26-15-2019',
+				'referral' => 'none',
+				'ip'       => '127.0.0.1',
+				'ua'       => 'none',
+			],
+		] );
 	}
 
 	/**

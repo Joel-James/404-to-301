@@ -20,6 +20,15 @@ export function restGet( options ) {
 	apiFetch.use( apiFetch.createNonceMiddleware( window.dd404.rest_nonce ) );
 	apiFetch.use( apiFetch.createRootURLMiddleware( window.dd404.rest_url ) );
 
+	// Add param support.
+	if ( options.params ) {
+		const urlParams = new URLSearchParams(
+			Object.entries( options.params )
+		);
+
+		options.path = options.path + '?' + urlParams;
+	}
+
 	return apiFetch( options );
 }
 

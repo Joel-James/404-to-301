@@ -34,6 +34,7 @@ class Assets extends Base {
 
 		// Localization.
 		add_filter( '404_to_301_scripts_localize_dd404-settings', [ $this, 'localize_settings' ] );
+		add_filter( '404_to_301_scripts_localize_dd404-logs', [ $this, 'localize_settings' ] );
 	}
 
 	/**

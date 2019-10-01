@@ -11,7 +11,10 @@
         <table :class="tableClass">
             <Header :columns="columns" :show-cb="showCb"/>
             <tbody>
-            <Row v-for="row in rows" :row="row" :id="row.id" :columns="columns" :show-cb="showCb"/>
+            <Row v-if="hasRows" v-for="row in rows" :row="row" :id="row.id" :columns="columns" :show-cb="showCb"/>
+            <tr v-if="!hasRows" class="no-items">
+                <td class="colspanchange" :colspan="columnCount">{{ labels.emptyRows }}</td>
+            </tr>
             </tbody>
         </table>
         <NavBottom
@@ -108,6 +111,59 @@
 				type: Function,
 				required: false,
 			}
+		},
+
+		/**
+		 * Get the default set of data for the template.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @returns {object}
+		 */
+		data() {
+
+			return {
+				labels: {
+					emptyRows: 'No data found.',
+				}
+			}
+		},
+
+		/**
+		 * Dynamic methods to handle table.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @returns {object}
+		 */
+		computed: {
+			/**
+			 * Is there any data available.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @returns {object}
+			 */
+			hasRows() {
+				return this.rows.length > 0;
+			},
+
+			/**
+			 * Is there any data available.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @returns {object}
+			 */
+			columnCount() {
+				let size = Object.keys( this.columns ).length;
+
+				if ( this.showCb ) {
+					size = size + 1;
+				}
+
+				return size;
+			},
 		},
 	};
 </script>

@@ -68,6 +68,7 @@ final class Plugin extends Base {
 	 */
 	private function common() {
 		Common\I18n::get();
+		Endpoints\Logs::get();
 		Endpoints\Settings::get();
 	}
 

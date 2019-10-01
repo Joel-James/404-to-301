@@ -1,4 +1,113 @@
-pluginWebpack([0],Array(20).concat([
+pluginWebpack([0],[
+/* 0 */,
+/* 1 */,
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */,
+/* 11 */,
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.restGet = restGet;
+exports.restPost = restPost;
+exports.restDelete = restDelete;
+
+var _apiFetch = __webpack_require__(13);
+
+var _apiFetch2 = _interopRequireDefault(_apiFetch);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Send API rest GET request using apiFetch.
+ *
+ * This is a wrapper function to include nonce and
+ * our custom route base url.
+ *
+ * @param {object} options apiFetch options.
+ *
+ * @since 4.0.0
+ *
+ * @return {string}
+ **/
+function restGet(options) {
+  options = options || {};
+
+  options.method = 'GET';
+
+  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
+  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
+
+  // Add param support.
+  if (options.params) {
+    var urlParams = new URLSearchParams(Object.entries(options.params));
+
+    options.path = options.path + '?' + urlParams;
+  }
+
+  return (0, _apiFetch2.default)(options);
+}
+
+/**
+ * Send API rest POST request using apiFetch.
+ *
+ * @param {object} options apiFetch options.
+ *
+ * @since 4.0.0
+ *
+ * @return {string}
+ **/
+function restPost(options) {
+  options = options || {};
+
+  options.method = 'POST';
+
+  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
+  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
+
+  return (0, _apiFetch2.default)(options);
+}
+
+/**
+ * Send API rest DELETE request using apiFetch.
+ *
+ * @param {object} options apiFetch options.
+ *
+ * @since 4.0.0
+ *
+ * @return {string}
+ **/
+function restDelete(options) {
+  options = options || {};
+
+  options.method = 'DELETE';
+
+  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
+  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
+
+  return (0, _apiFetch2.default)(options);
+}
+
+/***/ }),
+/* 13 */,
+/* 14 */,
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */,
 /* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -20,6 +129,8 @@ pluginWebpack([0],Array(20).concat([
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__list_table_Table_vue__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__);
 //
 //
 //
@@ -38,6 +149,10 @@ pluginWebpack([0],Array(20).concat([
 //
 //
 //
+//
+//
+//
+
 
 
 
@@ -57,6 +172,10 @@ pluginWebpack([0],Array(20).concat([
   */
 	components: {
 		Table: __WEBPACK_IMPORTED_MODULE_0__list_table_Table_vue__["a" /* default */]
+	},
+
+	created() {
+		this.updateRows();
 	},
 
 	/**
@@ -88,21 +207,7 @@ pluginWebpack([0],Array(20).concat([
 					sortable: true
 				}
 			},
-			rows: [{
-				id: 1,
-				path: 'test',
-				date: '20/12/2091',
-				referral: 'none',
-				ip: '127.0.0.1',
-				ua: 'none'
-			}, {
-				id: 2,
-				path: 'test',
-				date: '20/12/2091',
-				referral: 'none',
-				ip: '127.0.0.1',
-				ua: 'none'
-			}],
+			rows: [],
 			bulkActions: [{
 				key: 'trash',
 				label: 'Move to Trash'
@@ -111,13 +216,45 @@ pluginWebpack([0],Array(20).concat([
 				key: 'group_by',
 				label: 'Group by',
 				options: [{ key: 'path', label: '404 Path' }, { key: 'referral', label: 'Referral' }, { key: 'ip', label: 'IP' }, { key: 'ua', label: 'User Agent' }]
-			}]
+			}],
+			totalItems: 25,
+			perPage: 10,
+			currentPage: 1
 		};
 	},
 
 	methods: {
-		updateRows(page) {
-			window.console.log('page : ' + page);
+		/**
+   * Update the settings by sending the value to DB.
+   *
+   * Should handle the error response properly and disply
+   * a generic error message.
+   *
+   * @since 4.0.0
+   *
+   * @returns {boolean}
+   */
+		updateRows(page = null) {
+			this.currentPage = page || this.currentPage;
+
+			Object(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__["restGet"])({
+				path: 'logs',
+				params: {
+					page: this.currentPage,
+					per_page: this.perPage
+				}
+			}).then(response => {
+				if (response.success === true) {
+					this.rows = response.data;
+					this.totalItems = 0;
+				} else {
+					this.rows = [];
+					this.totalItems = 0;
+				}
+
+				// End waiting mode.
+				this.waiting = false;
+			});
 		}
 	}
 });
@@ -131,6 +268,9 @@ pluginWebpack([0],Array(20).concat([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Row_vue__ = __webpack_require__(88);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__NavTop_vue__ = __webpack_require__(90);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__NavBottom_vue__ = __webpack_require__(94);
+//
+//
+//
 //
 //
 //
@@ -240,6 +380,59 @@ pluginWebpack([0],Array(20).concat([
 		paginationCallback: {
 			type: Function,
 			required: false
+		}
+	},
+
+	/**
+  * Get the default set of data for the template.
+  *
+  * @since 4.0.0
+  *
+  * @returns {object}
+  */
+	data() {
+
+		return {
+			labels: {
+				emptyRows: 'No data found.'
+			}
+		};
+	},
+
+	/**
+  * Dynamic methods to handle table.
+  *
+  * @since 4.0.0
+  *
+  * @returns {object}
+  */
+	computed: {
+		/**
+   * Is there any data available.
+   *
+   * @since 4.0.0
+   *
+   * @returns {object}
+   */
+		hasRows() {
+			return this.rows.length > 0;
+		},
+
+		/**
+   * Is there any data available.
+   *
+   * @since 4.0.0
+   *
+   * @returns {object}
+   */
+		columnCount() {
+			let size = Object.keys(this.columns).length;
+
+			if (this.showCb) {
+				size = size + 1;
+			}
+
+			return size;
 		}
 	}
 });
@@ -2218,17 +2411,34 @@ var render = function() {
           _vm._v(" "),
           _c(
             "tbody",
-            _vm._l(_vm.rows, function(row) {
-              return _c("Row", {
-                attrs: {
-                  row: row,
-                  id: row.id,
-                  columns: _vm.columns,
-                  "show-cb": _vm.showCb
-                }
-              })
-            }),
-            1
+            [
+              _vm._l(_vm.rows, function(row) {
+                return _vm.hasRows
+                  ? _c("Row", {
+                      attrs: {
+                        row: row,
+                        id: row.id,
+                        columns: _vm.columns,
+                        "show-cb": _vm.showCb
+                      }
+                    })
+                  : _vm._e()
+              }),
+              _vm._v(" "),
+              !_vm.hasRows
+                ? _c("tr", { staticClass: "no-items" }, [
+                    _c(
+                      "td",
+                      {
+                        staticClass: "colspanchange",
+                        attrs: { colspan: _vm.columnCount }
+                      },
+                      [_vm._v(_vm._s(_vm.labels.emptyRows))]
+                    )
+                  ])
+                : _vm._e()
+            ],
+            2
           )
         ],
         1
@@ -2280,7 +2490,10 @@ var render = function() {
                 rows: _vm.rows,
                 "bulk-actions": _vm.bulkActions,
                 "extra-actions": _vm.extraActions,
-                "pagination-callback": _vm.updateRows
+                "pagination-callback": _vm.updateRows,
+                "total-items": _vm.totalItems,
+                "per-page": _vm.perPage,
+                "current-page": _vm.currentPage
               }
             })
           ],
@@ -2389,4 +2602,4 @@ if (false) {
 }
 
 /***/ })
-]),[78]);
+],[78]);

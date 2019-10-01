@@ -9,6 +9,9 @@
                             :bulk-actions="bulkActions"
                             :extra-actions="extraActions"
                             :pagination-callback="updateRows"
+                            :total-items="totalItems"
+                            :per-page="perPage"
+                            :current-page="currentPage"
                     />
                 </div>
             </div>
@@ -18,6 +21,7 @@
 
 <script>
 	import Table from './list-table/Table.vue'
+	import { restPost, restGet } from '../../../helpers/utils'
 
 	export default {
 
@@ -36,6 +40,10 @@
 		components: {
 			Table
 		},
+
+        created() {
+			this.updateRows();
+        },
 
 		/**
 		 * Get the default set of data for the template.
@@ -66,24 +74,7 @@
 						sortable: true
 					},
 				},
-				rows: [
-					{
-						id: 1,
-						path: 'test',
-						date: '20/12/2091',
-						referral: 'none',
-						ip: '127.0.0.1',
-						ua: 'none'
-					},
-					{
-						id: 2,
-						path: 'test',
-						date: '20/12/2091',
-						referral: 'none',
-						ip: '127.0.0.1',
-						ua: 'none'
-					}
-				],
+				rows: [],
 				bulkActions: [
 					{
 						key: 'trash',
@@ -101,14 +92,46 @@
 							{ key: 'ua', label: 'User Agent' },
 						]
 					}
-				]
+				],
+				totalItems: 25,
+				perPage: 10,
+				currentPage: 1
 			}
 		},
 
-        methods: {
-			updateRows( page ) {
-				window.console.log('page : ' + page);
-            }
-        }
+		methods: {
+			/**
+			 * Update the settings by sending the value to DB.
+			 *
+			 * Should handle the error response properly and disply
+			 * a generic error message.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @returns {boolean}
+			 */
+			updateRows( page = null ) {
+				this.currentPage = page || this.currentPage;
+
+				restGet( {
+					path: 'logs',
+					params: {
+						page: this.currentPage,
+						per_page: this.perPage
+					}
+				} ).then( response => {
+					if ( response.success === true ) {
+						this.rows = response.data;
+						this.totalItems = 0;
+					} else {
+						this.rows = [];
+						this.totalItems = 0;
+					}
+
+					// End waiting mode.
+					this.waiting = false;
+				} );
+			},
+		}
 	}
 </script>
