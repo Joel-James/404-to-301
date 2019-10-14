@@ -1,6 +1,6 @@
 pluginWebpack([2],{
 
-/***/ 10:
+/***/ 12:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -132,12 +132,12 @@ pluginWebpack([2],{
 
 /***/ }),
 
-/***/ 11:
+/***/ 13:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__);
 //
 //
@@ -329,103 +329,12 @@ pluginWebpack([2],{
 
 /***/ }),
 
-/***/ 12:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.restGet = restGet;
-exports.restPost = restPost;
-exports.restDelete = restDelete;
-
-var _apiFetch = __webpack_require__(13);
-
-var _apiFetch2 = _interopRequireDefault(_apiFetch);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Send API rest GET request using apiFetch.
- *
- * This is a wrapper function to include nonce and
- * our custom route base url.
- *
- * @param {object} options apiFetch options.
- *
- * @since 4.0.0
- *
- * @return {string}
- **/
-function restGet(options) {
-  options = options || {};
-
-  options.method = 'GET';
-
-  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
-  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
-
-  // Add param support.
-  if (options.params) {
-    var urlParams = new URLSearchParams(Object.entries(options.params));
-
-    options.path = options.path + '?' + urlParams;
-  }
-
-  return (0, _apiFetch2.default)(options);
-}
-
-/**
- * Send API rest POST request using apiFetch.
- *
- * @param {object} options apiFetch options.
- *
- * @since 4.0.0
- *
- * @return {string}
- **/
-function restPost(options) {
-  options = options || {};
-
-  options.method = 'POST';
-
-  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
-  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
-
-  return (0, _apiFetch2.default)(options);
-}
-
-/**
- * Send API rest DELETE request using apiFetch.
- *
- * @param {object} options apiFetch options.
- *
- * @since 4.0.0
- *
- * @return {string}
- **/
-function restDelete(options) {
-  options = options || {};
-
-  options.method = 'DELETE';
-
-  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
-  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
-
-  return (0, _apiFetch2.default)(options);
-}
-
-/***/ }),
-
 /***/ 19:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__wordpress_i18n__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__);
 //
 //
@@ -592,7 +501,7 @@ new _vue2.default({
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_SettingsApp_vue__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_SettingsApp_vue__ = __webpack_require__(12);
 /* empty harmony namespace reexport */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_309372c1_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SettingsApp_vue__ = __webpack_require__(58);
 var disposed = false
@@ -751,12 +660,103 @@ exports.default = new _vueRouter2.default({
 
 /***/ }),
 
+/***/ 6:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.restGet = restGet;
+exports.restPost = restPost;
+exports.restDelete = restDelete;
+
+var _apiFetch = __webpack_require__(8);
+
+var _apiFetch2 = _interopRequireDefault(_apiFetch);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Send API rest GET request using apiFetch.
+ *
+ * This is a wrapper function to include nonce and
+ * our custom route base url.
+ *
+ * @param {object} options apiFetch options.
+ *
+ * @since 4.0.0
+ *
+ * @return {string}
+ **/
+function restGet(options) {
+  options = options || {};
+
+  options.method = 'GET';
+
+  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
+  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
+
+  // Add param support.
+  if (options.params) {
+    var urlParams = new URLSearchParams(Object.entries(options.params));
+
+    options.path = options.path + '?' + urlParams;
+  }
+
+  return (0, _apiFetch2.default)(options);
+}
+
+/**
+ * Send API rest POST request using apiFetch.
+ *
+ * @param {object} options apiFetch options.
+ *
+ * @since 4.0.0
+ *
+ * @return {string}
+ **/
+function restPost(options) {
+  options = options || {};
+
+  options.method = 'POST';
+
+  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
+  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
+
+  return (0, _apiFetch2.default)(options);
+}
+
+/**
+ * Send API rest DELETE request using apiFetch.
+ *
+ * @param {object} options apiFetch options.
+ *
+ * @since 4.0.0
+ *
+ * @return {string}
+ **/
+function restDelete(options) {
+  options = options || {};
+
+  options.method = 'DELETE';
+
+  _apiFetch2.default.use(_apiFetch2.default.createNonceMiddleware(window.dd404.rest_nonce));
+  _apiFetch2.default.use(_apiFetch2.default.createRootURLMiddleware(window.dd404.rest_url));
+
+  return (0, _apiFetch2.default)(options);
+}
+
+/***/ }),
+
 /***/ 60:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_General_vue__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_General_vue__ = __webpack_require__(13);
 /* empty harmony namespace reexport */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1f5e8988_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_General_vue__ = __webpack_require__(75);
 var disposed = false

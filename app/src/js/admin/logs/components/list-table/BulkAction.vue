@@ -5,7 +5,7 @@
             <option value="-1">{{ actionLabel }}</option>
             <option v-for="option in actionOptions" :value="option.key">{{ option.label }}</option>
         </select>
-        <button type="button" :id="actionId + '-submit'" class="button">{{ actionSubmit }}</button>
+        <button type="button" :id="actionId + '-submit'" class="button" v-on:click="actionClickHandler( actionId )">{{ actionSubmit }}</button>
     </div>
 </template>
 
@@ -44,6 +44,10 @@
 				type: String,
 				required: false,
 				default: 'Submit'
+			},
+			actionClick: {
+				type: Boolean,
+				default: true
 			},
 			isTop: {
 				type: Boolean,
@@ -89,6 +93,14 @@
 		data() {
 			return {
 				bulkAction: -1,
+			}
+		},
+
+		methods: {
+			actionClickHandler( action ) {
+				if ( this.actionClick ) {
+					this.$router.push( { name: 'Logs', query: Object.assign( {}, this.$route.query, { [ action ]: this.bulkAction } ) } );
+				}
 			}
 		}
 	};

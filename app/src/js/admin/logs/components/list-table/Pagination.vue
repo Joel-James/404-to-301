@@ -19,6 +19,8 @@
 </template>
 
 <script>
+	import Router from 'vue-router'
+
 	export default {
 
 		/**
@@ -153,8 +155,9 @@
 				this.currentPageNumber = page;
 
 				if ( this.paginationCallback ) {
-                    this.paginationCallback( page );
-                }
+					//this.paginationCallback( page );
+				}
+				this.$router.push( { name: 'Logs', query: Object.assign( {}, this.$route.query, { page: page } ) } );
 			}
 		}
 	};

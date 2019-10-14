@@ -5,6 +5,7 @@
                 action-key="bulk-actions"
                 action-label="Bulk Actions"
                 :action-options="bulkActions"
+                :action-click="false"
         />
         <BulkAction
                 v-if="hasExtraActions"

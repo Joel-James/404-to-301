@@ -41,9 +41,9 @@
 			Table
 		},
 
-        created() {
+		created() {
 			this.updateRows();
-        },
+		},
 
 		/**
 		 * Get the default set of data for the template.
@@ -94,7 +94,7 @@
 					}
 				],
 				totalItems: 25,
-				perPage: 10,
+				perPage: 4,
 				currentPage: 1
 			}
 		},
@@ -122,7 +122,7 @@
 				} ).then( response => {
 					if ( response.success === true ) {
 						this.rows = response.data;
-						this.totalItems = 0;
+						this.totalItems = response.data.length;
 					} else {
 						this.rows = [];
 						this.totalItems = 0;

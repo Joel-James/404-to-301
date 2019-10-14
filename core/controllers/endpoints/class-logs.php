@@ -157,6 +157,30 @@ class Logs extends Endpoint {
 				'ip'       => '127.0.0.1',
 				'ua'       => 'none',
 			],
+			[
+				'id'       => 3,
+				'path'     => 'test/testdg',
+				'date'     => '26-15-2019',
+				'referral' => 'none',
+				'ip'       => '127.0.0.1',
+				'ua'       => 'none',
+			],
+			[
+				'id'       => 4,
+				'path'     => 'testada',
+				'date'     => '26-15-2019',
+				'referral' => 'none',
+				'ip'       => '127.0.0.1',
+				'ua'       => 'none',
+			],
+			[
+				'id'       => 5,
+				'path'     => 'test/teste',
+				'date'     => '26-15-2019',
+				'referral' => 'none',
+				'ip'       => '127.0.0.1',
+				'ua'       => 'none',
+			],
 		] );
 	}
 

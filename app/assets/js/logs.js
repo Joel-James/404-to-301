@@ -5,13 +5,7 @@ pluginWebpack([0],[
 /* 3 */,
 /* 4 */,
 /* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24,7 +18,7 @@ exports.restGet = restGet;
 exports.restPost = restPost;
 exports.restDelete = restDelete;
 
-var _apiFetch = __webpack_require__(13);
+var _apiFetch = __webpack_require__(8);
 
 var _apiFetch2 = _interopRequireDefault(_apiFetch);
 
@@ -101,6 +95,12 @@ function restDelete(options) {
 }
 
 /***/ }),
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */,
+/* 11 */,
+/* 12 */,
 /* 13 */,
 /* 14 */,
 /* 15 */,
@@ -129,7 +129,7 @@ function restDelete(options) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__list_table_Table_vue__ = __webpack_require__(84);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_utils___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__helpers_utils__);
 //
 //
@@ -218,7 +218,7 @@ function restDelete(options) {
 				options: [{ key: 'path', label: '404 Path' }, { key: 'referral', label: 'Referral' }, { key: 'ip', label: 'IP' }, { key: 'ua', label: 'User Agent' }]
 			}],
 			totalItems: 25,
-			perPage: 10,
+			perPage: 4,
 			currentPage: 1
 		};
 	},
@@ -246,7 +246,7 @@ function restDelete(options) {
 			}).then(response => {
 				if (response.success === true) {
 					this.rows = response.data;
-					this.totalItems = 0;
+					this.totalItems = response.data.length;
 				} else {
 					this.rows = [];
 					this.totalItems = 0;
@@ -729,6 +729,7 @@ if (false) {(function () {
 //
 //
 //
+//
 
 
 
@@ -929,6 +930,10 @@ if (false) {(function () {
 			required: false,
 			default: 'Submit'
 		},
+		actionClick: {
+			type: Boolean,
+			default: true
+		},
 		isTop: {
 			type: Boolean,
 			default: true
@@ -974,6 +979,14 @@ if (false) {(function () {
 		return {
 			bulkAction: -1
 		};
+	},
+
+	methods: {
+		actionClickHandler(action) {
+			if (this.actionClick) {
+				this.$router.push({ name: 'Logs', query: Object.assign({}, this.$route.query, { [action]: this.bulkAction }) });
+			}
+		}
 	}
 });
 
@@ -1034,6 +1047,7 @@ if (false) {(function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__(5);
 //
 //
 //
@@ -1054,6 +1068,8 @@ if (false) {(function () {
 //
 //
 //
+
+
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 
@@ -1189,8 +1205,9 @@ if (false) {(function () {
 			this.currentPageNumber = page;
 
 			if (this.paginationCallback) {
-				this.paginationCallback(page);
+				//this.paginationCallback( page );
 			}
+			this.$router.push({ name: 'Logs', query: Object.assign({}, this.$route.query, { page: page }) });
 		}
 	}
 });
@@ -1522,7 +1539,7 @@ _vue2.default.use(_vueRouter2.default);
 
 exports.default = new _vueRouter2.default({
 	routes: [{
-		path: '/',
+		path: '/:page?/:group?',
 		name: 'Logs',
 		component: _Logs2.default
 	}, {
@@ -2061,7 +2078,12 @@ var render = function() {
           "button",
           {
             staticClass: "button",
-            attrs: { type: "button", id: _vm.actionId + "-submit" }
+            attrs: { type: "button", id: _vm.actionId + "-submit" },
+            on: {
+              click: function($event) {
+                return _vm.actionClickHandler(_vm.actionId)
+              }
+            }
           },
           [_vm._v(_vm._s(_vm.actionSubmit))]
         )
@@ -2223,7 +2245,8 @@ var render = function() {
             attrs: {
               "action-key": "bulk-actions",
               "action-label": "Bulk Actions",
-              "action-options": _vm.bulkActions
+              "action-options": _vm.bulkActions,
+              "action-click": false
             }
           })
         : _vm._e(),
