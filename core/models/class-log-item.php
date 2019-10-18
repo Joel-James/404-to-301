@@ -29,6 +29,14 @@ class Log_Item extends Base {
 	 */
 	protected $id;
 
+	protected $log_status = true;
+
+	protected $email_status = true;
+
+	protected $redirect_type = 301;
+
+	protected $redirect_url = '';
+
 	/**
 	 * Get the redirect type of current error.
 	 *
@@ -82,11 +90,10 @@ class Log_Item extends Base {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return int
+	 * @return void
 	 */
-	public function set_redirect_type() {
-		// Send response.
-		return 301;
+	public function set_redirect_type( $type ) {
+		$this->redirect_type = intval( $type );
 	}
 
 	/**
@@ -94,11 +101,10 @@ class Log_Item extends Base {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return int
+	 * @return void
 	 */
-	public function set_redirect_url() {
-		// Send response.
-		return 301;
+	public function set_redirect_url( $url ) {
+		$this->redirect_url = $url;
 	}
 
 	/**
@@ -106,11 +112,10 @@ class Log_Item extends Base {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return int
+	 * @return void
 	 */
-	public function set_log_status() {
-		// Send response.
-		return true;
+	public function set_log_status( $status ) {
+		$this->log_status = boolval( $status );
 	}
 
 	/**
@@ -118,11 +123,10 @@ class Log_Item extends Base {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return int
+	 * @return void
 	 */
-	public function set_email_status() {
-		// Send response.
-		return true;
+	public function set_email_status( $status ) {
+		$this->email_status = boolval( $status );
 	}
 
 	/**
