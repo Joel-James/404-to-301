@@ -71,6 +71,6 @@ class Redirect extends Base {
 	 * @since 4.0
 	 */
 	public function handle_404() {
-		Redirect_404::get()->init();
+		Redirect_404::_get()->init();
 	}
 }

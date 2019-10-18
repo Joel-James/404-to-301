@@ -63,7 +63,7 @@ class Action extends Base {
 		 */
 		if ( apply_filters( '404_to_301_can_redirect', true ) ) {
 			// Send email notification.
-			Redirect::get()->process();
+			Redirect::_get()->process();
 		}
 	}
 
@@ -85,7 +85,7 @@ class Action extends Base {
 		 */
 		if ( apply_filters( '404_to_301_can_email_alert', true ) ) {
 			// Send email notification.
-			Email::get()->process();
+			Email::_get()->process();
 		}
 	}
 
@@ -106,7 +106,7 @@ class Action extends Base {
 		 */
 		if ( apply_filters( '404_to_301_can_email_alert', true ) ) {
 			// Send email notification.
-			Log::get()->process();
+			Log::_get()->process();
 		}
 	}
 }

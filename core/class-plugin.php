@@ -67,9 +67,9 @@ final class Plugin extends Base {
 	 * @return void
 	 */
 	private function common() {
-		Common\I18n::get();
-		Endpoints\Logs::get();
-		Endpoints\Settings::get();
+		Common\I18n::_get();
+		Endpoints\Logs::_get();
+		Endpoints\Settings::_get();
 	}
 
 	/**
@@ -95,9 +95,9 @@ final class Plugin extends Base {
 	 * @return void
 	 */
 	private function admin() {
-		Admin\General::get();
-		Admin\Assets::get();
-		Admin\Menu::get();
-		Admin\Review::get();
+		Admin\General::_get();
+		Admin\Assets::_get();
+		Admin\Menu::_get();
+		Admin\Review::_get();
 	}
 }

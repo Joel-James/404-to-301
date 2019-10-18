@@ -81,7 +81,7 @@ class Menu extends Base {
 			__( 'Error Logs', '404-to-301' ),
 			'manage_options', // Menu permission.
 			$this->slug,
-			[ Pages::get(), 'logs' ],
+			[ Pages::_get(), 'logs' ],
 			'dashicons-redo',
 			89
 		);
@@ -113,7 +113,7 @@ class Menu extends Base {
 			__( 'Settings', '404-to-301' ),
 			'manage_options', // Menu permission.
 			'404-to-301-settings',
-			[ Pages::get(), 'settings' ]
+			[ Pages::_get(), 'settings' ]
 		);
 
 		/**

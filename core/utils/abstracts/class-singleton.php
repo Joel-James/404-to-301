@@ -33,7 +33,7 @@ abstract class Singleton {
 	 *
 	 * @return static Called class instance.
 	 */
-	public static function get() {
+	public static function _get() {
 		static $instances = array();
 
 		// @codingStandardsIgnoreLine Plugin-backported

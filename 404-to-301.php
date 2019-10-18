@@ -69,7 +69,7 @@ require_once dirname( __FILE__ ) . '/core/vendor/autoloader.php';
  * @return DuckDev\WP404\Plugin
  */
 function duckdev_404_to_301() {
-	return DuckDev\WP404\Plugin::get();
+	return DuckDev\WP404\Plugin::_get();
 }
 
 // Check the minimum required PHP version (5.6) and run the plugin.
