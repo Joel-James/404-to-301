@@ -78,6 +78,54 @@ class Log_Item extends Base {
 	}
 
 	/**
+	 * Set the redirect type of current error.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return int
+	 */
+	public function set_redirect_type() {
+		// Send response.
+		return 301;
+	}
+
+	/**
+	 * Set the redirect url of current error.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return int
+	 */
+	public function set_redirect_url() {
+		// Send response.
+		return 301;
+	}
+
+	/**
+	 * Set the redirect type of current error.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return int
+	 */
+	public function set_log_status() {
+		// Send response.
+		return true;
+	}
+
+	/**
+	 * Set the redirect type of current error.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return int
+	 */
+	public function set_email_status() {
+		// Send response.
+		return true;
+	}
+
+	/**
 	 * Save the current log item to db.
 	 *
 	 * @since 4.0.0
