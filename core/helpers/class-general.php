@@ -20,35 +20,60 @@ class General {
 	 *
 	 * @var array $plugin_pages
 	 */
-	private static $plugin_pages = array(
-		'toplevel_page_404-to-301',
+	private static $settings_pages = array(
 		'error-logs_page_404-to-301-settings',
 	);
 
 	/**
-	 * Check if current page is DD Boilerplate admin.
+	 * Page screen ids of our plugin pages.
+	 *
+	 * @var array $plugin_pages
+	 */
+	private static $logs_pages = array(
+		'toplevel_page_404-to-301',
+	);
+
+	/**
+	 * Check if current page is one of our plugin page.
+	 *
+	 * @param string $page Page to check.
 	 *
 	 * @since  4.0
 	 * @access public
 	 *
-	 * @return mixed
+	 * @return bool
 	 */
-	public static function is_our_page() {
+	public static function is_plugin_page( $page = 'all' ) {
 		$current_screen = get_current_screen();
 
-		/**
-		 * Filter to add/remove items to DD Boilerplate pages.
-		 *
-		 * @param array $plugin_pages Screen IDs of 404 to 301 pages.
-		 */
-		$plugin_pages = apply_filters( 'dd404_plugin_pages', self::$plugin_pages );
-
-		// If not on plugin page.
-		if ( empty( $current_screen ) || ! in_array( $current_screen->id, $plugin_pages, true ) ) {
-			return false;
+		switch ( $page ) {
+			case 'logs':
+				$pages = self::$logs_pages;
+				break;
+			case 'settings':
+				$pages = self::$settings_pages;
+				break;
+			case 'all':
+				$pages = array_merge( self::$logs_pages, self::$settings_pages );
+				break;
+			default:
+				$pages = [];
+				break;
 		}
 
-		return true;
+		// If not on plugin page.
+		if ( ! empty( $current_screen->id ) && in_array( $current_screen->id, $pages, true ) ) {
+			$is_page = true;
+		} else {
+			$is_page = false;
+		}
+
+		/**
+		 * Filter to modify plugin pages check.
+		 *
+		 * @param bool $is_page Is checking success.
+		 */
+		return apply_filters( '404_to_301_is_plugin_page', $is_page );
 	}
 
 	/**

@@ -17,8 +17,8 @@ export function restGet( options ) {
 
 	options.method = 'GET';
 
-	apiFetch.use( apiFetch.createNonceMiddleware( window.dd404.rest_nonce ) );
-	apiFetch.use( apiFetch.createRootURLMiddleware( window.dd404.rest_url ) );
+	apiFetch.use( apiFetch.createNonceMiddleware( window.dd404to301Vars.rest_nonce ) );
+	apiFetch.use( apiFetch.createRootURLMiddleware( window.dd404to301Vars.rest_url ) );
 
 	// Add param support.
 	if ( options.params ) {
@@ -46,8 +46,8 @@ export function restPost( options ) {
 
 	options.method = 'POST';
 
-	apiFetch.use( apiFetch.createNonceMiddleware( window.dd404.rest_nonce ) );
-	apiFetch.use( apiFetch.createRootURLMiddleware( window.dd404.rest_url ) );
+	apiFetch.use( apiFetch.createNonceMiddleware( window.dd404to301Vars.rest_nonce ) );
+	apiFetch.use( apiFetch.createRootURLMiddleware( window.dd404to301Vars.rest_url ) );
 
 	return apiFetch( options );
 }
@@ -66,8 +66,8 @@ export function restDelete( options ) {
 
 	options.method = 'DELETE';
 
-	apiFetch.use( apiFetch.createNonceMiddleware( window.dd404.rest_nonce ) );
-	apiFetch.use( apiFetch.createRootURLMiddleware( window.dd404.rest_url ) );
+	apiFetch.use( apiFetch.createNonceMiddleware( window.dd404to301Vars.rest_nonce ) );
+	apiFetch.use( apiFetch.createRootURLMiddleware( window.dd404to301Vars.rest_url ) );
 
 	return apiFetch( options );
 }

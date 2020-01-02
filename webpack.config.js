@@ -1,143 +1,153 @@
-const webpack = require( 'webpack' );
+const _ = require( 'lodash' );
 const path = require( 'path' );
-const packages = require( './package.json' );
-const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
-const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
-const OptimizeCSSPlugin = require( 'optimize-css-assets-webpack-plugin' );
-const BrowserSyncPlugin = require( 'browser-sync-webpack-plugin' );
+const webpack = require( 'webpack' );
+const autoprefixer = require( 'autoprefixer' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
+const { VueLoaderPlugin } = require( 'vue-loader' );
+const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
 
-const config = require( './config.json' );
+const sharedConfig = {
+	mode: 'production',
 
-// Naming and path settings
-var appName = 'app';
-var entryPoint = {
-	frontend: './app/src/js/frontend/main.js',
-	settings: './app/src/js/admin/settings/settings.js',
-	logs: './app/src/js/admin/logs/logs.js',
-	vendor: Object.keys( packages.dependencies ),
-	style: './app/src/less/style.less',
+	stats: {
+		colors: true,
+		entrypoints: true,
+	},
+
+	watchOptions: {
+		ignored: /node_modules/,
+		poll: 1000,
+	},
 };
 
-var exportPath = path.resolve( __dirname, './app/assets/js' );
+const scssConfig = _.assign( _.cloneDeep( sharedConfig ), {
+	entry: {
+		'logs': path.resolve( __dirname, 'app/src/scss/logs.scss' ),
+		'settings': path.resolve( __dirname, 'app/src/scss/settings.scss' ),
+	},
 
-// Enviroment flag
-var plugins = [];
-var env = process.env.WEBPACK_ENV;
+	output: {
+		filename: '[name].min.css',
+		path: path.resolve( __dirname, 'app/assets/css' ),
+	},
 
-function isProduction() {
-	return process.env.WEBPACK_ENV === 'production';
-}
+	module: {
+		rules: [
+			{
+				test: /\.scss$/,
+				exclude: /node_modules/,
+				use: [ MiniCssExtractPlugin.loader,
+					{
+						loader: 'css-loader',
+					},
+					{
+						loader: 'postcss-loader',
+						options: {
+							plugins: [
+								autoprefixer(),
+							],
+							sourceMap: true,
+						},
+					},
+					{
+						loader: 'resolve-url-loader',
+					},
+					{
+						loader: 'sass-loader',
+						options: {
+							sourceMap: true,
+						},
+					},
+				],
+			},
+			{
+				test: /\.(png|jpg|gif)$/,
+				use: {
+					loader: 'file-loader',
+					options: {
+						name: '[name].[ext]',
+						outputPath: '../image',
+					},
+				},
+			},
+			{
+				test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
+				use: {
+					loader: 'file-loader',
+					options: {
+						name: '[name].[ext]',
+						outputPath: '../fonts',
+					},
+				},
+			},
+		],
+	},
 
-// extract css into its own file
-const extractCss = new ExtractTextPlugin( {
-	filename: "../css/[name].css",
+	devtool: 'source-map',
+
+	plugins: [
+		new MiniCssExtractPlugin( {
+			filename: '../css/[name].min.css',
+		} ),
+		new CleanWebpackPlugin(),
+	],
 } );
 
-plugins.push( extractCss );
-
-// Extract all 3rd party modules into a separate 'vendor' chunk
-plugins.push( new webpack.optimize.CommonsChunkPlugin( {
-	name: 'vendor',
-	minChunks: ( { resource } ) => /node_modules/.test( resource ),
-} ) );
-
-plugins.push( new BrowserSyncPlugin( {
-	proxy: {
-		target: config.proxyURL
+const jsConfig = _.assign( _.cloneDeep( sharedConfig ), {
+	entry: {
+		'logs': path.resolve( __dirname, 'app/src/js/logs.js' ),
+		'settings': path.resolve( __dirname, 'app/src/js/settings.js' ),
 	},
-	files: [
-		'**/*.php'
-	],
-	cors: true,
-	reloadDelay: 0
-} ) );
 
-// Generate a 'manifest' chunk to be inlined in the HTML template
-// plugins.push(new webpack.optimize.CommonsChunkPlugin('manifest'));
-
-// Compress extracted CSS. We are using this plugin so that possible
-// duplicated CSS from different components can be deduped.
-plugins.push( new OptimizeCSSPlugin( {
-	cssProcessorOptions: {
-		safe: true,
-		map: {
-			inline: false
-		}
-	}
-} ) );
-
-// Differ settings based on production flag
-if ( isProduction() ) {
-
-	plugins.push( new UglifyJsPlugin( {
-		sourceMap: true,
-	} ) );
-
-	plugins.push( new webpack.DefinePlugin( {
-		'process.env': env
-	} ) );
-
-	appName = '[name].min.js';
-} else {
-	appName = '[name].js';
-}
-
-module.exports = {
-	entry: entryPoint,
 	output: {
-		path: exportPath,
-		filename: appName,
-		chunkFilename: 'chunks/[chunkhash].js',
-		jsonpFunction: 'pluginWebpack'
+		filename: '[name].min.js',
+		path: path.resolve( __dirname, 'app/assets/js' ),
 	},
 
 	resolve: {
 		alias: {
-			'vue$': 'vue/dist/vue.esm.js',
-			'@': path.resolve( './app/src/js/' ),
-			'frontend': path.resolve( './app/src/js/frontend/' ),
-			'settings': path.resolve( './app/src/js/admin/settings/' ),
-			'logs': path.resolve( './app/src/js/admin/logs/' ),
+			vue: 'vue/dist/vue.js'
 		},
-		modules: [
-			path.resolve( './node_modules' ),
-			path.resolve( path.join( __dirname, 'app/src/js/' ) ),
-		]
+		extensions: [ '*', '.js', '.vue', '.json' ],
 	},
-
-	plugins,
 
 	module: {
 		rules: [
 			{
 				test: /\.js$/,
-				exclude: /(node_modules|bower_components)/,
-				loader: 'babel-loader',
-				query: {
-					presets: [ 'es2015' ]
+				exclude: /node_modules/,
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: [ '@babel/preset-env' ]
+					}
 				}
 			},
 			{
 				test: /\.vue$/,
-				loader: 'vue-loader',
-				options: {
-					extractCSS: true
-				}
-			},
-			{
-				test: /\.less$/,
-				use: extractCss.extract( {
-					use: [ {
-						loader: "css-loader"
-					}, {
-						loader: "less-loader"
-					} ]
-				} )
-			},
-			{
-				test: /\.css$/,
-				use: [ 'style-loader', 'css-loader' ]
+				loader: 'vue-loader'
 			}
 		]
 	},
-}
+
+	plugins: [
+		new VueLoaderPlugin(),
+		new CleanWebpackPlugin(),
+	],
+
+	optimization: {
+		splitChunks: {
+			cacheGroups: {
+				commons: {
+					test: /[\\/]node_modules[\\/]/,
+					name( module, chunks, cacheGroupKey ) {
+						return 'vendors';
+					},
+					chunks: 'all'
+				}
+			}
+		}
+	}
+} );
+
+module.exports = [ jsConfig, scssConfig ];

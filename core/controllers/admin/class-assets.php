@@ -5,7 +5,7 @@ namespace DuckDev\WP404\Controllers\Admin;
 // Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
-use DuckDev\WP404\Helpers\Settings;
+use DuckDev\WP404\Helpers;
 use DuckDev\WP404\Utils\Abstracts\Base;
 
 /**
@@ -21,183 +21,228 @@ use DuckDev\WP404\Utils\Abstracts\Base;
 class Assets extends Base {
 
 	/**
-	 * Initilize the class by registering the hooks.
+	 * Initialize assets functionality.
 	 *
-	 * @since 4.0.0
+	 * @since 3.2.4
+	 *
+	 * @return void
 	 */
 	public function init() {
-		if ( is_admin() ) {
-			add_action( 'admin_enqueue_scripts', [ $this, 'register' ], 5 );
-		} else {
-			add_action( 'wp_enqueue_scripts', [ $this, 'register' ], 5 );
-		}
+		add_action( 'admin_enqueue_scripts', [ $this, 'register' ] );
 
 		// Localization.
-		add_filter( '404_to_301_scripts_localize_dd404-settings', [ $this, 'localize_settings' ] );
-		add_filter( '404_to_301_scripts_localize_dd404-logs', [ $this, 'localize_settings' ] );
+		add_filter( '404_to_301_script_vars', [ $this, 'localization' ], 10, 2 );
+
+		// Enqueue assets.
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue' ], 99 );
 	}
 
 	/**
-	 * Register the scripts and styles.
+	 * Assets for our front end functionality.
 	 *
-	 * Do not enqueue the assets now. We can do that
-	 * when required.
-	 *
-	 * @since 4.0.0
+	 * @since 3.2.4
 	 *
 	 * @return void
 	 */
 	public function register() {
-		$this->register_scripts( $this->get_scripts() );
-		$this->register_styles( $this->get_styles() );
+		$this->register_styles();
+		$this->register_scripts();
 	}
 
 	/**
-	 * Register scripts with WordPress.
+	 * Register available styles.
 	 *
-	 * Whenever possible, load the scripts in footer.
+	 * We are just registering the assets with WP now.
+	 * We will enqueue them when it's really required.
 	 *
-	 * @param array $scripts Scripts list.
-	 *
-	 * @since 4.0.0
+	 * @since 3.2.4
 	 *
 	 * @return void
 	 */
-	private function register_scripts( $scripts ) {
-		foreach ( $scripts as $handle => $script ) {
-			// Prepare the data.
-			$deps      = isset( $script['deps'] ) ? $script['deps'] : false;
-			$in_footer = isset( $script['in_footer'] ) ? $script['in_footer'] : false;
-			$version   = isset( $script['version'] ) ? $script['version'] : DD404_VERSION;
+	private function register_styles() {
+		// Get all the assets.
+		$styles = $this->get_styles();
 
-			// Now register.
-			wp_register_script( $handle, $script['src'], $deps, $version, $in_footer );
-
-			/**
-			 * Filter hook to add localization items to script.
-			 *
-			 * @param array $data Localized items.
-			 *
-			 * @since 4.0.0
-			 */
-			$localize = apply_filters( "404_to_301_scripts_localize_$handle", [] );
-
-			// Only if not empty.
-			if ( ! empty( $localize ) ) {
-				wp_localize_script( $handle, 'dd404', $localize );
-			}
+		// Register all styles.
+		foreach ( $styles as $handle => $data ) {
+			// Register custom videos scripts.
+			wp_register_style(
+				$handle,
+				DD404_URL . '/app/assets/css/' . $data['src'],
+				empty( $data['deps'] ) ? [] : $data['deps'],
+				empty( $data['version'] ) ? null : $data['version'],
+				empty( $data['media'] ) ? false : true
+			);
 		}
 	}
 
 	/**
-	 * Register styles with WordPress.
+	 * Register available scripts.
 	 *
-	 * Register stylesheets using wp_register_style so that we
-	 * can enqueue them when required.
+	 * We are just registering the assets with WP now.
+	 * We will enqueue them when it's really required.
 	 *
-	 * @param array $styles Styles list.
-	 *
-	 * @since 4.0.0
+	 * @since 3.2.4
 	 *
 	 * @return void
 	 */
-	public function register_styles( $styles ) {
-		foreach ( $styles as $handle => $style ) {
-			// Prepare the data.
-			$deps = isset( $style['deps'] ) ? $style['deps'] : false;
+	private function register_scripts() {
+		// Get all the assets.
+		$scripts = $this->get_scripts();
 
-			// Now register the style.
-			wp_register_style( $handle, $style['src'], $deps, DD404_VERSION );
+		// Register all available scripts.
+		foreach ( $scripts as $handle => $data ) {
+			// Register custom videos scripts.
+			wp_register_script(
+				$handle,
+				DD404_URL . '/app/assets/js/' . $data['src'],
+				empty( $data['deps'] ) ? [] : $data['deps'],
+				empty( $data['version'] ) ? null : $data['version'],
+				isset( $data['footer'] ) ? $data['footer'] : true
+			);
+
+			// Extra vars.
+			wp_localize_script( $handle,
+				'dd404to301ModuleVars',
+				/**
+				 * Filter to add/remove vars in script.
+				 *
+				 * @since 3.2.4
+				 */
+				apply_filters( "404_to_301_assets_scripts_localize_vars_{$handle}", [] )
+			);
+
+			// Common vars.
+			$common_vars = $this->localization();
+
+			wp_localize_script( $handle,
+				'dd404to301Vars',
+				/**
+				 * Filter to add/remove vars in script.
+				 *
+				 * @param array $common_vars Common vars.
+				 * @param array $handle      Script handle name.
+				 *
+				 * @since 3.2.4
+				 */
+				apply_filters( '404_to_301_script_vars', $common_vars, $handle )
+			);
 		}
 	}
 
 	/**
-	 * Get all registered scripts array.
+	 * Get the scripts list to register.
 	 *
-	 * @since 4.0.0
+	 * @since 3.2.4
 	 *
 	 * @return array
 	 */
-	public function get_scripts() {
+	private function get_scripts() {
 		$scripts = [
-			'dd404-vendor'   => [
-				'src'       => DD404_URL . '/app/assets/js/vendor.js',
-				'in_footer' => true,
+			'404-to-301-settings' => [
+				'src'  => 'settings.min.js',
+				'deps' => [ '404-to-301-vendors' ],
 			],
-			'dd404-frontend' => [
-				'src'       => DD404_URL . '/app/assets/js/frontend.js',
-				'deps'      => [ 'jquery', 'dd404-vendor' ],
-				'in_footer' => true,
+			'404-to-301-logs'     => [
+				'src'  => 'logs.min.js',
+				'deps' => [ '404-to-301-vendors' ],
 			],
-			'dd404-settings' => [
-				'src'       => DD404_URL . '/app/assets/js/settings.js',
-				'deps'      => [ 'jquery', 'dd404-vendor' ],
-				'in_footer' => true,
-			],
-			'dd404-logs'     => [
-				'src'       => DD404_URL . '/app/assets/js/logs.js',
-				'deps'      => [ 'jquery', 'dd404-vendor' ],
-				'in_footer' => true,
+			'404-to-301-vendors'  => [
+				'src'  => 'vendors.min.js',
+				'deps' => [ 'jquery' ],
 			],
 		];
 
 		/**
-		 * Filter hook to modify the scripts list.
+		 * Filter to include/exclude new script.
+		 *
+		 * Modules should use this filter to that common localized
+		 * vars will be available.
 		 *
 		 * @param array $scripts Scripts list.
 		 *
-		 * @since 4.0.0
+		 * @since 3.2.4
 		 */
-		return apply_filters( 'dd404_scripts_list', $scripts );
+		return apply_filters( '404_to_301_assets_get_scripts', $scripts );
 	}
 
 	/**
-	 * Get registered styles array.
+	 * Get the styles list to register.
 	 *
-	 * @since 4.0.0
+	 * @since 3.2.4
 	 *
 	 * @return array
 	 */
-	public function get_styles() {
+	private function get_styles() {
 		$styles = [
-			'dd404-style'    => [
-				'src' => DD404_URL . '/app/assets/css/style.css',
+			'404-to-301-settings' => [
+				'src' => 'settings.min.css',
 			],
-			'dd404-frontend' => [
-				'src' => DD404_URL . '/app/assets/css/frontend.css',
-			],
-			'dd404-settings' => [
-				'src' => DD404_URL . '/app/assets/css/settings.css',
+			'404-to-301-logs'     => [
+				'src' => 'logs.min.css',
 			],
 		];
 
 		/**
-		 * Filter hook to modify the styles list.
+		 * Filter to include/exclude new style.
 		 *
-		 * @param array $scripts Styles list.
+		 * Modules should use this filter to include styles.
 		 *
-		 * @since 4.0.0
+		 * @param array $styles Styles list.
+		 *
+		 * @since 3.2.4
 		 */
-		return apply_filters( 'dd404_styles_list', $styles );
+		return apply_filters( '404_to_301_assets_get_styles', $styles );
 	}
 
 	/**
-	 * Add localization items to the array.
+	 * Enqueue required assets for the admin pages.
 	 *
-	 * @param array $data Existing items.
+	 * We need to check if it is really our admin page before
+	 * enqueuing assets.
 	 *
-	 * @since 4.0.0
+	 * @since 3.2.4
+	 *
+	 * @return void
+	 */
+	public function enqueue() {
+		// Enqueue logs assets.
+		if ( Helpers\General::is_plugin_page( 'logs' ) ) {
+			wp_enqueue_style( '404-to-301-logs' );
+			wp_enqueue_script( '404-to-301-logs' );
+		}
+
+		// Enqueue settings assets.
+		if ( Helpers\General::is_plugin_page( 'settings' ) ) {
+			wp_enqueue_style( '404-to-301-settings' );
+			wp_enqueue_script( '404-to-301-settings' );
+		}
+
+		/**
+		 * Action hook to execute after enqueuing plugin admin assets.
+		 *
+		 * @since 3.2.4
+		 */
+		do_action( '404_to_301_enqueue_assets' );
+	}
+
+	/**
+	 * Set localized script vars for the assets.
+	 *
+	 * This is the common vars available in all scripts.
+	 *
+	 * @since 3.2.4
 	 *
 	 * @return array
 	 */
-	public function localize_settings( $data ) {
+	public function localization() {
 		// Localized strings.
 		$strings = [
 			'rest_nonce' => wp_create_nonce( 'wp_rest' ),
 			'rest_url'   => rest_url( '404-to-301/v1/' ),
-			'settings'   => Settings::get_options(),
+			'settings'   => Helpers\Settings::get_options(),
 		];
 
-		return array_merge( $strings, $data );
+		return $strings;
 	}
 }

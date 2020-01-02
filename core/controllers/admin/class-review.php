@@ -40,7 +40,7 @@ class Review extends Base {
 	 */
 	public function notice() {
 		// Only on our page.
-		if ( Helpers\General::is_our_page() ) {
+		if ( Helpers\General::is_plugin_page() ) {
 			// Only for admins.
 			if ( ! current_user_can( 'manage_options' ) ) {
 				return false;

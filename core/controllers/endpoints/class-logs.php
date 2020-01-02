@@ -139,8 +139,7 @@ class Logs extends Endpoint {
 		$size  = $request->get_param( 'per_page' );
 		$order = $request->get_param( 'order_by' );
 
-		// Send response.
-		return $this->get_response( [
+		$one = [
 			[
 				'id'       => 1,
 				'path'     => 'test',
@@ -181,7 +180,55 @@ class Logs extends Endpoint {
 				'ip'       => '127.0.0.1',
 				'ua'       => 'none',
 			],
-		] );
+		];
+
+		$two = [
+			[
+				'id'       => 1,
+				'path'     => 'test/test',
+				'date'     => '26-15-2019',
+				'referral' => 'none',
+				'ip'       => '127.0.0.1',
+				'ua'       => 'none',
+			],
+			[
+				'id'       => 2,
+				'path'     => 'test',
+				'date'     => '25-12-2019',
+				'referral' => 'none',
+				'ip'       => '127.0.0.1',
+				'ua'       => 'none',
+			],
+			[
+				'id'       => 3,
+				'path'     => 'testada',
+				'date'     => '26-15-2019',
+				'referral' => 'none',
+				'ip'       => '127.0.0.1',
+				'ua'       => 'none',
+			],
+			[
+				'id'       => 4,
+				'path'     => 'test/testdg',
+				'date'     => '26-15-2019',
+				'referral' => 'none',
+				'ip'       => '127.0.0.1',
+				'ua'       => 'none',
+			],
+		];
+
+		// Send response.
+		if ( $page > 1 ) {
+			return $this->get_response( [
+				'items' => $two,
+				'total' => 9,
+			] );
+		} else {
+			return $this->get_response( [
+				'items' => $one,
+				'total' => 9,
+			] );
+		}
 	}
 
 	/**
@@ -233,25 +280,5 @@ class Logs extends Endpoint {
 
 		// Send response.
 		return $this->get_response( [] );
-	}
-
-	/**
-	 * Check if a given request has access to update a setting.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
-	 * @return bool
-	 */
-	public function permissions_check( $request ) {
-		/**
-		 * Filter to modify settings capability.
-		 *
-		 * @paran string $cap Capability name.
-		 *
-		 * @since 4.0.0
-		 */
-		$settings_cap = apply_filters( '404_to_301_settings_capability', 'manage_options' );
-
-		return current_user_can( $settings_cap );
 	}
 }

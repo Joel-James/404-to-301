@@ -5,6 +5,7 @@ namespace DuckDev\WP404\Utils\Abstracts;
 // Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
+use WP_REST_Request;
 use WP_REST_Response;
 
 /**
@@ -103,6 +104,26 @@ abstract class Endpoint extends Base {
 			'success' => $success,
 			'data'    => $data,
 		), $status );
+	}
+
+	/**
+	 * Check if a given request has access to update a setting.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 *
+	 * @return bool
+	 */
+	public function permissions_check( $request ) {
+		$capable = current_user_can( 'manage_options' );
+
+		/**
+		 * Filter to modify settings capability.
+		 *
+		 * @paran string $cap Capability name.
+		 *
+		 * @since 4.0.0
+		 */
+		return apply_filters( '404_to_301_settings_permissions_check', true );
 	}
 
 	/**
