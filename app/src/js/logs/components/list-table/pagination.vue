@@ -2,8 +2,8 @@
     <div class="tablenav-pages">
         <span class="displaying-num">{{ sprintf( __( '%d items', '404-to-301' ), totalItems ) }}</span>
         <span class="pagination-links" v-if="canPaginate">
-            <span class="tablenav-pages-navspan button" aria-hidden="true" :disabled="disableFirstPage" @click="gotoFirst">«</span>
-            <span class="tablenav-pages-navspan button" aria-hidden="true" :disabled="disablePrevPage" @click="gotoPrev">‹</span>
+            <button class="tablenav-pages-navspan button" aria-hidden="true" :disabled="disableFirstPage" @click="gotoFirst">«</button>
+            <button class="tablenav-pages-navspan button" aria-hidden="true" :disabled="disablePrevPage" @click="gotoPrev">‹</button>
             <span class="paging-input" v-if="isTop">
                 <label for="current-page-selector" class="screen-reader-text">{{ __( 'Current Page', '404-to-301' ) }}</label>
                 <input @keyup.enter="gotoPage" class="current-page" min="1" :max="totalPages" id="current-page-selector" type="number" :value="page" size="1">
@@ -12,8 +12,8 @@
             <span class="paging-input" v-else>
                 <span class="tablenav-paging-text">{{ sprintf( __( '%d of', '404-to-301' ), page ) }} <span class="total-pages">{{ totalPages }}</span></span>
             </span>
-            <span class="tablenav-pages-navspan button" aria-hidden="true" :disabled="disableNextPage" @click="gotoNext">›</span>
-            <span class="tablenav-pages-navspan button" aria-hidden="true" :disabled="disableLastPage" @click="gotoLast">»</span>
+            <button class="tablenav-pages-navspan button" aria-hidden="true" :disabled="disableNextPage" @click="gotoNext">›</button>
+            <button class="tablenav-pages-navspan button" aria-hidden="true" :disabled="disableLastPage" @click="gotoLast">»</button>
         </span>
     </div>
 </template>

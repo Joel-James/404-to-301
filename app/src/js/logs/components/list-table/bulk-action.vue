@@ -1,11 +1,11 @@
 <template>
     <div class="alignleft actions bulkactions" v-if="hasOptions">
         <label :for="actionId" class="screen-reader-text">{{ actionLabel }}</label>
-        <select name="action" :id="actionId" v-model="bulkAction">
+        <select name="action" :id="actionId" v-model="bulkAction" @change="actionChangeHandler">
             <option value="-1">{{ actionLabel }}</option>
-            <option v-for="option in actionOptions" :value="option.key">{{ option.label }}</option>
+            <option v-for="(label, option) in actionOptions" :value="option">{{ label }}</option>
         </select>
-        <button type="button" class="button" @click="actionClickHandler">{{ actionSubmit }}</button>
+        <button v-if="enableSubmit" type="button" class="button" :disabled="disableSubmit" @click="actionClickHandler">{{ __( 'Apply', '404-to-301' ) }}</button>
     </div>
 </template>
 
@@ -24,32 +24,31 @@
 				required: true
 			},
 			actionOptions: {
-				type: Array,
+				type: Object,
 				required: true
-			},
-			actionSubmit: {
-				type: String,
-				required: false,
-				default: 'Submit'
-			},
-			actionClick: {
-				type: Boolean,
-				default: true
 			},
 			isTop: {
 				type: Boolean,
 				default: true
 			},
+			enableSubmit: {
+				type: Boolean,
+				default: true
+            }
 		},
 
 		computed: {
 			hasOptions() {
-				return this.actionOptions.length > 0;
+				return Object.keys( this.actionOptions ).length > 0;
 			},
 
 			actionId() {
 				return this.actionKey + this.position;
-			}
+			},
+
+            disableSubmit() {
+				return -1 == this.bulkAction
+            }
 		},
 
 		data() {
@@ -60,13 +59,21 @@
 		},
 
 		methods: {
-			actionClickHandler( action ) {
+			actionClickHandler() {
 				this.$root.$emit( 'listTableBulkActionSubmit', {
 					action: this.actionKey,
 					selected: this.bulkAction,
 					position: this.position,
 				} );
-			}
+			},
+
+			actionChangeHandler() {
+				this.$root.$emit( 'listTableBulkActionChange', {
+					action: this.actionKey,
+					selected: this.bulkAction,
+					position: this.position,
+				} );
+            }
 		}
 	};
 </script>

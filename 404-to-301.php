@@ -55,7 +55,7 @@ define( 'DD404_URL', plugin_dir_url( __FILE__ ) );
 define( 'DD404_SLUG', '404-to-301' );
 
 // Auto load classes.
-require_once dirname( __FILE__ ) . '/core/vendor/autoloader.php';
+require_once dirname( __FILE__ ) . '/vendor/autoload.php';
 
 /**
  * Main instance of plugin.
@@ -69,7 +69,7 @@ require_once dirname( __FILE__ ) . '/core/vendor/autoloader.php';
  * @return DuckDev\WP404\Plugin
  */
 function duckdev_404_to_301() {
-	return DuckDev\WP404\Plugin::_get();
+	return \DuckDev\WP404\Plugin::_get();
 }
 
 // Check the minimum required PHP version (5.6) and run the plugin.

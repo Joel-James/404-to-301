@@ -1,0 +1,18 @@
+{
+    "name": "ironbound/cache",
+    "description": "Provides wrappers for WordPress' object cache to make storing and retrieving models easier.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Iron Bound Designs",
+            "email": "info@ironbounddesigns.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "IronBound\\Cache\\": "src/"
+        }
+    }
+}
