@@ -55,7 +55,7 @@ define( 'DD404_URL', plugin_dir_url( __FILE__ ) );
 define( 'DD404_SLUG', '404-to-301' );
 
 // Auto load classes.
-require_once dirname( __FILE__ ) . '/vendor/autoload.php';
+require_once dirname( __FILE__ ) . '/core/vendor/autoloader.php';
 
 /**
  * Main instance of plugin.

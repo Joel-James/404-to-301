@@ -8,9 +8,9 @@
 
 namespace DuckDev\WP404\Database\Tables;
 
-use IronBound\DB\Table\Table;
+use DuckDev\WP404\Database\Tables\Column\Array_Column;
 use IronBound\DB\Table\Column;
-use DuckDev\WP404\Database\Tables\Column\ArrayColumn;
+use IronBound\DB\Table\Table;
 
 /**
  * Class Releases
@@ -63,7 +63,7 @@ class Log implements Table {
 			'ip'       => new Column\StringBased( 'VARCHAR', 'ip' ),
 			'ua'       => new Column\StringBased( 'VARCHAR', 'ua' ),
 			'redirect' => new Column\StringBased( 'VARCHAR', 'redirect' ),
-			'options'  => new ArrayColumn( 'LONGTEXT', 'options' ),
+			'options'  => new Array_Column( 'LONGTEXT', 'options' ),
 			'status'   => new Column\Boolean( 'status' ),
 		);
 	}

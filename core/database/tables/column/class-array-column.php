@@ -18,7 +18,7 @@ use IronBound\DB\Exception\InvalidDataForColumnException;
  *
  * @package IronBound\DB\Table\Column
  */
-class ArrayColumn extends BaseColumn {
+class Array_Column extends BaseColumn {
 
 	/**
 	 * @var string

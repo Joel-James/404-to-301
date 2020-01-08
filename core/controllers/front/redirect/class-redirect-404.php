@@ -16,7 +16,7 @@ use DuckDev\WP404\Utils\Abstracts\Base;
  *
  * @author Joel James <me@joelsays.com>
  */
-class Redirect404 extends Base {
+class Redirect_404 extends Base {
 
 	/**
 	 * Page ID to set as 404 page.
