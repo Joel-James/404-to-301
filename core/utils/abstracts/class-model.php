@@ -5,6 +5,8 @@ namespace DuckDev\WP404\Utils\Abstracts;
 // Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
+use DuckDev\EloquentWP\Eloquent\Model as Model_Base;
+
 /**
  * Singleton class for all classes.
  *
@@ -13,92 +15,44 @@ defined( 'WPINC' ) || die;
  *
  * @author Joel James <me@joelsays.com>
  */
-abstract class Model {
+abstract class Model extends Model_Base {
 
 	/**
-	 * Singleton constructor.
+	 * Disable created_at and update_at columns.
 	 *
-	 * Protect the class from being initiated multiple times.
+	 * @var bool
 	 *
-	 * @since 3.2.0
+	 * @since 4.0.0
 	 */
-	protected function __construct() {
-		// Protect class from initiated multiple times.
-	}
+	public $timestamps = false;
 
 	/**
-	 * Instance obtaining method.
+	 * Set primary key as ID, because WordPress
 	 *
-	 * @since 3.2.0
-	 *
-	 * @return static Called class instance.
+	 * @var string
 	 */
-	public static function get( $id ) {
-		static $instances = [];
+	protected $primaryKey = 'id';
 
-		// @codingStandardsIgnoreLine Plugin-backported
-		$called_class_name = get_called_class();
+	/**
+	 * Make ID guarded -- without this ID doesn't save.
+	 *
+	 * @var string
+	 */
+	protected $guarded = [ 'id' ];
 
-		if ( ! isset( $instances[$called_class_name][$id] ) ) {
-			if ( ! isset( $instances[$called_class_name] ) ) {
-				$instances[$called_class_name] = [];
-			}
+	/**
+	 * Overide parent method to make sure prefixing is correct.
+	 *
+	 * @return string
+	 */
+	public function getTable() {
+		//In this example, it's set, but this is better in an abstract class
+		if ( isset( $this->table ) ) {
+			$prefix = $this->getConnection()->db->prefix;
+			return $prefix . $this->table;
 
-			$instances[$called_class_name][$id] = new $called_class_name();
-
-			// Run the initialization method.
-			if ( method_exists( $instances[$called_class_name][$id], 'init' ) ) {
-				$instances[$called_class_name][$id]->init( $id );
-			}
 		}
 
-		return $instances[$called_class_name][$id];
-	}
-
-	/**
-	 * Setter method.
-	 *
-	 * Set property and values to class.
-	 *
-	 * @param string $key   Property to set.
-	 * @param mixed  $value Value to assign to the property.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return void
-	 */
-	public function __set( $key, $value ) {
-		$this->{$key} = $value;
-	}
-
-	/**
-	 * Getter method.
-	 *
-	 * Allows access to extended site properties.
-	 *
-	 * @param string $key Property to get.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return mixed Value of the property. Null if not available.
-	 */
-	public function __get( $key ) {
-		// If set, get it.
-		if ( isset( $this->{$key} ) ) {
-			return $this->{$key};
-		}
-
-		return null;
-	}
-
-	/**
-	 * Get network admin flag.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	public function is_network() {
-		return is_network_admin();
+		return parent::getTable();
 	}
 }

@@ -7,48 +7,87 @@ namespace Composer\Autoload;
 class ComposerStaticInit87ac2489a9a4ef561899c47fd4babf5d
 {
     public static $files = array (
-        'c9292213c3dc9b451510d87ac5498862' => __DIR__ . '/..' . '/ironbound/db/src/load.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Contracts\\Translation\\' => 30,
+            'Symfony\\Component\\Translation\\' => 30,
+        ),
         'I' => 
         array (
-            'IronBound\\DB\\Tests\\' => 19,
-            'IronBound\\DB\\' => 13,
-            'IronBound\\Cache\\' => 16,
+            'Illuminate\\Support\\' => 19,
+            'Illuminate\\Pagination\\' => 22,
+            'Illuminate\\Database\\' => 20,
+            'Illuminate\\Contracts\\' => 21,
+            'Illuminate\\Container\\' => 21,
         ),
         'D' => 
         array (
-            'DuckDev\\WP404\\' => 14,
+            'DuckDev\\EloquentWP\\' => 19,
             'Doctrine\\Common\\Inflector\\' => 26,
-            'Doctrine\\Common\\Collections\\' => 28,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'IronBound\\DB\\Tests\\' => 
+        'Symfony\\Polyfill\\Mbstring\\' => 
         array (
-            0 => __DIR__ . '/..' . '/ironbound/db/tests',
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
-        'IronBound\\DB\\' => 
+        'Symfony\\Contracts\\Translation\\' => 
         array (
-            0 => __DIR__ . '/..' . '/ironbound/db/src',
+            0 => __DIR__ . '/..' . '/symfony/translation-contracts',
         ),
-        'IronBound\\Cache\\' => 
+        'Symfony\\Component\\Translation\\' => 
         array (
-            0 => __DIR__ . '/..' . '/ironbound/cache/src',
+            0 => __DIR__ . '/..' . '/symfony/translation',
         ),
-        'DuckDev\\WP404\\' => 
+        'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/core',
+            0 => __DIR__ . '/..' . '/illuminate/support',
+        ),
+        'Illuminate\\Pagination\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/illuminate/pagination',
+        ),
+        'Illuminate\\Database\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/illuminate/database',
+        ),
+        'Illuminate\\Contracts\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/illuminate/contracts',
+        ),
+        'Illuminate\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/illuminate/container',
+        ),
+        'DuckDev\\EloquentWP\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/duckdev/eloquentwp/src',
         ),
         'Doctrine\\Common\\Inflector\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Common/Inflector',
         ),
-        'Doctrine\\Common\\Collections\\' => 
+    );
+
+    public static $fallbackDirsPsr4 = array (
+        0 => __DIR__ . '/..' . '/nesbot/carbon/src',
+    );
+
+    public static $prefixesPsr0 = array (
+        'U' => 
         array (
-            0 => __DIR__ . '/..' . '/doctrine/collections/lib/Doctrine/Common/Collections',
+            'UpdateHelper\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/kylekatarnls/update-helper/src',
+            ),
         ),
     );
 
@@ -57,6 +96,8 @@ class ComposerStaticInit87ac2489a9a4ef561899c47fd4babf5d
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit87ac2489a9a4ef561899c47fd4babf5d::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit87ac2489a9a4ef561899c47fd4babf5d::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit87ac2489a9a4ef561899c47fd4babf5d::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit87ac2489a9a4ef561899c47fd4babf5d::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

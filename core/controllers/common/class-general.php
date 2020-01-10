@@ -5,8 +5,6 @@ namespace DuckDev\WP404\Controllers\Common;
 // Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
-use IronBound\DB\Manager;
-use DuckDev\WP404\Database\Tables\Log;
 use DuckDev\WP404\Utils\Abstracts\Base;
 
 /**
@@ -39,6 +37,6 @@ class General extends Base {
 	 * @return void
 	 */
 	public function register_tables() {
-		Manager::register( new Log() );
+		//Manager::register( new Log() );
 	}
 }

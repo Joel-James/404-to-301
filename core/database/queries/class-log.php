@@ -2,76 +2,83 @@
 
 namespace DuckDev\WP404\Database\Queries;
 
-// Direct hit? Rest in peace..
+// Direct hit? Rest in peace.
 defined( 'WPINC' ) || die;
 
-use IronBound\DB\Manager;
-use IronBound\DB\Query\Builder;
-use IronBound\DB\Query\Tag\From;
-use IronBound\DB\Query\Tag\Where;
-use DuckDev\WP404\Database\Models;
-use DuckDev\WP404\Database\Tables;
-use IronBound\DB\Query\Complex_Query;
-use IronBound\DB\Query\Tag\Where_Date;
+/**
+ * Error logs queries class.
+ *
+ * This class provides the query functionality for the error logs
+ * table.
+ *
+ * @package    WP404
+ * @subpackage Query
+ * @author     Joel James <me@joelsays.com>
+ * @copyright  2020 Joel James
+ * @license    https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0-or-later
+ * @link       https://duckdev.com/products/404-to-301/
+ */
+
+use DuckDev\WP404\Utils\Abstracts\Base;
+use Illuminate\Database\Eloquent\Builder;
+use DuckDev\WP404\Database\Models\Log as Log_Model;
 
 /**
- * The error log complex query for logs custom table.
+ * Class Log for queries.
  *
- * @link   https://duckdev.com
- * @since  4.0
- *
- * @author Joel James <me@joelsays.com>
+ * @since   4.0.0
+ * @package DuckDev\WP404\Database\Queries
  */
-class Log extends Complex_Query {
+class Log extends Base {
 
 	/**
-	 * Class constructor.
+	 * Default arguments to make query.
+	 *
+	 * @var array
+	 *
+	 * @since 4.0.0
+	 */
+	private $default_args = [
+		'url'        => '',
+		'redirect'   => '',
+		'ip'         => '',
+		'ref'        => '',
+		'ua'         => '',
+		'status'     => 1,
+		'date'       => '',
+		'start_date' => '',
+		'end_date'   => '',
+		'search'     => '',
+	];
+
+	/**
+	 * Get error logs.
 	 *
 	 * @param array $args Query arguments.
 	 *
-	 * @since 4.0
+	 * @since 4.0.0
 	 */
-	public function __construct( array $args = [] ) {
-		parent::__construct(
-			Manager::get( Tables\Log::TABLE ),
-			$args
-		);
+	public function get_logs( $args ) {
+		$args = $this->get_args( $args );
+
+		$query = Log_Model::status( $args['status'] )
+			->url( $args['url'] )
+			->ref( $args['ref'] )
+			->ua( $args['ua'] )
+			->ip( $args['ip'] );
+
+		$query = $this->set_date_query( $args, $query );
 	}
 
 	/**
 	 * Get the default query args array.
 	 *
-	 * @since 4.0
+	 * @since 4.0.0
 	 *
 	 * @return array
 	 */
-	protected function get_default_args() {
-		// Get default args from parent.
-		$existing = parent::get_default_args();
-
-		$new = [
-			'url'              => '',
-			'url__in'          => [],
-			'url__not_in'      => [],
-			'redirect'         => '',
-			'redirect__in'     => [],
-			'redirect__not_in' => [],
-			'ip'               => '',
-			'ip__in'           => [],
-			'ip__not_in'       => [],
-			'ref'              => '',
-			'ref__in'          => [],
-			'ref__not_in'      => [],
-			'ua'               => '',
-			'ua__in'           => [],
-			'ua__not_in'       => [],
-			'status'           => 'any',
-			'start_date'       => '',
-			'end_date'         => '',
-			'url_search'       => '',
-		];
-
-		$args = wp_parse_args( $new, $existing );
+	protected function get_args( $args ) {
+		$args = wp_parse_args( $args, $this->default_args );
 
 		/**
 		 * Filter hook to modify default query arguments for the logs query.
@@ -80,266 +87,27 @@ class Log extends Complex_Query {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( '404_to_301_database_queries_log_default_args', $args );
+		return apply_filters( '404_to_301_queries_log_args', $args );
 	}
 
 	/**
-	 * Convert data to log object.
+	 * Parse the URL string for query.
 	 *
-	 * @param \stdClass $data Data object.
+	 * @since 4.0.0
 	 *
-	 * @since 4.0
-	 *
-	 * @return Models\Log
+	 * @return Builder
 	 */
-	protected function make_object( \stdClass $data ) {
-		return new Models\Log( $data );
+	private function set_date_query( $args, $query ) {
+		if ( ! empty( $args['date'] ) ) {
+			$query->date( $args['date'] );
+		} elseif ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
+			$query->dateBetween( $args['start_date'], $args['end_date'] );
+		} elseif ( ! empty( $args['start_date'] ) ) {
+			$query->dateFrom( $args['start_date'] );
+		} elseif ( ! empty( $args['end_date'] ) ) {
+			$query->dateTo( $args['end_date'] );
+		}
+
+		return $query;
 	}
-
-	/**
-	 * Build the sql query using custom filters for the table.
-	 *
-	 * This is where we should handle the custom fields filtering
-	 * when required.
-	 *
-	 * @since 4.0
-	 *
-	 * @return string
-	 */
-	protected function build_sql() {
-		// Query builder.
-		$builder = new Builder();
-
-		// Select query.
-		$select = $this->parse_select();
-
-		// Generate from.
-		$from = new From( $this->table->get_table_name( $GLOBALS['wpdb'] ), 'q' );
-
-		// Generate WHERE condition.
-		$where = new Where( 1, true, 1 );
-
-		// Filters.
-		$ip         = $this->parse_ip();
-		$url        = $this->parse_url();
-		$referral   = $this->parse_ref();
-		$user_agent = $this->parse_ua();
-		$status     = $this->parse_status();
-		$redirect   = $this->parse_redirect();
-		$end_date   = $this->parse_end_date();
-		$start_date = $this->parse_start_date();
-		$url_search = $this->parse_url_search();
-
-		if ( $url ) {
-			$where->qAnd( $url );
-		}
-
-		if ( $ip ) {
-			$where->qAnd( $ip );
-		}
-
-		if ( $status ) {
-			$where->qAnd( $status );
-		}
-
-		if ( $user_agent ) {
-			$where->qAnd( $user_agent );
-		}
-
-		if ( $redirect ) {
-			$where->qAnd( $redirect );
-		}
-
-		if ( $referral ) {
-			$where->qAnd( $referral );
-		}
-
-		if ( $start_date ) {
-			$where->qAnd( $start_date );
-		}
-
-		if ( $end_date ) {
-			$where->qAnd( $end_date );
-		}
-
-		if ( $url_search ) {
-			$where->qAnd( $url_search );
-		}
-
-		// Sorting parser.
-		$order = $this->parse_order();
-
-		// Setup pagination.
-		$limit = $this->parse_pagination();
-
-		// Setup query.
-		$builder->append( $select )
-			->append( $from )
-			->append( $where )
-			->append( $order );
-
-		// Append pagination if required.
-		if ( $limit !== null ) {
-			$builder->append( $limit );
-		}
-
-		$query = $builder->build();
-
-		/**
-		 * Filter hook to modify the built query.
-		 *
-		 * @param array $args Arguments.
-		 *
-		 * @since 4.0
-		 */
-		return apply_filters( '404_to_301_database_queries_build_sql', $query );
-	}
-
-	/**
-	 * Parse the product where.
-	 *
-	 * @since 1.0
-	 *
-	 * @return Where|null
-	 */
-	protected function parse_url() {
-		if ( empty( $this->args['url'] ) ) {
-			return null;
-		} elseif ( ! empty( $this->args['url'] ) ) {
-			$this->args['url__in'] = [ $this->args['url'] ];
-		}
-
-		return $this->parse_in_or_not_in_query( 'url', $this->args['url__in'], $this->args['url__not_in'] );
-	}
-
-	/**
-	 * Parse the download where.
-	 *
-	 * @since 1.0
-	 *
-	 * @return Where|null
-	 */
-	protected function parse_ip() {
-		if ( empty( $this->args['ref'] ) ) {
-			return null;
-		} elseif ( ! empty( $this->args['ip'] ) ) {
-			$this->args['ip__in'] = [ $this->args['ip'] ];
-		}
-
-		return $this->parse_in_or_not_in_query( 'ip', $this->args['ip__in'], $this->args['ip__not_in'] );
-	}
-
-	/**
-	 * Parse the download where.
-	 *
-	 * @since 1.0
-	 *
-	 * @return Where|null
-	 */
-	protected function parse_ref() {
-		if ( empty( $this->args['ref'] ) ) {
-			return null;
-		} elseif ( ! empty( $this->args['ref'] ) ) {
-			$this->args['ref__in'] = [ $this->args['ref'] ];
-		}
-
-		return $this->parse_in_or_not_in_query( 'ref', $this->args['ref__in'], $this->args['ref__not_in'] );
-	}
-
-	/**
-	 * Parse the download where.
-	 *
-	 * @since 1.0
-	 *
-	 * @return Where|null
-	 */
-	protected function parse_ua() {
-		if ( empty( $this->args['ua'] ) ) {
-			return null;
-		} elseif ( ! empty( $this->args['ua'] ) ) {
-			$this->args['ua__in'] = [ $this->args['ua'] ];
-		}
-
-		return $this->parse_in_or_not_in_query( 'ua', $this->args['ua__in'], $this->args['ua__not_in'] );
-	}
-
-	/**
-	 * Parse the download where.
-	 *
-	 * @since 1.0
-	 *
-	 * @return Where|null
-	 */
-	protected function parse_redirect() {
-		if ( empty( $this->args['redirect'] ) ) {
-			return null;
-		} elseif ( ! empty( $this->args['redirect'] ) ) {
-			$this->args['redirect__in'] = [ $this->args['redirect'] ];
-		}
-
-		return $this->parse_in_or_not_in_query( 'ua', $this->args['redirect__in'], $this->args['redirect__not_in'] );
-	}
-
-	/**
-	 * Parse the version search.
-	 *
-	 * @since 1.0
-	 *
-	 * @return Where|null
-	 */
-	protected function parse_url_search() {
-		if ( empty( $this->args['url_search'] ) ) {
-			return null;
-		}
-
-		return new Where( 'q.url', 'LIKE', esc_sql( $this->args['url_search'] ) );
-	}
-
-	/**
-	 * Parse the version search.
-	 *
-	 * @since 1.0
-	 *
-	 * @return Where|null
-	 */
-	protected function parse_status() {
-		if ( $this->args['status'] === 'any' ) {
-			return null;
-		}
-
-		return new Where( 'status', true, (int) $this->args['status'] );
-	}
-
-	/**
-	 * Parse the start date query.
-	 *
-	 * @since 1.0
-	 *
-	 * @return Where_Date|null
-	 */
-	protected function parse_start_date() {
-		if ( empty( $this->args['start_date'] ) ) {
-			return null;
-		} else {
-			$date_query = new \WP_Date_Query( $this->args['start_date'], 'q.date' );
-			return new Where_Date( $date_query );
-		}
-	}
-
-	/**
-	 * Parse the start date query.
-	 *
-	 * @since 1.0
-	 *
-	 * @return Where_Date|null
-	 */
-	protected function parse_end_date() {
-		if ( empty( $this->args['end_date'] ) ) {
-			return null;
-		} else {
-			$date_query = new \WP_Date_Query( $this->args['end_date'], 'q.date' );
-			return new Where_Date( $date_query );
-		}
-	}
-
 }

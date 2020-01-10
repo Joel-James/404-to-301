@@ -1,125 +1,242 @@
 <?php
-/**
- * Represents release objects.
- *
- * @author Iron Bound Designs
- * @since  1.0
- */
 
 namespace DuckDev\WP404\Database\Models;
 
-use IronBound\Cache\Cache;
-use IronBound\DB\Model;
-use IronBound\DB\Table\Table;
-use IronBound\DB\Manager;
-use IronBound\DB\Exception as DB_Exception;
+// Direct hit? Rest in peace.
+defined( 'WPINC' ) || die;
 
 /**
- * Class Release
+ * Error logs model class.
  *
- * @package ITELIC
+ * This class extends the model class of ORM to provide the
+ * query builder functionality for the custom table.
+ *
+ * @package    WP404
+ * @subpackage Model
+ * @author     Joel James <me@joelsays.com>
+ * @copyright  2020 Joel James
+ * @license    https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0-or-later
+ * @link       https://duckdev.com/products/404-to-301/
+ */
+
+use DuckDev\WP404\Utils\Abstracts\Model;
+use Illuminate\Database\Eloquent\Builder;
+
+/**
+ * Class Log.
+ *
+ * @since   4.0.0
+ * @package DuckDev\WP404\Database\Models
  */
 class Log extends Model {
 
 	/**
-	 * Create a new release record.
+	 * Name of the custom table without prefix.
 	 *
-	 * If status is set to active, the start date will automatically be set to
-	 * now.
+	 * @var string
 	 *
-	 * @param string $url
-	 * @param array  $data
-	 *
-	 * @since 1.0
-	 *
-	 * @throws DB_Exception
-	 * @return null
+	 * @since 4.0.0
 	 */
-	public static function create( $url, $data = [] ) {
-		$data = array(
-			'url'      => $url,
-			'ref'      => $data['ref'],
-			'ip'       => $data['ip'],
-			'ua'       => $data['ua'],
-			'redirect' => $data['redirect'],
-			'options'  => $data['options'],
-			'status'   => $data['status'],
-		);
-		$db   = Manager::make_simple_query_object( '404_to_301' );
-		$id   = $db->insert( $data );
-		$log  = self::get( $id );
-		if ( $log ) {
-			Cache::add( $log );
+	protected $table = '404_to_301';
+
+
+	/**
+	 * Columns that can be edited.
+	 *
+	 * @var array
+	 *
+	 * @since 4.0.0
+	 */
+	protected $fillable = [
+		'url',
+		'ref',
+		'ip',
+		'ua',
+		'options',
+		'redirect',
+		'status',
+	];
+
+	/**
+	 * Filter log by log status.
+	 *
+	 * @param Builder $query  Query builder instance.
+	 * @param int     $status Log status (1 or 0).
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return Builder
+	 */
+	public function scopeStatus( $query, $status = 1 ) {
+		return $query->where( 'status', '=', (int) $status );
+	}
+
+	/**
+	 * Filter log by error url.
+	 *
+	 * @param Builder $query Query builder instance.
+	 * @param string  $url   Error url string.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return Builder
+	 */
+	public function scopeUrl( $query, $url ) {
+		if ( ! empty( $url ) ) {
+			return $query->where( 'url', '=', esc_sql( $url ) );
 		}
-		return $log;
+
+		return $query;
 	}
 
 	/**
-	 * Get the unique pk for this record.
+	 * Filter log by error url parts.
 	 *
-	 * @since 1.0
+	 * We use LIKE query to get this.
 	 *
-	 * @return mixed (generally int, but not necessarily).
+	 * @param Builder $query Query builder instance.
+	 * @param string  $url   Error url string.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return Builder
 	 */
-	public function get_pk() {
-		return $this->id;
+	public function scopeUrlLike( $query, $url ) {
+		if ( ! empty( $url ) ) {
+			return $query->where( 'url', 'like', '%' . esc_sql( $url ) . '%' );
+		}
+
+		return $query;
 	}
 
 	/**
-	 * Retrieve the ID of this release.
+	 * Filter log by referral.
 	 *
-	 * @since 1.0
+	 * @param Builder $query Query builder instance.
+	 * @param string  $ref   Error referral string.
 	 *
-	 * @return int
+	 * @since 4.0.0
+	 *
+	 * @return Builder
 	 */
-	public function get_ID() {
-		return $this->get_pk();
+	public function scopeReferral( $query, $ref ) {
+		if ( ! empty( $ref ) ) {
+			return $query->where( 'ref', '=', esc_sql( $ref ) );
+		}
+
+		return $query;
 	}
 
 	/**
-	 * Retrieve the ID of this release.
+	 * Filter log by User Agent.
 	 *
-	 * @since 1.0
+	 * @param Builder $query Query builder instance.
+	 * @param string  $ua    Error user agent string.
 	 *
-	 * @return int
+	 * @since 4.0.0
+	 *
+	 * @return Builder
 	 */
-	public function get_url() {
-		return $this->url;
+	public function scopeUserAgent( $query, $ua ) {
+		if ( ! empty( $ua ) ) {
+			return $query->where( 'ua', '=', esc_sql( $ua ) );
+		}
+
+		return $query;
 	}
 
 	/**
-	 * Get the status of this Release.
+	 * Filter log by user's IP.
 	 *
-	 * @param bool $label
+	 * @param Builder $query Query builder instance.
+	 * @param string  $ip    Error user IP string.
 	 *
-	 * @since 1.0
+	 * @since 4.0.0
 	 *
-	 * @return string
+	 * @return Builder
 	 */
-	public function get_status() {
-		return $this->status;
+	public function scopeIP( $query, $ip ) {
+		if ( ! empty( $ip ) ) {
+			return $query->where( 'ip', '=', esc_sql( $ip ) );
+		}
+
+		return $query;
 	}
 
 	/**
-	 * Set the status of this release.
+	 * Filter log by the date.
 	 *
-	 * @param string $status
+	 * @param Builder $query Query builder instance.
+	 * @param string  $date  Error log time.
 	 *
-	 * @since 1.0
+	 * @since 4.0.0
 	 *
+	 * @return Builder
 	 */
-	public function set_status( $status ) {
-		$this->status = (int) $status;
+	public function scopeDate( $query, $date ) {
+		if ( ! empty( $date ) ) {
+			return $query->where( 'date', '=', esc_sql( $date ) );
+		}
+
+		return $query;
 	}
 
 	/**
-	 * Get the table object for this model.
+	 * Filter log by the date less than.
 	 *
-	 * @since 1.0
+	 * @param Builder $query Query builder instance.
+	 * @param string  $date  Error log time.
 	 *
-	 * @returns Table
+	 * @since 4.0.0
+	 *
+	 * @return Builder
 	 */
-	protected static function get_table() {
-		return Manager::get( '404_to_301' );
+	public function scopeDateTo( $query, $date ) {
+		if ( ! empty( $date ) ) {
+			return $query->where( 'date', '<=', esc_sql( $date ) );
+		}
+
+		return $query;
+	}
+
+	/**
+	 * Filter log by the date starting from.
+	 *
+	 * @param Builder $query Query builder instance.
+	 * @param string  $date  Error log time.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return Builder
+	 */
+	public function scopeDateFrom( $query, $date ) {
+		if ( ! empty( $date ) ) {
+			return $query->where( 'date', '>=', esc_sql( $date ) );
+		}
+
+		return $query;
+	}
+
+	/**
+	 * Filter log by the date between two periods.
+	 *
+	 * This is basically the combination of dateFrom and dateTo
+	 *
+	 * @param Builder $query Query builder instance.
+	 * @param string  $from  Error log time from.
+	 * @param string  $to    Error log time to.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return Builder
+	 */
+	public function scopeDateBetween( $query, $from, $to ) {
+		if ( ! empty( $from ) && ! empty( $to ) ) {
+			return $query
+				->whereDate( 'date', '<=', $to )
+				->whereDate( 'date', '>=', $from );
+		}
+
+		return $query;
 	}
 }
