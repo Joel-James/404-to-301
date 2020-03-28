@@ -3,47 +3,111 @@
         <div id="post-body">
             <div id="post-body-content">
                 <div class="meta-box-sortables ui-sortable">
+
+                    <search-box id="log-search-input"
+                                label="Search URL"
+                                v-model="search"
+                                @input="searchUrl"
+                                @submitSearch="searchUrl"
+                    />
+
                     <div class="tablenav top">
-                        <bulk-action action-key="bulk-actions" action-label="Bulk Actions" :action-options="bulkActions"/>
-                        <bulk-action v-for="action in extraActions" :action-label="action.label" :action-options="action.options" :action-key="action.key" :enable-submit="false" :key="action.key"/>
+
+                        <bulk-action action-key="bulk-actions"
+                                     action-label="Bulk Actions"
+                                     :action-options="bulkActions"
+                                     @submit="bulkActionSubmit"
+                                     @change="bulkActionChange"
+                        />
+
+                        <bulk-action v-for="action in extraActions"
+                                     :action-label="action.label"
+                                     :action-options="action.options"
+                                     :action-key="action.key"
+                                     :enable-submit="false"
+                                     :key="action.key"
+                                     @change="bulkActionChange"
+                        />
+
                         <span v-if="waiting" class="table-loader">
                             <span class="spinner is-active"></span>
                         </span>
-                        <pagination :total-items="totalItems" :page="filterOptions.page" :per-page="filterOptions.per_page"/>
+
+                        <pagination :total-items="total"
+                                    :page="filters.page"
+                                    :per-page="filters.per_page"
+                                    @change="updatePagination"
+                        />
                         <br class="clear">
+
                     </div>
 
                     <table class="wp-list-table widefat fixed striped">
 
                         <thead>
-                        <table-title-row :columns="columns"></table-title-row>
+
+                        <table-title-row :columns="columns"
+                                         @allSelect="selectAllItems"
+                                         @changeOrder="updateSorting"
+                        />
+
                         </thead>
 
                         <tbody v-if="hasRows">
+
                         <tr v-for="row in rows" :key="row.id">
                             <th class="check-column" scope="row">
-                                <input type="checkbox" class="log-item" :value="row.id" v-model="checkedItems">
+                                <input type="checkbox"
+                                       class="log-item"
+                                       :value="row.id"
+                                       v-model="selected"
+                                />
                             </th>
-                            <td v-for="(value, key) in columns" :class="['column', key]" :key="key">
+                            <td v-for="(value, key) in columns"
+                                :class="['column', key]"
+                                :key="key"
+                            >
                                 {{ row[key] }}
                             </td>
                         </tr>
+
                         </tbody>
+
                         <tbody v-else>
+
                         <tr class="no-items">
-                            <td class="colspanchange" colspan="6">{{ __( 'No data found.', '404-to-301' ) }}</td>
+                            <td class="colspanchange" colspan="6">
+                                {{ __( 'No data found.', '404-to-301' ) }}
+                            </td>
                         </tr>
+
                         </tbody>
 
                         <tfoot>
-                        <table-title-row :columns="columns"></table-title-row>
+
+                        <table-title-row :columns="columns"
+                                         @allSelect="selectAllItems"
+                                         @changeOrder="updateSorting"
+                        />
+
                         </tfoot>
 
                     </table>
 
                     <div class="tablenav bottom">
-                        <bulk-action action-key="bulk-actions" action-label="Bulk Actions" :action-options="bulkActions" :is-top="false"/>
-                        <pagination :total-items="totalItems" :page="filterOptions.page" :per-page="filterOptions.per_page" :is-top="false"/>
+                        <bulk-action action-key="bulk-actions"
+                                     action-label="Bulk Actions"
+                                     :action-options="bulkActions"
+                                     :is-top="false"
+                                     @submit="bulkActionSubmit"
+                                     @change="bulkActionChange"
+                        />
+                        <pagination :total-items="total"
+                                    :page="filters.page"
+                                    :per-page="filters.per_page"
+                                    :is-top="false"
+                                    @change="updatePagination"
+                        />
                         <br class="clear">
                     </div>
                 </div>
@@ -56,51 +120,26 @@
 	import { restPost, restGet, restDelete } from './../helpers/utils'
 	import Pagination from './components/list-table/pagination'
 	import BulkAction from './components/list-table/bulk-action'
+	import SearchBox from './components/list-table/search-box'
 	import TableTitleRow from './components/list-table/table-title-row'
 
 	export default {
 		name: 'Logs',
 
 		components: {
-			Pagination, BulkAction, TableTitleRow
+			Pagination, BulkAction, TableTitleRow, SearchBox
 		},
 
 		created() {
 			this.updateRows();
 		},
 
-		mounted() {
-			// On bulk action submit.
-			this.$root.$on( 'listTableBulkActionSubmit', ( data ) => {
-				this.processBulkActionSubmit( data );
-			} );
-
-			// On bulk action change.
-			this.$root.$on( 'listTableBulkActionChange', ( data ) => {
-				this.processBulkActionChange( data );
-			} );
-
-			// On pagination change.
-			this.$root.$on( 'listTablePaginationChange', ( data ) => {
-				this.updatePagination( data );
-			} );
-
-			// On sorting change.
-			this.$root.$on( 'listTableSortOrderChanged', ( data ) => {
-				this.updateSorting( data );
-			} );
-
-			// On sorting change.
-			this.$root.$on( 'listTableAllSelected', ( data ) => {
-				this.selectAllItems( data );
-			} );
-		},
-
 		data() {
 			return {
-				totalItems: 0,
+				search: '',
+				total: 0,
 				selectAll: false,
-				checkedItems: [],
+				selected: [],
 				rows: {},
 				waiting: false,
 				columns: {
@@ -119,20 +158,21 @@
 						key: 'group_by',
 						label: this.__( 'Group by', '404-to-301' ),
 						options: {
-							path: this.__( '404 Path', '404-to-301' ),
-							referral: this.__( 'Referral', '404-to-301' ),
-							ip: this.__( 'IP', '404-to-301' ),
+							url: this.__( '404 Path', '404-to-301' ),
+							ref: this.__( 'Referral', '404-to-301' ),
+							ip: this.__( 'IP Address', '404-to-301' ),
 							ua: this.__( 'User Agent', '404-to-301' ),
 						},
 					},
 				],
-				filterOptions: {
-					sort_order: 'desc',
-					sort_by: 'id',
+				filters: {
+					order: 'desc',
+					order_by: 'id',
 					group_by: '',
 					page: 1,
-					per_page: 5,
-				}
+					per_page: 2,
+					search: '',
+				},
 			}
 		},
 
@@ -162,14 +202,14 @@
 
 				restGet( {
 					path: 'logs',
-					params: this.filterOptions
+					params: this.filters
 				} ).then( response => {
 					if ( response.success === true ) {
 						this.rows = response.data.items;
-						this.totalItems = response.data.total;
+						this.total = response.data.total;
 					} else {
 						this.rows = {};
-						this.totalItems = 0;
+						this.total = 0;
 					}
 
 					this.waiting = false;
@@ -183,62 +223,68 @@
 					path: 'logs',
 					data: {
 						ids: ids,
-                    }
+					}
 				} ).then( response => {
-					this.filterOptions.page = 1;
+					this.filters.page = 1;
 					this.updateRows();
 				} );
 			},
 
 			updatePagination( data ) {
-				this.filterOptions.page = data.page;
+				this.filters.page = data.page;
 				this.updateRows();
 			},
 
-			processBulkActionSubmit( data ) {
-				if ( this.checkedItems.length <= 0 && 'bulk-actions' !== data.action ) {
+			bulkActionSubmit( data ) {
+				if ( this.selected.length <= 0 && 'bulk-actions' !== data.action ) {
 					return false;
-                }
+				}
 
 				switch ( data.selected ) {
-                    case 'trash':
-                    	if ( window.confirm( this.__( 'Are you sure you want to delete all these logs?', '404-to-301' ) ) ) {
-							this.deleteLogs( this.checkedItems );
-                        }
+					case 'trash':
+						if ( window.confirm( this.__( 'Are you sure you want to delete all these logs?', '404-to-301' ) ) ) {
+							this.deleteLogs( this.selected );
+						}
 						break;
 					case 'delete':
-						this.deleteLogs( this.checkedItems );
+						this.deleteLogs( this.selected );
 						break;
 				}
 			},
 
-			processBulkActionChange( data ) {
+			bulkActionChange( data ) {
 				if ( 'group_by' !== data.action ) {
 					return false;
 				}
 
-				this.filterOptions.group_by = data.group;
+				this.filters.page = 1;
+				this.filters.group_by = data.selected;
 				this.updateRows();
 			},
 
 			updateSorting( data ) {
-				this.filterOptions.page = 1;
-				this.filterOptions.sort_by = data.key;
-				this.filterOptions.sort_order = data.order;
+				this.filters.page = 1;
+				this.filters.order_by = data.key;
+				this.filters.order = data.order;
 				this.updateRows();
 			},
 
 			selectAllItems( data ) {
-				let checkedItems = [];
+				let selected = [];
 				let rows = this.rows;
 
 				if ( data.checked ) {
 					Object.keys( rows ).forEach( function ( key ) {
-						checkedItems.push( rows[ key ].id );
+						selected.push( rows[ key ].id );
 					} );
 				}
 
-				this.checkedItems = checkedItems;
+				this.selected = selected;
+			},
+
+			searchUrl() {
+				this.filters.search = this.search;
+				this.updateRows();
 			}
 		}
 	}

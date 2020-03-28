@@ -11,8 +11,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use DuckDev\WP404\Utils\Abstracts\Endpoint;
 use DuckDev\WP404\Database\Queries;
-use DuckDev\WP404\Models;
-use IronBound\DB\Manager;
+use DuckDev\WP404\Database\Models\Log;
 
 /**
  * Logs functionality REST endpoint.
@@ -64,6 +63,60 @@ class Logs extends Endpoint {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => [ $this, 'get_logs' ],
 					'permission_callback' => [ $this, 'permissions_check' ],
+					'args'                => [
+						'search'   => [
+							'required'    => false,
+							'description' => __( 'String to search within error URLs.', 'ga_trans' ),
+							'type'        => 'string',
+						],
+						'status'   => [
+							'required'    => false,
+							'description' => __( 'The status of the log to get (1 default).', 'ga_trans' ),
+							'type'        => 'integer',
+							'enum'        => [ 0, 1 ],
+						],
+						'page'     => [
+							'required'    => false,
+							'description' => __( 'Current page number (1 default).', 'ga_trans' ),
+							'type'        => 'integer',
+						],
+						'per_page' => [
+							'required'    => false,
+							'description' => __( 'Number of items per page (25 default).', 'ga_trans' ),
+							'type'        => 'integer',
+						],
+						'order'    => [
+							'required'    => false,
+							'description' => __( 'Sorting order (asc or desc).', 'ga_trans' ),
+							'type'        => 'string',
+							'enum'        => [
+								'asc',
+								'desc',
+							],
+						],
+						'order_by' => [
+							'required'    => false,
+							'description' => __( 'A field to order the result.', 'ga_trans' ),
+							'type'        => 'string',
+							'enum'        => [
+								'date',
+								'id',
+							],
+						],
+						'group_by' => [
+							'required'    => false,
+							'description' => __( 'A field to group the result.', 'ga_trans' ),
+							'type'        => 'string',
+							'enum'        => [
+								'', // Empty.
+								'date',
+								'url',
+								'ref',
+								'ip',
+								'ua',
+							],
+						],
+					],
 				],
 				[
 					'methods'             => WP_REST_Server::DELETABLE,
@@ -134,40 +187,22 @@ class Logs extends Endpoint {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_logs( $request ) {
-		$logs = [];
-
-		// Get the optional params.
-		$page     = $this->get_param( $request, 'page', 1 );
-		$size     = $this->get_param( $request, 'per_page', 25 );
-		$order    = $this->get_param( $request, 'sort_order', 'desc' );
-		$order_by = $this->get_param( $request, 'sort_by', 'id' );
-		$search   = $this->get_param( $request, 'search', '' );
-
+		// Set the optional params.
 		$query_args = [
-			'page'                => $page,
-			'items_per_page'      => $size,
-			'sql_calc_found_rows' => true,
-			'url_search'          => $search,
+			'status'   => $this->get_param( $request, 'status', 1, 'intval' ),
+			'page'     => $this->get_param( $request, 'page', 1, 'intval' ),
+			'per_page' => $this->get_param( $request, 'per_page', 25, 'intval' ),
+			'order'    => $this->get_param( $request, 'order', 'desc' ),
+			'order_by' => $this->get_param( $request, 'order_by', 'id' ),
+			'group_by' => $this->get_param( $request, 'group_by', '' ),
+			'search'   => $this->get_param( $request, 'search', '' ),
 		];
 
-		// Sorting is required only when column and order is given.
-		if ( ! empty( $order ) && ! empty( $order_by ) ) {
-			$query_args['order'] = [
-				$order_by => $order,
-			];
-		}
-
-		$query = new Queries\Log( $query_args );
-
-		foreach ( $query->get_results() as $id => $log ) {
-			$logs[] = $log->to_array();
-		}
+		// Get query object.
+		$result = Queries\Log::_get()->get_logs( $query_args );
 
 		// Send response.
-		return $this->get_response( [
-			'items' => $logs,
-			'total' => $query->get_total_items(),
-		] );
+		return $this->get_response( $result );
 	}
 
 	/**
@@ -181,18 +216,16 @@ class Logs extends Endpoint {
 	 */
 	public function get_log( $request ) {
 		// Get the log ID.
-		$id = $request->get_param( 'id' );
+		$id = (int) $request->get_param( 'id' );
 
-		/*$log = Models\Log::get( $id );
+		$log = Queries\Log::_get()->get_log( $id );
 
+		// Empty log.
 		if ( empty( $log ) ) {
-			$log = [];
-		} else {
-			$log = $log->to_array();
-		}*/
-
-		$query = Manager::make_simple_query_object( '404_to_301' );
-		$log   = $query->get( $id );
+			return $this->get_response( [
+				'message' => __( 'Sorry. No error log found for the given ID.', '404-to-301' ),
+			], false );
+		}
 
 		// Send response.
 		return $this->get_response( $log );
@@ -228,16 +261,19 @@ class Logs extends Endpoint {
 		// Get the log ID.
 		$id = $request->get_param( 'id' );
 
-		$log = Models\Log::get( $id );
+		$success = $log = Queries\Log::_get()->delete_log( $id );
 
-		if ( ! empty( $log ) ) {
-			$log->delete();
+		if ( $success ) {
+			// Send response.
+			return $this->get_response( [
+				'message' => __( 'Log deleted successfully', '404-to-301' ),
+			] );
+		} else {
+			// Send response.
+			return $this->get_response( [
+				'message' => __( 'Sorry. Could not delete the log.', '404-to-301' ),
+			], false );
 		}
-
-		// Send response.
-		return $this->get_response( [
-			'message' => __( 'Log deleted successfully', '404-to-301' ),
-		] );
 	}
 
 	/**
@@ -253,17 +289,19 @@ class Logs extends Endpoint {
 		// Get the log ID.
 		$ids = $request->get_param( 'ids' );
 
-		$ids = explode( ',', $ids );
+		// Delete logs.
+		$success = false;
 
-		$query = new Queries\Log( [
-			'sql_calc_found_rows' => true,
-		] );
-
-		foreach ( $query->get_results() as $id => $log ) {
-			$logs[] = $log->to_array();
+		if ( $success ) {
+			// Send response.
+			return $this->get_response( [
+				'message' => __( 'Log deleted successfully', '404-to-301' ),
+			] );
+		} else {
+			// Send response.
+			return $this->get_response( [
+				'message' => $ids,
+			], false );
 		}
-
-		// Send response.
-		return $this->get_response( [] );
 	}
 }

@@ -1,11 +1,30 @@
 <template>
     <div class="alignleft actions bulkactions" v-if="hasOptions">
-        <label :for="actionId" class="screen-reader-text">{{ actionLabel }}</label>
-        <select name="action" :id="actionId" v-model="bulkAction" @change="actionChangeHandler">
-            <option value="-1">{{ actionLabel }}</option>
-            <option v-for="(label, option) in actionOptions" :value="option">{{ label }}</option>
+        <label :for="actionId"
+               class="screen-reader-text"
+        >
+            {{ actionLabel }}
+        </label>
+        <select name="action"
+                :id="actionId"
+                v-model="bulkAction"
+                @change="actionChangeHandler"
+        >
+            <option value="">{{ actionLabel }}</option>
+            <option v-for="(label, option) in actionOptions"
+                    :value="option"
+            >
+                {{ label }}
+            </option>
         </select>
-        <button v-if="enableSubmit" type="button" class="button" :disabled="disableSubmit" @click="actionClickHandler">{{ __( 'Apply', '404-to-301' ) }}</button>
+        <button v-if="enableSubmit"
+                type="button"
+                class="button"
+                :disabled="disableSubmit"
+                @click="actionClickHandler"
+        >
+            {{ __( 'Apply', '404-to-301' ) }}
+        </button>
     </div>
 </template>
 
@@ -34,7 +53,7 @@
 			enableSubmit: {
 				type: Boolean,
 				default: true
-            }
+			}
 		},
 
 		computed: {
@@ -46,21 +65,21 @@
 				return this.actionKey + this.position;
 			},
 
-            disableSubmit() {
-				return -1 == this.bulkAction
-            }
+			disableSubmit() {
+				return '' === this.bulkAction
+			}
 		},
 
 		data() {
 			return {
-				bulkAction: -1,
+				bulkAction: '',
 				position: this.isTop ? 'top' : 'bottom',
 			}
 		},
 
 		methods: {
 			actionClickHandler() {
-				this.$root.$emit( 'listTableBulkActionSubmit', {
+				this.$emit( 'submit', {
 					action: this.actionKey,
 					selected: this.bulkAction,
 					position: this.position,
@@ -68,12 +87,12 @@
 			},
 
 			actionChangeHandler() {
-				this.$root.$emit( 'listTableBulkActionChange', {
+				this.$emit( 'change', {
 					action: this.actionKey,
 					selected: this.bulkAction,
 					position: this.position,
 				} );
-            }
+			}
 		}
 	};
 </script>

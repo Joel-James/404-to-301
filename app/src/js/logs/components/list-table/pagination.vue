@@ -108,7 +108,7 @@
                 }
 
 				// Execute pagination event.
-				this.$root.$emit( 'listTablePaginationChange', {
+				this.$emit( 'change', {
 					page: page,
 				} );
 			},

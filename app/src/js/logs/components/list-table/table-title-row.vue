@@ -58,14 +58,14 @@
 					this.sortOrder = 'desc'
 				}
 
-				this.$root.$emit( 'listTableSortOrderChanged', {
+				this.$emit( 'changeOrder', {
 					order: this.sortOrder,
 					key: this.sortKey,
 				} );
 			},
 
 			selectAll( event ) {
-				this.$root.$emit( 'listTableAllSelected', {
+				this.$emit( 'allSelect', {
 					checked: event.target.checked
                 } );
             }

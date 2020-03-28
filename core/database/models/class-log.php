@@ -239,4 +239,23 @@ class Log extends Model {
 
 		return $query;
 	}
+
+	/**
+	 * Format the options field value before returning it.
+	 *
+	 * Options are serialized in db.
+	 *
+	 * @param string $value Value.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public function getOptionsAttribute( $value ) {
+		if ( empty( $value ) ) {
+			return [];
+		}
+
+		return maybe_unserialize( $value );
+	}
 }
