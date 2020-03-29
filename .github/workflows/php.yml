@@ -7,18 +7,17 @@ on:
     branches: [ master, dev ]
 
 jobs:
-  build:
-
+  runPHPCSInspection:
+    name: Run PHPCS inspection
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
-
-    - name: Validate composer.json and composer.lock
-      run: composer validate
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
-    
-    - name: PHPCodeSniffer
-      uses: rtCamp/action-phpcs-inspection@v1.0.0
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+    - name: Run PHPCS inspection
+      uses: docker://rtcamp/action-phpcs-code-review:v2.0.0
+      env:
+        VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+        VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+      with:
+        args: WordPress,WordPress-Core,WordPress-Docs
