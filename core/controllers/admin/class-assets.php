@@ -7,6 +7,7 @@ defined( 'WPINC' ) || die;
 
 use DuckDev\WP404\Helpers;
 use DuckDev\WP404\Utils\Abstracts\Base;
+use DuckDev\WP404\Controllers\Common\I18n;
 
 /**
  * The admin assets specific functionality of the plugin
@@ -100,33 +101,74 @@ class Assets extends Base {
 				empty( $data['version'] ) ? null : $data['version'],
 				isset( $data['footer'] ) ? $data['footer'] : true
 			);
+		}
+	}
 
+	/**
+	 * Enqueue a style with WordPress.
+	 *
+	 * This is just an alias function.
+	 *
+	 * @param string $style Style handle name.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_style( $style ) {
+		// Only if not enqueued already.
+		if ( ! wp_style_is( $style ) ) {
+			wp_enqueue_style( $style );
+		}
+	}
+
+	/**
+	 * Enqueue a script with localization.
+	 *
+	 * Always use this method to enqueue scripts. Then only
+	 * we will get the required localized vars.
+	 *
+	 * @param string $script Script handle name.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_script( $script ) {
+		// Only if not enqueued already.
+		if ( ! wp_script_is( $script ) ) {
 			// Extra vars.
-			wp_localize_script( $handle,
-				'dd404to301ModuleVars',
+			wp_localize_script( $script,
+				'dd4t3ModuleVars',
 				/**
 				 * Filter to add/remove vars in script.
 				 *
-				 * @since 3.2.4
+				 * @since 4.0.0
 				 */
-				apply_filters( "404_to_301_assets_scripts_localize_vars_{$handle}", [] )
+				apply_filters( "404_to_301_assets_scripts_localize_vars_{$script}", [] )
 			);
 
 			// Common vars.
 			$common_vars = $this->localization();
 
-			wp_localize_script( $handle,
-				'dd404to301Vars',
+			wp_localize_script( $script,
+				'dd4t3Vars',
 				/**
 				 * Filter to add/remove vars in script.
 				 *
 				 * @param array $common_vars Common vars.
 				 * @param array $handle      Script handle name.
 				 *
-				 * @since 3.2.4
+				 * @since 4.0.0
 				 */
-				apply_filters( '404_to_301_script_vars', $common_vars, $handle )
+				apply_filters( '404_to_301_script_vars', $common_vars, $script )
 			);
+
+			// Localized vars for the locale.
+			wp_localize_script( $script, 'dd4t3i18n', I18n::_get()->get_strings( $script ) );
+
+			// Now enqueue.
+			wp_enqueue_script( $script );
 		}
 	}
 

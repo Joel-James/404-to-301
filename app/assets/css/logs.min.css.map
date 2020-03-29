@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack:///./app/src/scss/logs.scss"],"names":[],"mappings":"AAAA;AACA;AACA","file":"../css/logs.min.css","sourcesContent":["#dd404-admin-logs span.table-loader {\n  float: left;\n}\n\n"],"sourceRoot":""}

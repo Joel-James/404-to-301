@@ -5,25 +5,30 @@
             <p>{{ alert }}</p>
         </div>
 
-        <nav class="nav-tab-wrapper">
-            <router-link to="/" class="nav-tab" exact>
-                <span class="dashicons dashicons-admin-generic"></span>
-                {{ labels.general }}
-            </router-link>
-
-            <router-link to="/email" class="nav-tab">
-                <span class="dashicons dashicons-email"></span>
-                {{ labels.email }}
-            </router-link>
-        </nav>
-
-        <router-view/>
+        <tabs selected="general">
+            <tab key="general"
+                 :title="$i18n.settings.titles.general"
+                 icon="admin-generic"
+                 :selected="true"
+            >
+                <general/>
+            </tab>
+            <tab key="email"
+                 :title="$i18n.settings.titles.email"
+                 icon="email"
+            >
+                <email/>
+            </tab>
+        </tabs>
 
     </div>
 </template>
 
 <script>
-	import { __ } from '@wordpress/i18n';
+	import Email from './tabs/email'
+	import General from './tabs/general'
+	import Tab from '@/components/settings-tabs/tab'
+	import Tabs from '@/components/settings-tabs/tabs'
 
 	export default {
 
@@ -32,7 +37,9 @@
 		 *
 		 * @since 4.0.0
 		 */
-		name: 'Main',
+		name: 'App',
+
+		components: { Tab, Tabs, General, Email },
 
 		/**
 		 * Get the default set of data for the template.
@@ -45,10 +52,7 @@
 			return {
 				alert: false,
 				alertType: 'success',
-				labels: {
-					general: __( 'General', '404-to-301' ),
-					email: __( 'Email', '404-to-301' ),
-				}
+				tab: 'general',
 			}
 		},
 
@@ -62,7 +66,7 @@
 			 *
 			 * @returns {string}
 			 */
-			noticeClass: function () {
+			noticeClass() {
 				return {
 					'notice-success': this.alertType === 'success',
 					'notice-error': this.alertType === 'error',
@@ -85,14 +89,14 @@
 			 *
 			 * @returns {boolean}
 			 */
-			showNotice: function ( success = true, autoHide = true ) {
+			showNotice( success = true, autoHide = true ) {
 				this.alertType = success ? 'success' : 'error';
 
 				// Set meesage.
 				if ( success ) {
-					this.alert = __( 'Settings updated successfully.', '404-to-301' );
+					this.alert = this.$i18n.settings.notices.settings_updated;
 				} else {
-					this.alert = __( 'Oops! Something went wrong.', '404-to-301' );
+					this.alert = this.$i18n.settings.notices.settings_update_failed;
 				}
 
 				// Auto hide if required.
@@ -117,9 +121,9 @@
 			 *
 			 * @returns {void}
 			 */
-			updateSettings: function ( settings, group ) {
+			updateSettings( settings, group ) {
 				window.dd404.settings[ group ] = settings;
-			}
+			},
 		}
 	}
 </script>

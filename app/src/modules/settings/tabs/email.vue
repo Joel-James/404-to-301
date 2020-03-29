@@ -4,15 +4,22 @@
         <table class="form-table">
             <tbody>
             <tr>
-                <th><label for="emailNotify">{{ labels.emailNotify }}</label></th>
+                <th><label for="emailNotify">{{ $i18n.settings.labels.email_notification }}</label></th>
                 <td>
-                    <input type="checkbox" id="emailNotify" v-model="emailNotify" value="1">
+                    <input type="checkbox"
+                           id="emailNotify"
+                           v-model="emailNotify"
+                    >
                 </td>
             </tr>
             <tr>
-                <th><label for="emailRecipient">{{ labels.emailRecipient }}</label></th>
+                <th><label for="emailRecipient">{{ $i18n.settings.labels.email_address }}</label></th>
                 <td>
-                    <input type="email" id="emailRecipient" v-model="emailRecipient" v-bind:disabled="!emailNotify">
+                    <input type="email"
+                           id="emailRecipient"
+                           v-model="emailRecipient"
+                           :disabled="!emailNotify"
+                    >
                 </td>
             </tr>
             <tr>
@@ -21,8 +28,8 @@
                             type="submit"
                             name="submit"
                             class="button button-primary"
-                            value="Save Changes"
-                            v-bind:disabled="waiting"
+                            :value="$i18n.buttons.save_changes"
+                            :disabled="waiting"
                     >
                 </th>
             </tr>
@@ -32,8 +39,7 @@
 </template>
 
 <script>
-	import { __ } from '@wordpress/i18n';
-	import { restPost } from './../../helpers/utils';
+	import { restPost } from '@/helpers/api';
 
 	export default {
 
@@ -56,10 +62,6 @@
 				emailNotify: dd404.settings.email.email_notify,
 				emailRecipient: dd404.settings.email.email_notify_address,
 				waiting: false,
-				labels: {
-					emailNotify: __( 'Email notifications', '404-to-301' ),
-					emailRecipient: __( 'Email address', '404-to-301' ),
-				}
 			}
 		},
 

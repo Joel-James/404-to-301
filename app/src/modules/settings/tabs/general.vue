@@ -4,71 +4,73 @@
         <table class="form-table">
             <tbody>
             <tr>
-                <th><label for="redirectType">{{ labels.redirectType }}</label></th>
+                <th><label for="redirectType">{{ $i18n.settings.labels.redirect_type }}</label></th>
                 <td>
                     <select id="redirectType" v-model="redirectType">
-                        <option value="301">301 Redirect (SEO)</option>
-                        <option value="302">302 Redirect</option>
-                        <option value="307">307 Redirect</option>
+                        <option value="301">{{ $i18n.settings.labels.301_redirect }}</option>
+                        <option value="302">{{ $i18n.settings.labels.302_redirect }}</option>
+                        <option value="307">{{ $i18n.settings.labels.307_redirect }}</option>
+                        <option value="404">{{ $i18n.settings.labels.404_redirect }}</option>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th><label for="redirectTo">{{ labels.redirectTo }}</label></th>
+                <th><label for="redirectTo">{{ $i18n.settings.labels.redirect_to }}</label></th>
                 <td>
                     <select id="redirectTo" v-model="redirectTo">
-                        <option value="page">Existing Page</option>
-                        <option value="link">Custom URL</option>
-                        <option value="none">No Redirect</option>
+                        <option value="page">{{ $i18n.settings.labels.existing_page }}</option>
+                        <option value="link">{{ $i18n.settings.labels.custom_url }}</option>
+                        <option value="none">{{ $i18n.settings.labels.no_redirect }}</option>
                     </select>
-                    <p class="description" v-if="'page' === redirectTo">Select any WordPress page as a 404 page.</p>
-                    <p class="description" v-if="'link' === redirectTo">Redirect 404 requests to a specific URL.</p>
-                    <p class="description" v-if="'none' === redirectTo">To disable redirect.</p>
-                    <p class="description"><strong>You can override this by setting individual custom redirects from error logs list.</strong></p>
+                    <p class="description" v-if="'page' === redirectTo">{{ $i18n.settings.descriptions.select_page }}</p>
+                    <p class="description" v-if="'link' === redirectTo">{{ $i18n.settings.descriptions.custom_url }}</p>
+                    <p class="description" v-if="'none' === redirectTo">{{ $i18n.settings.descriptions.disable_redirect }}</p>
+                    <p class="description">
+                        <strong>{{ $i18n.settings.descriptions.override_settings }}</strong>
+                    </p>
                 </td>
             </tr>
             <tr v-if="'page' === redirectTo">
-                <th><label for="redirectPage">{{ labels.redirectPage }}</label></th>
+                <th><label for="redirectPage">{{ $i18n.settings.labels.redirect_page }}</label></th>
                 <td>
                     <select id="redirectPage" v-model="redirectPage">
-                        <option value="page">Existing Page</option>
-                        <option value="link">Custom URL</option>
-                        <option value="none">No Redirect</option>
+                        <option value="page">{{ $i18n.settings.labels.existing_page }}</option>
+                        <option value="link">{{ $i18n.settings.labels.custom_url }}</option>
+                        <option value="none">{{ $i18n.settings.labels.no_redirect }}</option>
                     </select>
                 </td>
             </tr>
             <tr v-if="'link' === redirectTo">
-                <th><label for="redirectLink">{{ labels.redirectLink }}</label></th>
+                <th><label for="redirectLink">{{ $i18n.settings.labels.custom_url }}</label></th>
                 <td>
                     <input type="url" id="redirectLink" v-model="redirectLink">
                 </td>
             </tr>
             <tr>
-                <th><label for="redirectLog">{{ labels.redirectLog }}</label></th>
+                <th><label for="redirectLog">{{ $i18n.settings.labels.log_errors }}</label></th>
                 <td>
                     <input type="checkbox" id="redirectLog" v-model="redirectLog">
                 </td>
             </tr>
             <tr>
-                <th><label for="disableGuessing">{{ labels.disableGuessing }}</label></th>
+                <th><label for="disableGuessing">{{ $i18n.settings.labels.disable_guess }}</label></th>
                 <td>
                     <input type="checkbox" id="disableGuessing" v-model="disableGuessing">
                 </td>
             </tr>
             <tr>
-                <th><label for="excludePaths">{{ labels.excludePaths }}</label></th>
+                <th><label for="excludePaths">{{ $i18n.settings.labels.exclude_paths }}</label></th>
                 <td>
                     <textarea id="excludePaths" v-model="excludePaths"></textarea>
                 </td>
             </tr>
             <tr>
                 <th colspan="2">
-                    <input
-                            type="submit"
-                            name="submit"
-                            class="button button-primary"
-                            value="Save Changes"
-                            v-bind:disabled="waiting"
+                    <input type="submit"
+                           name="submit"
+                           class="button button-primary"
+                           :value="$i18n.buttons.save_changes"
+                           :disabled="waiting"
                     >
                 </th>
             </tr>
@@ -78,8 +80,7 @@
 </template>
 
 <script>
-	import { __ } from '@wordpress/i18n';
-	import { restPost } from './../../helpers/utils';
+	import { restPost } from '@/helpers/api';
 
 	export default {
 
@@ -108,15 +109,6 @@
 				disableGuessing: dd404to301Vars.settings.general.disable_guessing,
 				excludePaths: dd404to301Vars.settings.general.exclude_paths,
 				waiting: false,
-				labels: {
-					redirectType: __( 'Redirect type', '404-to-301' ),
-					redirectTo: __( 'Redirect to', '404-to-301' ),
-					redirectPage: __( 'Select the page', '404-to-301' ),
-					redirectLink: __( 'Custom URL', '404-to-301' ),
-					redirectLog: __( 'Log 404 Errors', '404-to-301' ),
-					disableGuessing: __( 'Disable URL guessing', '404-to-301' ),
-					excludePaths: __( 'Exclude paths', '404-to-301' )
-				}
 			}
 		},
 
