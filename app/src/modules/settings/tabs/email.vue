@@ -59,8 +59,8 @@
 		 */
 		data() {
 			return {
-				emailNotify: dd404.settings.email.email_notify,
-				emailRecipient: dd404.settings.email.email_notify_address,
+				emailNotify: this.$vars.settings.email.email_notify,
+				emailRecipient: this.$vars.settings.email.email_notify_address,
 				waiting: false,
 			}
 		},

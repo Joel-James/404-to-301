@@ -1,12 +1,13 @@
 <?php
 
-namespace DuckDev\WP404\Views\Admin;
+namespace DuckDev\WP404\Views;
 
 // Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
 use DuckDev\WP404\Helpers;
 use DuckDev\WP404\Utils\Abstracts\Base;
+use DuckDev\WP404\Controllers\Admin\Assets;
 
 
 /**
@@ -30,8 +31,8 @@ class Pages extends Base {
 	 */
 	public function logs() {
 		// Enqueue the assets.
-		//wp_enqueue_style( 'dd404-logs' );
-		wp_enqueue_script( 'dd404-logs' );
+		Assets::_get()->enqueue_style( '404-to-301-logs' );
+		Assets::_get()->enqueue_script( '404-to-301-logs' );
 
 		// Get args for the page.
 		$args = array();
@@ -58,8 +59,8 @@ class Pages extends Base {
 	 */
 	public function settings() {
 		// Enqueue the assets.
-		wp_enqueue_style( 'dd404-settings' );
-		wp_enqueue_script( 'dd404-settings' );
+		Assets::_get()->enqueue_style( '404-to-301-settings' );
+		Assets::_get()->enqueue_script( '404-to-301-settings' );
 
 		// Settings page content.
 		Helpers\General::view( 'admin/common/header' );

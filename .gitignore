@@ -66,9 +66,7 @@ nb-configuration.xml
 releases/
 
 # Exclude auto generated assets
-assets/css
-assets/js
-assets/fonts
+app/assets/
 
 # Cache files
 .sass-cache

@@ -122,8 +122,12 @@
 			 * @returns {void}
 			 */
 			updateSettings( settings, group ) {
-				window.dd404.settings[ group ] = settings;
+				this.$vars.settings[ group ] = settings;
 			},
 		}
 	}
 </script>
+
+<style lang="scss">
+    @import "styles/main";
+</style>

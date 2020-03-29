@@ -3,7 +3,7 @@
         <label class="screen-reader-text"
                :for="id"
         >
-            {{ label }}:
+            {{ label || $i18n.labels.search }}:
         </label>
 
         <input type="search"
@@ -32,7 +32,6 @@
 			},
 			label: {
 				type: String,
-				default: 'Search',
 			},
 			value: {
 				type: String,

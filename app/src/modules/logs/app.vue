@@ -78,7 +78,7 @@
 
                             <tr class="no-items">
                                 <td class="colspanchange" colspan="6">
-                                    {{ __( 'No data found.', '404-to-301' ) }}
+                                    {{ this.$i18n.logs.descriptions.no_data }}
                                 </td>
                             </tr>
 
@@ -145,25 +145,25 @@
 				rows: {},
 				waiting: false,
 				columns: {
-					'url': { label: this.__( 'Path', '404-to-301' ), sortable: true },
-					'date': { label: this.__( 'Date', '404-to-301' ) },
-					'ref': { label: this.__( 'Referral', '404-to-301' ), sortable: true },
-					'ip': { label: this.__( 'IP Address', '404-to-301' ), },
-					'ua': { label: this.__( 'User Agent', '404-to-301' ), sortable: true },
+					'url': { label: this.$i18n.logs.labels.path, sortable: true },
+					'date': { label: this.$i18n.logs.labels.date },
+					'ref': { label: this.$i18n.logs.labels.referral, sortable: true },
+					'ip': { label: this.$i18n.logs.labels.ip_address, },
+					'ua': { label: this.$i18n.logs.labels.user_agent, sortable: true },
 				},
 				bulkActions: {
-					trash: this.__( 'Move to Trash', '404-to-301' ),
-					delete: this.__( 'Delete All', '404-to-301' ),
+					trash: this.$i18n.logs.labels.move_trash,
+					delete: this.$i18n.logs.labels.delete_all,
 				},
 				extraActions: [
 					{
 						key: 'group_by',
-						label: this.__( 'Group by', '404-to-301' ),
+						label: this.$i18n.logs.labels.group_by,
 						options: {
-							url: this.__( '404 Path', '404-to-301' ),
-							ref: this.__( 'Referral', '404-to-301' ),
-							ip: this.__( 'IP Address', '404-to-301' ),
-							ua: this.__( 'User Agent', '404-to-301' ),
+							url: this.$i18n.logs.labels.path_404,
+							ref: this.$i18n.logs.labels.referral,
+							ip: this.$i18n.logs.labels.ip_address,
+							ua: this.$i18n.logs.labels.user_agent,
 						},
 					},
 				],
@@ -244,7 +244,7 @@
 
 				switch ( data.selected ) {
 					case 'trash':
-						if ( window.confirm( this.__( 'Are you sure you want to delete all these logs?', '404-to-301' ) ) ) {
+						if ( window.confirm( this.$i18n.logs.notices.confirm_delete_all ) ) {
 							this.deleteLogs( this.selected );
 						}
 						break;
@@ -291,3 +291,7 @@
 		}
 	}
 </script>
+
+<style lang="scss">
+    @import "styles/main";
+</style>

@@ -23,7 +23,7 @@
                 :disabled="disableSubmit"
                 @click="actionClickHandler"
         >
-            {{ __( 'Apply', '404-to-301' ) }}
+            {{ $i18n.buttons.apply }}
         </button>
     </div>
 </template>

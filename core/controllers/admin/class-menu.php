@@ -5,8 +5,8 @@ namespace DuckDev\WP404\Controllers\Admin;
 // Direct hit? Rest in peace..
 defined( 'WPINC' ) || die;
 
+use DuckDev\WP404\Views\Pages;
 use DuckDev\WP404\Utils\Abstracts\Base;
-use DuckDev\WP404\Views\Admin\Pages;
 
 /**
  * The menu-specific functionality of the plugin.

@@ -60,6 +60,6 @@
     "grunt-wp-i18n": "^1.0.3",
     "load-grunt-tasks": "^5.1.0",
     "sprintf-js": "^1.1.2",
-    "axios": "^0.19.2"
+    "@wordpress/api-fetch": "^3.11.0"
   }
 }

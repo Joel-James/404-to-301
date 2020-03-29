@@ -7,10 +7,10 @@
                 <th><label for="redirectType">{{ $i18n.settings.labels.redirect_type }}</label></th>
                 <td>
                     <select id="redirectType" v-model="redirectType">
-                        <option value="301">{{ $i18n.settings.labels.301_redirect }}</option>
-                        <option value="302">{{ $i18n.settings.labels.302_redirect }}</option>
-                        <option value="307">{{ $i18n.settings.labels.307_redirect }}</option>
-                        <option value="404">{{ $i18n.settings.labels.404_redirect }}</option>
+                        <option value="301">{{ $i18n.settings.labels.redirect_301 }}</option>
+                        <option value="302">{{ $i18n.settings.labels.redirect_302 }}</option>
+                        <option value="307">{{ $i18n.settings.labels.redirect_307 }}</option>
+                        <option value="404">{{ $i18n.settings.labels.redirect_404 }}</option>
                     </select>
                 </td>
             </tr>
@@ -101,13 +101,13 @@
 		data() {
 
 			return {
-				redirectType: dd404to301Vars.settings.general.redirect_type,
-				redirectTo: dd404to301Vars.settings.general.redirect_to,
-				redirectPage: dd404to301Vars.settings.general.redirect_page,
-				redirectLink: dd404to301Vars.settings.general.redirect_link,
-				redirectLog: dd404to301Vars.settings.general.redirect_log,
-				disableGuessing: dd404to301Vars.settings.general.disable_guessing,
-				excludePaths: dd404to301Vars.settings.general.exclude_paths,
+				redirectType: this.$vars.settings.general.redirect_type,
+				redirectTo: this.$vars.settings.general.redirect_to,
+				redirectPage: this.$vars.settings.general.redirect_page,
+				redirectLink: this.$vars.settings.general.redirect_link,
+				redirectLog: this.$vars.settings.general.redirect_log,
+				disableGuessing: this.$vars.settings.general.disable_guessing,
+				excludePaths: this.$vars.settings.general.exclude_paths,
 				waiting: false,
 			}
 		},

@@ -5,6 +5,7 @@ namespace DuckDev\WP404;
 // Direct hit? Rest in peace.
 defined( 'WPINC' ) || die;
 
+use DuckDev\WP404\Views;
 use DuckDev\WP404\Controllers\Admin;
 use DuckDev\WP404\Controllers\Common;
 use DuckDev\WP404\Controllers\Endpoints;
@@ -100,5 +101,8 @@ final class Plugin extends Base {
 		Admin\Assets::_get();
 		Admin\Menu::_get();
 		Admin\Review::_get();
+
+		// Views.
+		Views\Vars::_get();
 	}
 }

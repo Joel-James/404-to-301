@@ -21,7 +21,19 @@
 			selected: {
 				type: Boolean,
                 default: false
-            }
+            },
+            title: {
+				type: String,
+                required: true,
+            },
+			id: {
+				type: String,
+				required: true,
+			},
+			icon: {
+				type: String,
+				default: '',
+			}
 		},
 
 		/**
