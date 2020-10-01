@@ -1,11 +1,18 @@
 {
-    "name"       : "joel-james/404-to-301",
-    "version"    : "3.0.4",
-    "description": "Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.",
-    "homepage"   : "https://duckdev.com/products/404-to-301/",
-    "license"    : "GPL-2.0+",
-    "type"       : "wordpress-plugin",
-    "require"    : {
-        "composer/installers": "~1.0"
+  "name": "joel-james/404-to-301",
+  "version": "4.0.0",
+  "description": "Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.",
+  "homepage": "https://duckdev.com/products/404-to-301/",
+  "license": "GPL-2.0+",
+  "type": "wordpress-plugin",
+  "config": {
+    "platform": {
+      "php": "5.6.1"
     }
+  },
+  "autoload": {
+    "psr-4": {
+      "DuckDev\\DD4T3\\": "core/"
+    }
+  }
 }
