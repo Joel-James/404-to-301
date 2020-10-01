@@ -14,9 +14,9 @@
  * @subpackage Core
  */
 
-namespace DuckDev\DD4T3;
+namespace DuckDev\Redirect;
 
-use DuckDev\DD4T3\Abstracts\Base;
+use DuckDev\Redirect\Abstracts\Base;
 
 /**
  * Creates a new object template.

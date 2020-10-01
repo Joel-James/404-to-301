@@ -14,7 +14,7 @@
  * @subpackage Core
  */
 
-namespace DuckDev\DD4T3\Abstracts;
+namespace DuckDev\Redirect\Abstracts;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;

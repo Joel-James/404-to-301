@@ -60,18 +60,18 @@ require_once DD4T3_DIR . '/vendor/autoload.php';
  *
  * @since 3.0.0
  *
- * @return DuckDev\DD4T3\Core
+ * @return DuckDev\Redirect\Core
  */
 function duckdev_404_to_301() {
 	// Get the plugin instance.
-	$instance = DuckDev\DD4T3\Core::instance();
+	$instance = DuckDev\Redirect\Core::instance();
 
 	/**
 	 * Action hook to execute after plugin is loaded.
 	 *
 	 * Addon plugins can use this to initialize.
 	 *
-	 * @param DuckDev\DD4T3\Core $instance Plugin instance.
+	 * @param DuckDev\Redirect\Core $instance Plugin instance.
 	 *
 	 * @since 4.0.0
 	 */

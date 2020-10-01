@@ -14,7 +14,7 @@
  * @subpackage Model
  */
 
-namespace DuckDev\DD4T3\Abstracts;
+namespace DuckDev\Redirect\Abstracts;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -27,19 +27,6 @@ defined( 'WPINC' ) || die;
 abstract class Model {
 
 	/**
-	 * Singleton constructor.
-	 *
-	 * Protect the class from being initiated multiple times.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return void
-	 */
-	protected function __construct() {
-		// Protect class from initiated multiple times.
-	}
-
-	/**
 	 * Get the table name appending prefix.
 	 *
 	 * Classes can override this by extending it.
@@ -50,7 +37,7 @@ abstract class Model {
 	 *
 	 * @return string
 	 */
-	protected function getTableName( $name ) {
+	protected function get_table_name( $name ) {
 		global $wpdb;
 
 		return $wpdb->prefix . $name;

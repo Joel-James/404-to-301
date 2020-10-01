@@ -13,9 +13,9 @@
  * @subpackage Core
  */
 
-namespace DuckDev\DD4T3;
+namespace DuckDev\Redirect;
 
-use DuckDev\DD4T3\Abstracts\Base;
+use DuckDev\Redirect\Abstracts\Base;
 
 /**
  * Creates a new object template.
@@ -58,7 +58,7 @@ class Plugin extends Base {
 	 *
 	 * @return bool
 	 */
-	public function isNetworkWide() {
+	public function is_network_wide() {
 		return true;
 	}
 }

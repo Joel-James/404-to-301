@@ -70,3 +70,7 @@ releases/
 # Generated assets #
 assets/js
 assets/css
+
+#Composer
+vendor
+composer-lock.json

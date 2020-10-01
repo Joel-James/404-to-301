@@ -11,8 +11,6 @@
     }
   },
   "autoload": {
-    "psr-4": {
-      "DuckDev\\DD4T3\\": "core/"
-    }
+    "classmap": ["core/"]
   }
 }
