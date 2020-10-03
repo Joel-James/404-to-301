@@ -14,7 +14,7 @@
  * @subpackage Model
  */
 
-namespace DuckDev\Redirect\Abstracts;
+namespace DuckDev\Redirect\Utils\Abstracts;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;

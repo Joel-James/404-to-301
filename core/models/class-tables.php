@@ -9,12 +9,12 @@
  * @package DuckDev\Redirect
  */
 
-namespace DDuckDev\Redirect\Models;
+namespace DuckDev\Redirect\Models;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Abstracts\Model;
+use DuckDev\Redirect\Utils\Abstracts\Model;
 
 /**
  * Class Tables.

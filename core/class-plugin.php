@@ -15,7 +15,10 @@
 
 namespace DuckDev\Redirect;
 
-use DuckDev\Redirect\Abstracts\Base;
+// If this file is called directly, abort.
+defined( 'WPINC' ) || die;
+
+use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
  * Creates a new object template.
@@ -34,7 +37,29 @@ class Plugin extends Base {
 	 * @access protected
 	 * @var    string
 	 */
-	private $name = '404-to-301';
+	private $slug = '404-to-301';
+
+	/**
+	 * Holds the name of the plugin in class format.
+	 *
+	 * To access this property, you should use the name().
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 * @var    string
+	 */
+	private $name = '404 to 301';
+
+	/**
+	 * Getter method to get the plugin name.
+	 *
+	 * @since  5.0.0
+	 * @access public
+	 * @return bool
+	 */
+	public function slug() {
+		return $this->slug;
+	}
 
 	/**
 	 * Getter method to get the plugin name.

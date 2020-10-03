@@ -16,7 +16,12 @@
 
 namespace DuckDev\Redirect;
 
-use DuckDev\Redirect\Abstracts\Base;
+// If this file is called directly, abort.
+defined( 'WPINC' ) || die;
+
+use DuckDev\Redirect\Controllers\Admin;
+use DuckDev\Redirect\Controllers\Front;
+use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
  * Creates a new object template.
@@ -32,9 +37,59 @@ class Core extends Base {
 	 * @since  4.0.0
 	 * @access public
 	 *
-	 * @return array
+	 * @return void
 	 */
-	public function boot() {
-		return array();
+	public function init() {
+		$this->setup();
+	}
+
+	/**
+	 * Boot and start the plugin.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	private function setup() {
+		$this->admin();
+		$this->front();
+		$this->api();
+	}
+
+	/**
+	 * Boot and start the plugin.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	private function admin() {
+		Admin\Menu::instance();
+	}
+
+	/**
+	 * Boot and start the plugin.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	private function front() {
+		Front\Redirect::instance();
+	}
+
+	/**
+	 * Boot and start the plugin.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	private function api() {
+		Api\Settings::instance();
 	}
 }

@@ -56,9 +56,9 @@ require_once DD4T3_DIR . '/vendor/autoload.php';
  * Use this function like you would a global variable, except without needing
  * to declare the global.
  *
- * Example: <?php $jj4t3 = JJ_404_to_301(); ?>
+ * Example: $jj4t3 = duckdev_404_to_301();
  *
- * @since 3.0.0
+ * @since 4.0.0
  *
  * @return DuckDev\Redirect\Core
  */
