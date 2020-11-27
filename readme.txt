@@ -3,8 +3,8 @@ Contributors: joelcj91,duckdev
 Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo redirect, error redirect, 404 seo, custom 404 page
 Donate link: https://www.paypal.me/JoelCJ
 Requires at least: 3.5
-Tested up to: 5.2
-Stable tag: 3.0.5
+Tested up to: 5.6
+Stable tag: 3.0.6
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -127,6 +127,12 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com
 
 
 == Changelog ==
+
+= 3.0.6 (27/11/2020) =
+**👌 Improvements**
+
+* Updated Freemius SDK.
+* Tested with WP 5.5.
 
 = 3.0.5 (02/07/2019) =
 **👌 Improvements**
@@ -418,4 +424,4 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com
 **👌 Improvements**
 
 * Updated Freemius SDK.
-* Tested with WP 5.2.
+* Tested with WP 5.5.
