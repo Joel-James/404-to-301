@@ -1,6 +1,6 @@
 {
     "name"       : "joel-james/404-to-301",
-    "version"    : "3.0.4",
+    "version"    : "3.0.6",
     "description": "Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.",
     "homepage"   : "https://duckdev.com/products/404-to-301/",
     "license"    : "GPL-2.0+",

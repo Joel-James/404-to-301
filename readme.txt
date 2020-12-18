@@ -128,11 +128,12 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com
 
 == Changelog ==
 
-= 3.0.6 (27/11/2020) =
+= 3.0.6 (18/12/2020) =
 **👌 Improvements**
 
-* Updated Freemius SDK.
-* Tested with WP 5.5.
+* Tested with WP 5.6.
+* Small improvements.
+* Temporarily disabled Freemius SDK.
 
 = 3.0.5 (02/07/2019) =
 **👌 Improvements**
@@ -420,8 +421,9 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com
 
 == Upgrade Notice ==
 
-= 3.0.5 (02/07/2019) =
+= 3.0.6 (18/12/2019) =
 **👌 Improvements**
 
-* Updated Freemius SDK.
-* Tested with WP 5.5.
+* Tested with WP 5.6.
+* Small improvements.
+* Temporarily disabled Freemius SDK.

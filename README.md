@@ -8,7 +8,7 @@ Automatically redirect all 404 errors to any page using 301 redirect to boost yo
 
 ##### Contributors: <a href="https://github.com/joel-james/">Joel James</a>
 ##### Requires at least: WordPress 3.0
-##### Tested up to: WordPress 5.5
+##### Tested up to: WordPress 5.6
 ##### Stable tag: 3.0.6
 
 Before starting development make sure you read and understand everything in this README.

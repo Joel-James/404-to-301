@@ -26,136 +26,60 @@
  * along with 404 to 301. If not, see <http://www.gnu.org/licenses/>.
  *
  * @author   Joel James <mail@cjoel.com>
- * @link     https://duckdev.com/products/404-to-301/
  * @license  http://www.gnu.org/licenses/ GNU General Public License
- * @package  JJ4T3
  * @category Core
+ * @link     https://duckdev.com/products/404-to-301/
+ * @package  JJ4T3
  */
 
 // If this file is called directly, abort.
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
-// Stay lazy if our class is already there.
-if ( ! class_exists( 'JJ_404_to_301' ) ) :
+// Define plugin slug name.
+define( 'JJ4T3_NAME', '404-to-301' );
+// Define plugin directory.
+define( 'JJ4T3_DIR', plugin_dir_path( __FILE__ ) );
+// Define plugin base url.
+define( 'JJ4T3_URL', plugin_dir_url( __FILE__ ) );
+// Define plugin base file.
+define( 'JJ4T3_BASE_FILE', __FILE__ );
+// Define plugin version.
+define( 'JJ4T3_VERSION', '3.0.6' );
+// Define plugin version.
+define( 'JJ4T3_DB_VERSION', '11.0' );
+// Define plugin log table.
+define( 'JJ4T3_TABLE', $GLOBALS['wpdb']->prefix . '404_to_301' );
 
-	/**
-	 * File that contains main plugin class.
-	 */
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-jj-404-to-301.php';
+// Set who all can access plugin settings.
+// You can change this if you want to give others access.
+if ( ! defined( 'JJ4T3_ACCESS' ) ) {
+	define( 'JJ4T3_ACCESS', 'manage_options' );
+}
 
-	/**
-	 * Setup plugin constants.
-	 *
-	 * We need a few constants in our plugin.
-	 * These values should be constant and con't
-	 * be altered later.
-	 *
-	 * @since  2.0.0
-	 * @access private
-	 *
-	 * @return void
-	 */
-	function jj4t3_set_constants() {
+// File that contains main plugin class.
+require_once JJ4T3_DIR . 'includes/class-jj-404-to-301.php';
 
-		$constants = array(
-			'JJ4T3_NAME'       => '404-to-301',
-			'JJ4T3_DOMAIN'     => '404-to-301',
-			'JJ4T3_DIR'        => plugin_dir_path( __FILE__ ),
-			'JJ4T3_URL'        => plugin_dir_url( __FILE__ ),
-			'JJ4T3_BASE_FILE'  => __FILE__,
-			'JJ4T3_VERSION'    => '3.0.6',
-			'JJ4T3_DB_VERSION' => '11.0',
-			'JJ4T3_TABLE'      => $GLOBALS['wpdb']->prefix . '404_to_301',
-			// Set who all can access plugin settings.
-			// You can change this if you want to give others access.
-			'JJ4T3_ACCESS'     => 'manage_options',
-		);
+/**
+ * The main function for that returns JJ_404_to_301
+ *
+ * The main function responsible for returning the one true JJ_404_to_301
+ * instance to functions everywhere.
+ *
+ * Use this function like you would a global variable, except without needing
+ * to declare the global.
+ *
+ * Example: <?php $jj4t3 = jj_404_to_301(); ?>
+ *
+ * @since 3.0.0
+ *
+ * @return JJ_404_to_301|object
+ */
+function jj_404_to_301() {
+	return JJ_404_to_301::instance();
+}
 
-		foreach ( $constants as $constant => $value ) {
-			if ( ! defined( $constant ) ) {
-				define( $constant, $value );
-			}
-		}
-	}
-
-	/**
-	 * The main function for that returns JJ_404_to_301
-	 *
-	 * The main function responsible for returning the one true JJ_404_to_301
-	 * instance to functions everywhere.
-	 *
-	 * Use this function like you would a global variable, except without needing
-	 * to declare the global.
-	 *
-	 * Example: <?php $jj4t3 = JJ_404_to_301(); ?>
-	 *
-	 * @since 3.0.0
-	 *
-	 * @return JJ_404_to_301|object
-	 */
-	function JJ_404_to_301() {
-
-		return JJ_404_to_301::instance();
-	}
-
-	/**
-	 * Create a helper function for easy SDK access.
-	 *
-	 * This function is used to integrate Freemius SDK to 404 to 301 plugin
-	 * for addons, support and analytics (if allowed).
-	 *
-	 * @since 3.0.0
-	 *
-	 * @return Freemius
-	 */
-	function jj4t3_freemius() {
-
-		global $jj4t3_fs;
-
-		// If freemius is already initialized.
-		if ( ! isset( $jj4t3_fs ) ) {
-
-			// Include Freemius SDK.
-			require_once dirname( __FILE__ ) . '/vendor/freemius/start.php';
-
-			// Initialize freemius sdk.
-			$jj4t3_fs = fs_dynamic_init( array(
-				'id'             => '2192',
-				'slug'           => '404-to-301',
-				'type'           => 'plugin',
-				'public_key'     => 'pk_9d470f3128e5e491ea5a2da6bf4bf',
-				'is_premium'     => false,
-				'has_addons'     => true,
-				'has_paid_plans' => false,
-				'anonymous_mode' => true, // Temporary fix.
-				'menu'           => array(
-					'slug'    => 'jj4t3-logs',
-					'account' => false,
-					'support' => false,
-					'contact' => false,
-				),
-			) );
-		}
-
-		return $jj4t3_fs;
-	}
-
-	// Set constants.
-	jj4t3_set_constants();
-
-	// Init Freemius.
-	jj4t3_freemius();
-
-	// Init 404 to 301.
-	JJ_404_to_301();
-
-	// Uninstaller for 404 to 301.
-	jj4t3_freemius()->add_action( 'after_uninstall', array(
-		'JJ4T3_Activator_Deactivator_Uninstaller',
-		'uninstall',
-	) );
-
-	// Signal that SDK was initiated.
-	do_action( 'jj4t3_fs_loaded' );
-
-endif; // End if class_exists check.
+// Check the minimum required PHP version (5.6) and run the plugin.
+if ( version_compare( PHP_VERSION, '5.6', '>=' ) ) {
+	// Run the plugin.
+	add_action( 'plugins_loaded', 'jj_404_to_301' );
+}
