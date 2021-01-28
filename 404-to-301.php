@@ -3,7 +3,7 @@
  * Plugin Name:     404 to 301 - Redirect, Log and Notify 404 Errors
  * Plugin URI:      https://duckdev.com/products/404-to-301/
  * Description:     Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
- * Version:         3.0.6
+ * Version:         3.0.7
  * Author:          Joel James
  * Author URI:      https://duckdev.com/
  * Donate link:     https://paypal.me/JoelCJ
@@ -44,7 +44,7 @@ define( 'JJ4T3_URL', plugin_dir_url( __FILE__ ) );
 // Define plugin base file.
 define( 'JJ4T3_BASE_FILE', __FILE__ );
 // Define plugin version.
-define( 'JJ4T3_VERSION', '3.0.6' );
+define( 'JJ4T3_VERSION', '3.0.7' );
 // Define plugin version.
 define( 'JJ4T3_DB_VERSION', '11.0' );
 // Define plugin log table.
@@ -58,6 +58,7 @@ if ( ! defined( 'JJ4T3_ACCESS' ) ) {
 
 // File that contains main plugin class.
 require_once JJ4T3_DIR . 'includes/class-jj-404-to-301.php';
+require_once JJ4T3_DIR . 'includes/class-jj4t3-activator-deactivator-uninstaller.php';
 
 /**
  * The main function for that returns JJ_404_to_301
@@ -77,6 +78,19 @@ require_once JJ4T3_DIR . 'includes/class-jj-404-to-301.php';
 function jj_404_to_301() {
 	return JJ_404_to_301::instance();
 }
+
+/**
+ * Plugin activation actions.
+ *
+ * Actions to perform during plugin activation.
+ * We will be registering default options in this function.
+ *
+ * @uses   register_activation_hook() To register activation hook.
+ */
+register_activation_hook(
+	JJ4T3_BASE_FILE,
+	array( 'JJ4T3_Activator_Deactivator_Uninstaller', 'activate' )
+);
 
 // Check the minimum required PHP version (5.6) and run the plugin.
 if ( version_compare( PHP_VERSION, '5.6', '>=' ) ) {

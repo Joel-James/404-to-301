@@ -50,8 +50,6 @@ final class JJ_404_to_301 {
 
 			// Include required files.
 			self::$instance->includes();
-			// Run activation actions.
-			self::$instance->activate();
 			// Load translation support.
 			self::$instance->locale();
 
@@ -88,7 +86,6 @@ final class JJ_404_to_301 {
 
 		include_once JJ4T3_DIR . 'includes/functions/jj4t3-general-functions.php';
 		include_once JJ4T3_DIR . 'includes/class-jj4t3-i18n.php';
-		include_once JJ4T3_DIR . 'includes/class-jj4t3-activator-deactivator-uninstaller.php';
 
 		// Required only when not admin.
 		if ( ! is_admin() ) {
@@ -103,23 +100,6 @@ final class JJ_404_to_301 {
 			include_once JJ4T3_DIR . 'includes/admin/class-jj4t3-admin.php';
 			include_once JJ4T3_DIR . 'includes/admin/class-jj4t3-log-listing.php';
 		}
-	}
-
-	/**
-	 * Plugin activation actions.
-	 *
-	 * Actions to perform during plugin activation.
-	 * We will be registering default options in this function.
-	 *
-	 * @uses   register_activation_hook() To register activation hook.
-	 * @since  3.0.0
-	 * @access private
-	 *
-	 * @return void
-	 */
-	private function activate() {
-
-		register_activation_hook( JJ4T3_BASE_FILE, array( 'JJ4T3_Activator_Deactivator_Uninstaller', 'activate' ) );
 	}
 
 	/**
