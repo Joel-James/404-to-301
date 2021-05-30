@@ -19,6 +19,7 @@ namespace DuckDev\Redirect;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
+use DuckDev\Redirect\Controllers;
 use DuckDev\Redirect\Controllers\Admin;
 use DuckDev\Redirect\Controllers\Front;
 use DuckDev\Redirect\Utils\Abstracts\Base;
@@ -52,6 +53,7 @@ class Core extends Base {
 	 * @return void
 	 */
 	private function setup() {
+		$this->common();
 		$this->admin();
 		$this->front();
 		$this->api();
@@ -65,8 +67,21 @@ class Core extends Base {
 	 *
 	 * @return void
 	 */
+	private function common() {
+		Controllers\Assets::instance();
+	}
+
+	/**
+	 * Boot and start the plugin.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
 	private function admin() {
 		Admin\Menu::instance();
+		Admin\Assets::instance();
 	}
 
 	/**

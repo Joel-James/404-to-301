@@ -43,7 +43,7 @@ class Permission extends Controller {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( '404_to_301_settings_cap', 'manage_options' );
+		return apply_filters( 'dd404_settings_cap', 'manage_options' );
 	}
 
 	/**
@@ -65,6 +65,6 @@ class Permission extends Controller {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( '404_to_301_has_settings_cap', $capable );
+		return apply_filters( 'dd404_has_settings_cap', $capable );
 	}
 }
