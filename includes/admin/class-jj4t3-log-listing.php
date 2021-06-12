@@ -897,6 +897,11 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		// Yes, security check is a must when you alter something.
 		check_ajax_referer( 'jj4t3_redirect_nonce', 'nonce' );
 
+		// The user should have the capability.
+		if ( ! current_user_can( JJ4T3_ACCESS ) ) {
+			wp_die();
+		}
+
 		// Verify if the 404 value is found.
 		if ( empty( $_POST['url_404'] ) ) {
 			wp_die();
@@ -956,6 +961,11 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		// Yes, security check is a must when you alter something.
 		check_ajax_referer( 'jj4t3_redirect_nonce', 'jj4t3_redirect_nonce' );
 
+		// The user should have the capability.
+		if ( ! current_user_can( JJ4T3_ACCESS ) ) {
+			wp_die();
+		}
+
 		// Custom options for the 404 path.
 		$options = maybe_serialize(
 			array(
@@ -1003,8 +1013,9 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return void
 	 */
 	public static function get_redirect_content() {
-
-		include_once JJ4T3_DIR . 'includes/admin/views/custom-redirect.php';
+		if ( current_user_can( JJ4T3_ACCESS ) ) {
+			include_once JJ4T3_DIR . 'includes/admin/views/custom-redirect.php';
+		}
 	}
 
 }
