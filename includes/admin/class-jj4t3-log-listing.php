@@ -912,7 +912,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		global $wpdb;
 
 		// Get custom redirect value from db, if exist.
-		$result = $wpdb->get_row( $wpdb->prepare( "SELECT redirect, options FROM " . JJ4T3_TABLE . " WHERE url = '%s' AND redirect IS NOT NULL LIMIT 0,1", esc_url( $url_404 ) ), 'OBJECT' );
+		$result = $wpdb->get_row( $wpdb->prepare( "SELECT redirect, options FROM " . JJ4T3_TABLE . " WHERE url = %s AND redirect IS NOT NULL LIMIT 0,1", esc_url( $url_404 ) ), 'OBJECT' );
 
 		// Get custom redirect type and url.
 		$url = empty( $result->redirect ) ? '' : esc_url( $result->redirect );
@@ -998,7 +998,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		do_action( 'jj4t3_log_list_custom_redirect_save', $url_404, $url );
 
 		// Run update query and set custom redirect.
-		$wpdb->query( $wpdb->prepare( "UPDATE " . JJ4T3_TABLE . " SET redirect = '%s', options = '%s' WHERE url = '%s'", $url, $options, $url_404 ) );
+		$wpdb->query( $wpdb->prepare( "UPDATE " . JJ4T3_TABLE . " SET redirect = %s, options = %s WHERE url = %s", $url, $options, $url_404 ) );
 
 		// Die ajax request.
 		wp_die();
