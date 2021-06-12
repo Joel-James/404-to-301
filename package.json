@@ -1,8 +1,15 @@
 {
   "name": "404-to-301",
   "version": "4.0.0-beta",
+  "description": "Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.",
+  "author": {
+    "name": "Joel James",
+    "url": "https://duckdev.com"
+  },
+  "license": "GPL-2.0",
   "private": true,
-  "description": "Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool",
+  "main": "404-to-301.php",
+  "repository": "git+https://github.com/Joel-James/404-to-301.git",
   "keywords": [
     "404",
     "301",
@@ -17,16 +24,9 @@
     "404 seo",
     "custom 404 page"
   ],
-  "homepage": "https://duckdev.com/products/404-to-301/",
-  "license": "GPL-2.0",
-  "author": {
-    "name": "Joel James",
-    "url": "https://duckdev.com"
-  },
-  "main": "404-to-301.php",
-  "repository": "git+https://github.com/Joel-James/404-to-301.git",
   "scripts": {
-    "serve": "clear && grunt clean:assets && vue-cli-service build --watch --mode development --no-clean",
+    "watch": "clear && grunt clean:assets && vue-cli-service build --watch --no-clean",
+    "serve": "vue-cli-service serve --no-clean",
     "compile": "clear && grunt clean:assets && vue-cli-service build --no-clean",
     "translate": "clear && grunt translate",
     "build": "clear && npm run compile && grunt prepare && grunt build"
@@ -34,10 +34,9 @@
   "dependencies": {
     "@tailwindcss/forms": "^0.2.1",
     "@wordpress/api-fetch": "^3.7.0",
+    "core-js": "^3.6.4",
     "vue": "^2.6.11",
-    "vue-fragment": "^1.5.1",
-    "vue-router": "^3.1.5",
-    "vuex": "^3.1.2"
+    "vue-fragment": "^1.5.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss7-compat": "^2.0.3",
@@ -51,7 +50,7 @@
     "browser-sync": "^2.26.7",
     "browser-sync-webpack-plugin": "^2.2.2",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.2.2",
+    "eslint-plugin-vue": "^6.1.2",
     "grunt": "^1.0.4",
     "grunt-checktextdomain": "^1.0.1",
     "grunt-contrib-clean": "^2.0.0",
@@ -66,9 +65,8 @@
     "node-sass": "^4.12.0",
     "postcss": "^7.0.35",
     "sass-loader": "^8.0.2",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.4",
     "vue-template-compiler": "^2.6.11",
-    "webpack-fix-style-only-entries": "^0.4.0",
-    "core-js": "^3.9.0"
+    "webpack-fix-style-only-entries": "^0.4.0"
   }
 }

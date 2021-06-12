@@ -5,6 +5,7 @@
   "homepage": "https://duckdev.com/products/404-to-301/",
   "license": "GPL-2.0+",
   "type": "wordpress-plugin",
+  "optimize-autoloader": true,
   "config": {
     "platform": {
       "php": "5.6.1"

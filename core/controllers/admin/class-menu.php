@@ -17,8 +17,8 @@ namespace DuckDev\Redirect\Controllers\Admin;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
+use DuckDev\Redirect\Views;
 use DuckDev\Redirect\Plugin;
-use DuckDev\Redirect\Views\Pages;
 use DuckDev\Redirect\Controllers\Permission;
 use DuckDev\Redirect\Utils\Abstracts\Controller;
 
@@ -105,7 +105,7 @@ class Menu extends Controller {
 			__( 'Error Logs', '404-to-301' ),
 			Permission::settings_cap(),
 			self::SLUG,
-			array( Pages::instance(), 'logs' ),
+			array( Views\Logs::instance(), 'content' ),
 			'dashicons-redo',
 			89
 		);
@@ -137,7 +137,7 @@ class Menu extends Controller {
 			__( 'Settings', '404-to-301' ),
 			Permission::settings_cap(),
 			'404-to-301-settings',
-			array( Pages::instance(), 'settings' )
+			array( Views\Settings::instance(), 'content' )
 		);
 
 		/**

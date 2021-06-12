@@ -22,25 +22,7 @@ use DuckDev\Redirect\Utils\Abstracts\View;
  * @package DuckDev\Redirect
  * @since   4.0.0
  */
-class Pages extends View {
-
-	/**
-	 * Register the menu for the error logs page.
-	 *
-	 * @since  4.0
-	 *
-	 * @return void
-	 */
-	public function logs() {
-		echo '<div id="dd-404-to-301-logs"></div>';
-
-		/**
-		 * Action hook to run something after rendering logs page.
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( 'dd404_after_admin_pages_logs_render' );
-	}
+class Settings extends View {
 
 	/**
 	 * Register the sub menu for the admin settings.
@@ -49,12 +31,17 @@ class Pages extends View {
 	 *
 	 * @return void
 	 */
-	public function settings() {
-		$tabs    = $this->get_tabs();
-		$current = $this->get_current_tab();
+	public function content() {
+		// Arguments.
+		$args = array(
+			'menu_config' => array(
+				'current' => $this->get_current_tab(),
+				'items'   => $this->get_settings_tabs(),
+			),
+		);
 
 		// Admin settings template.
-		include_once 'templates/admin-settings.php';
+		$this->render( 'settings', $args );
 
 		/**
 		 * Action hook to run something after rendering settings page.
@@ -71,23 +58,27 @@ class Pages extends View {
 	 *
 	 * @return array
 	 */
-	public function get_tabs() {
+	public function get_settings_tabs() {
 		$tabs = array(
 			'redirect'      => array(
-				'label' => __( 'Redirect', '404-to-301' ),
-				'icon'  => 'redo',
+				'title' => __( 'Redirect', '404-to-301' ),
+				'icon'  => 'redirect',
+				'url'   => add_query_arg( 'tab', 'redirect' ),
 			),
 			'logs'          => array(
-				'label' => __( 'Logs', '404-to-301' ),
-				'icon'  => 'database',
+				'title' => __( 'Logs', '404-to-301' ),
+				'icon'  => 'logs',
+				'url'   => add_query_arg( 'tab', 'logs' ),
 			),
 			'notifications' => array(
-				'label' => __( 'Notifications', '404-to-301' ),
+				'title' => __( 'Notifications', '404-to-301' ),
 				'icon'  => 'email',
+				'url'   => add_query_arg( 'tab', 'notifications' ),
 			),
 			'general'       => array(
-				'label' => __( 'General', '404-to-301' ),
-				'icon'  => 'admin-generic',
+				'title' => __( 'General', '404-to-301' ),
+				'icon'  => 'settings',
+				'url'   => add_query_arg( 'tab', 'general' ),
 			),
 		);
 
@@ -108,12 +99,12 @@ class Pages extends View {
 	 *
 	 * @return array
 	 */
-	public function get_current_tab( $default = 'redirect' ) {
+	public function get_current_tab( $default = 'general' ) {
 		// Get tab value.
 		$tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
 
 		// Get allowed tabs.
-		$tabs = array_keys( $this->get_tabs() );
+		$tabs = array_keys( $this->get_settings_tabs() );
 
 		// Make sure it's not empty.
 		$tab = empty( $tab ) || ! in_array( $tab, $tabs, true ) ? $default : $tab;
@@ -124,29 +115,5 @@ class Pages extends View {
 		 * @since 4.0.0
 		 */
 		return apply_filters( 'dd404_admin_settings_page_get_current_tab', $tab );
-	}
-
-	/**
-	 * Register the sub menu for the admin settings.
-	 *
-	 * @param string $tab Default tab.
-	 *
-	 * @since  4.0
-	 *
-	 * @return array
-	 */
-	public function get_current_class( $tab = 'redirect' ) {
-		if ( $this->get_current_tab() === $tab ) {
-			$class = 'bg-gray-50 text-wpblue-700 hover:text-wpblue-700 hover:bg-white group rounded-md px-3 py-2 flex items-center text-sm font-medium';
-		} else {
-			$class = 'text-gray-900 hover:text-gray-900 hover:bg-gray-50 group rounded-md px-3 py-2 flex items-center text-sm font-medium';
-		}
-
-		/**
-		 * Action hook to run something after rendering settings page.
-		 *
-		 * @since 4.0.0
-		 */
-		return apply_filters( 'dd404_admin_settings_page_get_current_class', $class );
 	}
 }

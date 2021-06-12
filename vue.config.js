@@ -12,12 +12,12 @@ try {
 
 // List of source files.
 const pages = {
-	logs: './app/src/scripts/modules/logs/main.js',
-	'logs-settings': './app/src/scripts/modules/settings/logs.js',
+	//logs: './app/src/scripts/modules/logs/main.js',
+	//'logs-settings': './app/src/scripts/modules/settings/logs.js',
 	'general-settings': './app/src/scripts/modules/settings/general.js',
-	'redirect-settings': './app/src/scripts/modules/settings/redirect.js',
-	'notifications-settings':
-		'./app/src/scripts/modules/settings/notifications.js',
+	//'redirect-settings': './app/src/scripts/modules/settings/redirect.js',
+	//'notifications-settings':
+	//	'./app/src/scripts/modules/settings/notifications.js',
 }
 
 let config = {

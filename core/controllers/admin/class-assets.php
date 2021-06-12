@@ -17,9 +17,9 @@ namespace DuckDev\Redirect\Controllers\Admin;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
+use DuckDev\Redirect\Views;
 use DuckDev\Redirect\Utils\Abstracts\Controller;
 use DuckDev\Redirect\Controllers\Assets as Assets_Helper;
-use DuckDev\Redirect\Views\Pages;
 
 /**
  * Class Assets
@@ -159,7 +159,7 @@ class Assets extends Controller {
 	 * @return void
 	 */
 	public function settings_assets() {
-		$tab = Pages::instance()->get_current_tab();
+		$tab = Views\Settings::instance()->get_current_tab();
 
 		$name = 'dd404-' . $tab . '-settings';
 

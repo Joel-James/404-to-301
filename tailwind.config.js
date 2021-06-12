@@ -3,6 +3,7 @@ const colors = require('tailwindcss/colors')
 module.exports = {
 	purge: ['./app/src/**/*.{vue,js}', './core/views/**/*.php'],
 	darkMode: false, // or 'media' or 'class'
+	important: true,
 	theme: {
 		extend: {
 			fontFamily: {
