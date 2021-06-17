@@ -112,7 +112,6 @@ class Settings extends Controller {
 			// If there is nothing set in the current option, we use the default set.
 			if ( ! isset( $settings[ $module ] ) ) {
 				$settings[ $module ] = $options;
-				continue;
 			}
 
 			// Else we combine defaults with current options.
@@ -285,5 +284,17 @@ class Settings extends Controller {
 		 * @since 4.0.0
 		 */
 		return apply_filters( 'dd404_settings_default_settings', $settings );
+	}
+
+	/**
+	 * Get the list of settings modules.
+	 *
+	 * @since  4.0.0
+	 *
+	 * @return array
+	 */
+	public static function get_modules() {
+		// Keys of the settings are modules.
+		return array_keys( self::default_settings() );
 	}
 }
