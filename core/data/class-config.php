@@ -31,4 +31,11 @@ class Config {
 	 * @since 4.0
 	 */
 	const SETTINGS_CAP = 'manage_options';
+
+	/**
+	 * Settings key of the plugin.
+	 *
+	 * @since 4.0
+	 */
+	const SETTINGS_KEY = '404_to_301_settings';
 }
