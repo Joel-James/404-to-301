@@ -1,7 +1,7 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-	purge: ['./app/src/**/*.{vue,js}', './core/views/**/*.php'],
+	purge: ['./app/src/**/*.{vue,js}', './app/templates/**/*.php'],
 	darkMode: false, // or 'media' or 'class'
 	important: true,
 	theme: {
@@ -20,8 +20,9 @@ module.exports = {
 			},
 			colors: {
 				wpblue: colors.lightBlue,
-				teal: colors.lightBlue,
 				orange: colors.orange,
+				'light-blue': colors.lightBlue,
+				teal: colors.teal
 			},
 		},
 	},

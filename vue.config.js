@@ -12,12 +12,11 @@ try {
 
 // List of source files.
 const pages = {
-	//logs: './app/src/scripts/modules/logs/main.js',
-	//'logs-settings': './app/src/scripts/modules/settings/logs.js',
+	logs: './app/src/scripts/modules/logs/main.js',
+	'logs-settings': './app/src/scripts/modules/settings/logs.js',
 	'general-settings': './app/src/scripts/modules/settings/general.js',
-	//'redirect-settings': './app/src/scripts/modules/settings/redirect.js',
-	//'notifications-settings':
-	//	'./app/src/scripts/modules/settings/notifications.js',
+	'redirect-settings': './app/src/scripts/modules/settings/redirect.js',
+	'email-settings': './app/src/scripts/modules/settings/email.js',
 }
 
 let config = {
@@ -46,6 +45,7 @@ let config = {
 		config.plugins.delete('html')
 		config.plugins.delete('preload')
 		config.plugins.delete('prefetch')
+		config.optimization.delete('splitChunks')
 
 		// Remove page for each script.
 		Object.keys(pages).forEach((page) => {
@@ -83,32 +83,13 @@ let config = {
 			hints: false,
 		},
 
-		optimization: {
-			splitChunks: {
-				minChunks: 1,
-				name: true,
-				cacheGroups: {
-					common: {
-						chunks(chunk) {
-							return (
-								chunk.name !== 'player-script' &&
-								chunk.name !== 'blocks-sidebar'
-							)
-						},
-					},
-					vendors: {
-						chunks(chunk) {
-							return (
-								chunk.name !== 'player-script' &&
-								chunk.name !== 'blocks-sidebar'
-							)
-						},
-					},
-				},
-			},
-		},
-
 		plugins: [new FixStyleOnlyEntriesPlugin({ silent: true })],
+
+		resolve: {
+			alias: {
+				'vue$': 'vue/dist/vue.esm.js' // 'vue/dist/vue.common.js' for webpack 1
+			}
+		}
 	},
 
 	devServer: {

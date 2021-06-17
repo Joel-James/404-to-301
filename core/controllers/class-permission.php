@@ -43,28 +43,59 @@ class Permission extends Controller {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_settings_cap', 'manage_options' );
+		return apply_filters( 'dd404_permission_settings_cap', 'manage_options' );
 	}
 
 	/**
-	 * Check if current user has the capability to manage settings.
+	 * Get the capability to manage logs.
 	 *
 	 * @since  4.0.0
 	 * @access public
 	 *
 	 * @return string
 	 */
-	public static function has_settings_cap() {
-		// Check if capable.
-		$capable = current_user_can( self::settings_cap() );
+	public static function logs_cap() {
+		/**
+		 * Filter hook to change the logs capability.
+		 *
+		 * @param string $cap Capability.
+		 *
+		 * @since 4.0.0
+		 */
+		return apply_filters( 'dd404_permission_logs_cap', 'manage_options' );
+	}
+
+	/**
+	 * Check if current user has the capability for an action.
+	 *
+	 * @param string $type Type.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return bool
+	 */
+	public static function user_can( $type = 'settings' ) {
+		switch ( $type ) {
+			case 'settings':
+				$capable = current_user_can( self::settings_cap() );
+				break;
+			case 'logs':
+				$capable = current_user_can( self::logs_cap() );
+				break;
+			default:
+				$capable = false;
+				break;
+		}
 
 		/**
 		 * Filter hook to modify capability check.
 		 *
 		 * @param string $capable Capable.
+		 * @param string $type    Type.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_has_settings_cap', $capable );
+		return apply_filters( 'dd404_permission_user_can', $capable, $type );
 	}
 }

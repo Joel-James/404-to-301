@@ -25,15 +25,32 @@ use DuckDev\Redirect\Utils\Abstracts\View;
 class Settings extends View {
 
 	/**
+	 * Register all hooks for the settings UI.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function init() {
+		// Render settings pages.
+		add_action( 'dd404_admin_settings_general_form_content', array( $this, 'general_content' ) );
+		add_action( 'dd404_admin_settings_redirect_form_content', array( $this, 'redirect_content' ) );
+		add_action( 'dd404_admin_settings_logs_form_content', array( $this, 'logs_content' ) );
+		add_action( 'dd404_admin_settings_email_form_content', array( $this, 'email_content' ) );
+		add_action( 'dd404_after_admin_pages_settings_render', array( $this, 'render_templates' ) );
+	}
+
+	/**
 	 * Register the sub menu for the admin settings.
 	 *
 	 * @since  4.0
 	 *
 	 * @return void
 	 */
-	public function content() {
+	public function base_content() {
 		// Arguments.
 		$args = array(
+			'page'        => $this->get_current_tab(),
 			'menu_config' => array(
 				'current' => $this->get_current_tab(),
 				'items'   => $this->get_settings_tabs(),
@@ -56,29 +73,139 @@ class Settings extends View {
 	 *
 	 * @since  4.0
 	 *
+	 * @return void
+	 */
+	public function general_content() {
+		// Arguments.
+		$args = array();
+
+		// Admin settings template.
+		$this->render( 'settings/general', $args );
+
+		/**
+		 * Action hook to run something after rendering general settings page.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd404_after_admin_pages_general_settings_render' );
+	}
+
+	/**
+	 * Register the sub menu for the admin settings.
+	 *
+	 * @since  4.0
+	 *
+	 * @return void
+	 */
+	public function redirect_content() {
+		// Arguments.
+		$args = array();
+
+		// Admin settings template.
+		$this->render( 'settings/redirect', $args );
+
+		/**
+		 * Action hook to run something after rendering redirect settings page.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd404_after_admin_pages_redirect_settings_render' );
+	}
+
+	/**
+	 * Register the sub menu for the admin settings.
+	 *
+	 * @since  4.0
+	 *
+	 * @return void
+	 */
+	public function logs_content() {
+		// Arguments.
+		$args = array();
+
+		// Admin settings template.
+		$this->render( 'settings/logs', $args );
+
+		/**
+		 * Action hook to run something after rendering logs settings page.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd404_after_admin_pages_logs_settings_render' );
+	}
+
+	/**
+	 * Register the sub menu for the admin settings.
+	 *
+	 * @since  4.0
+	 *
+	 * @return void
+	 */
+	public function email_content() {
+		// Arguments.
+		$args = array();
+
+		// Admin settings template.
+		$this->render( 'settings/email', $args );
+
+		/**
+		 * Action hook to run something after rendering email settings page.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd404_after_admin_pages_email_settings_render' );
+	}
+
+	/**
+	 * Register the sub menu for the admin settings.
+	 *
+	 * @since  4.0
+	 *
+	 * @return void
+	 */
+	public function render_templates() {
+		$templates = array( 'form-submit' );
+
+		foreach ( $templates as $template ) {
+			$this->render( "components/vue/{$template}" );
+		}
+
+		/**
+		 * Action hook to run something after rendering email settings page.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd404_after_admin_pages_after_templates_render' );
+	}
+
+	/**
+	 * Register the sub menu for the admin settings.
+	 *
+	 * @since  4.0
+	 *
 	 * @return array
 	 */
 	public function get_settings_tabs() {
 		$tabs = array(
-			'redirect'      => array(
+			'general'  => array(
+				'title' => __( 'General', '404-to-301' ),
+				'icon'  => 'settings',
+				'url'   => add_query_arg( 'tab', 'general' ),
+			),
+			'redirect' => array(
 				'title' => __( 'Redirect', '404-to-301' ),
 				'icon'  => 'redirect',
 				'url'   => add_query_arg( 'tab', 'redirect' ),
 			),
-			'logs'          => array(
+			'logs'     => array(
 				'title' => __( 'Logs', '404-to-301' ),
 				'icon'  => 'logs',
 				'url'   => add_query_arg( 'tab', 'logs' ),
 			),
-			'notifications' => array(
-				'title' => __( 'Notifications', '404-to-301' ),
+			'email'    => array(
+				'title' => __( 'Email', '404-to-301' ),
 				'icon'  => 'email',
-				'url'   => add_query_arg( 'tab', 'notifications' ),
-			),
-			'general'       => array(
-				'title' => __( 'General', '404-to-301' ),
-				'icon'  => 'settings',
-				'url'   => add_query_arg( 'tab', 'general' ),
+				'url'   => add_query_arg( 'tab', 'email' ),
 			),
 		);
 

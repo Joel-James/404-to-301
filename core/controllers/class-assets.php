@@ -94,7 +94,7 @@ class Assets extends Controller {
 				$src,
 				empty( $data['deps'] ) ? array() : $data['deps'],
 				empty( $data['version'] ) ? DD4T3_VERSION : $data['version'],
-				empty( $data['media'] ) ? false : true
+				! empty( $data['media'] )
 			);
 		}
 

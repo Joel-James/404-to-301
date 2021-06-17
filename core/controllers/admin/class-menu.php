@@ -137,7 +137,7 @@ class Menu extends Controller {
 			__( 'Settings', '404-to-301' ),
 			Permission::settings_cap(),
 			'404-to-301-settings',
-			array( Views\Settings::instance(), 'content' )
+			array( Views\Settings::instance(), 'base_content' )
 		);
 
 		/**

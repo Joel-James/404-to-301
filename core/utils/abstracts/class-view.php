@@ -29,15 +29,25 @@ abstract class View extends Base {
 	/**
 	 * Render SVG icon template.
 	 *
-	 * @param string $name Icon name.
+	 * @param string $name   Icon name.
+	 * @param int    $width  Width.
+	 * @param int    $height Height.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return void
 	 */
-	public function render_icon( $name ) {
+	public function render_icon( $name, $width = 6, $height = 6 ) {
 		// Render icon file.
-		$this->render( "components/icons/{$name}" );
+		$this->render(
+			'components/icons/icon',
+			array(
+				'icon'   => $name,
+				'width'  => $width,
+				'height' => $height,
+			),
+			false
+		);
 	}
 
 	/**
