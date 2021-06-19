@@ -171,7 +171,7 @@ class Assets extends Controller {
 			// Script vars.
 			wp_localize_script(
 				$script,
-				'dd404vars',
+				'dd404',
 				/**
 				 * Filter to add/remove vars in script.
 				 *
@@ -184,6 +184,13 @@ class Assets extends Controller {
 
 			// Enqueue script now.
 			wp_enqueue_script( $script );
+
+			// Javascript translations.
+			wp_set_script_translations(
+				$script,
+				'404-to-301',
+				DD4T3_DIR . '/languages/'
+			);
 
 			/**
 			 * Action hook to run something when we are on settings page.

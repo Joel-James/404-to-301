@@ -72,22 +72,22 @@ class Assets extends Controller {
 			// GA settings.
 			$scripts['dd404-general-settings'] = array(
 				'src'  => 'general-settings.min.js',
-				//'deps' => array( 'dd404-vendors' ),
+				'deps' => array( 'wp-i18n' ),
 			);
 
 			$scripts['dd404-redirect-settings'] = array(
 				'src'  => 'redirect-settings.min.js',
-				//'deps' => array( 'dd404-vendors' ),
+				'deps' => array( 'wp-i18n' ),
 			);
 
 			$scripts['dd404-logs-settings'] = array(
 				'src'  => 'logs-settings.min.js',
-				//'deps' => array( 'dd404-vendors' ),
+				'deps' => array( 'wp-i18n' ),
 			);
 
-			$scripts['dd404-notifications-settings'] = array(
-				'src'  => 'notifications-settings.min.js',
-				//'deps' => array( 'dd404-vendors' ),
+			$scripts['dd404-email-settings'] = array(
+				'src'  => 'email-settings.min.js',
+				'deps' => array( 'wp-i18n' ),
 			);
 		}
 
@@ -111,21 +111,9 @@ class Assets extends Controller {
 				'src' => 'logs.min.css',
 			);
 
-			// GA settings.
-			$styles['dd404-general-settings'] = array(
-				'src' => 'general-settings.min.css',
-			);
-
-			$styles['dd404-redirect-settings'] = array(
-				'src' => 'redirect-settings.min.css',
-			);
-
-			$styles['dd404-logs-settings'] = array(
-				'src' => 'logs-settings.min.css',
-			);
-
-			$styles['dd404-email-settings'] = array(
-				'src' => 'email-settings.min.css',
+			// Admin.
+			$styles['dd404-admin'] = array(
+				'src' => 'admin.min.css',
 			);
 		}
 
@@ -164,7 +152,7 @@ class Assets extends Controller {
 		$name = 'dd404-' . $tab . '-settings';
 
 		Assets_Helper::instance()->enqueue_script( $name );
-		Assets_Helper::instance()->enqueue_style( $name );
+		Assets_Helper::instance()->enqueue_style( 'dd404-admin' );
 
 		/**
 		 * Action hook to run something after enqueue logs assets.

@@ -38,10 +38,10 @@
 							do_action( "dd404_admin_settings_{$page}_form_content" );
 							?>
 						</div>
-						<form-submit
+						<form-submit-button
 							save-text="<?php esc_html_e( 'Save', '404-to-301' ); ?>"
 							saving-text="<?php esc_html_e( 'Saving', '404-to-301' ); ?>"
-						></form-submit>
+						></form-submit-button>
 					</div>
 				</form>
 			</section>

@@ -21,9 +21,9 @@
 			<?php foreach ( $items as $key => $item ) : ?>
 				<?php $class = $key === $current ? 'text-gray-900 hover:text-gray-900 bg-gray-50 hover:bg-white' : 'hover:bg-gray-50 hover:text-gray-600'; ?>
 				<a
-						href="<?php echo esc_url( $item['url'] ); ?>"
-						class="<?php echo esc_html( $class ); ?> focus:shadow-none group rounded-md px-3 py-2 flex items-center text-sm font-medium"
-						aria-current="<?php $class = $key === $current ? 'page' : 'false'; ?>"
+					href="<?php echo esc_url( $item['url'] ); ?>"
+					class="<?php echo esc_html( $class ); ?> focus:shadow-none group rounded-md px-3 py-2 flex items-center text-sm font-medium"
+					aria-current="<?php $class = $key === $current ? 'page' : 'false'; ?>"
 				>
 					<?php $this->render_icon( $item['icon'] ); // Render svg icons. ?>
 					<span class="truncate"><?php echo esc_html( $item['title'] ); ?></span>

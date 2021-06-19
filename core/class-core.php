@@ -82,6 +82,7 @@ class Core extends Base {
 	private function admin() {
 		Admin\Menu::instance();
 		Admin\Assets::instance();
+		Admin\Admin::instance();
 	}
 
 	/**

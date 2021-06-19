@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.2.1",
-    "@wordpress/api-fetch": "^3.7.0",
+    "axios": "^0.21.1",
     "core-js": "^3.6.4",
     "vue": "^2.6.11",
     "vue-fragment": "^1.5.1"

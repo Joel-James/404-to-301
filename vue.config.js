@@ -12,6 +12,7 @@ try {
 
 // List of source files.
 const pages = {
+	admin: './app/src/styles/admin.scss',
 	logs: './app/src/scripts/modules/logs/main.js',
 	'logs-settings': './app/src/scripts/modules/settings/logs.js',
 	'general-settings': './app/src/scripts/modules/settings/general.js',
