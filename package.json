@@ -1,29 +1,12 @@
 {
   "name": "404-to-301",
   "version": "4.0.0-beta",
+  "private": true,
   "description": "Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.",
   "author": {
     "name": "Joel James",
     "url": "https://duckdev.com"
   },
-  "license": "GPL-2.0",
-  "private": true,
-  "main": "404-to-301.php",
-  "repository": "git+https://github.com/Joel-James/404-to-301.git",
-  "keywords": [
-    "404",
-    "301",
-    "302",
-    "307",
-    "not found",
-    "404 redirect",
-    "404 to 301",
-    "301 redirect",
-    "seo redirect",
-    "error redirect",
-    "404 seo",
-    "custom 404 page"
-  ],
   "scripts": {
     "watch": "clear && grunt clean:assets && vue-cli-service build --watch --no-clean",
     "serve": "vue-cli-service serve --no-clean",
@@ -31,42 +14,56 @@
     "translate": "clear && grunt translate",
     "build": "clear && npm run compile && grunt prepare && grunt build"
   },
+  "main": "404-to-301.php",
   "dependencies": {
-    "@tailwindcss/forms": "^0.2.1",
-    "axios": "^0.21.1",
-    "core-js": "^3.6.4",
-    "vue": "^2.6.11",
-    "vue-fragment": "^1.5.1"
+    "core-js": "^3.6.5",
+    "vue": "^3.0.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss7-compat": "^2.0.3",
-    "@vue/cli": "^4.2.3",
-    "@vue/cli-plugin-babel": "^4.2.0",
-    "@vue/cli-plugin-router": "^4.2.0",
-    "@vue/cli-plugin-vuex": "^4.2.0",
-    "@vue/cli-service": "^4.2.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
     "autoprefixer": "^9.8.6",
-    "babel-eslint": "^10.0.3",
-    "browser-sync": "^2.26.7",
-    "browser-sync-webpack-plugin": "^2.2.2",
+    "babel-eslint": "^10.1.0",
+    "browser-sync": "^2.26.14",
+    "browser-sync-webpack-plugin": "^2.3.0",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.1.2",
-    "grunt": "^1.0.4",
+    "eslint-plugin-vue": "^7.0.0",
+    "postcss": "^7.0.36",
+    "sass": "^1.35.1",
+    "sass-loader": "^10",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.2",
+    "@tailwindcss/forms": "^0.3.3",
+    "webpack": "^4.46.0",
+    "webpack-fix-style-only-entries": "^0.6.1",
+    "grunt": "^1.4.1",
     "grunt-checktextdomain": "^1.0.1",
     "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-compress": "^1.6.0",
+    "grunt-contrib-compress": "^2.0.0",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-rename": "^0.2.0",
-    "grunt-phpunit": "^0.3.6",
-    "grunt-replace": "^1.0.1",
-    "grunt-search": "^0.1.8",
     "grunt-wp-i18n": "^1.0.3",
-    "load-grunt-tasks": "^5.1.0",
-    "node-sass": "^4.12.0",
-    "postcss": "^7.0.35",
-    "sass-loader": "^8.0.2",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.4",
-    "vue-template-compiler": "^2.6.11",
-    "webpack-fix-style-only-entries": "^0.4.0"
-  }
+    "load-grunt-tasks": "^5.1.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "_id": "404-to-301@4.0.0-beta",
+  "readme": "ERROR: No README data found!"
 }

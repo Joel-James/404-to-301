@@ -13,11 +13,11 @@ try {
 // List of source files.
 const pages = {
 	admin: './app/src/styles/admin.scss',
-	logs: './app/src/scripts/modules/logs/main.js',
-	'logs-settings': './app/src/scripts/modules/settings/logs.js',
-	'general-settings': './app/src/scripts/modules/settings/general.js',
+	//logs: './app/src/scripts/modules/logs/main.js',
+	//'logs-settings': './app/src/scripts/modules/settings/logs.js',
+	//'general-settings': './app/src/scripts/modules/settings/general.js',
 	'redirect-settings': './app/src/scripts/modules/settings/redirect.js',
-	'email-settings': './app/src/scripts/modules/settings/email.js',
+	//'email-settings': './app/src/scripts/modules/settings/email.js',
 }
 
 let config = {
@@ -59,11 +59,11 @@ let config = {
 			let extractCSSPlugin = config.plugin('extract-css')
 
 			extractCSSPlugin &&
-				extractCSSPlugin.tap(() => [
-					{
-						filename: 'css/[name].min.css',
-					},
-				])
+			extractCSSPlugin.tap(() => [
+				{
+					filename: 'css/[name].min.css',
+				},
+			])
 		}
 
 		// Set an alias so we can easily import components.
@@ -84,11 +84,14 @@ let config = {
 			hints: false,
 		},
 
-		plugins: [new FixStyleOnlyEntriesPlugin({ silent: true })],
+		// Support style only files.
+		plugins: [
+			new FixStyleOnlyEntriesPlugin({silent: true})
+		],
 
 		resolve: {
 			alias: {
-				'vue$': 'vue/dist/vue.esm.js' // 'vue/dist/vue.common.js' for webpack 1
+				'vue$': "vue/dist/vue.esm-bundler.js"
 			}
 		}
 	},

@@ -1,91 +1,24 @@
-> ####WARNING: This latest version is not live yet. Use with caution!
+# 404-to-301
 
-# [404 to 301](https://wordpress.org/plugins/404-to-301) - No more 404 errors!
-
-Automatically redirect all 404 errors to any page using 301 redirect to boost your SEO in WordPress. This plugin also can log all 404 erros and list it to you. Also you can optionally get email alerts on 404 errors!
-
-<hr/>
-
-##### Contributors: <a href="https://github.com/joel-james/">Joel James</a>
-##### Requires at least: WordPress 3.0
-##### Tested up to: WordPress 5.2
-##### Stable tag: 3.0.5
-
-Before starting development make sure you read and understand everything in this README.
-
-Also, don't forget to document your code properly.
-
-## Working with Git
-
-Clone the plugin repo and checkout the `dev` branch
-
+## Project setup
 ```
-# git clone git@github.com:Joel-James/404-to-301.git
-# git fetch && git checkout dev
+npm install
 ```
 
-## Installing dependencies and initial configuration
-
-Install Node
+### Compiles and hot-reloads for development
 ```
-# curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-# sudo apt-get install -y nodejs build-essential
+npm run serve
 ```
 
-Install the necessary npm modules and packages
+### Compiles and minifies for production
 ```
-# npm install
-``` 
-
-After that for the first time, run below command to create updated assets.
-```
-# npm run compile
-``` 
-
-Set up username and email for Git commits
-```
-# git config user.email "<your email>"
-# git config user.name "<your name>"
+npm run build
 ```
 
-## Build tasks (npm)
+### Lints and fixes files
+```
+npm run lint
+```
 
-Everything (except unit tests) should be handled by npm. Note that you don't need to interact with Grunt in a direct way.
-
-Command | Action
-------- | ------
-`npm run translate` | Build pot and mo file inside /languages/ folder
-`npm run compile` | Compile assets
-`npm run build` | Build release version, useful to provide for testing
-
-## Versioning
-
-Follow semantic versioning [http://semver.org/](http://semver.org/) as `package.json` won't work otherwise. That's it:
-
-- `X.X.0` for mayor versions
-- `X.X.X` for minor versions
-- `X.X[.X||.0]-rc.1` for release candidates
-- `X.X[.X||.0]-beta.1` for betas
-
-## Workflow
-
-Do not commit on `master` branch (if you are on a forked repo, no need to worry). `dev` is the code
-that accumulates all the code for the next version.
-
-- Create a new branch from `dev` branch: `git checkout -b branch-name origin/dev`. Try to give it a descriptive name. For example:
-    * `release/X.X.X` for next releases
-    * `new/some-feature` for new features
-    * `enhance/some-enhancement` for enhancements
-    * `fix/some-bug` for bug fixing
-- Make your commits and push the new branch: `git push -u origin branch-name`
-- File the new Pull Request against `dev` branch
-- Once the PR is approved it will be merged to the `dev` branch.
-
-If you are sending pull requests from your forked repo, follow the same steps.
-
-## Important Links and Documentation
-
-- <a href="https://duckdev.com/products/404-to-301/"><strong>Plugin Website</strong></a>
-- <a href="https://wordpress.org/plugins/404-to-301/"><strong>WordPress Page</strong></a>
-- <a href="https://wordpress.org/support/plugin/404-to-301/"><strong>Plugin Support Forum</strong></a>
-- <a href="https://duckdev.com/support/docs/category/404-to-301/"><strong>Documentation</strong></a>
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

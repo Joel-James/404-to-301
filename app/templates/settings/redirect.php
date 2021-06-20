@@ -41,7 +41,7 @@
 										title="<?php esc_html_e( 'Redirect type', '404-to-301' ); ?>"
 										:items="targets"
 										current="301"
-									/>
+									></form-radio-select>
 
 								</div>
 							</div>
@@ -105,7 +105,7 @@
 										title="<?php esc_html_e( 'Redirect type', '404-to-301' ); ?>"
 										:items="types"
 										current="301"
-									/>
+									></form-radio-select>
 
 								</div>
 							</div>

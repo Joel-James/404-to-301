@@ -4,6 +4,7 @@
 		<div class="space-y-4">
 			<label
 				v-for="item in items"
+				:key="item.key"
 				class="relative block rounded-lg border border-gray-300 bg-white shadow-sm px-6 py-4 cursor-pointer hover:border-gray-400 sm:flex sm:justify-between"
 			>
 				<input
