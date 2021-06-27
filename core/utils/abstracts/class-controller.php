@@ -25,4 +25,32 @@ defined( 'WPINC' ) || die;
  * @package DuckDev\DD4T3\Abstracts
  */
 abstract class Controller extends Base {
+
+	/**
+	 * Get boolean value from string.
+	 *
+	 * @param mixed $value Value to process.
+	 *
+	 * @since 4.0
+	 *
+	 * @return bool
+	 */
+	protected function get_boolean( $value ) {
+		switch ( $value ) {
+			case 'enabled':
+			case 1:
+			case 'true':
+			case true:
+				$value = true;
+				break;
+			case 'disabled':
+			case 0:
+			case 'false':
+			case false:
+				$value = false;
+				break;
+		}
+
+		return (bool) $value;
+	}
 }

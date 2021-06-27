@@ -12,6 +12,8 @@
     }
   },
   "autoload": {
-    "classmap": ["core/"]
+    "classmap": [
+      "core/"
+    ]
   }
 }

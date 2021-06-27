@@ -53,6 +53,30 @@ class Logs extends Model {
 	}
 
 	/**
+	 * Setup the plugin and register all hooks.
+	 *
+	 * Pro version features and not initialized yet, so do not
+	 * execute something on this hooks if you are checking for
+	 * Pro version.
+	 *
+	 * @since 1.8.0
+	 *
+	 * @return array
+	 */
+	public function create( $data = array() ) {
+		$list = array();
+
+		/**
+		 * Action hook to trigger after initializing all core actions.
+		 *
+		 * You still need to check if it Pro version or Free.
+		 *
+		 * @since 1.8.0
+		 */
+		return apply_filters( '404_to_301_model_logs_get_list', $list );
+	}
+
+	/**
 	 * Get the table creation query for the main log table.
 	 *
 	 * This query is going to be used with dbDelta function

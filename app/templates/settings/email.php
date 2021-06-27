@@ -50,5 +50,6 @@
 		</div>
 		<input type="text" name="email" id="email" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" placeholder="you@example.com">
 	</div>
+	<?php wp_editor( '', 'joeljames', array( 'media_buttons' => false, 'teeny' => true ) ); ?>
 </div>
 

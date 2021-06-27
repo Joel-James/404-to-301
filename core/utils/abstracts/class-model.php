@@ -24,7 +24,7 @@ defined( 'WPINC' ) || die;
  *
  * @package DuckDev\DD4T3\Abstracts
  */
-abstract class Model {
+abstract class Model extends Base {
 
 	/**
 	 * Get the table name appending prefix.

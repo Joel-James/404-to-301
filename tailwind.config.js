@@ -19,9 +19,8 @@ module.exports = {
 				],
 			},
 			colors: {
-				wpblue: colors.lightBlue,
+				wpblue: colors.sky,
 				orange: colors.orange,
-				'light-blue': colors.lightBlue,
 				teal: colors.teal
 			},
 		},

@@ -11,10 +11,10 @@
 					type="radio"
 					name="redirect[type]"
 					:value="item.key"
-					v-model="selected"
 					class="sr-only"
 					aria-labelledby="server-size-0-label"
 					aria-describedby="server-size-0-description-0 server-size-0-description-1"
+					v-model="selected"
 				>
 				<div class="flex items-center">
 					<div class="text-sm">
@@ -29,12 +29,12 @@
 							class="text-gray-500"
 						>
 							<p class="sm:inline">{{ item.desc }}</p>
-							<p class="sm:inline">{{ selected }}</p>
+							<p class="sm:inline">{{ modelValue }}</p>
 						</div>
 					</div>
 				</div>
 				<div
-					:class="selected === item.key ? 'border-gray-900' : 'border-transparent'"
+					:class="modelValue === item.key ? 'border-wpblue-900' : 'border-transparent'"
 					class="absolute -inset-px rounded-lg border-2 pointer-events-none"
 					aria-hidden="true"
 				></div>
@@ -50,12 +50,19 @@ export default {
 	props: {
 		title: String,
 		items: Array,
-		current: String,
+		modelValue: String,
 	},
 
-	data() {
-		return {
-			selected: this.current
+	emits: ['update:modelValue'],
+
+	computed: {
+		selected: {
+			get() {
+				return this.modelValue
+			},
+			set(value) {
+				this.$emit('update:modelValue', value)
+			}
 		}
 	},
 }

@@ -34,17 +34,25 @@ class Settings extends Controller {
 	 * @param string $key     Setting key.
 	 * @param string $module  Module name.
 	 * @param array  $default Default values.
+	 * @param bool   $valid   Is the setting key and module valid.
 	 *
 	 * @since  4.0.0
 	 *
 	 * @return string
 	 */
-	public static function get( $key, $module = 'general', $default = false ) {
+	public static function get( $key, $module = 'general', $default = false, &$valid = true ) {
 		// Get module values.
 		$values = self::get_module( $module );
 
-		// Use default value if not set.
-		$value = isset( $values[ $key ] ) ? $values[ $key ] : $default;
+		// Value is set.
+		if ( isset( $values[ $key ] ) ) {
+			$valid = true;
+			$value = $values[ $key ];
+		} else {
+			$valid = false;
+			// Use default value if not set.
+			$value = $default;
+		}
 
 		/**
 		 * Filter hook to change the settings capability.
@@ -53,10 +61,11 @@ class Settings extends Controller {
 		 * @param string $key     Setting key.
 		 * @param string $module  Module name.
 		 * @param array  $default Default values.
+		 * @param bool   $valid   Is the setting key and module valid.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_settings_get', $value, $key, $module, $default );
+		return apply_filters( 'dd404_settings_get', $value, $key, $module, $default, $valid );
 	}
 
 	/**
@@ -64,17 +73,25 @@ class Settings extends Controller {
 	 *
 	 * @param string $module  Module name.
 	 * @param array  $default Default values.
+	 * @param bool   $valid   Is the setting module valid.
 	 *
 	 * @since  4.0.0
 	 *
 	 * @return array
 	 */
-	public static function get_module( $module, $default = array() ) {
+	public static function get_module( $module, $default = array(), &$valid = true ) {
 		// Get settings.
 		$settings = self::get_settings();
 
-		// Use default value if not set.
-		$values = isset( $settings[ $module ] ) ? $settings[ $module ] : $default;
+		// Module is set.
+		if ( isset( $settings[ $module ] ) ) {
+			$valid  = true;
+			$values = $settings[ $module ];
+		} else {
+			$valid = false;
+			// Use default values if not set.
+			$values = $default;
+		}
 
 		/**
 		 * Filter hook to modify a module settings before returning it.
@@ -82,10 +99,11 @@ class Settings extends Controller {
 		 * @param array  $values  Values.
 		 * @param string $module  Module name.
 		 * @param array  $default Default values.
+		 * @param bool   $valid   Is the setting module valid.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_settings_get_module', $values, $module, $default );
+		return apply_filters( 'dd404_settings_get_module', $values, $module, $default, $valid );
 	}
 
 	/**
@@ -261,7 +279,7 @@ class Settings extends Controller {
 				'enable' => true,
 				'type'   => '301',
 				'target' => 'link',
-				'url'    => home_url(),
+				'link'    => home_url(),
 				'page'   => '',
 			),
 			'logs'     => array(

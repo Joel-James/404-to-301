@@ -14,7 +14,7 @@
 ?>
 
 <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
-
+	<ui-alert message="Successfully uploaded" v-model:active="showNotice"></ui-alert>
 	<div>
 		<div>
 			<h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -38,9 +38,10 @@
 								<p class="text-sm text-gray-500">These are delivered via SMS to your mobile phone.</p>
 								<div class="mt-4 space-y-4">
 									<form-radio-select
-										title="<?php esc_html_e( 'Redirect type', '404-to-301' ); ?>"
+										title="<?php esc_html_e( 'Redirect to', '404-to-301' ); ?>"
 										:items="targets"
 										current="301"
+										v-model="target"
 									></form-radio-select>
 
 								</div>
@@ -105,6 +106,7 @@
 										title="<?php esc_html_e( 'Redirect type', '404-to-301' ); ?>"
 										:items="types"
 										current="301"
+										v-model="type"
 									></form-radio-select>
 
 								</div>

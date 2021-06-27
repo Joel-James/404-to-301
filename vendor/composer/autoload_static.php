@@ -6,6 +6,20 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit67b2718d84afe1fd3c250963b82ddf7c
 {
+    public static $prefixLengthsPsr4 = array (
+        'C' => 
+        array (
+            'Composer\\Installers\\' => 20,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'Composer\\Installers\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers',
+        ),
+    );
+
     public static $classMap = array (
         'DuckDev\\Redirect\\Api\\Settings' => __DIR__ . '/../..' . '/core/api/class-settings.php',
         'DuckDev\\Redirect\\Controllers\\Admin\\Admin' => __DIR__ . '/../..' . '/core/controllers/admin/class-admin.php',
@@ -34,6 +48,8 @@ class ComposerStaticInit67b2718d84afe1fd3c250963b82ddf7c
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+            $loader->prefixLengthsPsr4 = ComposerStaticInit67b2718d84afe1fd3c250963b82ddf7c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit67b2718d84afe1fd3c250963b82ddf7c::$prefixDirsPsr4;
             $loader->classMap = ComposerStaticInit67b2718d84afe1fd3c250963b82ddf7c::$classMap;
 
         }, null, ClassLoader::class);

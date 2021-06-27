@@ -3,6 +3,7 @@ import {createApp} from 'vue'
 
 // Required components.
 import FormSubmit from '@/components/form-submit'
+import UiAlert from '@/components/ui-alert'
 import FormRadioSelect from '@/components/form/radio-select'
 
 const {__} = wp.i18n;
@@ -21,6 +22,7 @@ const App = {
 			page: '',
 			type: 301,
 			target: 'link',
+			showNotice: true,
 			targets: [
 				{
 					'key': 'page',
@@ -78,6 +80,7 @@ const App = {
 
 const Redirect = createApp(App);
 Redirect.config.globalProperties.$axios = axios.create(axiosConfig);
+Redirect.component('UiAlert', UiAlert)
 Redirect.component('FormSubmit', FormSubmit)
 Redirect.component('FormRadioSelect', FormRadioSelect)
 Redirect.mount('#dd404-settings-app')

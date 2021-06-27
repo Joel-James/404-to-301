@@ -17,7 +17,7 @@ namespace DuckDev\Redirect\Controllers\Front;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Abstracts\Controller;
+use DuckDev\Redirect\Controllers\Settings;
 
 /**
  * Class Menu
@@ -25,105 +25,175 @@ use DuckDev\Redirect\Utils\Abstracts\Controller;
  * @package DuckDev\Redirect
  * @since   4.0.0
  */
-class Redirect extends Controller {
+class Redirect extends Action {
 
 	/**
-	 * Holds the slug of the plugin admin main menu.
+	 * Action type - email.
 	 *
-	 * @since  4.0.0
-	 * @var    string
+	 * @var string $action
+	 *
+	 * @since 4.0
 	 */
-	const SLUG = '404-to-301';
+	protected $action = 'redirect';
 
 	/**
-	 * Initialize the menu class and register the hooks.
+	 * Get available redirect types.
 	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
-	 * @return void
-	 */
-	public function init() {
-		//add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-	}
-
-	/**
-	 * Register the menu for the admin area of the plugin.
-	 *
-	 * This method should handle all the submenus that the plugin
-	 * needs also.
-	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
-	 * @return void
-	 */
-	public function admin_menu() {
-		// Error logs main menu.
-		$this->logs();
-
-		// Settings sub menu.
-		$this->settings();
-	}
-
-	/**
-	 * Register the menu for the error logs page.
+	 * Use `dd404_redirect_types` filter to add
+	 * new redirect type.
 	 *
 	 * @since  4.0
 	 *
 	 * @return void
 	 */
-	private function logs() {
-		// Main logs page.
-		$page_hook = add_menu_page(
-			__( '404 Error Logs', '404-to-301' ),
-			__( 'Error Logs', '404-to-301' ),
-			'manage_options', // Menu permission.
-			self::SLUG,
-			null,
-			'dashicons-redo',
-			89
-		);
-
+	public function run() {
 		/**
-		 * Action hook to run something when we are on logs page.
+		 * Action hook to execute before performing redirect.
 		 *
-		 * This hook can be used to add new settings menu items.
-		 *
-		 * @param string $page_hook Menu string.
+		 * @param Request $request Request object.
 		 *
 		 * @since 4.0
 		 */
-		do_action( 'dd404_admin_menu_logs', $page_hook );
+		do_action( 'dd404_redirect_pre_redirect', $this->request );
+
+		// Perform redirect using WordPress.
+		// phpcs:ignore
+		wp_redirect(
+			$this->target_link(),
+			$this->redirect_type()
+		);
+
+		// Exit, because WordPress will not exit automatically.
+		exit;
 	}
 
 	/**
-	 * Register the sub menu for the admin settings.
+	 * Get available redirect types.
+	 *
+	 * Use `dd404_redirect_types` filter to add
+	 * new redirect type.
 	 *
 	 * @since  4.0
 	 *
-	 * @return void
+	 * @return bool
 	 */
-	private function settings() {
+	private function target_link() {
+		// Get custom options.
+		$link = $this->request->get_config( 'redirect_target' );
+
+		// If custom target is not set.
+		if ( empty( $link ) ) {
+			/**
+			 * Filter hook to add add or remove redirect types.
+			 *
+			 * Other plugins can use this filter to add new redirect
+			 * types to 404 to 301.
+			 *
+			 * @param array $types Redirect types.
+			 *
+			 * @since 4.0
+			 */
+			$link = apply_filters( 'dd404_redirect_default_link', home_url() );
+
+			// Get global target.
+			$target = Settings::get( 'target', 'redirect' );
+			// If target is a page.
+			if ( 'page' === $target ) {
+				// Target page ID.
+				$page = Settings::get( 'page', 'redirect' );
+				// Only consider if it's published page/post.
+				if ( ! empty( $page ) && 'publish' === get_post_status( $page ) ) {
+					$link = get_permalink( $page );
+				}
+			} else {
+				// Get link target.
+				$link = Settings::get( 'link', 'redirect', $link );
+			}
+		}
+
+		/**
+		 * Filter hook to enable/disable redirect.
+		 *
+		 * Other plugins can use this filter to enable
+		 * or disable redirect.
+		 *
+		 * @param bool    $can     Can redirect.
+		 * @param Request $request Request object.
+		 *
+		 * @since 4.0
+		 */
+		return apply_filters( 'dd404_redirect_target_link', $link, $this->request );
+	}
+
+	/**
+	 * Get available redirect types.
+	 *
+	 * Use `dd404_redirect_types` filter to add
+	 * new redirect type.
+	 *
+	 * @since  4.0
+	 *
+	 * @return bool
+	 */
+	private function redirect_type() {
+		// Get custom options.
+		$type = $this->request->get_config( 'redirect_type' );
+
+		// If custom target is not set.
+		if ( empty( $type ) ) {
+			// Get global target.
+			$type = Settings::get(
+				'type',
+				'redirect',
+				301
+			);
+		}
+
+		/**
+		 * Filter hook to enable/disable redirect.
+		 *
+		 * Other plugins can use this filter to enable
+		 * or disable redirect.
+		 *
+		 * @param bool    $can     Can redirect.
+		 * @param Request $request Request object.
+		 *
+		 * @since 4.0
+		 */
+		$type = apply_filters( 'dd404_redirect_redirect_type', $type, $this->request );
+
+		return in_array( $type, self::types(), true ) ? $type : 301;
+	}
+
+	/**
+	 * Get available redirect types.
+	 *
+	 * Use `dd404_redirect_types` filter to add
+	 * new redirect type.
+	 *
+	 * @since  4.0
+	 *
+	 * @return array
+	 */
+	public static function types() {
 		// Sub page.
-		$page_hook = add_submenu_page(
-			self::SLUG,
-			__( '404 to 301 Settings', '404-to-301' ),
-			__( 'Settings', '404-to-301' ),
-			'manage_options', // Menu permission.
-			'404-to-301-settings',
-			null
+		$types = array(
+			301 => __( '301', '404-to-301' ),
+			302 => __( '302', '404-to-301' ),
+			307 => __( '307', '404-to-301' ),
+			404 => __( '404', '404-to-301' ),
 		);
 
 		/**
-		 * Action hook to run something when we are on settings page.
+		 * Filter hook to add add or remove redirect types.
 		 *
-		 * This hook can be used to add new settings menu items.
+		 * Other plugins can use this filter to add new redirect
+		 * types to 404 to 301.
 		 *
-		 * @param string $page_hook Menu string.
+		 * @param array $types Redirect types.
 		 *
 		 * @since 4.0
 		 */
-		do_action( 'dd404_admin_menu_settings', $page_hook );
+		return apply_filters( 'dd404_redirect_types', $types );
 	}
 }
