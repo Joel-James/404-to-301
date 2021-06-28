@@ -12,13 +12,15 @@
  * @subpackage Action
  */
 
-namespace DuckDev\Redirect\Controllers\Front;
+namespace DuckDev\Redirect\Controllers\Front\Actions;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
 use Exception;
 use DuckDev\Redirect\Controllers\Settings;
+use DuckDev\Redirect\Controllers\Front\Main;
+use DuckDev\Redirect\Controllers\Front\Request;
 use DuckDev\Redirect\Utils\Abstracts\Controller;
 
 /**
@@ -58,7 +60,7 @@ abstract class Action extends Controller {
 	 */
 	public function init() {
 		// Make sure the class is valid.
-		if ( empty( $this->action ) || ! in_array( $this->action, $this->actions(), true ) ) {
+		if ( empty( $this->action ) || ! in_array( $this->action, array_keys( Main::instance()->actions() ), true ) ) {
 			throw new Exception( get_class( $this ) . ' must have a valid $action property set.' );
 		}
 
@@ -154,9 +156,13 @@ abstract class Action extends Controller {
 	 */
 	protected function enabled() {
 		// Get global option.
-		$enabled = Settings::get( 'enabled', $this->action );
-		// Get custom settings.
-		$config = $this->request->get_config( $this->action, 'global' );
+		$enabled = Settings::get( 'enable', $this->action );
+		// If not checking on a request.
+		if ( empty( $this->request ) ) {
+			$config = 'global';
+		} else {
+			$config = $this->request->get_config( $this->action, 'global' );
+		}
 
 		// Get enabled status.
 		$enabled = 'global' === $config ? $enabled : $this->get_boolean( $config );
@@ -174,29 +180,5 @@ abstract class Action extends Controller {
 		 * @since 4.0
 		 */
 		return apply_filters( 'dd404_action_enabled', $enabled, $this->action, $this->request );
-	}
-
-	/**
-	 * Get available actions.
-	 *
-	 * @since  4.0
-	 *
-	 * @return array
-	 */
-	private function actions() {
-		$actions = array(
-			'log',
-			'email',
-			'redirect',
-		);
-
-		/**
-		 * Filter hook to add new actions to 404 to 301.
-		 *
-		 * @param array $actions Available actions.
-		 *
-		 * @since 4.0
-		 */
-		return apply_filters( 'dd404_actions', $actions );
 	}
 }

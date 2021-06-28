@@ -12,12 +12,13 @@
  * @subpackage Menu
  */
 
-namespace DuckDev\Redirect\Controllers\Front;
+namespace DuckDev\Redirect\Controllers\Front\Actions;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Controllers\Settings;
+use DuckDev\Redirect\Controllers\Front\Request;
 
 /**
  * Class Menu
@@ -97,6 +98,7 @@ class Redirect extends Action {
 
 			// Get global target.
 			$target = Settings::get( 'target', 'redirect' );
+
 			// If target is a page.
 			if ( 'page' === $target ) {
 				// Target page ID.
@@ -162,7 +164,7 @@ class Redirect extends Action {
 		 */
 		$type = apply_filters( 'dd404_redirect_redirect_type', $type, $this->request );
 
-		return in_array( $type, self::types(), true ) ? $type : 301;
+		return in_array( $type, array_keys( self::types() ), true ) ? $type : 301;
 	}
 
 	/**

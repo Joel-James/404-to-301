@@ -94,7 +94,10 @@ class Core extends Base {
 	 * @return void
 	 */
 	private function front() {
-		Front\Redirect::instance();
+		Front\Main::instance();
+		//Front\Actions\Log::instance();
+		//Front\Actions\Email::instance();
+		//Front\Actions\Redirect::instance();
 	}
 
 	/**

@@ -83,5 +83,5 @@ function duckdev_404_to_301() {
 // Load our plugin if minimum version is PHP 5.6.
 if ( version_compare( PHP_VERSION, '5.6.0', '>=' ) ) {
 	// Use the plugins_loaded hook to setup the plugin instance.
-	add_action( 'plugin_loaded', 'duckdev_404_to_301' );
+	add_action( 'plugins_loaded', 'duckdev_404_to_301' );
 }

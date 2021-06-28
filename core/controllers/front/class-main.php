@@ -55,6 +55,9 @@ class Main extends Controller {
 			return;
 		}
 
+		// Initialize actions.
+		$this->init_actions();
+
 		// Create new request object.
 		$request = new Request();
 
@@ -69,5 +72,62 @@ class Main extends Controller {
 		 * @since 4.0
 		 */
 		do_action( 'dd404_404_request', $request );
+	}
+
+	/**
+	 * Get available actions.
+	 *
+	 * @since  4.0
+	 *
+	 * @return array
+	 */
+	public function actions() {
+		$actions = array(
+			'log'      => 'DuckDev\Redirect\Controllers\Front\Actions\Log',
+			'email'    => 'DuckDev\Redirect\Controllers\Front\Actions\Email',
+			'redirect' => 'DuckDev\Redirect\Controllers\Front\Actions\Redirect',
+		);
+
+		/**
+		 * Filter hook to add new actions to 404 to 301.
+		 *
+		 * Key should be the name of the action and value
+		 * should be the class name. The action class should
+		 * extend DuckDev\Redirect\Controllers\Front\Actions\Action.
+		 *
+		 * @param array $actions Available actions.
+		 *
+		 * @since 4.0
+		 */
+		return apply_filters( 'dd404_actions', $actions );
+	}
+
+	/**
+	 * Get available actions.
+	 *
+	 * @since  4.0
+	 *
+	 * @return void
+	 */
+	private function init_actions() {
+		$actions = $this->actions();
+
+		foreach ( $actions as $action => $class ) {
+			if (
+				class_exists( $class ) // Should be a valid class.
+				&& is_subclass_of( $class, 'DuckDev\Redirect\Controllers\Front\Actions\Action' ) // Should extend action class.
+			) {
+				$class::instance();
+			}
+		}
+
+		/**
+		 * Filter hook to add new actions to 404 to 301.
+		 *
+		 * @param array $actions Available actions.
+		 *
+		 * @since 4.0
+		 */
+		do_action( 'dd404_after_actions_init', $actions );
 	}
 }

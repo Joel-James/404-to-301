@@ -279,7 +279,7 @@ class Settings extends Controller {
 				'enable' => true,
 				'type'   => '301',
 				'target' => 'link',
-				'link'    => home_url(),
+				'link'   => home_url(),
 				'page'   => '',
 			),
 			'logs'     => array(
