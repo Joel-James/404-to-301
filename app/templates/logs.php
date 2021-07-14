@@ -16,142 +16,114 @@
 
 ?>
 
-<div class="container pt-10">
-	<!-- This example requires Tailwind CSS v2.0+ -->
-	<div class="flex flex-col">
-		<div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-			<div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-				<div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-					<table class="min-w-full divide-y divide-gray-200">
-						<thead class="bg-gray-50">
-						<tr>
-							<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Name
-							</th>
-							<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Title
-							</th>
-							<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Email
-							</th>
-							<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Role
-							</th>
-							<th scope="col" class="relative px-6 py-3">
-								<span class="sr-only">Edit</span>
-							</th>
-						</tr>
-						</thead>
-						<tbody>
-						<!-- Odd row -->
-						<tr class="bg-white">
-							<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-								Jane Cooper
-							</td>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-								Regional Paradigm Technician
-							</td>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-								jane.cooper@example.com
-							</td>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-								Admin
-							</td>
-							<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-								<a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-							</td>
-						</tr>
+<div class="wrap">
 
-						<!-- Even row -->
-						<tr class="bg-gray-50">
-							<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-								Cody Fisher
-							</td>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-								Product Directives Officer
-							</td>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-								cody.fisher@example.com
-							</td>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-								Owner
-							</td>
-							<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-								<a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-							</td>
-						</tr>
+	<h1 class="jj4t3-h2" style="float: left;">404 to 301 <span class="subtitle">by <a href="https://duckdev.com">Joel James</a> ( v3.0.8 )</span></h1>
 
-						<!-- More people... -->
-						</tbody>
-					</table>
-					<!-- This example requires Tailwind CSS v2.0+ -->
-					<div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-						<div class="flex-1 flex justify-between sm:hidden">
-							<a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-								Previous
-							</a>
-							<a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-								Next
-							</a>
-						</div>
-						<div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-							<div>
-								<p class="text-sm text-gray-700">
-									Showing
-									<span class="font-medium">1</span>
-									to
-									<span class="font-medium">10</span>
-									of
-									<span class="font-medium">97</span>
-									results
-								</p>
-							</div>
-							<div>
-								<nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-									<a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-										<span class="sr-only">Previous</span>
-										<!-- Heroicon name: solid/chevron-left -->
-										<svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-											<path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
-										</svg>
-									</a>
-									<!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
-									<a href="#" aria-current="page" class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-										1
-									</a>
-									<a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-										2
-									</a>
-									<a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium">
-										3
-									</a>
-									<span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-          ...
-        </span>
-									<a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium">
-										8
-									</a>
-									<a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-										9
-									</a>
-									<a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-										10
-									</a>
-									<a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-										<span class="sr-only">Next</span>
-										<!-- Heroicon name: solid/chevron-right -->
-										<svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-											<path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-										</svg>
-									</a>
-								</nav>
-							</div>
-						</div>
-					</div>
+	<!-- Settings updated message -->
 
-				</div>
-			</div>
+	<h2 class="nav-tab-wrapper">
+		<div class="nav-tab-container">
+			<a href="?page=jj4t3-settings" class="nav-tab"><span class="dashicons dashicons-admin-generic"></span> General</a>
+			<a href="?page=jj4t3-settings" class="nav-tab nav-tab-active"><span class="dashicons dashicons-randomize"></span> Redirect</a>
+			<a href="?page=jj4t3-settings" class="nav-tab"><span class="dashicons dashicons-media-default"></span> Logs</a>
+			<a href="?page=jj4t3-settings" class="nav-tab"><span class="dashicons dashicons-email-alt"></span> Email</a>
 		</div>
-	</div>
+	</h2>
+
+
+	<form method="post" action="options.php">
+		<input type="hidden" name="option_page" value="i4t3_gnrl_options"><input type="hidden" name="action" value="update"><input type="hidden" id="_wpnonce" name="_wpnonce" value="e1bfb640cc"><input type="hidden" name="_wp_http_referer" value="/wp-admin/admin.php?page=jj4t3-settings">					<table class="form-table">
+			<tbody>
+			<tr>
+				<th>Redirect type</th>
+				<td>
+					<select name="i4t3_gnrl_options[redirect_type]">
+						<option value="301" selected="selected">301 Redirect (SEO)</option>
+						<option value="302">302 Redirect</option>
+						<option value="307">307 Redirect</option>
+					</select>
+					<p class="description jj4t3-p-desc"><a target="_blank" href="https://moz.com/learn/seo/redirection"><strong>Learn more</strong></a> about these redirect types						</p>
+				</td>
+			</tr>
+			<tr>
+				<th>Redirect to</th>
+				<td>
+					<select name="i4t3_gnrl_options[redirect_to]" id="jj4t3_redirect_to">
+						<option value="page">Existing Page</option>
+						<option value="link" selected="selected">Custom URL</option>
+						<option value="0">No Redirect</option>
+					</select>
+					<p class="description jj4t3-p-desc"><strong>Existing Page:</strong> Select any WordPress page as a 404 page.</p>
+					<p class="description jj4t3-p-desc"><strong>Custom URL:</strong> Redirect 404 requests to a specific URL.</p>
+					<p class="description jj4t3-p-desc"><strong>No Redirect:</strong> To disable redirect.</p>
+					<p class="description jj4t3-p-desc"><strong>You can override this by setting individual custom redirects from error logs list.</strong></p>
+				</td>
+			</tr>
+			<tr id="custom_page" class="jj4t3-hide">
+				<th>Select the page</th>
+				<td>
+					<select name="i4t3_gnrl_options[redirect_page]" id="i4t3_gnrl_options[redirect_page]">
+						<option class="level-0" value="92" selected="selected">Cart</option>
+						<option class="level-0" value="1042">Checkout</option>
+						<option class="level-1" value="1043">&nbsp;&nbsp;&nbsp;Purchase Confirmation</option>
+						<option class="level-1" value="1045">&nbsp;&nbsp;&nbsp;Purchase History</option>
+						<option class="level-1" value="1044">&nbsp;&nbsp;&nbsp;Transaction Failed</option>
+						<option class="level-0" value="93">Checkout</option>
+						<option class="level-0" value="117">Contact</option>
+						<option class="level-0" value="108">Cookie policy</option>
+						<option class="level-0" value="94">My account</option>
+						<option class="level-0" value="2">Sample Page</option>
+						<option class="level-0" value="91">Shop</option>
+					</select>
+					<p class="description jj4t3-p-desc">The default 404 page will be replaced by the page you choose in this list.</p>
+					<p class="description jj4t3-p-desc">You can <a href="https://insight.wpmudev.host/wp-admin/post-new.php?post_type=page" target="_blank">create a custom 404</a> page and assign that page here.</p>
+				</td>
+			</tr>
+			<tr id="custom_url" class="">
+				<th>Custom URL</th>
+				<td>
+					<input type="url" size="40" placeholder="https://insight.wpmudev.host" name="i4t3_gnrl_options[redirect_link]" value="https://insight.wpmudev.host">
+					<p class="description jj4t3-p-desc">Enter any url (including http://)</p>
+				</td>
+			</tr>
+			<tr>
+				<th>Log 404 Errors</th>
+				<td>
+					<input type="checkbox" name="i4t3_gnrl_options[redirect_log]" value="1" checked="checked">
+					<p class="description jj4t3-p-desc">Enable/Disable Logging</p>
+				</td>
+			</tr>
+			<tr>
+				<th>Email notifications</th>
+				<td>
+					<input type="checkbox" name="i4t3_gnrl_options[email_notify]" value="1" checked="checked">
+					<p class="description jj4t3-p-desc">If you check this, an email will be sent on every 404 log on the admin email account.</p>
+				</td>
+			</tr>
+			<tr>
+				<th>Disable URL guessing</th>
+				<td>
+					<input type="checkbox" name="i4t3_gnrl_options[disable_guessing]" value="1">
+					<p class="description jj4t3-p-desc">If you disable URL guessing, it will stop WordPress from autocorrecting incorrect URLs. <a href="https://developer.wordpress.org/reference/functions/redirect_canonical/" target="_blank">Learn more</a> about canonical redirect.</p>
+				</td>
+			</tr>
+			<tr>
+				<th>Email address</th>
+				<td>
+					<input type="email" placeholder="joel@incsub.com" name="i4t3_gnrl_options[email_notify_address]" value="joel@incsub.com">
+					<p class="description jj4t3-p-desc">Change the recipient email address for error log notifications.</p>
+				</td>
+			</tr>
+			<tr>
+				<th>Exclude paths</th>
+				<td>
+					<textarea rows="5" cols="50" placeholder="wp-content/plugins/abc-plugin/css/" name="i4t3_gnrl_options[exclude_paths]">/wp-content</textarea>
+					<p class="description jj4t3-p-desc">If you want to exclude few paths from error logs, enter here. One per line.</p>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Save settings"></p></form><!-- /.form -->
 </div>
 

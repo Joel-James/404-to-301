@@ -14,10 +14,12 @@
  * @subpackage Model
  */
 
-namespace DuckDev\Redirect\Utils\Abstracts;
+namespace DuckDev\Redirect\Models;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
+
+use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
  * Class Base
@@ -33,16 +35,7 @@ abstract class Model extends Base {
 	 *
 	 * @since 4.0
 	 */
-	protected $table;
-
-	/**
-	 * Field names of the table.
-	 *
-	 * @var string[] $fields
-	 *
-	 * @since 4.0.0
-	 */
-	protected $fields = array();
+	protected $name;
 
 	/**
 	 * Get the table name appending prefix.
@@ -53,10 +46,8 @@ abstract class Model extends Base {
 	 *
 	 * @return string
 	 */
-	protected function table_name() {
-		global $wpdb;
-
-		return $wpdb->prefix . $this->table;
+	public function table_name() {
+		return DB::instance()->table_name( $this->name );
 	}
 
 	/**
@@ -67,7 +58,7 @@ abstract class Model extends Base {
 	 * @return string[]
 	 */
 	protected function field_names() {
-		return array_keys( $this->fields );
+		return DB::instance()->field_names( $this->name );
 	}
 
 	/**
@@ -80,7 +71,9 @@ abstract class Model extends Base {
 	 * @return string
 	 */
 	protected function field_format( $name ) {
-		return isset( $this->fields[ $name ] ) ? $this->fields[ $name ] : '%s';
+		$formats = DB::instance()->field_formats( $this->name );
+
+		return isset( $formats[ $name ] ) ? $formats[ $name ] : '%s';
 	}
 
 	/**

@@ -25,7 +25,7 @@ defined( 'WPINC' ) || die;
  *
  * @package DuckDev\DD4T3\Models
  */
-class Logs extends Model {
+class Options extends Model {
 
 	/**
 	 * Current table name.
@@ -34,33 +34,7 @@ class Logs extends Model {
 	 *
 	 * @since 4.0
 	 */
-	protected $name = 'logs';
-
-	/**
-	 * Setup the plugin and register all hooks.
-	 *
-	 * Pro version features and not initialized yet, so do not
-	 * execute something on this hooks if you are checking for
-	 * Pro version.
-	 *
-	 * @param array $args Arguments to make query.
-	 *
-	 * @since 1.8.0
-	 *
-	 * @return object|null
-	 */
-	public function get( $args = array() ) {
-		// Make sure minimum args are set.
-		$args = wp_parse_args( $args, array( 'select' => '*' ) );
-
-		// New select query.
-		$query = new Queries\Select();
-
-
-		$query->select( $args['select'] );
-
-		return $query->results();
-	}
+	public $name = 'options';
 
 	/**
 	 * Setup the plugin and register all hooks.

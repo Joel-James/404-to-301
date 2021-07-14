@@ -289,6 +289,9 @@ class Settings extends Controller {
 				'enable'    => false,
 				'recipient' => get_option( 'admin_email' ),
 			),
+			'misc'     => array(
+				'tables' => array(),
+			),
 		);
 
 		/**

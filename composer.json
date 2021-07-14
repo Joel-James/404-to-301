@@ -15,5 +15,9 @@
     "classmap": [
       "core/"
     ]
+  },
+  "require": {
+    "duckdev/wp-flash-notices": "^1.0",
+    "duckdev/queries": "^1.0"
   }
 }

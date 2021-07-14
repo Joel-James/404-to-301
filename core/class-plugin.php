@@ -33,9 +33,9 @@ class Plugin extends Base {
 	 *
 	 * To access this property, you should use the name().
 	 *
+	 * @var    string
 	 * @since  4.0.0
 	 * @access protected
-	 * @var    string
 	 */
 	private $slug = '404-to-301';
 
@@ -44,9 +44,9 @@ class Plugin extends Base {
 	 *
 	 * To access this property, you should use the name().
 	 *
+	 * @var    string
 	 * @since  4.0.0
 	 * @access protected
-	 * @var    string
 	 */
 	private $name = '404 to 301';
 
@@ -55,7 +55,8 @@ class Plugin extends Base {
 	 *
 	 * @since  5.0.0
 	 * @access public
-	 * @return bool
+	 *
+	 * @return string
 	 */
 	public function slug() {
 		return $this->slug;
@@ -64,9 +65,10 @@ class Plugin extends Base {
 	/**
 	 * Getter method to get the plugin name.
 	 *
-	 * @since  5.0.0
+	 * @since  4.0.0
 	 * @access public
-	 * @return bool
+	 *
+	 * @return string
 	 */
 	public function name() {
 		return $this->name;
