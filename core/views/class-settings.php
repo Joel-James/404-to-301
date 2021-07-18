@@ -189,22 +189,22 @@ class Settings extends View {
 		$tabs = array(
 			'general'  => array(
 				'title' => __( 'General', '404-to-301' ),
-				'icon'  => 'settings',
+				'icon'  => 'admin-settings',
 				'url'   => add_query_arg( 'tab', 'general' ),
 			),
 			'redirect' => array(
 				'title' => __( 'Redirect', '404-to-301' ),
-				'icon'  => 'redirect',
+				'icon'  => 'randomize',
 				'url'   => add_query_arg( 'tab', 'redirect' ),
 			),
 			'logs'     => array(
 				'title' => __( 'Logs', '404-to-301' ),
-				'icon'  => 'logs',
+				'icon'  => 'media-default',
 				'url'   => add_query_arg( 'tab', 'logs' ),
 			),
 			'email'    => array(
 				'title' => __( 'Email', '404-to-301' ),
-				'icon'  => 'email',
+				'icon'  => 'email-alt',
 				'url'   => add_query_arg( 'tab', 'email' ),
 			),
 		);

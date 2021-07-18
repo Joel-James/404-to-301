@@ -16,36 +16,51 @@
  */
 
 ?>
+<div class="wrap max-w-screen-xl" id="dd404-settings-app">
+	<h1 class="font-bold mb-5">
+		<?php esc_html_e( '404 to 301', '404-to-301' ); ?>
+		<span class="subtitle pl-4">
+			by <a href="https://duckdev.com/?utm_source=dd404&utm_medium=plugin&utm_campaign=dd404_settings_header">Joel James</a> ( v<?php echo esc_attr( DD4T3_VERSION ); ?> )
+		</span>
+	</h1>
 
-<main class="max-w-7xl pb-10 lg:py-12 lg:px-8" id="dd404-settings-app">
-	<div class="lg:grid lg:grid-cols-12 lg:gap-x-5">
-		<?php $this->render( 'components/side-nav', $menu_config ); // Side nav menu. ?>
-
-		<!-- Payment details -->
-		<div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
-			<section aria-labelledby="dd404-settings-<?php echo esc_attr( $page ); ?>-form-title">
-				<form action="#" method="POST">
-					<div class="shadow sm:rounded-md sm:overflow-hidden">
-						<div class="bg-white py-6 px-4 sm:p-6">
-							<input type="hidden" v-model="nonce" name="nonce" value="<?php echo esc_html( wp_create_nonce( 'dd404-settings-form' ) ); ?>">
-							<input type="hidden" v-model="page" name="page" value="<?php echo esc_attr( $page ); ?>">
-							<?php
-							/**
-							 * Action hook to add content to settings form.
-							 *
-							 * @since 4.0.0
-							 */
-							do_action( "dd404_admin_settings_{$page}_form_content" );
-							?>
-						</div>
-						<form-submit-button
-							save-text="<?php esc_html_e( 'Save', '404-to-301' ); ?>"
-							saving-text="<?php esc_html_e( 'Saving', '404-to-301' ); ?>"
-						></form-submit-button>
-					</div>
-				</form>
-			</section>
-		</div>
+	<div class="notice notice-success is-dismissible">
+		<p><?php esc_html_e( 'Settings updated!', '404-to-301' ); ?></p>
 	</div>
-</main>
 
+	<?php $this->render( 'components/side-nav', $menu_config ); // Side nav menu. ?>
+
+	<form method="post" action="">
+		<input
+			type="hidden"
+			v-model="nonce"
+			name="nonce"
+			value="<?php echo esc_html( wp_create_nonce( 'dd404-settings-form' ) ); ?>"
+		>
+		<input
+			type="hidden"
+			v-model="page"
+			name="page"
+			value="<?php echo esc_attr( $page ); ?>"
+		>
+
+		<?php
+		/**
+		 * Action hook to add content to settings form.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( "dd404_admin_settings_{$page}_form_content" );
+		?>
+
+		<p class="submit">
+			<button
+				type="submit"
+				class="button button-primary inline-flex items-center py-0.5"
+			>
+				<span class="dashicons dashicons-yes"></span>
+				<?php esc_html_e( 'Save Changes', '404-to-301' ); ?>
+			</button>
+		</p>
+	</form>
+</div>

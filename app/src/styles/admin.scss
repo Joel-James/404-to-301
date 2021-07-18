@@ -1,13 +1,12 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
+//@import "tailwindcss/base";
+//@import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity .5s;
 }
-
-.fade-enter-from,
+.fade-enter,
 .fade-leave-to {
   opacity: 0;
 }

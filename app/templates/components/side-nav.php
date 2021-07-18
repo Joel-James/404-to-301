@@ -16,19 +16,20 @@
 ?>
 
 <?php if ( ! empty( $items ) ) : ?>
-	<aside class="py-6 px-2 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3">
-		<nav class="space-y-1">
+	<h2 class="nav-tab-wrapper">
+		<div class="nav-tab-container">
 			<?php foreach ( $items as $key => $item ) : ?>
-				<?php $class = $key === $current ? 'text-gray-900 hover:text-gray-900 bg-gray-50 hover:bg-white' : 'hover:bg-gray-50 hover:text-gray-600'; ?>
 				<a
 					href="<?php echo esc_url( $item['url'] ); ?>"
-					class="<?php echo esc_html( $class ); ?> focus:shadow-none group rounded-md px-3 py-2 flex items-center text-sm font-medium"
-					aria-current="<?php $class = $key === $current ? 'page' : 'false'; ?>"
+					class="nav-tab <?php echo $key === $current ? 'nav-tab-active' : ''; ?>"
+					aria-current="<?php echo $key === $current ? 'page' : 'false'; ?>"
 				>
-					<?php $this->render_icon( $item['icon'] ); // Render svg icons. ?>
-					<span class="truncate"><?php echo esc_html( $item['title'] ); ?></span>
+					<?php if ( ! empty( $item['icon'] ) ) : ?>
+						<span class="dashicons dashicons-<?php echo esc_html( $item['icon'] ); ?>"></span>
+					<?php endif; ?>
+					<?php echo esc_html( $item['title'] ); ?>
 				</a>
 			<?php endforeach; ?>
-		</nav>
-	</aside>
+		</div>
+	</h2>
 <?php endif; ?>
