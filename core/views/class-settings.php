@@ -187,25 +187,21 @@ class Settings extends View {
 	 */
 	public function get_settings_tabs() {
 		$tabs = array(
-			'general'  => array(
-				'title' => __( 'General', '404-to-301' ),
-				'icon'  => 'admin-settings',
-				'url'   => add_query_arg( 'tab', 'general' ),
-			),
 			'redirect' => array(
 				'title' => __( 'Redirect', '404-to-301' ),
 				'icon'  => 'randomize',
-				'url'   => add_query_arg( 'tab', 'redirect' ),
 			),
 			'logs'     => array(
 				'title' => __( 'Logs', '404-to-301' ),
 				'icon'  => 'media-default',
-				'url'   => add_query_arg( 'tab', 'logs' ),
 			),
 			'email'    => array(
 				'title' => __( 'Email', '404-to-301' ),
 				'icon'  => 'email-alt',
-				'url'   => add_query_arg( 'tab', 'email' ),
+			),
+			'general'  => array(
+				'title' => __( 'General', '404-to-301' ),
+				'icon'  => 'admin-settings',
 			),
 		);
 
@@ -226,7 +222,7 @@ class Settings extends View {
 	 *
 	 * @return array
 	 */
-	public function get_current_tab( $default = 'general' ) {
+	public function get_current_tab( $default = 'redirect' ) {
 		// Get tab value.
 		$tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
 

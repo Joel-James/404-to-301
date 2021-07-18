@@ -20,7 +20,7 @@
 		<div class="nav-tab-container">
 			<?php foreach ( $items as $key => $item ) : ?>
 				<a
-					href="<?php echo esc_url( $item['url'] ); ?>"
+					href="<?php echo esc_url( add_query_arg( 'tab', $key ) ); ?>"
 					class="nav-tab <?php echo $key === $current ? 'nav-tab-active' : ''; ?>"
 					aria-current="<?php echo $key === $current ? 'page' : 'false'; ?>"
 				>

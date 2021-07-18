@@ -102,12 +102,21 @@ class Menu extends Controller {
 		// Main logs page.
 		$page_hook = add_menu_page(
 			__( '404 Error Logs', '404-to-301' ),
-			__( 'Error Logs', '404-to-301' ),
+			__( 'Logs', '404-to-301' ),
 			Permission::settings_cap(),
 			self::SLUG,
 			array( Views\Logs::instance(), 'content' ),
 			'dashicons-redo',
 			89
+		);
+
+		$page_hook = add_submenu_page(
+			self::SLUG,
+			__( '404 to 301 Settings', '404-to-301' ),
+			__( 'Redirects', '404-to-301' ),
+			Permission::settings_cap(),
+			'404-to-301-redirects',
+			array( Views\Logs::instance(), 'content' ),
 		);
 
 		/**
