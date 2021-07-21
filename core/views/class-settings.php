@@ -201,7 +201,7 @@ class Settings extends View {
 			),
 			'general'  => array(
 				'title' => __( 'General', '404-to-301' ),
-				'icon'  => 'admin-settings',
+				'icon'  => 'admin-generic',
 			),
 		);
 

@@ -16,20 +16,19 @@
 ?>
 
 <?php if ( ! empty( $items ) ) : ?>
-	<h2 class="nav-tab-wrapper">
-		<div class="nav-tab-container">
-			<?php foreach ( $items as $key => $item ) : ?>
+	<div class="tsf-nav-tab-wrapper" id="general-tabs-wrapper">
+		<?php foreach ( $items as $key => $item ) : ?>
+			<div class="tsf-tab">
 				<a
 					href="<?php echo esc_url( add_query_arg( 'tab', $key ) ); ?>"
-					class="nav-tab <?php echo $key === $current ? 'nav-tab-active' : ''; ?>"
-					aria-current="<?php echo $key === $current ? 'page' : 'false'; ?>"
+					class="tsf-nav-tab <?php echo $key === $current ? 'tsf-active-tab' : ''; ?>"
 				>
 					<?php if ( ! empty( $item['icon'] ) ) : ?>
-						<span class="dashicons dashicons-<?php echo esc_html( $item['icon'] ); ?>"></span>
+						<span class="dashicons dashicons-<?php echo esc_html( $item['icon'] ); ?> tsf-dashicons-tabs"></span>
 					<?php endif; ?>
-					<?php echo esc_html( $item['title'] ); ?>
+					<span class="tsf-nav-desktop"><?php echo esc_html( $item['title'] ); ?></span>
 				</a>
-			<?php endforeach; ?>
-		</div>
-	</h2>
+			</div>
+		<?php endforeach; ?>
+	</div>
 <?php endif; ?>

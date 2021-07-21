@@ -42,6 +42,7 @@ class Assets extends Controller {
 		add_filter( 'dd404_assets_get_styles', array( $this, 'get_styles' ), 10, 2 );
 
 		add_action( 'dd404_after_admin_pages_logs_render', array( $this, 'logs_assets' ) );
+		add_action( 'dd404_after_admin_pages_redirects_render', array( $this, 'redirects_assets' ) );
 		add_action( 'dd404_after_admin_pages_settings_render', array( $this, 'settings_assets' ) );
 	}
 
@@ -111,6 +112,11 @@ class Assets extends Controller {
 				'src' => 'logs.min.css',
 			);
 
+			// GA settings.
+			$styles['dd404-redirects'] = array(
+				'src' => 'admin.min.css',
+			);
+
 			// Admin.
 			$styles['dd404-admin'] = array(
 				'src' => 'admin.min.css',
@@ -146,12 +152,31 @@ class Assets extends Controller {
 	 *
 	 * @return void
 	 */
+	public function redirects_assets() {
+		//Assets_Helper::instance()->enqueue_script( 'dd404-logs' );
+		Assets_Helper::instance()->enqueue_style( 'dd404-redirects' );
+
+		/**
+		 * Action hook to run something after enqueue logs assets.
+		 *
+		 * @since 4.0
+		 */
+		do_action( 'dd404_after_redirects_assets' );
+	}
+
+	/**
+	 * Register the sub menu for the admin settings.
+	 *
+	 * @since  4.0
+	 *
+	 * @return void
+	 */
 	public function settings_assets() {
 		$tab = Views\Settings::instance()->get_current_tab();
 
 		$name = 'dd404-' . $tab . '-settings';
 
-		Assets_Helper::instance()->enqueue_script( $name );
+		//Assets_Helper::instance()->enqueue_script( $name );
 		Assets_Helper::instance()->enqueue_style( 'dd404-admin' );
 
 		/**

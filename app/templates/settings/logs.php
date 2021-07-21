@@ -13,39 +13,24 @@
 
 ?>
 
-<table class="form-table" role="presentation">
-	<tbody>
-	<tr>
-		<th scope="row">
-			<?php esc_html_e( 'Enable', '404-to-301' ); ?>
-			<p class="description font-normal">
-				<?php esc_html_e( 'Logs for 404s.', '404-to-301' ); ?>
-			</p>
-		</th>
-		<td>
-			<input type="checkbox" name="enable" value="1" v-model="enable">
-		</td>
-	</tr>
-	</tbody>
-</table>
+<h4><?php esc_html_e( 'Enable', '404-to-301' ); ?></h4>
+<p><?php esc_html_e( 'If you disable URL guessing, it will stop WordPress from autocorrecting incorrect URLs.', '404-to-301' ); ?></p>
+<div class="tsf-fields">
+	<span class="tsf-toblock">
+		<label for="enable">
+			<input type="checkbox" name="enable" id="enable" value="1" checked="checked"> Enable logs?
+		</label>
+	</span>
+</div>
 
-<fieldset :disabled="isDisabled">
-	<table class="form-table" role="presentation">
-		<tbody>
-		<tr>
-			<th scope="row">
-				<?php esc_html_e( 'Skip duplicates', '404-to-301' ); ?>
-				<p class="description font-normal">
-					<?php esc_html_e( 'You can save your db space.', '404-to-301' ); ?>
-				</p>
-			</th>
-			<td>
-				<input type="checkbox" name="redirect_log" value="1" checked="checked">
-				<span class="sub">
-					<?php esc_html_e( 'If you enable this, we will won\'t log the error if the path is already logged.', '404-to-301' ); ?>
-				</span>
-			</td>
-		</tr>
-		</tbody>
-	</table>
-</fieldset>
+<hr/>
+
+<h4><?php esc_html_e( 'Duplicates', '404-to-301' ); ?></h4>
+<p><?php esc_html_e( 'If you disable URL guessing, it will stop WordPress from autocorrecting incorrect URLs.', '404-to-301' ); ?></p>
+<div class="tsf-fields">
+	<span class="tsf-toblock">
+		<label for="duplicates">
+			<input type="checkbox" name="duplicates" id="duplicates" value="1" checked="checked"> Skip duplicates?
+		</label>
+	</span>
+</div>

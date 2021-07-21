@@ -116,7 +116,7 @@ class Menu extends Controller {
 			__( 'Redirects', '404-to-301' ),
 			Permission::settings_cap(),
 			'404-to-301-redirects',
-			array( Views\Logs::instance(), 'content' ),
+			array( Views\Redirects::instance(), 'content' )
 		);
 
 		/**

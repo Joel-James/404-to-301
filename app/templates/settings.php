@@ -16,51 +16,63 @@
  */
 
 ?>
-<div class="wrap max-w-screen-xl" id="dd404-settings-app">
-	<h1 class="font-bold mb-5">
-		<?php esc_html_e( '404 to 301', '404-to-301' ); ?>
-		<span class="subtitle pl-4">
-			by <a href="https://duckdev.com/?utm_source=dd404&utm_medium=plugin&utm_campaign=dd404_settings_header">Joel James</a> ( v<?php echo esc_attr( DD4T3_VERSION ); ?> )
-		</span>
-	</h1>
+<div class="wrap tsf-metaboxes" id="dd404-settings-app">
+	<form method="post" action="options.php" autocomplete="off">
 
-	<div class="notice notice-success is-dismissible">
-		<p><?php esc_html_e( 'Settings updated!', '404-to-301' ); ?></p>
-	</div>
+		<div class="tsf-top-wrap">
+			<h1 class="font-bold mb-5">
+				<?php esc_html_e( '404 to 301', '404-to-301' ); ?>
+				<span class="subtitle pl-4">
+					by <a href="https://duckdev.com/?utm_source=dd404&utm_medium=plugin&utm_campaign=dd404_settings_header">Joel James</a> ( v<?php echo esc_attr( DD4T3_VERSION ); ?> )
+				</span>
+			</h1>
+			<p class="tsf-top-buttons">
+				<input type="submit" name="submit" class="button button-primary" value="Save Settings">
+				<input type="submit" name="reset" class="button" value="<?php esc_html_e( 'Reset Settings', '404-to-301' ); ?>" onclick="return confirm(`<?php esc_html_e( 'Are you sure you want to reset all settings to their defaults?', '404-to-301' ); ?>`)">
+			</p>
+		</div>
 
-	<?php $this->render( 'components/side-nav', $menu_config ); // Side nav menu. ?>
+		<hr class="wp-header-end">
 
-	<form method="post" action="">
-		<input
-			type="hidden"
-			v-model="nonce"
-			name="nonce"
-			value="<?php echo esc_html( wp_create_nonce( 'dd404-settings-form' ) ); ?>"
-		>
-		<input
-			type="hidden"
-			v-model="page"
-			name="page"
-			value="<?php echo esc_attr( $page ); ?>"
-		>
+		<div class="tsf-notice-wrap">
+			<div class="notice updated tsf-notice tsf-show-icon is-dismissible">
+				<p><?php esc_html_e( 'Settings updated!', '404-to-301' ); ?></p>
+			</div>
+		</div>
 
-		<?php
-		/**
-		 * Action hook to add content to settings form.
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( "dd404_admin_settings_{$page}_form_content" );
-		?>
+		<div class="metabox-holder columns-2">
+			<div class="postbox-container-1">
+				<div id="main-sortables" class="meta-box-sortables ui-sortable">
+					<div id="autodescription-general-settings" class="postbox ">
+						<div class="postbox-header">
+							<h2 class="hndle ui-sortable-handle">
+								<?php esc_html_e( 'Settings', '404-to-301' ); ?>
+							</h2>
+						</div>
 
-		<p class="submit">
-			<button
-				type="submit"
-				class="button button-primary inline-flex items-center py-0.5"
-			>
-				<span class="dashicons dashicons-yes"></span>
-				<?php esc_html_e( 'Save Changes', '404-to-301' ); ?>
-			</button>
-		</p>
+						<div class="inside">
+							<?php $this->render( 'components/side-nav', $menu_config ); // Side nav menu. ?>
+
+							<div class="tsf-tabs-content tsf-general-tabs-content tsf-active-tab-content" id="tsf-general-tab-<?php echo esc_attr( $page ); ?>-content">
+								<?php
+								/**
+								 * Action hook to add content to settings form.
+								 *
+								 * @since 4.0.0
+								 */
+								do_action( "dd404_admin_settings_{$page}_form_content" );
+								?>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="postbox-container-2"></div>
+		</div>
+
+		<div class="tsf-bottom-buttons">
+			<input type="submit" name="submit" class="button button-primary" value="Save Settings">
+			<input type="submit" name="reset" class="button" value="<?php esc_html_e( 'Reset Settings', '404-to-301' ); ?>" onclick="return confirm(`<?php esc_html_e( 'Are you sure you want to reset all settings to their defaults?', '404-to-301' ); ?>`)">
+		</div>
 	</form>
 </div>

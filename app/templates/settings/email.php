@@ -13,37 +13,18 @@
 
 ?>
 
-<table class="form-table" role="presentation">
-	<tbody>
-	<tr>
-		<th scope="row">
-			<?php esc_html_e( 'Enable', '404-to-301' ); ?>
-			<p class="description font-normal">
-				<?php esc_html_e( 'Email notifications.', '404-to-301' ); ?>
-			</p>
-		</th>
-		<td>
-			<input type="checkbox" name="enable" value="1" v-model="enable">
-		</td>
-	</tr>
-	</tbody>
-</table>
+<h4><?php esc_html_e( 'Enable', '404-to-301' ); ?></h4>
+<p><?php esc_html_e( 'If you disable URL guessing, it will stop WordPress from autocorrecting incorrect URLs.', '404-to-301' ); ?></p>
+<div class="tsf-fields">
+	<span class="tsf-toblock">
+		<label for="enable">
+			<input type="checkbox" name="enable" id="enable" value="1" checked="checked"> Enable email notification?
+		</label>
+	</span>
+</div>
 
-<fieldset :disabled="isDisabled">
-	<table class="form-table" role="presentation">
-		<tbody>
-		<tr>
-			<th scope="row">
-				<?php esc_html_e( 'Recipient', '404-to-301' ); ?>
-				<p class="description font-normal">
-					<?php esc_html_e( 'Recipient email address.', '404-to-301' ); ?>
-				</p>
-			</th>
-			<td>
-				<input type="email">
-			</td>
-		</tr>
-		</tbody>
-	</table>
-</fieldset>
+<hr/>
 
+<p><label for="email"><strong><?php esc_html_e( 'Recipient email', '404-to-301' ); ?></strong></label></p>
+<p><input type="email" name="email" id="email" class="regular-text" placeholder="admin@duckdev.com"></p>
+<p><?php esc_html_e( 'If you disable URL guessing, it will stop WordPress from autocorrecting incorrect URLs.', '404-to-301' ); ?></p>
