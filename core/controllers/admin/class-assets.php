@@ -176,7 +176,7 @@ class Assets extends Controller {
 
 		$name = 'dd404-' . $tab . '-settings';
 
-		//Assets_Helper::instance()->enqueue_script( $name );
+		Assets_Helper::instance()->enqueue_script( $name );
 		Assets_Helper::instance()->enqueue_style( 'dd404-admin' );
 
 		/**

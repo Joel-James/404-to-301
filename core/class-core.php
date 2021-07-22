@@ -83,6 +83,7 @@ class Core extends Base {
 	 */
 	private function common() {
 		Controllers\Assets::instance();
+		Controllers\Settings::instance();
 	}
 
 	/**

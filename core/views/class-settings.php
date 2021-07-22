@@ -37,6 +37,7 @@ class Settings extends View {
 		add_action( 'dd404_admin_settings_redirect_form_content', array( $this, 'redirect_content' ) );
 		add_action( 'dd404_admin_settings_logs_form_content', array( $this, 'logs_content' ) );
 		add_action( 'dd404_admin_settings_email_form_content', array( $this, 'email_content' ) );
+		add_action( 'dd404_admin_settings_extensions_form_content', array( $this, 'extensions_content' ) );
 		add_action( 'dd404_after_admin_pages_settings_render', array( $this, 'render_templates' ) );
 	}
 
@@ -163,6 +164,28 @@ class Settings extends View {
 	 *
 	 * @return void
 	 */
+	public function extensions_content() {
+		// Arguments.
+		$args = array();
+
+		// Admin settings template.
+		$this->render( 'settings/extensions', $args );
+
+		/**
+		 * Action hook to run something after rendering email settings page.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd404_after_admin_pages_extensions_settings_render' );
+	}
+
+	/**
+	 * Register the sub menu for the admin settings.
+	 *
+	 * @since  4.0
+	 *
+	 * @return void
+	 */
 	public function render_templates() {
 		$templates = array( 'form-submit' );
 
@@ -187,21 +210,25 @@ class Settings extends View {
 	 */
 	public function get_settings_tabs() {
 		$tabs = array(
-			'redirect' => array(
+			'redirect'   => array(
 				'title' => __( 'Redirect', '404-to-301' ),
 				'icon'  => 'randomize',
 			),
-			'logs'     => array(
+			'logs'       => array(
 				'title' => __( 'Logs', '404-to-301' ),
 				'icon'  => 'media-default',
 			),
-			'email'    => array(
+			'email'      => array(
 				'title' => __( 'Email', '404-to-301' ),
 				'icon'  => 'email-alt',
 			),
-			'general'  => array(
+			'general'    => array(
 				'title' => __( 'General', '404-to-301' ),
 				'icon'  => 'admin-generic',
+			),
+			'extensions' => array(
+				'title' => __( 'Info', '404-to-301' ),
+				'icon'  => 'info',
 			),
 		);
 
@@ -211,6 +238,26 @@ class Settings extends View {
 		 * @since 4.0.0
 		 */
 		return apply_filters( 'dd404_admin_settings_page_get_tabs', $tabs );
+	}
+
+	/**
+	 * Register the sub menu for the admin settings.
+	 *
+	 * @since  4.0
+	 *
+	 * @return array
+	 */
+	public function show_submit() {
+		$hidden = array( 'extensions' );
+
+		$show = ! in_array( $this->get_current_tab(), $hidden, true );
+
+		/**
+		 * Action hook to run something after rendering settings page.
+		 *
+		 * @since 4.0.0
+		 */
+		return apply_filters( 'dd404_admin_settings_show_submit', $show );
 	}
 
 	/**

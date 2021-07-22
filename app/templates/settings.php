@@ -19,6 +19,8 @@
 <div class="wrap tsf-metaboxes" id="dd404-settings-app">
 	<form method="post" action="options.php" autocomplete="off">
 
+		<?php settings_fields( \DuckDev\Redirect\Data\Config::SETTINGS_KEY ); // Setup form fields. ?>
+
 		<div class="tsf-top-wrap">
 			<h1 class="font-bold mb-5">
 				<?php esc_html_e( '404 to 301', '404-to-301' ); ?>
@@ -26,10 +28,13 @@
 					by <a href="https://duckdev.com/?utm_source=dd404&utm_medium=plugin&utm_campaign=dd404_settings_header">Joel James</a> ( v<?php echo esc_attr( DD4T3_VERSION ); ?> )
 				</span>
 			</h1>
-			<p class="tsf-top-buttons">
-				<input type="submit" name="submit" class="button button-primary" value="Save Settings">
-				<input type="submit" name="reset" class="button" value="<?php esc_html_e( 'Reset Settings', '404-to-301' ); ?>" onclick="return confirm(`<?php esc_html_e( 'Are you sure you want to reset all settings to their defaults?', '404-to-301' ); ?>`)">
-			</p>
+
+			<?php if ( $this->show_submit() ) : ?>
+				<p class="tsf-top-buttons">
+					<input type="submit" name="submit" class="button button-primary" value="Save Settings">
+					<input type="submit" name="reset" class="button" value="<?php esc_html_e( 'Reset Settings', '404-to-301' ); ?>" onclick="return confirm(`<?php esc_html_e( 'Are you sure you want to reset all settings to their defaults?', '404-to-301' ); ?>`)">
+				</p>
+			<?php endif; ?>
 		</div>
 
 		<hr class="wp-header-end">
@@ -70,9 +75,11 @@
 			<div class="postbox-container-2"></div>
 		</div>
 
-		<div class="tsf-bottom-buttons">
-			<input type="submit" name="submit" class="button button-primary" value="Save Settings">
-			<input type="submit" name="reset" class="button" value="<?php esc_html_e( 'Reset Settings', '404-to-301' ); ?>" onclick="return confirm(`<?php esc_html_e( 'Are you sure you want to reset all settings to their defaults?', '404-to-301' ); ?>`)">
-		</div>
+		<?php if ( $this->show_submit() ) : ?>
+			<div class="tsf-bottom-buttons">
+				<input type="submit" name="submit" class="button button-primary" :value="btnText" @click="saveSettings">
+				<input type="submit" name="reset" class="button" value="<?php esc_html_e( 'Reset Settings', '404-to-301' ); ?>" onclick="return confirm(`<?php esc_html_e( 'Are you sure you want to reset all settings to their defaults?', '404-to-301' ); ?>`)">
+			</div>
+		<?php endif; ?>
 	</form>
 </div>

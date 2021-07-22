@@ -4,12 +4,24 @@ const App = {
 	data() {
 		return {
 			enable: true,
+			target: 'page',
+			loading: false,
 		}
 	},
 
 	computed: {
 		isDisabled() {
 			return !this.enable
+		},
+
+		btnText() {
+			return this.loading ? 'Saving..' : 'Save Settings'
+		}
+	},
+
+	methods: {
+		saveSettings() {
+			this.loading = true
 		}
 	}
 }

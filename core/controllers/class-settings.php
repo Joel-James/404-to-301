@@ -29,6 +29,19 @@ use DuckDev\Redirect\Utils\Abstracts\Controller;
 class Settings extends Controller {
 
 	/**
+	 * Setup plugin class.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	public function init() {
+		// Register plugin settings with WP.
+		add_action( 'admin_init', array( $this, 'register_settings' ) );
+	}
+
+	/**
 	 * Get single setting value.
 	 *
 	 * @param string $key     Setting key.
@@ -219,18 +232,8 @@ class Settings extends Controller {
 		// Get settings.
 		$settings = self::get_settings();
 
-		// Only allow registered items.
-		foreach ( $settings as $module => $options ) {
-			// If the module is set.
-			if ( isset( $values[ $module ] ) && is_array( $values[ $module ] ) ) {
-				foreach ( $options as $key => $value ) {
-					// Overwrite with the value from new array.
-					if ( isset( $values[ $module ][ $key ] ) ) {
-						$settings[ $module ][ $key ] = $values[ $module ][ $key ];
-					}
-				}
-			}
-		}
+		// Format the settings.
+		$settings = self::format_settings( $values, $settings );
 
 		/**
 		 * Filter to modify plugin settings before updating it.
@@ -243,20 +246,7 @@ class Settings extends Controller {
 		$settings = apply_filters( 'dd404_settings_before_update_settings', $settings, $values );
 
 		// Update the options.
-		$success = update_option( Config::SETTINGS_KEY, $settings );
-
-		/**
-		 * Action hook to fire after updating the settings.
-		 *
-		 * @param bool  $success  Was it successful?.
-		 * @param array $settings Processed to be updated.
-		 * @param array $values   Values passed to update.
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( 'dd404_settings_after_update_settings', $success, $settings, $values );
-
-		return $success;
+		return update_option( Config::SETTINGS_KEY, $settings );
 	}
 
 	/**
@@ -308,6 +298,44 @@ class Settings extends Controller {
 	}
 
 	/**
+	 * Format the entire settings before update.
+	 *
+	 * Should use this to ensure the plugin settings
+	 * data is in correct format.
+	 *
+	 * @param array $new New values.
+	 * @param array $old Old values.
+	 *
+	 * @since  4.0.0
+	 *
+	 * @return array
+	 */
+	public static function format_settings( array $new, array $old ) {
+		// Only allow registered items.
+		foreach ( $old as $module => $options ) {
+			// If the module is set.
+			if ( isset( $new[ $module ] ) && is_array( $new[ $module ] ) ) {
+				foreach ( $options as $key => $value ) {
+					// Overwrite with the value from new array.
+					if ( isset( $new[ $module ][ $key ] ) ) {
+						$old[ $module ][ $key ] = $new[ $module ][ $key ];
+					}
+				}
+			}
+		}
+
+		/**
+		 * Filter to modify plugin settings formatted result.
+		 *
+		 * @param array $old Processed to be updated.
+		 * @param array $new Values passed to update.
+		 *
+		 * @since 4.0.0
+		 */
+		return apply_filters( 'dd404_settings_format_settings', $old, $new );
+	}
+
+	/**
 	 * Get the list of settings modules.
 	 *
 	 * @since  4.0.0
@@ -317,5 +345,61 @@ class Settings extends Controller {
 	public static function get_modules() {
 		// Keys of the settings are modules.
 		return array_keys( self::default_settings() );
+	}
+
+	/**
+	 * Registering 404 to 301 options with WP.
+	 *
+	 * This function is used to register all settings options to the db using
+	 * WordPress settings API.
+	 *
+	 * @since  2.0.0
+	 * @access public
+	 * @uses   hooks  register_setting Hook to register our options in db.
+	 *
+	 * @return void
+	 */
+	public function register_settings() {
+		register_setting(
+			Config::SETTINGS_KEY,
+			Config::SETTINGS_KEY,
+			array(
+				'type'              => 'array',
+				'default'           => array(),
+				'description'       => __( '404 to 301 plugin settings', '404-to-301' ),
+				'sanitize_callback' => array( $this, 'sanitize_settings' ),
+			)
+		);
+	}
+
+	/**
+	 * Sanitize plugin settings before save.
+	 *
+	 * This function is used to register all settings options to the db using
+	 * WordPress settings API.
+	 *
+	 * @param array $values Settings data.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return array
+	 */
+	public function sanitize_settings( array $values ) {
+		// Get settings.
+		$settings = self::get_settings();
+
+		// Format the settings.
+		$settings = self::format_settings( $values, $settings );
+
+		/**
+		 * Filter to modify plugin settings before updating it.
+		 *
+		 * @param array $settings Processed to be updated.
+		 * @param array $values   Values passed to update.
+		 *
+		 * @since 4.0.0
+		 */
+		return apply_filters( 'dd404_settings_before_update_settings', $settings, $values );
 	}
 }
