@@ -47,6 +47,9 @@ define( 'DD4T3_DIR', plugin_dir_path( __FILE__ ) );
 // Auto load classes.
 require_once DD4T3_DIR . '/vendor/autoload.php';
 
+// Load functions.
+require_once DD4T3_DIR . '/core/functions/settings.php';
+
 /**
  * The main function for that returns JJ_404_to_301
  *
@@ -64,20 +67,7 @@ require_once DD4T3_DIR . '/vendor/autoload.php';
  */
 function duckdev_404_to_301() {
 	// Get the plugin instance.
-	$instance = DuckDev\Redirect\Core::instance();
-
-	/**
-	 * Action hook to execute after plugin is loaded.
-	 *
-	 * Addon plugins can use this to initialize.
-	 *
-	 * @param DuckDev\Redirect\Core $instance Plugin instance.
-	 *
-	 * @since 4.0.0
-	 */
-	do_action( '404_to_301_init', $instance );
-
-	return $instance;
+	return DuckDev\Redirect\Core::instance();
 }
 
 // Load our plugin if minimum version is PHP 5.6.

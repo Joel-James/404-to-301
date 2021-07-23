@@ -31,8 +31,12 @@
 
 			<?php if ( $this->show_submit() ) : ?>
 				<p class="tsf-top-buttons">
-					<input type="submit" name="submit" class="button button-primary" value="Save Settings">
-					<input type="submit" name="reset" class="button" value="<?php esc_html_e( 'Reset Settings', '404-to-301' ); ?>" onclick="return confirm(`<?php esc_html_e( 'Are you sure you want to reset all settings to their defaults?', '404-to-301' ); ?>`)">
+					<form-submit
+						save-text="<?php esc_html_e( 'Save Settings', '404-to-301' ); ?>"
+						saving-text="<?php esc_html_e( 'Saving..', '404-to-301' ); ?>"
+						reset-text="<?php esc_html_e( 'Reset Settings', '404-to-301' ); ?>"
+						resetting-text="<?php esc_html_e( 'Resetting..', '404-to-301' ); ?>"
+					></form-submit>
 				</p>
 			<?php endif; ?>
 		</div>
@@ -40,9 +44,14 @@
 		<hr class="wp-header-end">
 
 		<div class="tsf-notice-wrap">
-			<div class="notice updated tsf-notice tsf-show-icon is-dismissible">
-				<p><?php esc_html_e( 'Settings updated!', '404-to-301' ); ?></p>
-			</div>
+			<?php
+			/**
+			 * Action hook to print settings notices.
+			 *
+			 * @since 4.0.0
+			 */
+			do_action( 'dd404_admin_settings_notices', $page );
+			?>
 		</div>
 
 		<div class="metabox-holder columns-2">
@@ -77,8 +86,12 @@
 
 		<?php if ( $this->show_submit() ) : ?>
 			<div class="tsf-bottom-buttons">
-				<input type="submit" name="submit" class="button button-primary" :value="btnText" @click="saveSettings">
-				<input type="submit" name="reset" class="button" value="<?php esc_html_e( 'Reset Settings', '404-to-301' ); ?>" onclick="return confirm(`<?php esc_html_e( 'Are you sure you want to reset all settings to their defaults?', '404-to-301' ); ?>`)">
+				<form-submit
+					save-text="<?php esc_html_e( 'Save Settings', '404-to-301' ); ?>"
+					saving-text="<?php esc_html_e( 'Saving..', '404-to-301' ); ?>"
+					reset-text="<?php esc_html_e( 'Reset Settings', '404-to-301' ); ?>"
+					resetting-text="<?php esc_html_e( 'Resetting..', '404-to-301' ); ?>"
+				></form-submit>
 			</div>
 		<?php endif; ?>
 	</form>

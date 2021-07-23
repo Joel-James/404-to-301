@@ -33,17 +33,6 @@ use DuckDev\Redirect\Utils\Abstracts\Base;
 class Core extends Base {
 
 	/**
-	 * Settings class instance.
-	 *
-	 * For easier access of settings.
-	 *
-	 * @var Controllers\Settings $settings
-	 *
-	 * @since 4.0
-	 */
-	public $settings = array();
-
-	/**
 	 * Boot and start the plugin.
 	 *
 	 * @since  4.0.0
@@ -52,10 +41,18 @@ class Core extends Base {
 	 * @return void
 	 */
 	public function init() {
-		// Settings instance.
-		$this->settings = Controllers\Settings::instance();
-
 		$this->setup();
+
+		/**
+		 * Action hook to execute after plugin is loaded.
+		 *
+		 * Addon plugins can use this to initialize.
+		 *
+		 * @param Core $this Plugin instance.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( '404_to_301_init', $this );
 	}
 
 	/**

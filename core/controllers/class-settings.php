@@ -53,9 +53,9 @@ class Settings extends Controller {
 	 *
 	 * @return string
 	 */
-	public static function get( $key, $module = 'general', $default = false, &$valid = true ) {
+	public function get( $key, $module = 'general', $default = false, &$valid = true ) {
 		// Get module values.
-		$values = self::get_module( $module );
+		$values = $this->get_module( $module );
 
 		// Value is set.
 		if ( isset( $values[ $key ] ) ) {
@@ -92,9 +92,9 @@ class Settings extends Controller {
 	 *
 	 * @return array
 	 */
-	public static function get_module( $module, $default = array(), &$valid = true ) {
+	public function get_module( $module, $default = array(), &$valid = true ) {
 		// Get settings.
-		$settings = self::get_settings();
+		$settings = $this->get_settings();
 
 		// Module is set.
 		if ( isset( $settings[ $module ] ) ) {
@@ -130,13 +130,13 @@ class Settings extends Controller {
 	 *
 	 * @return array
 	 */
-	public static function get_settings() {
+	public function get_settings() {
 		$values = array();
 
 		// Get settings.
 		$settings = get_option( Config::SETTINGS_KEY, array() );
 		// Default settings.
-		$defaults = self::default_settings();
+		$defaults = $this->default_settings();
 
 		// Make sure the data is in proper format.
 		foreach ( $defaults as $module => $options ) {
@@ -173,9 +173,9 @@ class Settings extends Controller {
 	 *
 	 * @return bool
 	 */
-	public static function update( $key, $value, $module = 'general' ) {
+	public function update( $key, $value, $module = 'general' ) {
 		// Get settings.
-		$settings = self::get_settings();
+		$settings = $this->get_settings();
 
 		// Allow only registered items.
 		if ( isset( $settings[ $module ][ $key ] ) ) {
@@ -183,7 +183,7 @@ class Settings extends Controller {
 			$settings[ $module ][ $key ] = $value;
 
 			// Update the values.
-			return self::update_module( $settings, $module );
+			return $this->update_module( $settings, $module );
 		}
 
 		return false;
@@ -201,9 +201,9 @@ class Settings extends Controller {
 	 *
 	 * @return bool
 	 */
-	public static function update_module( $values, $module = 'general' ) {
+	public function update_module( $values, $module = 'general' ) {
 		// Get settings.
-		$settings = self::get_settings();
+		$settings = $this->get_settings();
 
 		// Allow only registered items.
 		if ( isset( $settings[ $module ] ) ) {
@@ -211,7 +211,7 @@ class Settings extends Controller {
 			$settings[ $module ] = $values;
 
 			// Update the values.
-			return self::update_settings( $settings );
+			return $this->update_settings( $settings );
 		}
 
 		return false;
@@ -228,12 +228,12 @@ class Settings extends Controller {
 	 *
 	 * @return bool
 	 */
-	public static function update_settings( $values ) {
+	public function update_settings( $values ) {
 		// Get settings.
-		$settings = self::get_settings();
+		$settings = $this->get_settings();
 
 		// Format the settings.
-		$settings = self::format_settings( $values, $settings );
+		$settings = $this->format_settings( $values, $settings );
 
 		/**
 		 * Filter to modify plugin settings before updating it.
@@ -259,11 +259,12 @@ class Settings extends Controller {
 	 *
 	 * @return array
 	 */
-	public static function default_settings() {
+	public function default_settings() {
 		$settings = array(
 			'general'  => array(
-				'guessing' => true,
-				'exclude'  => array(),
+				'disable_guess'   => true,
+				'monitor_changes' => false,
+				'exclude'         => array(),
 			),
 			'redirect' => array(
 				'enable' => true,
@@ -273,7 +274,8 @@ class Settings extends Controller {
 				'page'   => '',
 			),
 			'logs'     => array(
-				'enable' => true,
+				'enable'          => true,
+				'skip_duplicates' => false,
 			),
 			'email'    => array(
 				'enable'    => false,
@@ -310,7 +312,7 @@ class Settings extends Controller {
 	 *
 	 * @return array
 	 */
-	public static function format_settings( array $new, array $old ) {
+	public function format_settings( array $new, array $old ) {
 		// Only allow registered items.
 		foreach ( $old as $module => $options ) {
 			// If the module is set.
@@ -342,9 +344,9 @@ class Settings extends Controller {
 	 *
 	 * @return array
 	 */
-	public static function get_modules() {
+	public function get_modules() {
 		// Keys of the settings are modules.
-		return array_keys( self::default_settings() );
+		return array_keys( $this->default_settings() );
 	}
 
 	/**
@@ -387,10 +389,10 @@ class Settings extends Controller {
 	 */
 	public function sanitize_settings( array $values ) {
 		// Get settings.
-		$settings = self::get_settings();
+		$settings = $this->get_settings();
 
 		// Format the settings.
-		$settings = self::format_settings( $values, $settings );
+		$settings = $this->format_settings( $values, $settings );
 
 		/**
 		 * Filter to modify plugin settings before updating it.

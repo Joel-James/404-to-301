@@ -70,7 +70,7 @@ class Settings extends Endpoint {
 						'module' => array(
 							'type'        => 'string',
 							'required'    => false,
-							'enum'        => Options::get_modules(),
+							'enum'        => dd404_settings()->get_modules(),
 							'description' => __( 'Module name.', '404-to-301' ),
 						),
 					),
@@ -88,7 +88,7 @@ class Settings extends Endpoint {
 						'module' => array(
 							'type'        => 'string',
 							'required'    => false,
-							'enum'        => Options::get_modules(),
+							'enum'        => dd404_settings()->get_modules(),
 							'description' => __( 'Module name.', '404-to-301' ),
 						),
 						'value'  => array(

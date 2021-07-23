@@ -16,15 +16,34 @@
 <h4><?php esc_html_e( 'Enable', '404-to-301' ); ?></h4>
 <p><?php esc_html_e( 'If you disable URL guessing, it will stop WordPress from autocorrecting incorrect URLs.', '404-to-301' ); ?></p>
 <div class="tsf-fields">
-	<span class="tsf-toblock">
 		<label for="enable">
-			<input type="checkbox" name="enable" id="enable" value="1" checked="checked"> Enable email notification?
+			<input
+				type="checkbox"
+				name="404_to_301_settings[email][enable]"
+				id="enable"
+				value="1"
+				v-model="email"
+			> <?php esc_html_e( 'Enable email notification?', '404-to-301' ); ?>
 		</label>
-	</span>
 </div>
 
 <hr/>
 
-<p><label for="email"><strong><?php esc_html_e( 'Recipient email', '404-to-301' ); ?></strong></label></p>
-<p><input type="email" name="email" id="email" class="regular-text" placeholder="admin@duckdev.com"></p>
-<p><?php esc_html_e( 'If you disable URL guessing, it will stop WordPress from autocorrecting incorrect URLs.', '404-to-301' ); ?></p>
+<fieldset :disabled="!email">
+	<p>
+		<label for="email">
+			<strong><?php esc_html_e( 'Recipient email', '404-to-301' ); ?></strong>
+		</label>
+	</p>
+	<p>
+		<input
+			type="email"
+			name="404_to_301_settings[email][recipient]"
+			id="email"
+			class="regular-text"
+			placeholder="admin@duckdev.com"
+			value="<?php echo esc_html( dd404_settings()->get( 'recipient', 'email' ) ); ?>"
+		>
+	</p>
+	<p><?php esc_html_e( 'If you disable URL guessing, it will stop WordPress from autocorrecting incorrect URLs.', '404-to-301' ); ?></p>
+</fieldset>

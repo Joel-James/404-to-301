@@ -121,19 +121,19 @@ class Redirect extends Action {
 			$link = apply_filters( 'dd404_redirect_default_link', home_url() );
 
 			// Get global target.
-			$target = Settings::get( 'target', 'redirect' );
+			$target = dd404_settings()->get( 'target', 'redirect' );
 
 			// If target is a page.
 			if ( 'page' === $target ) {
 				// Target page ID.
-				$page = Settings::get( 'page', 'redirect' );
+				$page = dd404_settings()->get( 'page', 'redirect' );
 				// Only consider if it's published page/post.
 				if ( ! empty( $page ) && 'publish' === get_post_status( $page ) ) {
 					$link = get_permalink( $page );
 				}
 			} else {
 				// Get link target.
-				$link = Settings::get( 'link', 'redirect', $link );
+				$link = dd404_settings()->get( 'link', 'redirect', $link );
 			}
 		}
 
@@ -168,7 +168,7 @@ class Redirect extends Action {
 		// If custom target is not set.
 		if ( empty( $type ) ) {
 			// Get global target.
-			$type = Settings::get(
+			$type = dd404_settings()->get(
 				'type',
 				'redirect',
 				301

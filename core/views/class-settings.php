@@ -14,6 +14,7 @@
 
 namespace DuckDev\Redirect\Views;
 
+use DuckDev\Redirect\Data\Config;
 use DuckDev\Redirect\Utils\Abstracts\View;
 
 /**
@@ -38,7 +39,8 @@ class Settings extends View {
 		add_action( 'dd404_admin_settings_logs_form_content', array( $this, 'logs_content' ) );
 		add_action( 'dd404_admin_settings_email_form_content', array( $this, 'email_content' ) );
 		add_action( 'dd404_admin_settings_extensions_form_content', array( $this, 'extensions_content' ) );
-		add_action( 'dd404_after_admin_pages_settings_render', array( $this, 'render_templates' ) );
+
+		add_action( 'dd404_admin_settings_notices', array( $this, 'show_settings_notice' ) );
 	}
 
 	/**
@@ -57,6 +59,13 @@ class Settings extends View {
 				'items'   => $this->get_settings_tabs(),
 			),
 		);
+
+		/**
+		 * Action hook to run something after rendering settings page.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd404_before_admin_pages_settings_render' );
 
 		// Admin settings template.
 		$this->render( 'settings', $args );
@@ -184,28 +193,6 @@ class Settings extends View {
 	 *
 	 * @since  4.0
 	 *
-	 * @return void
-	 */
-	public function render_templates() {
-		$templates = array( 'form-submit' );
-
-		foreach ( $templates as $template ) {
-			$this->render( "components/vue/{$template}" );
-		}
-
-		/**
-		 * Action hook to run something after rendering email settings page.
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( 'dd404_after_admin_pages_after_templates_render' );
-	}
-
-	/**
-	 * Register the sub menu for the admin settings.
-	 *
-	 * @since  4.0
-	 *
 	 * @return array
 	 */
 	public function get_settings_tabs() {
@@ -258,6 +245,34 @@ class Settings extends View {
 		 * @since 4.0.0
 		 */
 		return apply_filters( 'dd404_admin_settings_show_submit', $show );
+	}
+
+	/**
+	 * Register the sub menu for the admin settings.
+	 *
+	 * @since  4.0
+	 *
+	 * @return void
+	 */
+	public function show_settings_notice() {
+		// Get the errors.
+		$errors = get_settings_errors();
+
+		if ( empty( $errors ) ) {
+			return;
+		}
+
+		foreach ( $errors as $details ) {
+			$this->render(
+				'components/notice',
+				array(
+					'type'    => $details['type'],
+					'content' => $details['message'],
+					'options' => array( 'id' => $details['code'] ),
+				),
+				false
+			);
+		}
 	}
 
 	/**

@@ -87,7 +87,7 @@ class Email extends Action {
 	 */
 	private function recipient() {
 		// Get global target.
-		$recipient = Settings::get(
+		$recipient = dd404_settings()->get(
 			'recipient',
 			'email',
 			get_option( 'admin_email' )
@@ -119,7 +119,7 @@ class Email extends Action {
 	 */
 	private function subject() {
 		// Get global target.
-		$recipient = Settings::get(
+		$recipient = dd404_settings()->get(
 			'recipient',
 			'email',
 			get_option( 'admin_email' )
@@ -151,7 +151,7 @@ class Email extends Action {
 	 */
 	private function headers() {
 		// Get global target.
-		$recipient = Settings::get(
+		$recipient = dd404_settings()->get(
 			'recipient',
 			'email',
 			get_option( 'admin_email' )
@@ -183,7 +183,7 @@ class Email extends Action {
 	 */
 	private function body() {
 		// Get global target.
-		$recipient = Settings::get(
+		$recipient = dd404_settings()->get(
 			'recipient',
 			'email',
 			get_option( 'admin_email' )

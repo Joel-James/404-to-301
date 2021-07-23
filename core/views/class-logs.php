@@ -32,6 +32,13 @@ class Logs extends View {
 	 * @return void
 	 */
 	public function content() {
+		/**
+		 * Action hook to run something after rendering logs page.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd404_before_admin_pages_logs_render' );
+
 		// Admin logs template.
 		$this->render( 'logs' );
 

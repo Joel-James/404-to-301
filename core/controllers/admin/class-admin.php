@@ -37,9 +37,7 @@ class Admin extends Controller {
 	 */
 	public function init() {
 		// Add required vars for javascript.
-		add_action( 'dd404_assets_vars_dd404-logs-settings', array( $this, 'common_vars' ) );
-		add_action( 'dd404_assets_vars_dd404-general-settings', array( $this, 'common_vars' ) );
-		add_action( 'dd404_assets_vars_dd404-redirect-settings', array( $this, 'common_vars' ) );
+		add_action( 'dd404_assets_vars_dd404-settings', array( $this, 'common_vars' ) );
 	}
 
 	/**
@@ -61,7 +59,7 @@ class Admin extends Controller {
 		);
 
 		// Settings data.
-		$vars['settings'] = Settings::get_settings();
+		$vars['settings'] = dd404_settings()->get_settings();
 
 		return $vars;
 	}

@@ -41,9 +41,9 @@ class Assets extends Controller {
 		add_filter( 'dd404_assets_get_scripts', array( $this, 'get_scripts' ), 10, 2 );
 		add_filter( 'dd404_assets_get_styles', array( $this, 'get_styles' ), 10, 2 );
 
-		add_action( 'dd404_after_admin_pages_logs_render', array( $this, 'logs_assets' ) );
-		add_action( 'dd404_after_admin_pages_redirects_render', array( $this, 'redirects_assets' ) );
-		add_action( 'dd404_after_admin_pages_settings_render', array( $this, 'settings_assets' ) );
+		add_action( 'dd404_before_admin_pages_logs_render', array( $this, 'logs_assets' ) );
+		add_action( 'dd404_before_admin_pages_settings_render', array( $this, 'settings_assets' ) );
+		add_action( 'dd404_before_admin_pages_redirects_render', array( $this, 'redirects_assets' ) );
 	}
 
 	/**
@@ -59,35 +59,12 @@ class Assets extends Controller {
 	public function get_scripts( $scripts, $admin ) {
 		if ( $admin ) {
 			// GA settings.
-			$scripts['dd404-vendors'] = array(
-				'src'  => 'chunk-vendors.min.js',
-				'deps' => array(),
-			);
-
-			// GA settings.
 			$scripts['dd404-logs'] = array(
-				'src'  => 'logs.min.js',
-				'deps' => array( 'dd404-vendors' ),
+				'src' => 'logs.min.js',
 			);
 
-			// GA settings.
-			$scripts['dd404-general-settings'] = array(
-				'src'  => 'general-settings.min.js',
-				'deps' => array( 'wp-i18n' ),
-			);
-
-			$scripts['dd404-redirect-settings'] = array(
-				'src'  => 'redirect-settings.min.js',
-				'deps' => array( 'wp-i18n' ),
-			);
-
-			$scripts['dd404-logs-settings'] = array(
-				'src'  => 'logs-settings.min.js',
-				'deps' => array( 'wp-i18n' ),
-			);
-
-			$scripts['dd404-email-settings'] = array(
-				'src'  => 'email-settings.min.js',
+			$scripts['dd404-settings'] = array(
+				'src'  => 'settings.min.js',
 				'deps' => array( 'wp-i18n' ),
 			);
 		}
@@ -112,13 +89,8 @@ class Assets extends Controller {
 				'src' => 'logs.min.css',
 			);
 
-			// GA settings.
-			$styles['dd404-redirects'] = array(
-				'src' => 'admin.min.css',
-			);
-
 			// Admin.
-			$styles['dd404-admin'] = array(
+			$styles['dd404-settings'] = array(
 				'src' => 'admin.min.css',
 			);
 		}
@@ -172,12 +144,8 @@ class Assets extends Controller {
 	 * @return void
 	 */
 	public function settings_assets() {
-		$tab = Views\Settings::instance()->get_current_tab();
-
-		$name = 'dd404-' . $tab . '-settings';
-
-		Assets_Helper::instance()->enqueue_script( $name );
-		Assets_Helper::instance()->enqueue_style( 'dd404-admin' );
+		Assets_Helper::instance()->enqueue_script( 'dd404-settings' );
+		Assets_Helper::instance()->enqueue_style( 'dd404-settings' );
 
 		/**
 		 * Action hook to run something after enqueue logs assets.

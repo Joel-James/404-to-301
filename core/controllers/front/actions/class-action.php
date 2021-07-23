@@ -156,7 +156,7 @@ abstract class Action extends Controller {
 	 */
 	protected function enabled() {
 		// Get global option.
-		$enabled = Settings::get( 'enable', $this->action );
+		$enabled = dd404_settings()->get( 'enable', $this->action );
 		// If not checking on a request.
 		if ( empty( $this->request ) ) {
 			$config = 'global';
