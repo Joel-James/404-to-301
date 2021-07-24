@@ -14,7 +14,7 @@
 
 namespace DuckDev\Redirect\Views;
 
-use DuckDev\Redirect\Data\Config;
+use DuckDev\Redirect\Data;
 use DuckDev\Redirect\Utils\Abstracts\View;
 
 /**
@@ -38,7 +38,7 @@ class Settings extends View {
 		add_action( 'dd404_admin_settings_redirect_form_content', array( $this, 'redirect_content' ) );
 		add_action( 'dd404_admin_settings_logs_form_content', array( $this, 'logs_content' ) );
 		add_action( 'dd404_admin_settings_email_form_content', array( $this, 'email_content' ) );
-		add_action( 'dd404_admin_settings_extensions_form_content', array( $this, 'extensions_content' ) );
+		add_action( 'dd404_admin_settings_info_form_content', array( $this, 'info_content' ) );
 
 		add_action( 'dd404_admin_settings_notices', array( $this, 'show_settings_notice' ) );
 	}
@@ -54,6 +54,7 @@ class Settings extends View {
 		// Arguments.
 		$args = array(
 			'page'        => $this->get_current_tab(),
+			'user_name'   => 'Joel',
 			'menu_config' => array(
 				'current' => $this->get_current_tab(),
 				'items'   => $this->get_settings_tabs(),
@@ -109,7 +110,9 @@ class Settings extends View {
 	 */
 	public function redirect_content() {
 		// Arguments.
-		$args = array();
+		$args = array(
+			'types' => Data\Redirect::redirect_types(),
+		);
 
 		// Admin settings template.
 		$this->render( 'settings/redirect', $args );
@@ -173,19 +176,19 @@ class Settings extends View {
 	 *
 	 * @return void
 	 */
-	public function extensions_content() {
+	public function info_content() {
 		// Arguments.
 		$args = array();
 
 		// Admin settings template.
-		$this->render( 'settings/extensions', $args );
+		$this->render( 'settings/info', $args );
 
 		/**
 		 * Action hook to run something after rendering email settings page.
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_after_admin_pages_extensions_settings_render' );
+		do_action( 'dd404_after_admin_pages_info_settings_render' );
 	}
 
 	/**
@@ -197,23 +200,23 @@ class Settings extends View {
 	 */
 	public function get_settings_tabs() {
 		$tabs = array(
-			'redirect'   => array(
+			'redirect' => array(
 				'title' => __( 'Redirect', '404-to-301' ),
 				'icon'  => 'randomize',
 			),
-			'logs'       => array(
+			'logs'     => array(
 				'title' => __( 'Logs', '404-to-301' ),
 				'icon'  => 'media-default',
 			),
-			'email'      => array(
+			'email'    => array(
 				'title' => __( 'Email', '404-to-301' ),
 				'icon'  => 'email-alt',
 			),
-			'general'    => array(
+			'general'  => array(
 				'title' => __( 'General', '404-to-301' ),
 				'icon'  => 'admin-generic',
 			),
-			'extensions' => array(
+			'info'     => array(
 				'title' => __( 'Info', '404-to-301' ),
 				'icon'  => 'info',
 			),
@@ -235,7 +238,7 @@ class Settings extends View {
 	 * @return array
 	 */
 	public function show_submit() {
-		$hidden = array( 'extensions' );
+		$hidden = array( 'info' );
 
 		$show = ! in_array( $this->get_current_tab(), $hidden, true );
 

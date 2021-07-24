@@ -3,6 +3,7 @@
  * Admin settings page base template.
  *
  * @var string $page        Current page key.
+ * @var string $user_name   Currently logged in user's name.
  * @var array  $menu_config Nav menu configuration.
  *
  * @author     Joel James <me@joelsays.com>
@@ -65,6 +66,7 @@
 						</div>
 
 						<div class="inside">
+							<p><?php printf( esc_html__( 'Hey %s. You can configure how 404 to 301 plugin should handle 404 errors on your website.', '404-to-301' ), $user_name ); // phpcs:ignore ?></p>
 							<?php $this->render( 'components/side-nav', $menu_config ); // Side nav menu. ?>
 
 							<div class="tsf-tabs-content tsf-general-tabs-content tsf-active-tab-content" id="tsf-general-tab-<?php echo esc_attr( $page ); ?>-content">

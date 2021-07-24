@@ -2,6 +2,7 @@
 /**
  * Admin settings redirect tab template.
  *
+ * @var array                                 $types    Redirect types.
  * @var DuckDev\Redirect\Controllers\Settings $settings Settings class.
  *
  * @author     Joel James <me@joelsays.com>
@@ -19,7 +20,7 @@
 <p>
 	<?php
 	printf(
-		// translators: %s link to logs page.
+	// translators: %s link to logs page.
 		__( 'These options can be customized for each individual 404 errors from <a href="%s">the logs page</a>.', '404-to-301' ),
 		'' // @todo Add link.
 	);
@@ -52,56 +53,18 @@
 	</p>
 
 	<div class="tsf-fields">
-		<p>
-			<label>
-				<input
-					type="radio"
-					name="404_to_301_settings[redirect][type]"
-					value="301"
-					<?php checked( dd404_settings()->get( 'type', 'redirect', 301 ), 301 ); ?>
-				> <?php esc_html_e( '301 - Moved Permanently', '404-to-301' ); ?>
-			</label>
-		</p>
-		<p>
-			<label>
-				<input
-					type="radio"
-					name="404_to_301_settings[redirect][type]"
-					value="302"
-					<?php checked( dd404_settings()->get( 'type', 'redirect', 301 ), 302 ); ?>
-				> <?php esc_html_e( '302 - Found', '404-to-301' ); ?>
-			</label>
-		</p>
-		<p>
-			<label>
-				<input
-					type="radio"
-					name="404_to_301_settings[redirect][type]"
-					value="307"
-					<?php checked( dd404_settings()->get( 'type', 'redirect', 301 ), 307 ); ?>
-				> <?php esc_html_e( '307 - Temporary Redirect', '404-to-301' ); ?>
-			</label>
-		</p>
-		<p>
-			<label>
-				<input
-					type="radio"
-					name="404_to_301_settings[redirect][type]"
-					value="410"
-					<?php checked( dd404_settings()->get( 'type', 'redirect', 301 ), 410 ); ?>
-				> <?php esc_html_e( '410 - Content Deleted', '404-to-301' ); ?>
-			</label>
-		</p>
-		<p>
-			<label>
-				<input
-					type="radio"
-					name="404_to_301_settings[redirect][type]"
-					value="451"
-					<?php checked( dd404_settings()->get( 'type', 'redirect', 301 ), 451 ); ?>
-				> <?php esc_html_e( '451 - Unavailable for Legal Reasons', '404-to-301' ); ?>
-			</label>
-		</p>
+		<?php foreach ( $types as $redirect_type => $label ) : ?>
+			<p>
+				<label>
+					<input
+						type="radio"
+						name="404_to_301_settings[redirect][type]"
+						value="<?php echo esc_attr( $redirect_type ); ?>"
+						<?php checked( dd404_settings()->get( 'type', 'redirect' ), $redirect_type ); ?>
+					> <?php echo esc_attr( $label ); ?>
+				</label>
+			</p>
+		<?php endforeach; ?>
 	</div>
 
 	<hr>
@@ -143,8 +106,9 @@
 			<?php
 			wp_dropdown_pages(
 				array(
+					'id'       => 'page',
 					'name'     => '404_to_301_settings[redirect][page]',
-					'selected' => dd404_settings()->get( 'page', 'redirect' ),
+					'selected' => esc_attr( dd404_settings()->get( 'page', 'redirect' ) ),
 				)
 			);
 			?>

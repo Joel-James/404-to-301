@@ -31,6 +31,7 @@
 <hr/>
 
 <fieldset :disabled="!email">
+
 	<p>
 		<label for="email">
 			<strong><?php esc_html_e( 'Recipient email', '404-to-301' ); ?></strong>
@@ -47,12 +48,5 @@
 			value="<?php echo esc_html( dd404_settings()->get( 'recipient', 'email' ) ); ?>"
 		>
 	</p>
-	<p>
-		<?php
-		printf(
-			__( 'Tip: To get periodic overview email notifications instead, get the <a href="%s" target="_blank">Advanced Email Notifications</a> extension.', '404-to-301' ),
-			'https://duckdev.com/products/' // @todo Update the link.
-		);
-		?>
-	</p>
+
 </fieldset>

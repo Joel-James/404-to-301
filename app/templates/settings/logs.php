@@ -46,13 +46,5 @@
 			> <?php esc_html_e( 'Skip duplicate entries from the logs', '404-to-301' ); ?>
 		</label>
 	</div>
-	<p>
-		<?php
-		printf(
-			__( 'Tip: To keep the database more lightweight, get the <a href="%s" target="_blank">Scheduled Cleanup</a> extension and clear the logs on schedule.', '404-to-301' ),
-			'https://duckdev.com/products/' // @todo Update the link.
-		);
-		?>
-	</p>
 
 </fieldset>

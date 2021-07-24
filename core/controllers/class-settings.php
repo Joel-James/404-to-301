@@ -201,7 +201,7 @@ class Settings extends Controller {
 	 *
 	 * @return bool
 	 */
-	public function update_module( $values, $module = 'general' ) {
+	public function update_module( array $values, $module = 'general' ) {
 		// Get settings.
 		$settings = $this->get_settings();
 
@@ -228,7 +228,7 @@ class Settings extends Controller {
 	 *
 	 * @return bool
 	 */
-	public function update_settings( $values ) {
+	public function update_settings( array $values ) {
 		// Get settings.
 		$settings = $this->get_settings();
 
@@ -387,7 +387,10 @@ class Settings extends Controller {
 	 *
 	 * @return array
 	 */
-	public function sanitize_settings( array $values ) {
+	public function sanitize_settings( $values ) {
+		// Should be a proper array.
+		$values = empty( $values ) || ! is_array( $values ) ? array() : $values;
+
 		// Get settings.
 		$settings = $this->get_settings();
 
