@@ -1,16 +1,18 @@
 module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
-    const webpack = require('webpack');
-
     // Files to include while packing zip.
-    var files = [
+    let files = [
         'app/**',
         'core/**',
+        'vendor/**',
+        'languages/**',
         'uninstall.php',
-        'changelog.txt',
-        'custom-videos.txt',
-        'wpmudev-videos.php',
+        'readme.txt',
+        'index.php',
+        '404-to-301.php',
+        'wpml-config.xml',
+        'LICENSE',
         '!**/*.map'
     ];
 
@@ -21,29 +23,21 @@ module.exports = function (grunt) {
         // Project constants.
         project: {
             build: './build',
-            name: 'wpmudev-videos',
+            name: '404-to-301',
             css: 'app/assets/css',
             scss: 'app/assets/src/scss',
         },
 
-        // Clean build folder.
+        // Clean task.
         clean: {
             main: ['build/'],
-            assets: [
-                'app/assets/css/**',
-                'app/assets/js/**',
-                'app/assets/fonts/**',
-                'app/assets/img/*.png',
-                'app/assets/img/*.svg',
-                'app/assets/img/*.jpg',
-                'app/assets/img/*.jpeg',
-            ],
+            assets: ['app/assets/**'],
         },
 
         // Verify text domains.
         checktextdomain: {
             options: {
-                text_domain: 'wpmudev_vids',
+                text_domain: '404-to-301',
                 keywords: [
                     '__:1,2d',
                     '_e:1,2d',
@@ -66,8 +60,7 @@ module.exports = function (grunt) {
                     'app/**/*.php',
                     'core/**/*.php',
                     'uninstall.php',
-                    'wpmudev-videos.php',
-                    '!core/external/**'
+                    '404-to-301.php',
                 ],
                 expand: true
             }
@@ -78,12 +71,12 @@ module.exports = function (grunt) {
             options: {
                 domainPath: 'languages',
                 exclude: [
-                    'core/external/.*'
+                    'vendor/.*'
                 ],
-                mainFile: 'wpmudev-videos.php',
-                potFilename: 'wpmudev-videos.pot',
+                mainFile: '404-to-301.php',
+                potFilename: '404-to-301.pot',
                 potHeaders: {
-                    'report-msgid-bugs-to': 'https://wpmudev.org',
+                    'report-msgid-bugs-to': 'https://duckdev.org',
                     'language-team': 'LANGUAGE <EMAIL@ADDRESS>'
                 },
                 type: 'wp-plugin',
