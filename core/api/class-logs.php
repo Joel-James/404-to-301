@@ -103,7 +103,7 @@ class Logs extends Endpoint {
 						'id' => array(
 							'type'        => 'integer',
 							'required'    => true,
-							'description' => __( 'Log ID to get the details.', 'wpmudev_vids' ),
+							'description' => __( 'Log ID to get the details.', '404-to-301' ),
 						),
 					),
 				),
@@ -115,7 +115,7 @@ class Logs extends Endpoint {
 						'id'       => array(
 							'type'        => 'integer',
 							'required'    => true,
-							'description' => __( 'ID of 404 log entry to update.', 'wpmudev_vids' ),
+							'description' => __( 'ID of 404 log entry to update.', '404-to-301' ),
 						),
 						'url'      => array(
 							'type'        => 'string',
@@ -153,7 +153,7 @@ class Logs extends Endpoint {
 						'id' => array(
 							'type'        => 'integer',
 							'required'    => true,
-							'description' => __( 'ID of 404 log entry to delete.', 'wpmudev_vids' ),
+							'description' => __( 'ID of 404 log entry to delete.', '404-to-301' ),
 						),
 					),
 				),

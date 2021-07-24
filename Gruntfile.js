@@ -61,6 +61,7 @@ module.exports = function (grunt) {
                     'core/**/*.php',
                     'uninstall.php',
                     '404-to-301.php',
+                    '!core/utils/libs/**/*.php',
                 ],
                 expand: true
             }
@@ -71,7 +72,8 @@ module.exports = function (grunt) {
             options: {
                 domainPath: 'languages',
                 exclude: [
-                    'vendor/.*'
+                    'vendor/.*',
+                    'core/utils/libs/.*',
                 ],
                 mainFile: '404-to-301.php',
                 potFilename: '404-to-301.pot',
