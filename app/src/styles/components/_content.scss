@@ -19,8 +19,8 @@
     border-spacing: 0 5px;
   }
 
-  .#{$prefix}-list-dot {
+  ul.#{$prefix}-list-dots {
     list-style: disc;
-    padding-left: 80px;
+    padding-left: 30px;
   }
 }
