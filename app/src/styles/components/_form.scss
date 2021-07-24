@@ -1,0 +1,18 @@
+.#{$prefix}-wrap {
+
+  label.#{$prefix}-disabled {
+    color: #999;
+  }
+
+  label.#{$prefix}-disabled,
+  input.#{$prefix}-disabled {
+    cursor: default;
+  }
+
+  .#{$prefix}-fields {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 1em 0;
+  }
+}
+

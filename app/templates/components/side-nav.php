@@ -16,17 +16,17 @@
 ?>
 
 <?php if ( ! empty( $items ) ) : ?>
-	<div class="tsf-nav-tab-wrapper" id="general-tabs-wrapper">
+	<div class="duckdev-nav-tab-wrapper" id="general-tabs-wrapper">
 		<?php foreach ( $items as $key => $item ) : ?>
-			<div class="tsf-tab">
+			<div class="duckdev-tab">
 				<a
 					href="<?php echo esc_url( add_query_arg( 'tab', $key ) ); ?>"
-					class="tsf-nav-tab <?php echo $key === $current ? 'tsf-active-tab' : ''; ?>"
+					class="duckdev-nav-tab <?php echo $key === $current ? 'duckdev-active-tab' : ''; ?>"
 				>
 					<?php if ( ! empty( $item['icon'] ) ) : ?>
-						<span class="dashicons dashicons-<?php echo esc_html( $item['icon'] ); ?> tsf-dashicons-tabs"></span>
+						<span class="dashicons dashicons-<?php echo esc_html( $item['icon'] ); ?> duckdev-dashicons-tabs"></span>
 					<?php endif; ?>
-					<span class="tsf-nav-desktop"><?php echo esc_html( $item['title'] ); ?></span>
+					<span class="duckdev-nav-desktop"><?php echo esc_html( $item['title'] ); ?></span>
 				</a>
 			</div>
 		<?php endforeach; ?>

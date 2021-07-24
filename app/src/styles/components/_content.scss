@@ -1,0 +1,26 @@
+.#{$prefix}-wrap {
+
+  box-sizing: border-box;
+  max-width: 850px;
+  padding-bottom: 20px;
+
+  .#{$prefix}-top-wrap {
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .metabox-holder {
+    clear: both;
+  }
+
+  .#{$prefix}-table {
+    width: 100%;
+    border-spacing: 0 5px;
+  }
+
+  .#{$prefix}-list-dot {
+    list-style: disc;
+    padding-left: 80px;
+  }
+}

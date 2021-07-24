@@ -33,9 +33,9 @@ $default = array(
 $options = wp_parse_args( $options, $default );
 
 // Prepare classes.
-$classes = array( 'notice', 'tsf-notice' );
+$classes = array( 'notice', 'duckdev-notice' );
 if ( $options['icon'] ) {
-	$classes[] = 'tsf-show-icon';
+	$classes[] = 'duckdev-show-icon';
 }
 if ( $options['dismiss'] ) {
 	$classes[] = 'is-dismissible';

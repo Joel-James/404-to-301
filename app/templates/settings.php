@@ -17,21 +17,21 @@
  */
 
 ?>
-<div class="wrap tsf-metaboxes" id="dd404-settings-app">
+<div class="wrap duckdev-wrap" id="dd404-settings-app">
 	<form method="post" action="options.php" autocomplete="off">
 
 		<?php settings_fields( \DuckDev\Redirect\Data\Config::SETTINGS_KEY ); // Setup form fields. ?>
 
-		<div class="tsf-top-wrap">
-			<h1 class="font-bold mb-5">
+		<div class="duckdev-top-wrap">
+			<h1>
 				<?php esc_html_e( '404 to 301', '404-to-301' ); ?>
-				<span class="subtitle pl-4">
+				<span class="subtitle">
 					by <a href="https://duckdev.com/?utm_source=dd404&utm_medium=plugin&utm_campaign=dd404_settings_header">Joel James</a> ( v<?php echo esc_attr( DD4T3_VERSION ); ?> )
 				</span>
 			</h1>
 
 			<?php if ( $this->show_submit() ) : ?>
-				<p class="tsf-top-buttons">
+				<p class="duckdev-top-buttons">
 					<form-submit
 						save-text="<?php esc_html_e( 'Save Settings', '404-to-301' ); ?>"
 						saving-text="<?php esc_html_e( 'Saving..', '404-to-301' ); ?>"
@@ -44,7 +44,7 @@
 
 		<hr class="wp-header-end">
 
-		<div class="tsf-notice-wrap">
+		<div class="duckdev-notice-wrap">
 			<?php
 			/**
 			 * Action hook to print settings notices.
@@ -69,7 +69,7 @@
 							<p><?php printf( esc_html__( 'Hey %s. You can configure how 404 to 301 plugin should handle 404 errors on your website.', '404-to-301' ), $user_name ); // phpcs:ignore ?></p>
 							<?php $this->render( 'components/side-nav', $menu_config ); // Side nav menu. ?>
 
-							<div class="tsf-tabs-content tsf-general-tabs-content tsf-active-tab-content" id="tsf-general-tab-<?php echo esc_attr( $page ); ?>-content">
+							<div class="duckdev-tabs-content duckdev-active-tab-content" id="duckdev-tab-<?php echo esc_attr( $page ); ?>-content">
 								<?php
 								/**
 								 * Action hook to add content to settings form.
@@ -87,7 +87,7 @@
 		</div>
 
 		<?php if ( $this->show_submit() ) : ?>
-			<div class="tsf-bottom-buttons">
+			<div class="duckdev-bottom-buttons">
 				<form-submit
 					save-text="<?php esc_html_e( 'Save Settings', '404-to-301' ); ?>"
 					saving-text="<?php esc_html_e( 'Saving..', '404-to-301' ); ?>"

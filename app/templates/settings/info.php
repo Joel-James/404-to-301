@@ -15,7 +15,7 @@
 
 <h4><span class="dashicons dashicons-sos"></span> <?php esc_html_e( 'Help & Support', '404-to-301' ); ?></h4>
 <p><?php esc_html_e( 'We are fanatical about support, and want you to get the best out of your website with 404 to 301. If you run into any difficulties, there are several places you can find help:', '404-to-301' ); ?></p>
-<ul class="list-disc pl-5">
+<ul class="duckdev-list-dots">
 	<li>
 		<p>
 			<a href="https://duckdev.com/docs/404-to-301/" target="_blank"><?php esc_html_e( 'Documentation', '404-to-301' ); ?></a> -
@@ -40,7 +40,7 @@
 
 <h4><span class="dashicons dashicons-admin-plugins"></span> <?php esc_html_e( 'Other Plugins', '404-to-301' ); ?></h4>
 <p><?php esc_html_e( 'Hey, I am Joel James, a WordPress developer from Kerala, India. I spend a few hours every week to contribute to open source. I have a few other WordPress plugin which I would recommend you to try out.', '404-to-301' ); ?></p>
-<ul class="list-disc pl-5">
+<ul class="duckdev-list-dots">
 	<li>
 		<p>
 			<a href="https://wordpress.org/plugins/lazy-load-for-comments/" target="_blank"><?php esc_html_e( 'Lazy Load for Comments', '404-to-301' ); ?></a>

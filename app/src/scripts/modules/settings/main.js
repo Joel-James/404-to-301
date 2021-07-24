@@ -1,8 +1,20 @@
+/* global wp */
 import {createApp} from 'vue'
+// Import required components.
 import FormSubmit from '@/components/form-submit'
 import RepeatTable from '@/modules/settings/components/table/repeat-table'
 
-const App = {
+// WP's function.
+const {__} = wp.i18n;
+
+/**
+ * Create settings app.
+ *
+ * @type {App<Element>}
+ *
+ * @since 4.0.0
+ */
+const Settings = createApp({
 	data() {
 		return {
 			logs: false,
@@ -12,21 +24,17 @@ const App = {
 			loading: false,
 		}
 	},
+});
 
-	computed: {
-		btnText() {
-			return this.loading ? 'Saving..' : 'Save Settings'
-		}
-	},
-
+// Mixins for global functions.
+Settings.mixin({
 	methods: {
-		saveSettings() {
-			this.loading = true
-		}
+		__,
 	}
-}
+})
 
-const Settings = createApp(App);
+// Set components.
 Settings.component('form-submit', FormSubmit)
 Settings.component('repeat-table', RepeatTable)
+// Finally mount to DOM.
 Settings.mount('#dd404-settings-app')

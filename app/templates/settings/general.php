@@ -23,7 +23,7 @@
 	);
 	?>
 </p>
-<div class="tsf-fields">
+<div class="duckdev-fields">
 	<label for="guessing">
 		<input
 			type="checkbox"
@@ -39,7 +39,7 @@
 
 <h4><?php esc_html_e( 'Permalink Changes', '404-to-301' ); ?></h4>
 <p><?php esc_html_e( 'New 404 errors can be created when you change an existing page/post permalink to a new one. Instead of waiting for someone to visit and create a 404 error, ww can create a redirect ourself to the new permalink.', '404-to-301' ); ?></p>
-<div class="tsf-fields">
+<div class="duckdev-fields">
 	<label for="monitor">
 		<input
 			type="checkbox"

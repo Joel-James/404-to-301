@@ -1,0 +1,100 @@
+.#{$prefix}-wrap {
+
+  .notice {
+
+    &.#{$prefix}-notice {
+      clear: both;
+      position: relative;
+      padding-right: 38px;
+
+      &.#{$prefix}-show-icon {
+
+        p:before {
+          content: '';
+          margin-right: 12px;
+          background: 0 0;
+          display: inline-block;
+          font: 400 14px/16px dashicons;
+          speak: none;
+          height: 16px;
+          text-align: center;
+          vertical-align: middle;
+          width: 16px;
+          line-height: 14px;
+          -webkit-font-smoothing: antialiased;
+        }
+
+        &.error {
+          p:before {
+            color: #dc3232;
+            content: "\f534";
+          }
+        }
+
+        &.notice-warning {
+          p:before {
+            color: #ffb900;
+            content: "\f227";
+          }
+        }
+
+        &.notice-info {
+          p:before {
+            color: #00a0d2;
+            font-size: 16px;
+            content: "\f223";
+          }
+        }
+
+        &.updated {
+          p:before {
+            color: #46b450;
+            font-size: 16px;
+            content: "\f147";
+          }
+        }
+      }
+
+      .#{$prefix}-dismiss {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border: none;
+        margin: 0;
+        padding: 10px;
+        background: 0 0;
+        color: #72777c;
+        cursor: pointer;
+        text-decoration: none;
+
+        &:hover {
+          color: #c00;
+        }
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 1px #5b9dd9,
+          0 0 2px 1px rgba(30, 140, 190, 0.8);
+        }
+
+        &:before {
+          background: 0 0;
+          color: currentColor;
+          content: "\f153";
+          display: block;
+          font: 400 16px/20px dashicons;
+          speak: none;
+          height: 20px;
+          text-align: center;
+          width: 20px;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+      }
+
+      @media screen and (max-width: 782px) {
+        padding-right: 46px;
+      }
+    }
+  }
+}

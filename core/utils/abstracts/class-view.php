@@ -56,15 +56,16 @@ abstract class View extends Base {
 	 * This will look for the template file inside
 	 * /app/templates/{file}.php
 	 *
-	 * @param string $file File path.
-	 * @param array  $args Arguments.
-	 * @param bool   $once Should include once.
+	 * @param string $file   File path.
+	 * @param array  $args   Arguments.
+	 * @param bool   $once   Should include once.
+	 * @param bool   $return Return content.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return void
 	 */
-	public function render( $file, $args = array(), $once = true ) {
+	public function render( $file, array $args = array(), $once = true, $return = false ) {
 		// Full path to the file.
 		$path = DD4T3_DIR . "/app/templates/{$file}.php";
 
@@ -80,5 +81,28 @@ abstract class View extends Base {
 				include $path;
 			}
 		}
+	}
+
+	/**
+	 * Render a template into a variable.
+	 *
+	 * This will look for the template file inside
+	 * /app/templates/{file}.php
+	 *
+	 * @param string $file File path.
+	 * @param array  $args Arguments.
+	 * @param bool   $once Should include once.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public function get_render( $file, array $args = array(), $once = true ) {
+		ob_start();
+
+		// Render the template.
+		$this->render( $file, $args, $once );
+
+		return ob_get_clean();
 	}
 }

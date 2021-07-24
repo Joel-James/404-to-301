@@ -1,5 +1,5 @@
 <template>
-	<table class="tsf-table w-full">
+	<table class="duckdev-table">
 		<tbody>
 		<tr v-for="(item, index) in rows" :key="item">
 			<td>
@@ -14,7 +14,7 @@
 			<td>
 				<button
 					type="button"
-					class="button inline-flex items-center"
+					class="button duckdev-inline-button"
 					@click="deleteRow(index)"
 				>
 					<span class="dashicons dashicons-trash"></span>
@@ -27,11 +27,11 @@
 			<td colspan="2">
 				<button
 					type="button"
-					class="tsf-set-image-button button button-primarys button-small inline-flex items-center"
+					class="button button-primarys button-small duckdev-inline-button"
 					@click="addRow"
 				>
 					<span class="dashicons dashicons-plus"></span>
-					Add
+					{{ __('Add', '404-to-301') }}
 				</button>
 			</td>
 		</tr>
@@ -44,21 +44,38 @@ export default {
 	name: 'RepeatTable',
 
 	data() {
-		let rows = [];
-		window.dd404.settings.general.exclude.forEach((item) => {
-			rows.push({value:item})
+		let rows = [],
+			items = window?.dd404?.settings?.general?.exclude ?? []
+		// Setup rows from settings.
+		items.forEach((item) => {
+			rows.push({value: item})
 		})
+
 		return {
 			rows: rows,
 		}
 	},
 
 	methods: {
+		/**
+		 * Add new row to the table.
+		 *
+		 * @since 4.0.0
+		 */
 		addRow() {
+			// Push new row.
 			this.rows.push({value: ''})
 		},
 
+		/**
+		 * Delete one row using it's index.
+		 *
+		 * @param {int} index Index of item.
+		 *
+		 * @since 4.0.0
+		 */
 		deleteRow(index) {
+			// Remove one item from array.
 			this.rows.splice(index, 1);
 		}
 	}

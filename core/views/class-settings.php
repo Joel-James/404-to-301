@@ -41,6 +41,9 @@ class Settings extends View {
 		add_action( 'dd404_admin_settings_info_form_content', array( $this, 'info_content' ) );
 
 		add_action( 'dd404_admin_settings_notices', array( $this, 'show_settings_notice' ) );
+
+		// Add screen options.
+		add_action( 'current_screen', array( $this, 'screen_options' ) );
 	}
 
 	/**
@@ -189,6 +192,42 @@ class Settings extends View {
 		 * @since 4.0.0
 		 */
 		do_action( 'dd404_after_admin_pages_info_settings_render' );
+	}
+
+	/**
+	 * Register the sub menu for the admin settings.
+	 *
+	 * @since  4.0
+	 *
+	 * @return void
+	 */
+	public function screen_options() {
+		$screen = get_current_screen();
+
+		// Overview tab.
+		$screen->add_help_tab(
+			array(
+				'id'      => 'overview',
+				'title'   => __( 'Overview', '404-to-301' ),
+				'content' => $this->get_render( 'components/screen-options/tab-overview' ),
+			)
+		);
+
+		// Overview tab.
+		$screen->add_help_tab(
+			array(
+				'id'      => 'help',
+				'title'   => __( 'Help & Support', '404-to-301' ),
+				'content' => $this->get_render( 'components/screen-options/tab-help' ),
+			)
+		);
+
+		// Sidebar.
+		$screen->set_help_sidebar(
+			$this->get_render(
+				'components/screen-options/sidebar'
+			)
+		);
 	}
 
 	/**

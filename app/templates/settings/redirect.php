@@ -26,7 +26,7 @@
 	);
 	?>
 </p>
-<div class="tsf-fields">
+<div class="duckdev-fields">
 	<label for="enable">
 		<input
 			type="checkbox"
@@ -52,7 +52,7 @@
 		?>
 	</p>
 
-	<div class="tsf-fields">
+	<div class="duckdev-fields">
 		<?php foreach ( $types as $redirect_type => $label ) : ?>
 			<p>
 				<label>
@@ -72,7 +72,7 @@
 	<h4><?php esc_html_e( 'Target', '404-to-301' ); ?></h4>
 	<p><?php esc_html_e( 'From the target types, choose where you want to redirect the 404 errors to.', '404-to-301' ); ?></p>
 
-	<div class="tsf-fields">
+	<div class="duckdev-fields">
 		<p>
 			<label>
 				<input
@@ -96,7 +96,7 @@
 	</div>
 
 
-	<div class="tsf-fields" v-if="'page' === target">
+	<div class="duckdev-fields" v-if="'page' === target">
 		<p>
 			<label for="page">
 				<strong><?php esc_html_e( 'Select page', '404-to-301' ); ?></strong>
@@ -115,7 +115,7 @@
 		</p>
 	</div>
 
-	<div class="tsf-fields" v-else-if="'link' === target">
+	<div class="duckdev-fields" v-else-if="'link' === target">
 		<p>
 			<label for="url">
 				<strong><?php esc_html_e( 'Custom URL', '404-to-301' ); ?></strong>
