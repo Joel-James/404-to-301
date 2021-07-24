@@ -2,6 +2,7 @@
 node_modules
 /dist
 vendor
+app/assets
 
 
 # local env files
