@@ -23,7 +23,6 @@ use WP_REST_Request;
 use WP_REST_Response;
 use DuckDev\Redirect\Utils\Traits\Api;
 use DuckDev\Redirect\Utils\Abstracts\Endpoint;
-use DuckDev\Redirect\Controllers\Settings as Options;
 
 /**
  * Class Settings
@@ -118,7 +117,7 @@ class Settings extends Endpoint {
 		// Get single setting value.
 		if ( ! empty( $key ) && ! empty( $module ) ) {
 			// Get value.
-			$value = Options::get( $key, $module, false, $valid );
+			$value = dd404_settings()->get( $key, $module, false, $valid );
 
 			return $this->get_response(
 				array(
@@ -130,7 +129,7 @@ class Settings extends Endpoint {
 			);
 		} elseif ( ! empty( $module ) ) {
 			// Get values.
-			$values = Options::get_module( $module, false, $valid );
+			$values = dd404_settings()->get_module( $module, false, $valid );
 
 			// Get module settings.
 			return $this->get_response(
@@ -143,7 +142,7 @@ class Settings extends Endpoint {
 		}
 
 		// Get all settings.
-		return $this->get_response( Options::get_settings() );
+		return $this->get_response( dd404_settings()->get_settings() );
 	}
 
 	/**
@@ -163,17 +162,17 @@ class Settings extends Endpoint {
 
 		if ( ! empty( $key ) && ! empty( $module ) && ! empty( $value ) ) {
 			// Update single setting value.
-			$success = Options::update( $key, $value, $module );
+			$success = dd404_settings()->update( $key, $value, $module );
 		} elseif ( ! empty( $module ) ) {
 			// Update module settings.
-			$success = Options::update_module( $value, $module );
+			$success = dd404_settings()->update_module( $value, $module );
 		} else {
 			// Update the settings.
-			$success = Options::update_settings( $value );
+			$success = dd404_settings()->update_settings( $value );
 		}
 
 		// Get updated settings.
-		$settings = Options::get_settings();
+		$settings = dd404_settings()->get_settings();
 
 		// Send response.
 		return $this->get_response( $settings, $success );

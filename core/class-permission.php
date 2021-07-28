@@ -13,19 +13,19 @@
  * @subpackage Permission
  */
 
-namespace DuckDev\Redirect\Controllers;
+namespace DuckDev\Redirect;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Abstracts\Controller;
+use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
  * Class Permission
  *
  * @package DuckDev\Redirect\Controllers
  */
-class Permission extends Controller {
+class Permission extends Base {
 
 	/**
 	 * Get the capability to manage settings.

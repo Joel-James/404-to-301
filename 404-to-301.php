@@ -36,19 +36,22 @@
 defined( 'ABSPATH' ) || exit;
 
 // Plugin version.
-define( 'DD4T3_VERSION', '4.0.0' );
+define( 'DD404_VERSION', '4.0.0' );
 
 // Plugin path.
-define( 'DD4T3_URL', plugin_dir_url( __FILE__ ) );
+define( 'DD404_URL', plugin_dir_url( __FILE__ ) );
 
 // Plugin URL.
-define( 'DD4T3_DIR', plugin_dir_path( __FILE__ ) );
+define( 'DD404_DIR', plugin_dir_path( __FILE__ ) );
+
+// Plugin URL.
+define( 'DD404_FILE', __FILE__ );
 
 // Auto load classes.
-require_once DD4T3_DIR . '/vendor/autoload.php';
+require_once DD404_DIR . '/vendor/autoload.php';
 
 // Load functions.
-require_once DD4T3_DIR . '/core/functions/settings.php';
+require_once DD404_DIR . '/core/functions/settings.php';
 
 /**
  * The main function for that returns JJ_404_to_301

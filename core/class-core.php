@@ -19,9 +19,9 @@ namespace DuckDev\Redirect;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Controllers;
-use DuckDev\Redirect\Controllers\Admin;
-use DuckDev\Redirect\Controllers\Front;
+use DuckDev\Redirect\Views;
+use DuckDev\Redirect\Admin;
+use DuckDev\Redirect\Front;
 use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
@@ -79,8 +79,7 @@ class Core extends Base {
 	 * @return void
 	 */
 	private function common() {
-		Controllers\Assets::instance();
-		Controllers\Settings::instance();
+		Settings::instance();
 	}
 
 	/**
@@ -94,7 +93,8 @@ class Core extends Base {
 	private function admin() {
 		Admin\Menu::instance();
 		Admin\Assets::instance();
-		Admin\Admin::instance();
+		Admin\Vars::instance();
+		Views\Admin::instance();
 	}
 
 	/**

@@ -17,20 +17,21 @@
 <p><?php esc_html_e( 'Do you want to receive and email notification for each 404 errors?', '404-to-301' ); ?></p>
 <p><?php esc_html_e( 'You will get an email notification for every single 404 error. Please think twice if your site is getting 100s of 404s everyday!', '404-to-301' ); ?></p>
 <div class="duckdev-fields">
-	<label for="enable">
+	<label for="email-enable">
 		<input
 			type="checkbox"
 			name="404_to_301_settings[email][enable]"
-			id="enable"
+			id="email-enable"
 			value="1"
-			v-model="email"
+			@change="toggleEmail"
+			<?php checked( dd404_settings()->get( 'enable', 'email' ) ); ?>
 		> <?php esc_html_e( 'Enable email notifications for 404 errors?', '404-to-301' ); ?>
 	</label>
 </div>
 
 <hr/>
 
-<fieldset :disabled="!email">
+<fieldset :class="{'duckdev-disabled': !email}">
 
 	<p>
 		<label for="email">

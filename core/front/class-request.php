@@ -13,7 +13,7 @@
  * @subpackage Menu
  */
 
-namespace DuckDev\Redirect\Controllers\Front;
+namespace DuckDev\Redirect\Front;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;

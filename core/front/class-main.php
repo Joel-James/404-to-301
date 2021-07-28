@@ -13,19 +13,19 @@
  * @subpackage Main
  */
 
-namespace DuckDev\Redirect\Controllers\Front;
+namespace DuckDev\Redirect\Front;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Abstracts\Controller;
+use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
  * Class Main
  *
  * @package DuckDev\Redirect\Controllers
  */
-class Main extends Controller {
+class Main extends Base {
 
 	/**
 	 * Initialize assets functionality.

@@ -12,16 +12,15 @@
  * @subpackage Action
  */
 
-namespace DuckDev\Redirect\Controllers\Front\Actions;
+namespace DuckDev\Redirect\Front\Actions;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
 use Exception;
-use DuckDev\Redirect\Controllers\Settings;
-use DuckDev\Redirect\Controllers\Front\Main;
-use DuckDev\Redirect\Controllers\Front\Request;
-use DuckDev\Redirect\Utils\Abstracts\Controller;
+use DuckDev\Redirect\Front\Main;
+use DuckDev\Redirect\Front\Request;
+use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
  * Class Menu
@@ -29,7 +28,7 @@ use DuckDev\Redirect\Utils\Abstracts\Controller;
  * @package DuckDev\Redirect
  * @since   4.0.0
  */
-abstract class Action extends Controller {
+abstract class Action extends Base {
 
 	/**
 	 * Action type (redirect, email and log).

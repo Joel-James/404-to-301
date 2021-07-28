@@ -15,7 +15,7 @@
 <p><strong><?php esc_html_e( 'Information', '404-to-301' ); ?></strong></p>
 <p>
 	<span class="dashicons dashicons-admin-plugins"></span>
-	<?php printf( esc_html__( 'Version %s', '404-to-301' ), DD4T3_VERSION ); // phpcs:ignore ?>
+	<?php printf( esc_html__( 'Version %s', '404-to-301' ), DD404_VERSION ); // phpcs:ignore ?>
 </p>
 <p>
 	<span class="dashicons dashicons-wordpress"></span>

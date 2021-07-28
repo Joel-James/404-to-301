@@ -12,15 +12,15 @@
  * @subpackage Menu
  */
 
-namespace DuckDev\Redirect\Controllers\Admin;
+namespace DuckDev\Redirect\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Views;
 use DuckDev\Redirect\Plugin;
-use DuckDev\Redirect\Controllers\Permission;
-use DuckDev\Redirect\Utils\Abstracts\Controller;
+use DuckDev\Redirect\Permission;
+use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
  * Class Menu
@@ -28,20 +28,22 @@ use DuckDev\Redirect\Utils\Abstracts\Controller;
  * @package DuckDev\Redirect
  * @since   4.0.0
  */
-class Menu extends Controller {
+class Menu extends Base {
 
 	/**
 	 * Holds the slug of the plugin admin main menu.
 	 *
+	 * @var string
+	 *
 	 * @since  4.0.0
-	 * @var    string
 	 */
-	const SLUG = '404-to-301';
+	const SLUG = '404-to-301-logs';
 
 	/**
 	 * Initialize the menu class and register the hooks.
 	 *
 	 * @since  4.0.0
+	 *
 	 * @access public
 	 *
 	 * @return void
@@ -63,6 +65,25 @@ class Menu extends Controller {
 	 * @return void
 	 */
 	public function admin_menu() {
+		// Error logs main menu.
+		$this->logs();
+
+		// Settings sub menu.
+		$this->settings();
+	}
+
+	/**
+	 * Register the menu for the admin area of the plugin.
+	 *
+	 * This method should handle all the submenus that the plugin
+	 * needs also.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	public function is_settings() {
 		// Error logs main menu.
 		$this->logs();
 

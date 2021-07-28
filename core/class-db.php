@@ -11,7 +11,7 @@
  * @subpackage DB
  */
 
-namespace DuckDev\Redirect\Controllers;
+namespace DuckDev\Redirect;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;

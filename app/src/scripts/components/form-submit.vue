@@ -1,20 +1,20 @@
 <template>
-		<button
-			type="submit"
-			class="button button-primary"
-			:disabled="disable"
-			@click="saveSettings"
-		>
-			{{ saving ? savingText : saveText }}
-		</button>
-		<button
-			type="reset"
-			class="button"
-			:disabled="disable"
-			@click="resetSettings"
-		>
-			{{ resetting ? resettingText : resetText }}
-		</button>
+	<button
+		type="submit"
+		class="button button-primary"
+		:disabled="disable"
+		@click="saveSettings"
+	>
+		{{ saving ? savingText : saveText }}
+	</button>
+	<button
+		type="reset"
+		class="button"
+		:disabled="disable"
+		@click="resetSettings"
+	>
+		{{ resetting ? resettingText : resetText }}
+	</button>
 </template>
 
 <script>
@@ -44,7 +44,7 @@ export default {
 		 * @return {boolean}
 		 */
 		disable() {
-			return this.saving || this.resetting
+			return this.saving || this.resetting || this.$store.state.loading
 		}
 	},
 
@@ -57,6 +57,7 @@ export default {
 		 * @since 4.0
 		 */
 		saveSettings() {
+			this.$store.commit('startLoading')
 			this.saving = true
 		},
 
@@ -68,6 +69,7 @@ export default {
 		 * @since 4.0
 		 */
 		resetSettings() {
+			this.$store.commit('startLoading')
 			this.resetting = true
 		},
 	}

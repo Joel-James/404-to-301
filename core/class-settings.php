@@ -13,20 +13,20 @@
  * @subpackage Settings
  */
 
-namespace DuckDev\Redirect\Controllers;
+namespace DuckDev\Redirect;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Data\Config;
-use DuckDev\Redirect\Utils\Abstracts\Controller;
+use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
  * Class Settings
  *
  * @package DuckDev\Redirect\Controllers
  */
-class Settings extends Controller {
+class Settings extends Base {
 
 	/**
 	 * Setup plugin class.
@@ -282,7 +282,8 @@ class Settings extends Controller {
 				'recipient' => get_option( 'admin_email' ),
 			),
 			'misc'     => array(
-				'tables' => array(),
+				'tables'        => array(),
+				'review_notice' => false,
 			),
 		);
 
@@ -321,6 +322,8 @@ class Settings extends Controller {
 					// Overwrite with the value from new array.
 					if ( isset( $new[ $module ][ $key ] ) ) {
 						$old[ $module ][ $key ] = $new[ $module ][ $key ];
+					} else {
+						$old[ $module ][ $key ] = $this->get_empty_value( $key, $module );
 					}
 				}
 			}
@@ -335,6 +338,22 @@ class Settings extends Controller {
 		 * @since 4.0.0
 		 */
 		return apply_filters( 'dd404_settings_format_settings', $old, $new );
+	}
+
+	private function get_empty_value( $key, $module, $value = false ) {
+		$default = $this->default_settings();
+
+		if ( isset( $default[ $module ][ $key ] ) ) {
+			if ( is_array( $default[ $module ][ $key ] ) ) {
+				$value = array();
+			} elseif ( is_string( $default[ $module ][ $key ] ) ) {
+				$value = '';
+			} else {
+				$value = false;
+			}
+		}
+
+		return $value;
 	}
 
 	/**
@@ -388,6 +407,7 @@ class Settings extends Controller {
 	 * @return array
 	 */
 	public function sanitize_settings( $values ) {
+		wpmudev_debug($values);
 		// Should be a proper array.
 		$values = empty( $values ) || ! is_array( $values ) ? array() : $values;
 

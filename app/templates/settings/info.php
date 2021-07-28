@@ -18,19 +18,19 @@
 <ul class="duckdev-list-dots">
 	<li>
 		<p>
-			<a href="https://duckdev.com/docs/404-to-301/" target="_blank"><?php esc_html_e( 'Documentation', '404-to-301' ); ?></a> -
+			📚&nbsp;&nbsp;<a href="https://duckdev.com/docs/404-to-301/" target="_blank"><?php esc_html_e( 'Documentation', '404-to-301' ); ?></a> -
 			<?php esc_html_e( 'Our extensive documentation contains references and guides for most situations you may encounter.', '404-to-301' ); ?>
 		</p>
 	</li>
 	<li>
 		<p>
-			<a href="https://wordpress.org/support/plugin/404-to-301/" target="_blank"><?php esc_html_e( 'Support Forums', '404-to-301' ); ?></a> -
+			🫂&nbsp;&nbsp;<a href="https://wordpress.org/support/plugin/404-to-301/" target="_blank"><?php esc_html_e( 'Support Forums', '404-to-301' ); ?></a> -
 			<?php esc_html_e( 'We have an active and friendly community on our wp.org forum who may be able to help you figure out the ‘how-tos’ of the 404 to 301 world.', '404-to-301' ); ?>
 		</p>
 	</li>
 	<li>
 		<p>
-			<a href="https://duckdev.com/contact/" target="_blank"><?php esc_html_e( 'Contact Author', '404-to-301' ); ?></a> -
+			📧&nbsp;&nbsp;<a href="https://duckdev.com/contact/" target="_blank"><?php esc_html_e( 'Contact Author', '404-to-301' ); ?></a> -
 			<?php esc_html_e( 'If the above options did not help you can reach out to me directly through my contact form. Please note, it may take a few days for me to reply as I am the only developer working on new features, bug fixes, improvements, documentation, customer support etc. after my full time job.', '404-to-301' ); ?>
 		</p>
 	</li>
@@ -43,17 +43,17 @@
 <ul class="duckdev-list-dots">
 	<li>
 		<p>
-			<a href="https://wordpress.org/plugins/lazy-load-for-comments/" target="_blank"><?php esc_html_e( 'Lazy Load for Comments', '404-to-301' ); ?></a>
+			🦥&nbsp;&nbsp;<a href="https://wordpress.org/plugins/lazy-load-for-comments/" target="_blank"><?php esc_html_e( 'Lazy Load for Comments', '404-to-301' ); ?></a>
 		</p>
 	</li>
 	<li>
 		<p>
-			<a href="https://wordpress.org/plugins/loggedin/" target="_blank"><?php esc_html_e( 'Loggedin - Limit Active Logins', '404-to-301' ); ?></a>
+			🔐&nbsp;&nbsp;<a href="https://wordpress.org/plugins/loggedin/" target="_blank"><?php esc_html_e( 'Loggedin - Limit Active Logins', '404-to-301' ); ?></a>
 		</p>
 	</li>
 	<li>
 		<p>
-			<?php esc_html_e( 'and', '404-to-301' ); ?> <a href="https://profiles.wordpress.org/joelcj91/#content-plugins" target="_blank"><?php esc_html_e( 'a few more..', '404-to-301' ); ?></a>
+			<?php esc_html_e( 'and', '404-to-301' ); ?> <a href="https://profiles.wordpress.org/joelcj91/#content-plugins" target="_blank"><?php esc_html_e( 'a few more...', '404-to-301' ); ?></a>
 		</p>
 	</li>
 </ul>

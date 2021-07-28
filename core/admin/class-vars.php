@@ -13,20 +13,19 @@
  * @subpackage Assets
  */
 
-namespace DuckDev\Redirect\Controllers\Admin;
+namespace DuckDev\Redirect\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Controllers\Settings;
-use DuckDev\Redirect\Utils\Abstracts\Controller;
+use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
  * Class Permission
  *
  * @package DuckDev\Redirect\Controllers
  */
-class Admin extends Controller {
+class Vars extends Base {
 
 	/**
 	 * Initialize assets functionality.

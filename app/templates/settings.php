@@ -26,7 +26,7 @@
 			<h1>
 				<?php esc_html_e( '404 to 301', '404-to-301' ); ?>
 				<span class="subtitle">
-					by <a href="https://duckdev.com/?utm_source=dd404&utm_medium=plugin&utm_campaign=dd404_settings_header">Joel James</a> ( v<?php echo esc_attr( DD4T3_VERSION ); ?> )
+					by <a href="https://duckdev.com/?utm_source=dd404&utm_medium=plugin&utm_campaign=dd404_settings_header">Joel James</a> ( v<?php echo esc_attr( DD404_VERSION ); ?> )
 				</span>
 			</h1>
 
@@ -49,9 +49,11 @@
 			/**
 			 * Action hook to print settings notices.
 			 *
+			 * @param string $page Current page.
+			 *
 			 * @since 4.0.0
 			 */
-			do_action( 'dd404_admin_settings_notices', $page );
+			do_action( 'dd404_admin_notices', 'settings' );
 			?>
 		</div>
 

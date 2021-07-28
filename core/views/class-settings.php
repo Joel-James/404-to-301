@@ -14,6 +14,9 @@
 
 namespace DuckDev\Redirect\Views;
 
+// If this file is called directly, abort.
+defined( 'WPINC' ) || die;
+
 use DuckDev\Redirect\Data;
 use DuckDev\Redirect\Utils\Abstracts\View;
 
@@ -40,10 +43,7 @@ class Settings extends View {
 		add_action( 'dd404_admin_settings_email_form_content', array( $this, 'email_content' ) );
 		add_action( 'dd404_admin_settings_info_form_content', array( $this, 'info_content' ) );
 
-		add_action( 'dd404_admin_settings_notices', array( $this, 'show_settings_notice' ) );
-
-		// Add screen options.
-		add_action( 'current_screen', array( $this, 'screen_options' ) );
+		add_action( 'dd404_admin_notices', array( $this, 'show_settings_notice' ) );
 	}
 
 	/**
@@ -199,42 +199,6 @@ class Settings extends View {
 	 *
 	 * @since  4.0
 	 *
-	 * @return void
-	 */
-	public function screen_options() {
-		$screen = get_current_screen();
-
-		// Overview tab.
-		$screen->add_help_tab(
-			array(
-				'id'      => 'overview',
-				'title'   => __( 'Overview', '404-to-301' ),
-				'content' => $this->get_render( 'components/screen-options/tab-overview' ),
-			)
-		);
-
-		// Overview tab.
-		$screen->add_help_tab(
-			array(
-				'id'      => 'help',
-				'title'   => __( 'Help & Support', '404-to-301' ),
-				'content' => $this->get_render( 'components/screen-options/tab-help' ),
-			)
-		);
-
-		// Sidebar.
-		$screen->set_help_sidebar(
-			$this->get_render(
-				'components/screen-options/sidebar'
-			)
-		);
-	}
-
-	/**
-	 * Register the sub menu for the admin settings.
-	 *
-	 * @since  4.0
-	 *
 	 * @return array
 	 */
 	public function get_settings_tabs() {
@@ -292,28 +256,32 @@ class Settings extends View {
 	/**
 	 * Register the sub menu for the admin settings.
 	 *
+	 * @param string $page Current page.
+	 *
 	 * @since  4.0
 	 *
 	 * @return void
 	 */
-	public function show_settings_notice() {
-		// Get the errors.
-		$errors = get_settings_errors();
+	public function show_settings_notice( $page ) {
+		if ( 'settings' === $page ) {
+			// Get the errors.
+			$errors = get_settings_errors();
 
-		if ( empty( $errors ) ) {
-			return;
-		}
+			if ( empty( $errors ) ) {
+				return;
+			}
 
-		foreach ( $errors as $details ) {
-			$this->render(
-				'components/notice',
-				array(
-					'type'    => $details['type'],
-					'content' => $details['message'],
-					'options' => array( 'id' => $details['code'] ),
-				),
-				false
-			);
+			foreach ( $errors as $details ) {
+				$this->render(
+					'components/notices/notice',
+					array(
+						'type'    => $details['type'],
+						'content' => $details['message'],
+						'options' => array( 'id' => $details['code'] ),
+					),
+					false
+				);
+			}
 		}
 	}
 

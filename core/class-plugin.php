@@ -35,7 +35,7 @@ class Plugin extends Base {
 	 *
 	 * @var    string
 	 * @since  4.0.0
-	 * @access protected
+	 * @access private
 	 */
 	private $slug = '404-to-301';
 
@@ -46,9 +46,22 @@ class Plugin extends Base {
 	 *
 	 * @var    string
 	 * @since  4.0.0
-	 * @access protected
+	 * @access private
 	 */
 	private $name = '404 to 301';
+
+	/**
+	 * Holds the screen IDs of plugin pages.
+	 *
+	 * @var string[]
+	 * @since  4.0.0
+	 * @access private
+	 */
+	private $pages = array(
+		'logs'      => 'toplevel_page_404-to-301-logs',
+		'settings'  => 'logs_page_404-to-301-settings',
+		'redirects' => 'logs_page_404-to-301-redirects',
+	);
 
 	/**
 	 * Getter method to get the plugin name.
@@ -87,5 +100,26 @@ class Plugin extends Base {
 	 */
 	public function is_network_wide() {
 		return true;
+	}
+
+	/**
+	 * Getter method to get the plugin admin page IDs.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return string[]
+	 */
+	public function pages() {
+		$pages = array();
+
+		foreach ( $this->pages as $key => $id ) {
+			$pages[ $key ] = array(
+				'id'  => $id,
+				'url' => admin_url( 'admin.php?page=404-to-301-' . $key ),
+			);
+		}
+
+		return $pages;
 	}
 }

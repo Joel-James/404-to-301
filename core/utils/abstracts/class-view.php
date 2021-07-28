@@ -67,7 +67,7 @@ abstract class View extends Base {
 	 */
 	public function render( $file, array $args = array(), $once = true, $return = false ) {
 		// Full path to the file.
-		$path = DD4T3_DIR . "/app/templates/{$file}.php";
+		$path = DD404_DIR . "/app/templates/{$file}.php";
 
 		if ( file_exists( $path ) ) {
 			// phpcs:ignore

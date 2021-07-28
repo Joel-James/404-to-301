@@ -20,6 +20,19 @@
 	<h1 class="wp-heading-inline">404 Logs</h1>
 	<hr class="wp-header-end">
 
+	<div class="duckdev-notice-wrap">
+		<?php
+		/**
+		 * Action hook to print settings notices.
+		 *
+		 * @param string $page Current page.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd404_admin_notices', 'logs' );
+		?>
+	</div>
+
 	<h2 class="screen-reader-text">Filter posts list</h2>
 	<ul class="subsubsub">
 		<li class="all"><a href="">All <span class="count">(7)</span></a> |</li>

@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca7acf1d88280b09159c610df4fec7c0",
+    "content-hash": "5141812fdfb7a07b6f4c1e1104cbef97",
     "packages": [
         {
-            "name": "duckdev/queries",
-            "version": "1.0.0",
+            "name": "duckdev/wp-review-notice",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/DuckDev/queries.git",
-                "reference": "0f967060e9c29ab74eadfc4f7ac57e0030b1bec4"
+                "url": "https://github.com/duckdev/wp-review-notice.git",
+                "reference": "d8498539c8634689d42a0cb9c3dbc278becd088c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DuckDev/queries/zipball/0f967060e9c29ab74eadfc4f7ac57e0030b1bec4",
-                "reference": "0f967060e9c29ab74eadfc4f7ac57e0030b1bec4",
+                "url": "https://api.github.com/repos/duckdev/wp-review-notice/zipball/d8498539c8634689d42a0cb9c3dbc278becd088c",
+                "reference": "d8498539c8634689d42a0cb9c3dbc278becd088c",
                 "shasum": ""
             },
             "require": {
@@ -25,13 +25,13 @@
             },
             "type": "library",
             "autoload": {
-                "classmap": [
-                    "queries/"
-                ]
+                "psr-4": {
+                    "DuckDev\\Reviews\\": "src"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0+"
+                "GPL-2.0-or-later"
             ],
             "authors": [
                 {
@@ -40,67 +40,17 @@
                     "homepage": "https://duckdev.com"
                 }
             ],
-            "description": "Custom MySQL query builder for WordPress custom tables.",
+            "description": "Simple library class to gently ask for a wp.org plugin review after a few days of plugin usage.",
             "keywords": [
-                "custom-tables",
-                "database",
-                "query",
-                "query-builder",
-                "wordpress"
-            ],
-            "support": {
-                "issues": "https://github.com/DuckDev/queries/issues/",
-                "source": "https://github.com/DuckDev/queries/tree/v1.0.0"
-            },
-            "time": "2021-07-11T14:45:44+00:00"
-        },
-        {
-            "name": "duckdev/wp-flash-notices",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/DuckDev/wp-flash-notices.git",
-                "reference": "07098f3a5604fc9965bddba61a08701936da8116"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/DuckDev/wp-flash-notices/zipball/07098f3a5604fc9965bddba61a08701936da8116",
-                "reference": "07098f3a5604fc9965bddba61a08701936da8116",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "wp-flash-notices.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Joel James",
-                    "email": "me@joelsays.com",
-                    "homepage": "https://duckdev.com"
-                }
-            ],
-            "description": "WordPress admin notices as flash notice using transient API to display after page reload.",
-            "keywords": [
-                "admin-notices",
                 "notices",
-                "persistent",
-                "transient",
+                "reviews",
                 "wordpress"
             ],
             "support": {
-                "issues": "https://github.com/DuckDev/wp-flash-notices/issues/",
-                "source": "https://github.com/DuckDev/wp-flash-notices/tree/v1.0.1"
+                "issues": "https://github.com/duckdev/wp-review-notice/issues/",
+                "source": "https://github.com/duckdev/wp-review-notice/tree/v1.0.0"
             },
-            "time": "2019-07-25T13:04:17+00:00"
+            "time": "2021-07-27T07:02:26+00:00"
         }
     ],
     "packages-dev": [],
