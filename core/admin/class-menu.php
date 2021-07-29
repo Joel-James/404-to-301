@@ -1,14 +1,14 @@
 <?php
 /**
- * The plugin menu controller class.
+ * The plugin admin menu class.
  *
  * This class handles the admin menu functionality for the plugin.
  *
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    Controller
+ * @package    Admin
  * @subpackage Menu
  */
 
@@ -25,7 +25,7 @@ use DuckDev\Redirect\Utils\Abstracts\Base;
 /**
  * Class Menu
  *
- * @package DuckDev\Redirect
+ * @package DuckDev\Redirect\Admin
  * @since   4.0.0
  */
 class Menu extends Base {
@@ -43,7 +43,6 @@ class Menu extends Base {
 	 * Initialize the menu class and register the hooks.
 	 *
 	 * @since  4.0.0
-	 *
 	 * @access public
 	 *
 	 * @return void
@@ -70,33 +69,26 @@ class Menu extends Base {
 
 		// Settings sub menu.
 		$this->settings();
-	}
 
-	/**
-	 * Register the menu for the admin area of the plugin.
-	 *
-	 * This method should handle all the submenus that the plugin
-	 * needs also.
-	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
-	 * @return void
-	 */
-	public function is_settings() {
-		// Error logs main menu.
-		$this->logs();
-
-		// Settings sub menu.
-		$this->settings();
+		/**
+		 * Action hook to run after setup all admin menus for plugin.
+		 *
+		 * Other plugins can use this hook to add new sub menu items
+		 * to the main 404 to 301 menu.
+		 *
+		 * @since 4.0
+		 */
+		do_action( 'dd404_admin_menu' );
 	}
 
 	/**
 	 * Rename admin menu text to : 404 to 301.
 	 *
-	 * @global array $menu Menus registered in this site.
+	 * This is to make sure the main label is plugin's name.
 	 *
-	 * @since  4.0
+	 * @global array $menu Menus registered in this site.
+	 * @since  4.0.0
+	 *
 	 * @return void
 	 */
 	public function rename_menu() {
@@ -115,13 +107,16 @@ class Menu extends Base {
 	/**
 	 * Register the menu for the error logs page.
 	 *
-	 * @since  4.0
+	 * This is where the 404 error logs are listed.
+	 *
+	 * @since  4.0.0
+	 * @access private
 	 *
 	 * @return void
 	 */
 	private function logs() {
 		// Main logs page.
-		$page_hook = add_menu_page(
+		add_menu_page(
 			__( '404 Error Logs', '404-to-301' ),
 			__( 'Logs', '404-to-301' ),
 			Permission::settings_cap(),
@@ -130,38 +125,21 @@ class Menu extends Base {
 			'dashicons-redo',
 			89
 		);
-
-		$page_hook = add_submenu_page(
-			self::SLUG,
-			__( '404 to 301 Settings', '404-to-301' ),
-			__( 'Redirects', '404-to-301' ),
-			Permission::settings_cap(),
-			'404-to-301-redirects',
-			array( Views\Redirects::instance(), 'content' )
-		);
-
-		/**
-		 * Action hook to run something when we are on logs page.
-		 *
-		 * This hook can be used to add new settings menu items.
-		 *
-		 * @param string $page_hook Menu string.
-		 *
-		 * @since 4.0
-		 */
-		do_action( 'dd404_admin_menu_logs', $page_hook );
 	}
 
 	/**
 	 * Register the sub menu for the admin settings.
 	 *
-	 * @since  4.0
+	 * This is where the plugin settings are handled.
+	 *
+	 * @since  4.0.0
+	 * @access private
 	 *
 	 * @return void
 	 */
 	private function settings() {
-		// Sub page.
-		$page_hook = add_submenu_page(
+		// Settings sub page.
+		add_submenu_page(
 			self::SLUG,
 			__( '404 to 301 Settings', '404-to-301' ),
 			__( 'Settings', '404-to-301' ),
@@ -169,16 +147,5 @@ class Menu extends Base {
 			'404-to-301-settings',
 			array( Views\Settings::instance(), 'base_content' )
 		);
-
-		/**
-		 * Action hook to run something when we are on settings page.
-		 *
-		 * This hook can be used to add new settings menu items.
-		 *
-		 * @param string $page_hook Menu string.
-		 *
-		 * @since 4.0
-		 */
-		do_action( 'dd404_admin_menu_settings', $page_hook );
 	}
 }

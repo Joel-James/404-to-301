@@ -1,16 +1,15 @@
 <?php
 /**
- * Object template class.
+ * The core plugin class.
  *
- * This class allows for templates for any object type, which includes `post`,
- * `term`, and `user`.  When viewing a particular single post, term archive, or
- * user/author archive page, the template can be used.
+ * This is the main class that initialize the entire plugin functionality.
+ * Only one instance of this class be created.
  *
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    40to301
+ * @package    Core
  * @subpackage Core
  */
 
@@ -19,18 +18,15 @@ namespace DuckDev\Redirect;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Views;
-use DuckDev\Redirect\Admin;
-use DuckDev\Redirect\Front;
 use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
- * Creates a new object template.
+ * Class Core
  *
- * @since  5.0.0
- * @access public
+ * @package DuckDev\Redirect
+ * @since   4.0.0
  */
-class Core extends Base {
+final class Core extends Base {
 
 	/**
 	 * Boot and start the plugin.
@@ -40,15 +36,22 @@ class Core extends Base {
 	 *
 	 * @return void
 	 */
-	public function init() {
-		$this->setup();
+	protected function init() {
+		// Setup sub classes.
+		$this->common();
+		$this->admin();
+		$this->front();
+		$this->api();
+		$this->cli();
 
 		/**
 		 * Action hook to execute after plugin is loaded.
 		 *
-		 * Addon plugins can use this to initialize.
+		 * Addons/extensions can use this to initialize the plugin
+		 * so the addons/extensions will be loaded only if the required
+		 * parent plugin is active.
 		 *
-		 * @param Core $this Plugin instance.
+		 * @param Core $this Plugin core instance.
 		 *
 		 * @since 4.0.0
 		 */
@@ -56,22 +59,10 @@ class Core extends Base {
 	}
 
 	/**
-	 * Boot and start the plugin.
+	 * Setup all classes for the common functionality.
 	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
-	 * @return void
-	 */
-	private function setup() {
-		$this->common();
-		$this->admin();
-		$this->front();
-		$this->api();
-	}
-
-	/**
-	 * Boot and start the plugin.
+	 * These classes are required for both front end and
+	 * back of WordPress.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -83,37 +74,50 @@ class Core extends Base {
 	}
 
 	/**
-	 * Boot and start the plugin.
+	 * Setup all classes for the admin functionality.
+	 *
+	 * These classes are required only on admin side.
 	 *
 	 * @since  4.0.0
 	 * @access public
+	 * @uses   is_admin()
 	 *
 	 * @return void
 	 */
 	private function admin() {
-		Admin\Menu::instance();
-		Admin\Assets::instance();
-		Admin\Vars::instance();
-		Views\Admin::instance();
+		if ( is_admin() ) {
+			Admin\Menu::instance();
+			Admin\Assets::instance();
+			Admin\Vars::instance();
+			Views\Admin::instance();
+		}
 	}
 
 	/**
-	 * Boot and start the plugin.
+	 * Setup all classes for the front end functionality.
+	 *
+	 * These classes are required only on front end.
 	 *
 	 * @since  4.0.0
 	 * @access public
+	 * @uses   is_admin()
 	 *
 	 * @return void
 	 */
 	private function front() {
-		Front\Main::instance();
-		//Front\Actions\Log::instance();
-		//Front\Actions\Email::instance();
-		//Front\Actions\Redirect::instance();
+		if ( ! is_admin() ) {
+			Front\Main::instance();
+			//Front\Actions\Log::instance();
+			//Front\Actions\Email::instance();
+			//Front\Actions\Redirect::instance();
+		}
 	}
 
 	/**
-	 * Boot and start the plugin.
+	 * Setup plugin API endpoints.
+	 *
+	 * Rest API endpoints are used to communicate with WP
+	 * from UI or from other external sources.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -122,5 +126,25 @@ class Core extends Base {
 	 */
 	private function api() {
 		Api\Settings::instance();
+	}
+
+	/**
+	 * Setup plugin WP CLI commands.
+	 *
+	 * WP CLI commands are added only if the WP CLI
+	 * is available and running.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	private function cli() {
+		// Only if CLI available.
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			CLI\Info::instance();
+			CLI\Logs::instance();
+			CLI\Settings::instance();
+		}
 	}
 }

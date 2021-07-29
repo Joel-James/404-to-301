@@ -1,16 +1,16 @@
 <?php
 /**
- * The plugin assets class.
+ * The plugin script vars class.
  *
- * This class contains the functionality to manage the assets
- * inside the plugin.
+ * This class managed the localized script vars for different
+ * scripts used by the plugin.
  *
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    Controller
- * @subpackage Assets
+ * @package    Admin
+ * @subpackage Vars
  */
 
 namespace DuckDev\Redirect\Admin;
@@ -21,37 +21,41 @@ defined( 'WPINC' ) || die;
 use DuckDev\Redirect\Utils\Abstracts\Base;
 
 /**
- * Class Permission
+ * Class Vars
  *
- * @package DuckDev\Redirect\Controllers
+ * @package DuckDev\Redirect\Admin
+ * @since   4.0.0
  */
 class Vars extends Base {
 
 	/**
-	 * Initialize assets functionality.
+	 * Initialize the class.
 	 *
-	 * @since 3.2.4
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
 	public function init() {
 		// Add required vars for javascript.
-		add_action( 'dd404_assets_vars_dd404-settings', array( $this, 'common_vars' ) );
+		add_action( 'dd404_assets_vars_dd404-logs', array( $this, 'common' ) );
+		add_action( 'dd404_assets_vars_dd404-logs', array( $this, 'logs' ) );
+		add_action( 'dd404_assets_vars_dd404-settings', array( $this, 'common' ) );
+		add_action( 'dd404_assets_vars_dd404-settings', array( $this, 'settings' ) );
 	}
 
 	/**
-	 * Assets for our front end functionality.
+	 * Add the vars common for all scripts.
 	 *
-	 * Currently this function will not register anything.
-	 * But this should be here for other modules to register
-	 * public assets.
+	 * @param array $vars Script vars.
 	 *
-	 * @since 3.2.4
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return array $vars
 	 */
-	public function common_vars( $vars ) {
-		// Rest data.
+	public function common( $vars ) {
+		// Rest API data.
 		$vars['rest'] = array(
 			'base'  => rest_url( '404-to-301/v1/' ),
 			'nonce' => wp_create_nonce( 'wp_rest' ),
@@ -64,18 +68,30 @@ class Vars extends Base {
 	}
 
 	/**
-	 * Assets for our front end functionality.
+	 * Add the vars only required in settings script.
 	 *
-	 * Currently this function will not register anything.
-	 * But this should be here for other modules to register
-	 * public assets.
+	 * @param array $vars Script vars.
 	 *
-	 * @since 3.2.4
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return array $vars
 	 */
-	public function general_vars( $vars ) {
-		// Add general settings data.
+	public function settings( $vars ) {
+		return $vars;
+	}
+
+	/**
+	 * Add the vars only required in logs script.
+	 *
+	 * @param array $vars Script vars.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return array $vars
+	 */
+	public function logs( $vars ) {
 		return $vars;
 	}
 }

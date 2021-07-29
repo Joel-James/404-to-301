@@ -20,7 +20,8 @@ namespace {
 	 * Use this to access the plugin settings class from
 	 * anywhere in the WP.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return DuckDev\Redirect\Settings
 	 */
