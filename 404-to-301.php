@@ -56,9 +56,6 @@ define( 'DD404_BASE_NAME', plugin_basename( __FILE__ ) );
 // Auto load classes.
 require_once DD404_DIR . '/vendor/autoload.php';
 
-// Load functions.
-require_once DD404_DIR . '/core/functions/settings.php';
-
 // Activation actions.
 register_activation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'activate' ) );
 
