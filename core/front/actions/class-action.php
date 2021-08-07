@@ -64,13 +64,13 @@ abstract class Action extends Base {
 		}
 
 		// Perform 404 actions.
-		add_action( 'dd404_404_request', array( $this, 'process' ) );
+		add_action( 'dd4t3_404_request', array( $this, 'process' ) );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -82,7 +82,7 @@ abstract class Action extends Base {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @param Request $request Request object.
@@ -117,7 +117,7 @@ abstract class Action extends Base {
 		 *
 		 * @since 4.0
 		 */
-		$this->request = apply_filters( 'dd404_action_request', $request );
+		$this->request = apply_filters( 'dd4t3_action_request', $request );
 	}
 
 	/**
@@ -143,7 +143,7 @@ abstract class Action extends Base {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_action_can_run', $can, $this->action, $this->request );
+		return apply_filters( 'dd4t3_action_can_run', $can, $this->action, $this->request );
 	}
 
 	/**
@@ -155,7 +155,7 @@ abstract class Action extends Base {
 	 */
 	protected function enabled() {
 		// Get global option.
-		$enabled = dd404_settings()->get( 'enable', $this->action );
+		$enabled = dd4t3_settings()->get( 'enable', $this->action );
 		// If not checking on a request.
 		if ( empty( $this->request ) ) {
 			$config = 'global';
@@ -178,6 +178,6 @@ abstract class Action extends Base {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_action_enabled', $enabled, $this->action, $this->request );
+		return apply_filters( 'dd4t3_action_enabled', $enabled, $this->action, $this->request );
 	}
 }

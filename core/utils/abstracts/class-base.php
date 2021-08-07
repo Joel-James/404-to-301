@@ -22,7 +22,7 @@ defined( 'WPINC' ) || die;
 /**
  * Class Base
  *
- * @package DuckDev\DD4T3\Abstracts
+ * @package DuckDev\Redirect\Abstracts
  */
 abstract class Base {
 

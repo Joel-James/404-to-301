@@ -24,7 +24,7 @@
 			id="email-enable"
 			value="1"
 			@change="toggleEmail"
-			<?php checked( dd404_settings()->get( 'enable', 'email' ) ); ?>
+			<?php checked( dd4t3_settings()->get( 'enable', 'email' ) ); ?>
 		> <?php esc_html_e( 'Enable email notifications for 404 errors?', '404-to-301' ); ?>
 	</label>
 </div>
@@ -46,7 +46,7 @@
 			id="email"
 			class="regular-text"
 			placeholder="admin@duckdev.com"
-			value="<?php echo esc_html( dd404_settings()->get( 'recipient', 'email' ) ); ?>"
+			value="<?php echo esc_html( dd4t3_settings()->get( 'recipient', 'email' ) ); ?>"
 		>
 	</p>
 

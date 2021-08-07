@@ -38,10 +38,10 @@ class Vars extends Base {
 	 */
 	public function init() {
 		// Add required vars for javascript.
-		add_action( 'dd404_assets_vars_dd404-logs', array( $this, 'common' ) );
-		add_action( 'dd404_assets_vars_dd404-logs', array( $this, 'logs' ) );
-		add_action( 'dd404_assets_vars_dd404-settings', array( $this, 'common' ) );
-		add_action( 'dd404_assets_vars_dd404-settings', array( $this, 'settings' ) );
+		add_action( 'dd4t3_assets_vars_dd4t3-logs', array( $this, 'common' ) );
+		add_action( 'dd4t3_assets_vars_dd4t3-logs', array( $this, 'logs' ) );
+		add_action( 'dd4t3_assets_vars_dd4t3-settings', array( $this, 'common' ) );
+		add_action( 'dd4t3_assets_vars_dd4t3-settings', array( $this, 'settings' ) );
 	}
 
 	/**
@@ -62,7 +62,7 @@ class Vars extends Base {
 		);
 
 		// Settings data.
-		$vars['settings'] = dd404_settings()->get_settings();
+		$vars['settings'] = dd4t3_settings()->get_settings();
 
 		return $vars;
 	}

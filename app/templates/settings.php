@@ -17,16 +17,16 @@
  */
 
 ?>
-<div class="wrap duckdev-wrap" id="dd404-settings-app">
+<div class="wrap duckdev-wrap" id="dd4t3-settings-app">
 	<form method="post" action="options.php" autocomplete="off">
 
-		<?php settings_fields( dd404_settings()::KEY ); // Setup form fields. ?>
+		<?php settings_fields( dd4t3_settings()::KEY ); // Setup form fields. ?>
 
 		<div class="duckdev-top-wrap">
 			<h1>
 				<?php esc_html_e( '404 to 301', '404-to-301' ); ?>
 				<span class="subtitle">
-					by <a href="https://duckdev.com/?utm_source=dd404&utm_medium=plugin&utm_campaign=dd404_settings_header">Joel James</a> ( v<?php echo esc_attr( DD404_VERSION ); ?> )
+					by <a href="https://duckdev.com/?utm_source=dd4t3&utm_medium=plugin&utm_campaign=dd4t3_settings_header">Joel James</a> ( v<?php echo esc_attr( DD4T3_VERSION ); ?> )
 				</span>
 			</h1>
 
@@ -53,7 +53,7 @@
 			 *
 			 * @since 4.0.0
 			 */
-			do_action( 'dd404_admin_notices', 'settings' );
+			do_action( 'dd4t3_admin_notices', 'settings' );
 			?>
 		</div>
 
@@ -78,7 +78,7 @@
 								 *
 								 * @since 4.0.0
 								 */
-								do_action( "dd404_admin_settings_{$page}_form_content" );
+								do_action( "dd4t3_admin_settings_{$page}_form_content" );
 								?>
 							</div>
 						</div>

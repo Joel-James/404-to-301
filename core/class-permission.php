@@ -57,7 +57,7 @@ class Permission {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_permission_has_access', $has );
+		return apply_filters( 'dd4t3_permission_has_access', $has );
 	}
 
 	/**
@@ -76,6 +76,6 @@ class Permission {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_permission_get_cap', self::CAPABILITY );
+		return apply_filters( 'dd4t3_permission_get_cap', self::CAPABILITY );
 	}
 }

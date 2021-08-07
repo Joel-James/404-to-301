@@ -109,7 +109,7 @@ class Request {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -123,7 +123,7 @@ class Request {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -137,7 +137,7 @@ class Request {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -151,7 +151,7 @@ class Request {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -165,7 +165,7 @@ class Request {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -179,7 +179,7 @@ class Request {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -193,7 +193,7 @@ class Request {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @param string $name    Name of the config.
@@ -215,7 +215,7 @@ class Request {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -247,13 +247,13 @@ class Request {
 		 *
 		 * @since 4.0
 		 */
-		$this->config = apply_filters( 'dd404_request_config', $config );
+		$this->config = apply_filters( 'dd4t3_request_config', $config );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -277,13 +277,13 @@ class Request {
 		 *
 		 * @since 4.0
 		 */
-		$this->method = apply_filters( 'dd404_request_method', $method );
+		$this->method = apply_filters( 'dd4t3_request_method', $method );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -307,13 +307,13 @@ class Request {
 		 *
 		 * @since 4.0
 		 */
-		$this->referrer = apply_filters( 'dd404_request_referer', $referrer );
+		$this->referrer = apply_filters( 'dd4t3_request_referer', $referrer );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -337,13 +337,13 @@ class Request {
 		 *
 		 * @since 4.0
 		 */
-		$this->agent = apply_filters( 'dd404_request_agent', $agent );
+		$this->agent = apply_filters( 'dd4t3_request_agent', $agent );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -367,13 +367,13 @@ class Request {
 		 *
 		 * @since 4.0
 		 */
-		$this->url = apply_filters( 'dd404_request_url', $url );
+		$this->url = apply_filters( 'dd4t3_request_url', $url );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -413,13 +413,13 @@ class Request {
 		 *
 		 * @since 4.0
 		 */
-		$this->ip = apply_filters( 'dd404_request_ip', $ip );
+		$this->ip = apply_filters( 'dd4t3_request_ip', $ip );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -456,13 +456,13 @@ class Request {
 		 *
 		 * @since 4.0
 		 */
-		$this->headers = apply_filters( 'dd404_request_headers', $headers );
+		$this->headers = apply_filters( 'dd4t3_request_headers', $headers );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -479,13 +479,13 @@ class Request {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_request_ignored_headers', $ignored );
+		return apply_filters( 'dd4t3_request_ignored_headers', $ignored );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -516,6 +516,6 @@ class Request {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_request_ip_headers', $headers );
+		return apply_filters( 'dd4t3_request_ip_headers', $headers );
 	}
 }

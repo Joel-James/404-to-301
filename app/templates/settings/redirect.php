@@ -36,7 +36,7 @@ use DuckDev\Redirect\Data\Page;
 			name="404_to_301_settings[redirect][enable]"
 			value="1"
 			@change="toggleRedirect"
-			<?php checked( dd404_settings()->get( 'enable', 'redirect' ) ); ?>
+			<?php checked( dd4t3_settings()->get( 'enable', 'redirect' ) ); ?>
 		> <?php esc_html_e( 'Enable redirects for 404 errors', '404-to-301' ); ?>
 	</label>
 </div>
@@ -64,7 +64,7 @@ use DuckDev\Redirect\Data\Page;
 						id="redirect-type-<?php echo esc_attr( $redirect_type ); ?>"
 						name="404_to_301_settings[redirect][type]"
 						value="<?php echo esc_attr( $redirect_type ); ?>"
-						<?php checked( dd404_settings()->get( 'type', 'redirect' ), $redirect_type ); ?>
+						<?php checked( dd4t3_settings()->get( 'type', 'redirect' ), $redirect_type ); ?>
 					> <?php echo esc_attr( $label ); ?>
 				</label>
 			</p>
@@ -114,7 +114,7 @@ use DuckDev\Redirect\Data\Page;
 				array(
 					'id'       => 'redirect-target-page-value',
 					'name'     => '404_to_301_settings[redirect][page]',
-					'selected' => esc_attr( dd404_settings()->get( 'page', 'redirect' ) ),
+					'selected' => esc_attr( dd4t3_settings()->get( 'page', 'redirect' ) ),
 				)
 			);
 			?>
@@ -134,7 +134,7 @@ use DuckDev\Redirect\Data\Page;
 				id="redirect-target-link-value"
 				class="large-text"
 				placeholder="https://example.com"
-				value="<?php echo esc_url( dd404_settings()->get( 'link', 'redirect', '' ) ); ?>"
+				value="<?php echo esc_url( dd4t3_settings()->get( 'link', 'redirect', '' ) ); ?>"
 			>
 		</p>
 	</div>

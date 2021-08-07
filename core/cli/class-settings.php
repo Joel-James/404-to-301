@@ -74,12 +74,12 @@ class Settings extends Command {
 	 *
 	 * @since  4.0.0
 	 * @access private
-	 * @uses   dd404_settings()
+	 * @uses   dd4t3_settings()
 	 *
 	 * @return void
 	 */
 	private function set_setting( $key, $value, $module ) {
-		if ( dd404_settings()->update( $key, $value, $module ) ) {
+		if ( dd4t3_settings()->update( $key, $value, $module ) ) {
 			$this->success( __( 'Setting updated successfully!', '404-to-301' ) );
 		} else {
 			$this->error( __( 'Setting update failed.', '404-to-301' ) );
@@ -94,13 +94,13 @@ class Settings extends Command {
 	 *
 	 * @since  4.0.0
 	 * @access private
-	 * @uses   dd404_settings()
+	 * @uses   dd4t3_settings()
 	 *
 	 * @return void
 	 */
 	private function get_setting( $module, $key ) {
 		// Get the setting value.
-		$value = dd404_settings()->get( $key, $module, false, $valid );
+		$value = dd4t3_settings()->get( $key, $module, false, $valid );
 		// Display result.
 		$valid ? $this->show( $value ) : $this->error( __( 'Invalid settings.', '404-to-301' ) );
 	}
@@ -112,13 +112,13 @@ class Settings extends Command {
 	 *
 	 * @since  4.0.0
 	 * @access private
-	 * @uses   dd404_settings()
+	 * @uses   dd4t3_settings()
 	 *
 	 * @return void
 	 */
 	private function get_module( $module ) {
 		// Get the module values.
-		$values = dd404_settings()->get_module( $module, array(), $valid );
+		$values = dd4t3_settings()->get_module( $module, array(), $valid );
 		// Display result.
 		$valid ? $this->maybe_as_table( $values ) : $this->error( __( 'Invalid settings.', '404-to-301' ) );
 	}
@@ -128,13 +128,13 @@ class Settings extends Command {
 	 *
 	 * @since  4.0.0
 	 * @access private
-	 * @uses   dd404_settings()
+	 * @uses   dd4t3_settings()
 	 *
 	 * @return void
 	 */
 	private function get_all_settings() {
 		$this->maybe_as_table(
-			dd404_settings()->get_settings(),
+			dd4t3_settings()->get_settings(),
 			array( 'module', 'values' )
 		);
 	}

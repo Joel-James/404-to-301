@@ -17,13 +17,12 @@
 namespace DuckDev\Redirect\Models;
 
 // If this file is called directly, abort.
-
 defined( 'WPINC' ) || die;
 
 /**
  * Class Tables.
  *
- * @package DuckDev\DD4T3\Models
+ * @package DuckDev\Redirect\Models
  */
 class Logs extends Model {
 

@@ -26,7 +26,7 @@ use DuckDev\Redirect\Permission;
 /**
  * Class Base
  *
- * @package DuckDev\DD4T3\Abstracts
+ * @package DuckDev\Redirect\Abstracts
  */
 abstract class Endpoint extends Base {
 

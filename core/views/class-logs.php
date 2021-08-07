@@ -38,7 +38,7 @@ class Logs extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_before_admin_pages_logs_render' );
+		do_action( 'dd4t3_before_admin_pages_logs_render' );
 
 		// Admin logs template.
 		$this->render( 'logs' );
@@ -48,6 +48,6 @@ class Logs extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_after_admin_pages_logs_render' );
+		do_action( 'dd4t3_after_admin_pages_logs_render' );
 	}
 }

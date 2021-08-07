@@ -3,7 +3,7 @@
  * The queue process class for our plugin.
  *
  * All background process should be registered using
- * this class `dd404_queue_processes` filter.
+ * this class `dd4t3_queue_processes` filter.
  *
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -70,7 +70,7 @@ class Processes extends Base {
 				 *
 				 * @since 4.0.0
 				 */
-				do_action( 'dd404_process_init', $process, $class, $this->processes[ $process ] );
+				do_action( 'dd4t3_process_init', $process, $class, $this->processes[ $process ] );
 			}
 		}
 	}
@@ -171,6 +171,6 @@ class Processes extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_queue_processes', $processes );
+		return apply_filters( 'dd4t3_queue_processes', $processes );
 	}
 }

@@ -51,8 +51,8 @@ class V4_Logs extends Process {
 	 * @return void
 	 */
 	public function init() {
-		add_action( 'dd404_db_after_upgrade', array( $this, 'delete_table' ) );
-		add_action( 'dd404_db_upgrade_task_v4_upgrade', array( $this, 'upgrade_item' ) );
+		add_action( 'dd4t3_db_after_upgrade', array( $this, 'delete_table' ) );
+		add_action( 'dd4t3_db_upgrade_task_v4_upgrade', array( $this, 'upgrade_item' ) );
 	}
 
 	/**
@@ -227,7 +227,7 @@ class V4_Logs extends Process {
 		// Only if source and destination can be set.
 		if ( ! empty( $source ) && ! empty( $destination ) ) {
 			if ( empty( $options['type'] ) ) {
-				$code = dd404_settings()->get( 'type', 'redirect', 301 );
+				$code = dd4t3_settings()->get( 'type', 'redirect', 301 );
 			} else {
 				$code = $options['type'];
 			}

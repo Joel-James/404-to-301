@@ -71,7 +71,7 @@ class Main extends Base {
 		 *
 		 * @since 4.0
 		 */
-		do_action( 'dd404_404_request', $request );
+		do_action( 'dd4t3_404_request', $request );
 	}
 
 	/**
@@ -99,7 +99,7 @@ class Main extends Base {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_actions', $actions );
+		return apply_filters( 'dd4t3_actions', $actions );
 	}
 
 	/**
@@ -128,6 +128,6 @@ class Main extends Base {
 		 *
 		 * @since 4.0
 		 */
-		do_action( 'dd404_after_actions_init', $actions );
+		do_action( 'dd4t3_after_actions_init', $actions );
 	}
 }

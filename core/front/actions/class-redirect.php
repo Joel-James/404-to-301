@@ -40,7 +40,7 @@ class Redirect extends Action {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -55,7 +55,7 @@ class Redirect extends Action {
 		 *
 		 * @since 4.0
 		 */
-		do_action( 'dd404_redirect_pre_redirect', $this->request );
+		do_action( 'dd4t3_redirect_pre_redirect', $this->request );
 		$query = new Query();
 		$query->table( 'wp_404_to_301' )
 		      ->select( array( 'id', 'url', 'ip', 'comment_author_url' ) )
@@ -94,7 +94,7 @@ class Redirect extends Action {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -117,22 +117,22 @@ class Redirect extends Action {
 			 *
 			 * @since 4.0
 			 */
-			$link = apply_filters( 'dd404_redirect_default_link', home_url() );
+			$link = apply_filters( 'dd4t3_redirect_default_link', home_url() );
 
 			// Get global target.
-			$target = dd404_settings()->get( 'target', 'redirect' );
+			$target = dd4t3_settings()->get( 'target', 'redirect' );
 
 			// If target is a page.
 			if ( 'page' === $target ) {
 				// Target page ID.
-				$page = dd404_settings()->get( 'page', 'redirect' );
+				$page = dd4t3_settings()->get( 'page', 'redirect' );
 				// Only consider if it's published page/post.
 				if ( ! empty( $page ) && 'publish' === get_post_status( $page ) ) {
 					$link = get_permalink( $page );
 				}
 			} else {
 				// Get link target.
-				$link = dd404_settings()->get( 'link', 'redirect', $link );
+				$link = dd4t3_settings()->get( 'link', 'redirect', $link );
 			}
 		}
 
@@ -147,13 +147,13 @@ class Redirect extends Action {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_redirect_target_link', $link, $this->request );
+		return apply_filters( 'dd4t3_redirect_target_link', $link, $this->request );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -167,7 +167,7 @@ class Redirect extends Action {
 		// If custom target is not set.
 		if ( empty( $type ) ) {
 			// Get global target.
-			$type = dd404_settings()->get(
+			$type = dd4t3_settings()->get(
 				'type',
 				'redirect',
 				301
@@ -185,7 +185,7 @@ class Redirect extends Action {
 		 *
 		 * @since 4.0
 		 */
-		$type = apply_filters( 'dd404_redirect_redirect_type', $type, $this->request );
+		$type = apply_filters( 'dd4t3_redirect_redirect_type', $type, $this->request );
 
 		return in_array( $type, array_keys( self::types() ), true ) ? $type : 301;
 	}
@@ -193,7 +193,7 @@ class Redirect extends Action {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -219,6 +219,6 @@ class Redirect extends Action {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_redirect_types', $types );
+		return apply_filters( 'dd4t3_redirect_types', $types );
 	}
 }

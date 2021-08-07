@@ -36,25 +36,25 @@
 defined( 'ABSPATH' ) || exit;
 
 // Plugin version.
-define( 'DD404_VERSION', '4.0.0' );
+define( 'DD4T3_VERSION', '4.0.0' );
 
 // Plugin database version.
-define( 'DD404_DB_VERSION', '4.0.0' );
+define( 'DD4T3_DB_VERSION', '4.0.0' );
 
-// Plugin path.
-define( 'DD404_URL', plugin_dir_url( __FILE__ ) );
+// Plugin url.
+define( 'DD4T3_URL', plugin_dir_url( __FILE__ ) );
 
-// Plugin URL.
-define( 'DD404_DIR', plugin_dir_path( __FILE__ ) );
-
-// Plugin file.
-define( 'DD404_FILE', __FILE__ );
+// Plugin directory path.
+define( 'DD4T3_DIR', plugin_dir_path( __FILE__ ) );
 
 // Plugin file.
-define( 'DD404_BASE_NAME', plugin_basename( __FILE__ ) );
+define( 'DD4T3_FILE', __FILE__ );
+
+// Plugin base name.
+define( 'DD4T3_BASE_NAME', plugin_basename( __FILE__ ) );
 
 // Auto load classes.
-require_once DD404_DIR . '/vendor/autoload.php';
+require_once DD4T3_DIR . '/vendor/autoload.php';
 
 // Activation actions.
 register_activation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'activate' ) );
@@ -63,15 +63,15 @@ register_activation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'activate'
 register_deactivation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'deactivate' ) );
 
 /**
- * The main function for that returns JJ_404_to_301
+ * The main function for that returns DuckDev\Redirect\Core
  *
- * The main function responsible for returning the one true JJ_404_to_301
- * instance to functions everywhere.
+ * The main function responsible for returning the one true
+ * DuckDev\Redirect\Core instance to function everywhere.
  *
  * Use this function like you would a global variable, except without needing
  * to declare the global.
  *
- * Example: $jj4t3 = duckdev_404_to_301();
+ * Example: $dd4t3 = duckdev_404_to_301();
  *
  * @since 4.0.0
  *

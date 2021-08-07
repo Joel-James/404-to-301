@@ -142,7 +142,7 @@ class V4_Settings extends Process {
 			);
 
 			// Update the settings.
-			dd404_settings()->update_settings( $settings );
+			dd4t3_settings()->update_settings( $settings );
 		}
 	}
 

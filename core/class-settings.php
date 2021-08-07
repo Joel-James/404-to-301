@@ -85,7 +85,7 @@ class Settings extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_settings_get', $value, $key, $module, $default, $valid );
+		return apply_filters( 'dd4t3_settings_get', $value, $key, $module, $default, $valid );
 	}
 
 	/**
@@ -123,7 +123,7 @@ class Settings extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_settings_get_module', $values, $module, $default, $valid );
+		return apply_filters( 'dd4t3_settings_get_module', $values, $module, $default, $valid );
 	}
 
 	/**
@@ -164,7 +164,7 @@ class Settings extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_settings_get_settings', $values, $defaults );
+		return apply_filters( 'dd4t3_settings_get_settings', $values, $defaults );
 	}
 
 	/**
@@ -250,7 +250,7 @@ class Settings extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		$settings = apply_filters( 'dd404_settings_before_update_settings', $settings, $values );
+		$settings = apply_filters( 'dd4t3_settings_before_update_settings', $settings, $values );
 
 		// Update the options.
 		return update_option( self::KEY, $settings );
@@ -303,7 +303,7 @@ class Settings extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_settings_default_settings', $settings );
+		return apply_filters( 'dd4t3_settings_default_settings', $settings );
 	}
 
 	/**
@@ -343,7 +343,7 @@ class Settings extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_settings_format_settings', $old, $new );
+		return apply_filters( 'dd4t3_settings_format_settings', $old, $new );
 	}
 
 	/**
@@ -443,6 +443,6 @@ class Settings extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_settings_before_update_settings', $settings, $values );
+		return apply_filters( 'dd4t3_settings_before_update_settings', $settings, $values );
 	}
 }

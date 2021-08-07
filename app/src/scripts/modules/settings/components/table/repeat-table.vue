@@ -45,7 +45,7 @@ export default {
 
 	data() {
 		let rows = [],
-			items = window?.dd404?.settings?.general?.exclude ?? []
+			items = window?.dd4t3?.settings?.general?.exclude ?? []
 		// Setup rows from settings.
 		items.forEach((item) => {
 			rows.push({value: item})

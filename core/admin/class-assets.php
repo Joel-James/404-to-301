@@ -41,8 +41,8 @@ class Assets extends Base {
 		add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
 
 		// Enqueue assets only on plugin pages.
-		add_action( 'dd404_enqueue_assets_logs', array( $this, 'logs_assets' ) );
-		add_action( 'dd404_enqueue_assets_settings', array( $this, 'settings_assets' ) );
+		add_action( 'dd4t3_enqueue_assets_logs', array( $this, 'logs_assets' ) );
+		add_action( 'dd4t3_enqueue_assets_settings', array( $this, 'settings_assets' ) );
 	}
 
 	/**
@@ -92,7 +92,7 @@ class Assets extends Base {
 			 *
 			 * @since 4.0.0
 			 */
-			do_action( "dd404_enqueue_assets_{$page}", $page, $hook_suffix );
+			do_action( "dd4t3_enqueue_assets_{$page}", $page, $hook_suffix );
 
 			/**
 			 * Action hook to enqueue assets for our pages.
@@ -104,7 +104,7 @@ class Assets extends Base {
 			 *
 			 * @since 4.0.0
 			 */
-			do_action( 'dd404_enqueue_assets', $page, $hook_suffix );
+			do_action( 'dd4t3_enqueue_assets', $page, $hook_suffix );
 		}
 	}
 
@@ -128,13 +128,13 @@ class Assets extends Base {
 		// Register all styles.
 		foreach ( $styles as $handle => $data ) {
 			// If external treat the source as full URL.
-			$src = empty( $data['external'] ) ? DD404_URL . 'app/assets/css/' . $data['src'] : $data['src'];
+			$src = empty( $data['external'] ) ? DD4T3_URL . 'app/assets/css/' . $data['src'] : $data['src'];
 
 			wp_register_style(
 				$handle, // Style name.
 				$src, // Source url.
 				empty( $data['deps'] ) ? array() : $data['deps'], // Dependencies.
-				empty( $data['version'] ) ? DD404_VERSION : $data['version'], // Version number.
+				empty( $data['version'] ) ? DD4T3_VERSION : $data['version'], // Version number.
 				empty( $data['media'] ) ? 'all' : $data['media'] // The media for which this stylesheet has been defined.
 			);
 		}
@@ -160,13 +160,13 @@ class Assets extends Base {
 		// Register all available scripts.
 		foreach ( $scripts as $handle => $data ) {
 			// If external treat the source as full URL.
-			$src = empty( $data['external'] ) ? DD404_URL . 'app/assets/js/' . $data['src'] : $data['src'];
+			$src = empty( $data['external'] ) ? DD4T3_URL . 'app/assets/js/' . $data['src'] : $data['src'];
 
 			wp_register_script(
 				$handle, // Script name.
 				$src, // Source URL.
 				empty( $data['deps'] ) ? array() : $data['deps'], // Dependencies.
-				empty( $data['version'] ) ? DD404_VERSION : $data['version'], // Version number.
+				empty( $data['version'] ) ? DD4T3_VERSION : $data['version'], // Version number.
 				isset( $data['footer'] ) ? $data['footer'] : true // Should enqueue in footer.
 			);
 		}
@@ -195,7 +195,7 @@ class Assets extends Base {
 			// Script vars.
 			wp_localize_script(
 				$script,
-				'dd404',
+				'dd4t3',
 				/**
 				 * Filter to add/remove vars in script.
 				 *
@@ -203,7 +203,7 @@ class Assets extends Base {
 				 *
 				 * @since 4.0.0
 				 */
-				apply_filters( "dd404_assets_vars_{$script}", array() )
+				apply_filters( "dd4t3_assets_vars_{$script}", array() )
 			);
 
 			// Enqueue script now.
@@ -213,7 +213,7 @@ class Assets extends Base {
 			wp_set_script_translations(
 				$script,
 				'404-to-301',
-				DD404_DIR . '/languages/'
+				DD4T3_DIR . '/languages/'
 			);
 		}
 	}
@@ -243,7 +243,7 @@ class Assets extends Base {
 	 * Get the scripts list to register.
 	 *
 	 * This function will include all scripts
-	 * added using dd404_assets_get_scripts filter.
+	 * added using dd4t3_assets_get_scripts filter.
 	 *
 	 * @since  4.0.0
 	 * @access private
@@ -253,11 +253,11 @@ class Assets extends Base {
 	private function get_scripts() {
 		$scripts = array(
 			// Logs scripts.
-			'dd404-logs'     => array(
+			'dd4t3-logs'     => array(
 				'src' => 'logs.min.js',
 			),
 			// Settings scripts.
-			'dd404-settings' => array(
+			'dd4t3-settings' => array(
 				'src'  => 'settings.min.js',
 				'deps' => array( 'wp-i18n' ),
 			),
@@ -273,14 +273,14 @@ class Assets extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_assets_get_scripts', $scripts );
+		return apply_filters( 'dd4t3_assets_get_scripts', $scripts );
 	}
 
 	/**
 	 * Get the styles list to register.
 	 *
 	 * This function will include all scripts
-	 * added using dd404_assets_get_scripts filter.
+	 * added using dd4t3_assets_get_scripts filter.
 	 *
 	 * @since  4.0.0
 	 * @access private
@@ -290,11 +290,11 @@ class Assets extends Base {
 	private function get_styles() {
 		$styles = array(
 			// Logs styles.
-			'dd404-logs'     => array(
+			'dd4t3-logs'     => array(
 				'src' => 'logs.min.css',
 			),
 			// Settings styles.
-			'dd404-settings' => array(
+			'dd4t3-settings' => array(
 				'src' => 'admin.min.css',
 			),
 		);
@@ -308,7 +308,7 @@ class Assets extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_assets_get_styles', $styles );
+		return apply_filters( 'dd4t3_assets_get_styles', $styles );
 	}
 
 	/**
@@ -323,8 +323,8 @@ class Assets extends Base {
 	 * @return void
 	 */
 	public function logs_assets() {
-		$this->enqueue_script( 'dd404-logs' );
-		$this->enqueue_style( 'dd404-logs' );
+		$this->enqueue_script( 'dd4t3-logs' );
+		$this->enqueue_style( 'dd4t3-logs' );
 	}
 
 	/**
@@ -339,7 +339,7 @@ class Assets extends Base {
 	 * @return void
 	 */
 	public function settings_assets() {
-		$this->enqueue_script( 'dd404-settings' );
-		$this->enqueue_style( 'dd404-settings' );
+		$this->enqueue_script( 'dd4t3-settings' );
+		$this->enqueue_style( 'dd4t3-settings' );
 	}
 }

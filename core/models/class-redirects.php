@@ -23,7 +23,7 @@ defined( 'WPINC' ) || die;
 /**
  * Class Tables.
  *
- * @package DuckDev\DD4T3\Models
+ * @package DuckDev\Redirect\Models
  */
 class Redirects extends Model {
 

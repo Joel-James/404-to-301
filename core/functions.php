@@ -24,7 +24,7 @@
  *
  * @return DuckDev\Redirect\Settings
  */
-function dd404_settings() {
+function dd4t3_settings() {
 	return DuckDev\Redirect\Settings::instance();
 }
 
@@ -39,6 +39,6 @@ function dd404_settings() {
  *
  * @return DuckDev\Redirect\Cache
  */
-function dd404_cache() {
+function dd4t3_cache() {
 	return DuckDev\Redirect\Cache::instance();
 }

@@ -129,7 +129,7 @@ class Plugin {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_activated' );
+		do_action( 'dd4t3_activated' );
 	}
 
 	/**
@@ -152,6 +152,6 @@ class Plugin {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_deactivated' );
+		do_action( 'dd4t3_deactivated' );
 	}
 }

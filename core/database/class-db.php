@@ -48,8 +48,8 @@ class DB extends Base {
 		}
 
 		// Post install/upgrade actions.
-		add_action( 'dd404_db_after_install', array( $this, 'after_install' ) );
-		add_action( 'dd404_db_after_upgrade', array( $this, 'after_upgrade' ) );
+		add_action( 'dd4t3_db_after_install', array( $this, 'after_install' ) );
+		add_action( 'dd4t3_db_after_upgrade', array( $this, 'after_upgrade' ) );
 	}
 
 	/**
@@ -65,7 +65,7 @@ class DB extends Base {
 	 */
 	public function needs_install() {
 		// Previous db version.
-		$version = dd404_settings()->get( 'db_version', 'misc' );
+		$version = dd4t3_settings()->get( 'db_version', 'misc' );
 
 		// If version is not set, install required.
 		$required = empty( $version );
@@ -77,7 +77,7 @@ class DB extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_db_needs_install', $required );
+		return apply_filters( 'dd4t3_db_needs_install', $required );
 	}
 
 	/**
@@ -97,9 +97,9 @@ class DB extends Base {
 		// If install is already required, no upgrade.
 		if ( ! $this->needs_install() ) {
 			// Previous db version.
-			$version = dd404_settings()->get( 'db_version', 'misc', 0 );
+			$version = dd4t3_settings()->get( 'db_version', 'misc', 0 );
 			// If previous version is lower.
-			$required = version_compare( $version, DD404_DB_VERSION, '<' );
+			$required = version_compare( $version, DD4T3_DB_VERSION, '<' );
 		}
 
 		/**
@@ -109,7 +109,7 @@ class DB extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_db_needs_upgrade', $required );
+		return apply_filters( 'dd4t3_db_needs_upgrade', $required );
 	}
 
 	/**
@@ -125,7 +125,7 @@ class DB extends Base {
 	 */
 	public function install() {
 		// Set the flag.
-		//dd404_cache()->set_transient( 'db_installing', true, true );
+		//dd4t3_cache()->set_transient( 'db_installing', true, true );
 
 		// Perform install actions.
 		//$actions = new Upgrades\Current();
@@ -136,7 +136,7 @@ class DB extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		//do_action( 'dd404_db_after_install' );
+		//do_action( 'dd4t3_db_after_install' );
 	}
 
 	/**
@@ -154,7 +154,7 @@ class DB extends Base {
 		static $upgrade = null;
 
 		// Set the flag.
-		dd404_cache()->set_transient( 'db_upgrading', true, true );
+		dd4t3_cache()->set_transient( 'db_upgrading', true, true );
 
 		// Initialize upgrader.
 		if ( null === $upgrade ) {
@@ -176,13 +176,13 @@ class DB extends Base {
 	 */
 	public function uninstall() {
 		// Set the flag.
-		dd404_cache()->set_transient( 'db_uninstalling', true, true );
+		dd4t3_cache()->set_transient( 'db_uninstalling', true, true );
 
 		$current = new Upgrades\Current();
 		$current->uninstall();
 
 		// Remove the flag.
-		dd404_cache()->delete_transient( 'db_uninstalling' );
+		dd4t3_cache()->delete_transient( 'db_uninstalling' );
 
 		/**
 		 * Action hook to run after db uninstall.
@@ -191,7 +191,7 @@ class DB extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_db_after_uninstall', $current );
+		do_action( 'dd4t3_db_after_uninstall', $current );
 	}
 
 	/**
@@ -212,7 +212,7 @@ class DB extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_db_after_deactivate' );
+		do_action( 'dd4t3_db_after_deactivate' );
 	}
 
 	/**
@@ -228,10 +228,10 @@ class DB extends Base {
 	 */
 	public function after_install() {
 		// Remove the flag.
-		dd404_cache()->delete_transient( 'db_installing' );
+		dd4t3_cache()->delete_transient( 'db_installing' );
 
 		// Set db version.
-		dd404_settings()->update( 'db_version', DD404_DB_VERSION, 'misc' );
+		dd4t3_settings()->update( 'db_version', DD4T3_DB_VERSION, 'misc' );
 	}
 
 	/**
@@ -247,10 +247,10 @@ class DB extends Base {
 	 */
 	public function after_upgrade() {
 		// Remove the flag.
-		dd404_cache()->delete_transient( 'db_upgrading' );
+		dd4t3_cache()->delete_transient( 'db_upgrading' );
 
 		// Set db version.
-		dd404_settings()->update( 'db_version', DD404_DB_VERSION, 'misc' );
+		dd4t3_settings()->update( 'db_version', DD4T3_DB_VERSION, 'misc' );
 	}
 
 	/**

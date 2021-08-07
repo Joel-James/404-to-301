@@ -29,7 +29,7 @@
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_admin_notices', 'logs' );
+		do_action( 'dd4t3_admin_notices', 'logs' );
 		?>
 	</div>
 

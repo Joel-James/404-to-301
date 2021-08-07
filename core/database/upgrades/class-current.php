@@ -83,7 +83,7 @@ class Current extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_db_after_table_create' );
+		do_action( 'dd4t3_db_after_table_create' );
 
 		return true;
 	}
@@ -115,7 +115,7 @@ class Current extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_db_after_uninstall' );
+		do_action( 'dd4t3_db_after_uninstall' );
 	}
 
 	/**

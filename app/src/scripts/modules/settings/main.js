@@ -1,4 +1,4 @@
-/* global wp, dd404 */
+/* global wp, dd4t3 */
 import {createApp} from 'vue'
 // Import store.
 import {Flags} from '@/store/flags'
@@ -20,10 +20,10 @@ const Settings = createApp({
 	data() {
 		return {
 			loading: false,
-			target: dd404.settings?.redirect?.target??'link',
-			redirect: (dd404.settings?.redirect?.enable??0) > 0,
-			logs: (dd404.settings?.logs?.enable??0) > 0,
-			email: (dd404.settings?.email?.enable??0) > 0,
+			target: dd4t3.settings?.redirect?.target??'link',
+			redirect: (dd4t3.settings?.redirect?.enable??0) > 0,
+			logs: (dd4t3.settings?.logs?.enable??0) > 0,
+			email: (dd4t3.settings?.email?.enable??0) > 0,
 		}
 	},
 
@@ -54,4 +54,4 @@ Settings.use(Flags)
 Settings.component('form-submit', FormSubmit)
 Settings.component('repeat-table', RepeatTable)
 // Finally mount to DOM.
-Settings.mount('#dd404-settings-app')
+Settings.mount('#dd4t3-settings-app')

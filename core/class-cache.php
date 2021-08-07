@@ -204,14 +204,14 @@ class Cache extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_cache_key', $key );
+		return apply_filters( 'dd4t3_cache_key', $key );
 	}
 
 	/**
 	 * Check if we use cache for our plugin.
 	 *
 	 * Object caching can be disabled by returning false to
-	 * dd404_can_cache filter.
+	 * dd4t3_can_cache filter.
 	 *
 	 * @param string $key   The key under which the cache contents are stored.
 	 * @param string $group Where the cache contents are grouped.
@@ -233,14 +233,14 @@ class Cache extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_can_cache', true, $key, $group );
+		return apply_filters( 'dd4t3_can_cache', true, $key, $group );
 	}
 
 	/**
 	 * Check if we use transient for our plugin.
 	 *
 	 * Transient caching can be disabled by returning false to
-	 * dd404_can_cache filter.
+	 * dd4t3_can_cache filter.
 	 *
 	 * @param string $key Transient key.
 	 *
@@ -260,6 +260,6 @@ class Cache extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_can_transient', true, $key );
+		return apply_filters( 'dd4t3_can_transient', true, $key );
 	}
 }

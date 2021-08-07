@@ -40,7 +40,7 @@ class Log extends Action {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -58,7 +58,7 @@ class Log extends Action {
 		 *
 		 * @since 4.0
 		 */
-		do_action( 'dd404_logs_pre_log', $data, $this->request );
+		do_action( 'dd4t3_logs_pre_log', $data, $this->request );
 
 		// Send email using wp_mail().
 		$success = Logs::instance()->create( $data );
@@ -70,13 +70,13 @@ class Log extends Action {
 		 *
 		 * @since 4.0
 		 */
-		do_action( 'dd404_logs_post_log', $data, $this->request, $success );
+		do_action( 'dd4t3_logs_post_log', $data, $this->request, $success );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -104,6 +104,6 @@ class Log extends Action {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_log_data', $data, $this->request );
+		return apply_filters( 'dd4t3_log_data', $data, $this->request );
 	}
 }

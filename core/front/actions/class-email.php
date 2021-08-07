@@ -39,7 +39,7 @@ class Email extends Action {
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -54,7 +54,7 @@ class Email extends Action {
 		 *
 		 * @since 4.0
 		 */
-		do_action( 'dd404_email_pre_email', $this->request );
+		do_action( 'dd4t3_email_pre_email', $this->request );
 
 		// Send email using wp_mail().
 		$success = wp_mail(
@@ -71,13 +71,13 @@ class Email extends Action {
 		 *
 		 * @since 4.0
 		 */
-		do_action( 'dd404_email_post_email', $this->request, $success );
+		do_action( 'dd4t3_email_post_email', $this->request, $success );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -86,7 +86,7 @@ class Email extends Action {
 	 */
 	private function recipient() {
 		// Get global target.
-		$recipient = dd404_settings()->get(
+		$recipient = dd4t3_settings()->get(
 			'recipient',
 			'email',
 			get_option( 'admin_email' )
@@ -103,13 +103,13 @@ class Email extends Action {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_email_recipient', $recipient, $this->request );
+		return apply_filters( 'dd4t3_email_recipient', $recipient, $this->request );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -118,7 +118,7 @@ class Email extends Action {
 	 */
 	private function subject() {
 		// Get global target.
-		$recipient = dd404_settings()->get(
+		$recipient = dd4t3_settings()->get(
 			'recipient',
 			'email',
 			get_option( 'admin_email' )
@@ -135,13 +135,13 @@ class Email extends Action {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_email_recipient', $recipient, $this->request );
+		return apply_filters( 'dd4t3_email_recipient', $recipient, $this->request );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -150,7 +150,7 @@ class Email extends Action {
 	 */
 	private function headers() {
 		// Get global target.
-		$recipient = dd404_settings()->get(
+		$recipient = dd4t3_settings()->get(
 			'recipient',
 			'email',
 			get_option( 'admin_email' )
@@ -167,13 +167,13 @@ class Email extends Action {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_email_recipient', $recipient, $this->request );
+		return apply_filters( 'dd4t3_email_recipient', $recipient, $this->request );
 	}
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * Use `dd404_redirect_types` filter to add
+	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
 	 * @since  4.0
@@ -182,7 +182,7 @@ class Email extends Action {
 	 */
 	private function body() {
 		// Get global target.
-		$recipient = dd404_settings()->get(
+		$recipient = dd4t3_settings()->get(
 			'recipient',
 			'email',
 			get_option( 'admin_email' )
@@ -199,6 +199,6 @@ class Email extends Action {
 		 *
 		 * @since 4.0
 		 */
-		return apply_filters( 'dd404_email_recipient', $recipient, $this->request );
+		return apply_filters( 'dd4t3_email_recipient', $recipient, $this->request );
 	}
 }

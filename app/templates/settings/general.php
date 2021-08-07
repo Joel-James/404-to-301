@@ -30,7 +30,7 @@
 			name="404_to_301_settings[general][disable_guess]"
 			id="guessing"
 			value="1"
-			<?php checked( dd404_settings()->get( 'disable_guess', 'general' ) ); ?>
+			<?php checked( dd4t3_settings()->get( 'disable_guess', 'general' ) ); ?>
 		> <?php esc_html_e( 'Stop WordPress from guessing URLs', '404-to-301' ); ?>
 	</label>
 </div>
@@ -46,7 +46,7 @@
 			name="404_to_301_settings[general][monitor_changes]"
 			id="monitor"
 			value="1"
-			<?php checked( dd404_settings()->get( 'monitor_changes', 'general' ) ); ?>
+			<?php checked( dd4t3_settings()->get( 'monitor_changes', 'general' ) ); ?>
 		> <?php esc_html_e( 'Monitor permalink changes and create redirects', '404-to-301' ); ?>
 	</label>
 </div>

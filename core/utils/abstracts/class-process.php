@@ -111,6 +111,6 @@ abstract class Process extends Task {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_process_completed', $this->action );
+		do_action( 'dd4t3_process_completed', $this->action );
 	}
 }

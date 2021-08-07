@@ -1,7 +1,7 @@
-/* global dd404 */
+/* global dd4t3 */
 export const axiosConfig = {
-	baseURL: dd404.rest.base,
+	baseURL: dd4t3.rest.base,
 	headers: {
-		'X-WP-Nonce': dd404.rest.nonce,
+		'X-WP-Nonce': dd4t3.rest.nonce,
 	},
 };

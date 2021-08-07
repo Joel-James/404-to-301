@@ -36,13 +36,13 @@ class Settings extends View {
 	 */
 	public function init() {
 		// Render settings pages.
-		add_action( 'dd404_admin_settings_general_form_content', array( $this, 'general_content' ) );
-		add_action( 'dd404_admin_settings_redirect_form_content', array( $this, 'redirect_content' ) );
-		add_action( 'dd404_admin_settings_logs_form_content', array( $this, 'logs_content' ) );
-		add_action( 'dd404_admin_settings_email_form_content', array( $this, 'email_content' ) );
-		add_action( 'dd404_admin_settings_info_form_content', array( $this, 'info_content' ) );
+		add_action( 'dd4t3_admin_settings_general_form_content', array( $this, 'general_content' ) );
+		add_action( 'dd4t3_admin_settings_redirect_form_content', array( $this, 'redirect_content' ) );
+		add_action( 'dd4t3_admin_settings_logs_form_content', array( $this, 'logs_content' ) );
+		add_action( 'dd4t3_admin_settings_email_form_content', array( $this, 'email_content' ) );
+		add_action( 'dd4t3_admin_settings_info_form_content', array( $this, 'info_content' ) );
 
-		add_action( 'dd404_admin_notices', array( $this, 'show_settings_notice' ) );
+		add_action( 'dd4t3_admin_notices', array( $this, 'show_settings_notice' ) );
 	}
 
 	/**
@@ -68,7 +68,7 @@ class Settings extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_before_admin_pages_settings_render' );
+		do_action( 'dd4t3_before_admin_pages_settings_render' );
 
 		// Admin settings template.
 		$this->render( 'settings', $args );
@@ -78,7 +78,7 @@ class Settings extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_after_admin_pages_settings_render' );
+		do_action( 'dd4t3_after_admin_pages_settings_render' );
 	}
 
 	/**
@@ -100,7 +100,7 @@ class Settings extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_after_admin_pages_general_settings_render' );
+		do_action( 'dd4t3_after_admin_pages_general_settings_render' );
 	}
 
 	/**
@@ -124,7 +124,7 @@ class Settings extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_after_admin_pages_redirect_settings_render' );
+		do_action( 'dd4t3_after_admin_pages_redirect_settings_render' );
 	}
 
 	/**
@@ -146,7 +146,7 @@ class Settings extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_after_admin_pages_logs_settings_render' );
+		do_action( 'dd4t3_after_admin_pages_logs_settings_render' );
 	}
 
 	/**
@@ -168,7 +168,7 @@ class Settings extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_after_admin_pages_email_settings_render' );
+		do_action( 'dd4t3_after_admin_pages_email_settings_render' );
 	}
 
 	/**
@@ -190,7 +190,7 @@ class Settings extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd404_after_admin_pages_info_settings_render' );
+		do_action( 'dd4t3_after_admin_pages_info_settings_render' );
 	}
 
 	/**
@@ -229,7 +229,7 @@ class Settings extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_admin_settings_page_get_tabs', $tabs );
+		return apply_filters( 'dd4t3_admin_settings_page_get_tabs', $tabs );
 	}
 
 	/**
@@ -249,7 +249,7 @@ class Settings extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_admin_settings_show_submit', $show );
+		return apply_filters( 'dd4t3_admin_settings_show_submit', $show );
 	}
 
 	/**
@@ -308,6 +308,6 @@ class Settings extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_admin_settings_page_get_current_tab', $tab );
+		return apply_filters( 'dd4t3_admin_settings_page_get_current_tab', $tab );
 	}
 }

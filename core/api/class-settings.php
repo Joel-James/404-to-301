@@ -69,7 +69,7 @@ class Settings extends Endpoint {
 						'module' => array(
 							'type'        => 'string',
 							'required'    => false,
-							'enum'        => dd404_settings()->get_modules(),
+							'enum'        => dd4t3_settings()->get_modules(),
 							'description' => __( 'Module name.', '404-to-301' ),
 						),
 					),
@@ -87,7 +87,7 @@ class Settings extends Endpoint {
 						'module' => array(
 							'type'        => 'string',
 							'required'    => false,
-							'enum'        => dd404_settings()->get_modules(),
+							'enum'        => dd4t3_settings()->get_modules(),
 							'description' => __( 'Module name.', '404-to-301' ),
 						),
 						'value'  => array(
@@ -117,7 +117,7 @@ class Settings extends Endpoint {
 		// Get single setting value.
 		if ( ! empty( $key ) && ! empty( $module ) ) {
 			// Get value.
-			$value = dd404_settings()->get( $key, $module, false, $valid );
+			$value = dd4t3_settings()->get( $key, $module, false, $valid );
 
 			return $this->get_response(
 				array(
@@ -129,7 +129,7 @@ class Settings extends Endpoint {
 			);
 		} elseif ( ! empty( $module ) ) {
 			// Get values.
-			$values = dd404_settings()->get_module( $module, false, $valid );
+			$values = dd4t3_settings()->get_module( $module, false, $valid );
 
 			// Get module settings.
 			return $this->get_response(
@@ -142,7 +142,7 @@ class Settings extends Endpoint {
 		}
 
 		// Get all settings.
-		return $this->get_response( dd404_settings()->get_settings() );
+		return $this->get_response( dd4t3_settings()->get_settings() );
 	}
 
 	/**
@@ -162,17 +162,17 @@ class Settings extends Endpoint {
 
 		if ( ! empty( $key ) && ! empty( $module ) && ! empty( $value ) ) {
 			// Update single setting value.
-			$success = dd404_settings()->update( $key, $value, $module );
+			$success = dd4t3_settings()->update( $key, $value, $module );
 		} elseif ( ! empty( $module ) ) {
 			// Update module settings.
-			$success = dd404_settings()->update_module( $value, $module );
+			$success = dd4t3_settings()->update_module( $value, $module );
 		} else {
 			// Update the settings.
-			$success = dd404_settings()->update_settings( $value );
+			$success = dd4t3_settings()->update_settings( $value );
 		}
 
 		// Get updated settings.
-		$settings = dd404_settings()->get_settings();
+		$settings = dd4t3_settings()->get_settings();
 
 		// Send response.
 		return $this->get_response( $settings, $success );

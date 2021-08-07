@@ -81,7 +81,7 @@ class Menu extends Base {
 		 *
 		 * @since 4.0
 		 */
-		do_action( 'dd404_admin_menu' );
+		do_action( 'dd4t3_admin_menu' );
 	}
 
 	/**

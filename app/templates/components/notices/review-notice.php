@@ -17,7 +17,7 @@ $name = empty( $user_name ) ? __( 'friend', '404-to-301' ) : ucwords( $user_name
 
 ?>
 
-<div id="dd404-notice-review-notice" class="notice duckdev-notice notice-info">
+<div id="dd4t3-notice-review-notice" class="notice duckdev-notice notice-info">
 	<p>
 		<?php
 		printf(
@@ -34,12 +34,12 @@ $name = empty( $user_name ) ? __( 'friend', '404-to-301' ) : ucwords( $user_name
 		</a>
 	</p>
 	<p>
-		<a href="<?php echo esc_url( add_query_arg( 'dd404_wporg_review', 'later' ) ); ?>">
+		<a href="<?php echo esc_url( add_query_arg( 'dd4t3_wporg_review', 'later' ) ); ?>">
 			<?php esc_html_e( 'Nope, maybe later', '404-to-301' ); ?>
 		</a>
 	</p>
 	<p>
-		<a href="<?php echo esc_url( add_query_arg( 'dd404_wporg_review', 'dismiss' ) ); ?>">
+		<a href="<?php echo esc_url( add_query_arg( 'dd4t3_wporg_review', 'dismiss' ) ); ?>">
 			<?php esc_html_e( 'I already did', '404-to-301' ); ?>
 		</a>
 	</p>

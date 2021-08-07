@@ -1,4 +1,4 @@
-/* global dd404 */
+/* global dd4t3 */
 import Vue from 'vue'
 
 // Required components.
@@ -6,9 +6,9 @@ import FormSubmit from '@/components/form-submit'
 
 const axios = require('axios');
 const axiosConfig = {
-	baseURL: dd404.rest.base,
+	baseURL: dd4t3.rest.base,
 	headers: {
-		'X-WP-Nonce': dd404.rest.nonce,
+		'X-WP-Nonce': dd4t3.rest.nonce,
 	},
 };
 
@@ -19,7 +19,7 @@ Vue.prototype.$axios = axios.create(axiosConfig)
 Vue.config.productionTip = false
 
 new Vue({
-	el: '#dd404-settings-app',
+	el: '#dd4t3-settings-app',
 
 	components: { FormSubmit },
 

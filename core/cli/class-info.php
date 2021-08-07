@@ -61,7 +61,7 @@ class Info extends Command {
 	/**
 	 * Get the plugin info data.
 	 *
-	 * Use dd404_cli_get_info filter to add more data
+	 * Use dd4t3_cli_get_info filter to add more data
 	 * to the information list.
 	 *
 	 * @since  4.0.0
@@ -73,7 +73,7 @@ class Info extends Command {
 		$info = array(
 			'name'    => Plugin::name(),
 			'slug'    => Plugin::slug(),
-			'version' => DD404_VERSION,
+			'version' => DD4T3_VERSION,
 		);
 
 		/**
@@ -83,6 +83,6 @@ class Info extends Command {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_cli_get_info', $info );
+		return apply_filters( 'dd4t3_cli_get_info', $info );
 	}
 }

@@ -57,6 +57,6 @@ switch ( $type ) {
 
 ?>
 
-<div id="dd404-notice-<?php echo esc_attr( $options['id'] ); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+<div id="dd4t3-notice-<?php echo esc_attr( $options['id'] ); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 	<p><?php echo $content; // phpcs:ignore ?></p>
 </div>
