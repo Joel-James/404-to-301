@@ -23,32 +23,42 @@ defined( 'WPINC' ) || die;
  *
  * @package DuckDev\Redirect\Controllers
  */
-class Redirect {
+class Database {
 
 	/**
 	 * Get available redirect types.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return mixed|void
+	 * @return array
 	 */
-	public static function redirect_types() {
-		$types = array(
-			301 => __( '301 - Moved Permanently', '404-to-301' ),
-			302 => __( '302 - Found', '404-to-301' ),
-			303 => __( '303 - See Other', '404-to-301' ),
-			304 => __( '304 - Not Modified', '404-to-301' ),
-			307 => __( '307 - Temporary Redirect', '404-to-301' ),
-			308 => __( '308 - Permanent Redirect', '404-to-301' ),
+	public static function tables() {
+		return array(
+			'logs'      => '404_to_301_logs',
+			'options'   => '404_to_301_options',
+			'redirects' => '404_to_301_redirects',
 		);
+	}
 
-		/**
-		 * Filter to add or remove redirect types.
-		 *
-		 * @param array $types Redirect types.
-		 *
-		 * @since 4.0.0
-		 */
-		return apply_filters( '404_to_301_redirect_types', $types );
+	/**
+	 * Get the table name appending prefix.
+	 *
+	 * Classes can override this by extending it.
+	 *
+	 * @param string $table Table key.
+	 *
+	 * @since 4.0
+	 *
+	 * @return string
+	 */
+	public static function table_name( $table ) {
+		$tables = self::tables();
+		if ( isset( $tables[ $table ] ) ) {
+			global $wpdb;
+
+			return $wpdb->prefix . $tables[ $table ];
+		}
+
+		return false;
 	}
 }

@@ -19,13 +19,13 @@ defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Data;
 use DuckDev\Reviews\Notice;
-use DuckDev\Redirect\Utils\Abstracts\View;
+use DuckDev\Redirect\Plugin;
 
 /**
  * Class Menu
  *
- * @package DuckDev\Redirect
  * @since   4.0.0
+ * @package DuckDev\Redirect
  */
 class Admin extends View {
 
@@ -44,6 +44,8 @@ class Admin extends View {
 		add_filter( 'plugin_action_links_' . plugin_basename( DD404_FILE ), array( $this, 'action_links' ) );
 		// Admin notices.
 		add_action( 'dd404_admin_notices', array( $this, 'show_review_notice' ) );
+		// Admin notice about upgrade.
+		add_action( 'dd404_admin_notices', array( $this, 'upgrade_notice' ) );
 	}
 
 	/**
@@ -63,6 +65,30 @@ class Admin extends View {
 
 		// Render notice.
 		$notice->render();
+	}
+
+	/**
+	 * Show upgrade in progress notice on our plugin pages.
+	 *
+	 * This won't affect our plugin functionality.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	public function upgrade_notice() {
+		$this->render(
+			'components/notices/notice',
+			array(
+				'type'    => 'info',
+				'content' => sprintf(
+					__( '<strong>%s</strong> is upgrading database in background.', '404-to-301' ),
+					Plugin::instance()->name()
+				),
+			),
+			false
+		);
 	}
 
 	/**

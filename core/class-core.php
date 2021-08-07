@@ -23,8 +23,8 @@ use DuckDev\Redirect\Utils\Abstracts\Base;
 /**
  * Class Core
  *
- * @package DuckDev\Redirect
  * @since   4.0.0
+ * @package DuckDev\Redirect
  */
 final class Core extends Base {
 
@@ -70,6 +70,9 @@ final class Core extends Base {
 	 * @return void
 	 */
 	private function common() {
+		// Setup background process.
+		Processes::instance();
+		// Setup settings.
 		Settings::instance();
 	}
 
@@ -129,6 +132,21 @@ final class Core extends Base {
 	}
 
 	/**
+	 * Get the plugin's background process instance.
+	 *
+	 * Use this instance to manage queue tasks inside
+	 * our plugin.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return Process
+	 */
+	public function process() {
+		return $this->process;
+	}
+
+	/**
 	 * Setup plugin WP CLI commands.
 	 *
 	 * WP CLI commands are added only if the WP CLI
@@ -142,9 +160,10 @@ final class Core extends Base {
 	private function cli() {
 		// Only if CLI available.
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			CLI\Info::instance();
-			CLI\Logs::instance();
-			CLI\Settings::instance();
+			// Add the command.
+			if ( class_exists( '\WP_CLI' ) ) {
+				\WP_CLI::add_command( '404-to-301', '\DuckDev\Redirect\CLI\CLI' );
+			}
 		}
 	}
 }

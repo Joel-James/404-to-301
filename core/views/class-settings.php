@@ -18,7 +18,6 @@ namespace DuckDev\Redirect\Views;
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Data;
-use DuckDev\Redirect\Utils\Abstracts\View;
 
 /**
  * Class Menu

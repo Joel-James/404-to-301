@@ -93,13 +93,32 @@
 		<table class="wp-list-table widefat fixed striped table-view-excerpt posts">
 			<thead>
 			<tr>
-				<td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label><input id="cb-select-all-1" type="checkbox"></td>
-				<th scope="col" id="title" class="manage-column column-title column-primary sortable desc"><a href="http://localhost/incsub/single/wp-admin/edit.php?s&amp;post_status=all&amp;post_type=post&amp;action=-1&amp;m=202012&amp;cat=0&amp;filter_action=Filter&amp;action2=-1&amp;orderby=title&amp;order=asc"><span>Title</span><span class="sorting-indicator"></span></a></th>
-				<th scope="col" id="author" class="manage-column column-author">Author</th>
-				<th scope="col" id="categories" class="manage-column column-categories">Categories</th>
-				<th scope="col" id="tags" class="manage-column column-tags">Tags</th>
-				<th scope="col" id="comments" class="manage-column column-comments num sortable desc"><a href="http://localhost/incsub/single/wp-admin/edit.php?s&amp;post_status=all&amp;post_type=post&amp;action=-1&amp;m=202012&amp;cat=0&amp;filter_action=Filter&amp;action2=-1&amp;orderby=comment_count&amp;order=asc"><span><span class="vers comment-grey-bubble" title="Comments"><span class="screen-reader-text">Comments</span></span></span><span class="sorting-indicator"></span></a></th>
-				<th scope="col" id="date" class="manage-column column-date sortable asc"><a href="http://localhost/incsub/single/wp-admin/edit.php?s&amp;post_status=all&amp;post_type=post&amp;action=-1&amp;m=202012&amp;cat=0&amp;filter_action=Filter&amp;action2=-1&amp;orderby=date&amp;order=desc"><span>Date</span><span class="sorting-indicator"></span></a></th>
+				<td id="cb" class="manage-column column-cb check-column">
+					<label class="screen-reader-text" for="cb-select-all-1">Select All</label>
+					<input id="cb-select-all-1" type="checkbox">
+				</td>
+				<th scope="col" class="manage-column column-url sortable desc">
+					<a href="">
+						<span>404 URL</span>
+						<span class="sorting-indicator"></span>
+					</a>
+				</th>
+				<th scope="col" class="manage-column column-date">
+					<a href="">
+						<span>Date</span>
+						<span class="sorting-indicator"></span>
+					</a>
+				</th>
+				<th scope="col" class="manage-column column-referrer">Referrer</th>
+				<th scope="col" class="manage-column column-ip">IP Address</th>
+				<th scope="col" class="manage-column column-method">Method</th>
+				<th scope="col" class="manage-column column-ua num sortable desc">
+					<a href="">
+						<span>User Agent</span>
+						<span class="sorting-indicator"></span>
+					</a>
+				</th>
+				<th scope="col" class="manage-column column-actions">Actions</th>
 			</tr>
 			</thead>
 
@@ -141,10 +160,11 @@
 						<span aria-hidden="true">—</span><span class="screen-reader-text">No comments</span><span class="post-com-count post-com-count-pending post-com-count-no-pending"><span class="comment-count comment-count-no-pending" aria-hidden="true">0</span><span class="screen-reader-text">No comments</span></span></div>
 				</td>
 				<td class="date column-date" data-colname="Date">Published<br>2020/12/03 at 6:19 am</td>
+				<td></td>
 			</tr>
 			<tr class="hidden"></tr>
 			<tr id="edit-2105" class="inline-edit-row inline-edit-row-page quick-edit-row quick-edit-row-page inline-edit-page inline-editor" style="">
-				<td colspan="7" class="colspanchange">
+				<td colspan="8" class="colspanchange">
 
 					<fieldset class="inline-edit-col-left">
 						<legend class="inline-edit-legend">Customize</legend>
@@ -216,16 +236,13 @@
 				“Quiz” is locked				</span>
 					</div>
 				</th>
-				<td class="title column-title has-row-actions column-primary page-title" data-colname="Title">
-					<div class="locked-info"><span class="locked-avatar"></span> <span class="locked-text"></span></div>
-					<strong><a class="row-title" href="http://localhost/incsub/single/wp-admin/post.php?post=2103&amp;action=edit" aria-label="“Quiz” (Edit)">/hello-world-error</a></strong>
-
-					<div class="row-actions visible">
-						<span class="view">
-							<a href="" rel="bookmark" aria-label="View “Quiz”">View</a> |
-						</span>
-						<span class="inline hide-if-no-js">
-							<button type="button" class="button-link editinline" aria-label="Quick edit “Quiz” inline" aria-expanded="false">Configure</button> |
+				<td class="title column-url has-row-actions" data-colname="Title">
+					<a class="row-title" href="" aria-label="“Quiz” (Edit)">
+						/hello-world-error
+					</a>
+					<div class="row-actions">
+						<span class="inline">
+							<button type="button" class="button-link editinline" aria-label="Quick edit “Quiz” inline" aria-expanded="false">Exclude URL</button> |
 						</span>
 						<span class="delete">
 							<a href="" class="submitdelete" aria-label="Move “Quiz” to the Trash">Delete</a>
@@ -235,26 +252,63 @@
 						<span class="screen-reader-text">Show more details</span>
 					</button>
 				</td>
-				<td class="author column-author" data-colname="Author"><a href="edit.php?post_type=post&amp;author=1">joel</a></td>
-				<td class="categories column-categories" data-colname="Categories"><a href="edit.php?category_name=uncategorized">Uncategorized</a></td>
-				<td class="tags column-tags" data-colname="Tags"><span aria-hidden="true">—</span><span class="screen-reader-text">No tags</span></td>
-				<td class="comments column-comments" data-colname="Comments">
-					<div class="post-com-count-wrapper">
-						<span aria-hidden="true">—</span><span class="screen-reader-text">No comments</span><span class="post-com-count post-com-count-pending post-com-count-no-pending"><span class="comment-count comment-count-no-pending" aria-hidden="true">0</span><span class="screen-reader-text">No comments</span></span></div>
+				<td class="author column-date" data-colname="Author">
+					26 Feb 2021
+					<br/>
+					10:36 AM
 				</td>
-				<td class="date column-date" data-colname="Date">Published<br>2020/12/03 at 6:19 am</td>
+				<td class="categories column-referrer" data-colname="Categories">
+					<a href="">http://localhost/incsub/single/wp-admin/admin.php?page=404-to-301-logs</a>
+				</td>
+				<td class="tags column-ip" data-colname="Tags">
+					<a href="">
+						127.0.0.1
+					</a>
+				</td>
+				<td class="comments column-method" data-colname="Comments">GET</td>
+				<td class="column-ua">Mozilla/5.0(Windows NT 6.3; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0</td>
+				<td class="date column-actions" data-colname="Date">
+					<a href="" title="Customize">
+						<span class="dashicons dashicons-admin-generic"></span>
+						<span class="screen-reader-text">Customize</span>
+					</a>
+					<a href="" title="Customize">
+						<span class="dashicons dashicons-hidden"></span>
+						<span class="screen-reader-text">Exclude URL</span>
+					</a>
+					<a href="" title="Customize">
+						<span class="dashicons dashicons-trash"></span>
+						<span class="screen-reader-text">Delete Log</span>
+					</a>
+				</td>
 			</tr>
 			</tbody>
 
 			<tfoot>
 			<tr>
 				<td class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-2">Select All</label><input id="cb-select-all-2" type="checkbox"></td>
-				<th scope="col" class="manage-column column-title column-primary sortable desc"><a href="http://localhost/incsub/single/wp-admin/edit.php?s&amp;post_status=all&amp;post_type=post&amp;action=-1&amp;m=202012&amp;cat=0&amp;filter_action=Filter&amp;action2=-1&amp;orderby=title&amp;order=asc"><span>Title</span><span class="sorting-indicator"></span></a></th>
-				<th scope="col" class="manage-column column-author">Author</th>
-				<th scope="col" class="manage-column column-categories">Categories</th>
-				<th scope="col" class="manage-column column-tags">Tags</th>
-				<th scope="col" class="manage-column column-comments num sortable desc"><a href="http://localhost/incsub/single/wp-admin/edit.php?s&amp;post_status=all&amp;post_type=post&amp;action=-1&amp;m=202012&amp;cat=0&amp;filter_action=Filter&amp;action2=-1&amp;orderby=comment_count&amp;order=asc"><span><span class="vers comment-grey-bubble" title="Comments"><span class="screen-reader-text">Comments</span></span></span><span class="sorting-indicator"></span></a></th>
-				<th scope="col" class="manage-column column-date sortable asc"><a href="http://localhost/incsub/single/wp-admin/edit.php?s&amp;post_status=all&amp;post_type=post&amp;action=-1&amp;m=202012&amp;cat=0&amp;filter_action=Filter&amp;action2=-1&amp;orderby=date&amp;order=desc"><span>Date</span><span class="sorting-indicator"></span></a></th>
+				<th scope="col" class="manage-column column-url sortable desc">
+					<a href="">
+						<span>404 URL</span>
+						<span class="sorting-indicator"></span>
+					</a>
+				</th>
+				<th scope="col" class="manage-column column-date">
+					<a href="">
+						<span>Date</span>
+						<span class="sorting-indicator"></span>
+					</a>
+				</th>
+				<th scope="col" class="manage-column column-referrer">Referrer</th>
+				<th scope="col" class="manage-column column-ip">IP Address</th>
+				<th scope="col" class="manage-column column-method num">Method</th>
+				<th scope="col" class="manage-column column-ua sortable asc">
+					<a href="">
+						<span>User Agent</span>
+						<span class="sorting-indicator"></span>
+					</a>
+				</th>
+				<th scope="col" id="date" class="manage-column column-actions">Actions</th>
 			</tr>
 			</tfoot>
 

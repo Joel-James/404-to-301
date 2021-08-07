@@ -4,8 +4,150 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5141812fdfb7a07b6f4c1e1104cbef97",
+    "content-hash": "23777c52089e52b9d58e3e21185a36fd",
     "packages": [
+        {
+            "name": "duckdev/wp-query-builder",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/duckdev/wp-query-builder.git",
+                "reference": "c99f2f9514e272e9ec2b75f1ac8d41d863dd95e3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/duckdev/wp-query-builder/zipball/c99f2f9514e272e9ec2b75f1ac8d41d863dd95e3",
+                "reference": "c99f2f9514e272e9ec2b75f1ac8d41d863dd95e3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DuckDev\\QueryBuilder\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Joel James",
+                    "email": "me@joelsays.com",
+                    "homepage": "https://duckdev.com"
+                }
+            ],
+            "description": "Lightweight and efficient MySQL Query Builder based on WordPress' wpdb.",
+            "keywords": [
+                "SQL Builder",
+                "database",
+                "query builder",
+                "wordpress",
+                "wpdb"
+            ],
+            "support": {
+                "issues": "https://github.com/duckdev/queries/issues/",
+                "source": "https://github.com/duckdev/wp-query-builder/tree/v1.0.0"
+            },
+            "time": "2021-07-31T08:52:13+00:00"
+        },
+        {
+            "name": "duckdev/wp-queue-process",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/duckdev/wp-queue-process.git",
+                "reference": "50bcac0a54fd3a60cdd27bf8fe38d7e20074650c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/duckdev/wp-queue-process/zipball/50bcac0a54fd3a60cdd27bf8fe38d7e20074650c",
+                "reference": "50bcac0a54fd3a60cdd27bf8fe38d7e20074650c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DuckDev\\Queue\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Joel James",
+                    "email": "me@joelsays.com",
+                    "homepage": "https://duckdev.com"
+                }
+            ],
+            "description": "WordPress background queue processing library.",
+            "keywords": [
+                "notices",
+                "reviews",
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/duckdev/wp-queue-process/issues/",
+                "source": "https://github.com/duckdev/wp-queue-process/tree/v1.0.2"
+            },
+            "time": "2021-08-02T07:33:23+00:00"
+        },
+        {
+            "name": "duckdev/wp-queue-upgrades",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/duckdev/wp-queue-upgrades.git",
+                "reference": "308c439660dc27b62d1654e165329b4fa161c35a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/duckdev/wp-queue-upgrades/zipball/308c439660dc27b62d1654e165329b4fa161c35a",
+                "reference": "308c439660dc27b62d1654e165329b4fa161c35a",
+                "shasum": ""
+            },
+            "require": {
+                "duckdev/wp-queue-process": "^1.0.2",
+                "php": ">=5.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DuckDev\\Upgrades\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Joel James",
+                    "email": "me@joelsays.com",
+                    "homepage": "https://duckdev.com"
+                }
+            ],
+            "description": " Upgrade WordPress plugin data in using background process. ",
+            "keywords": [
+                "queue",
+                "upgrades",
+                "wordpress",
+                "wordpress-plugin"
+            ],
+            "support": {
+                "issues": "https://github.com/duckdev/wp-queue-upgrades/issues/",
+                "source": "https://github.com/duckdev/wp-queue-upgrades/tree/v1.0.1"
+            },
+            "time": "2021-08-04T13:57:20+00:00"
+        },
         {
             "name": "duckdev/wp-review-notice",
             "version": "v1.0.0",

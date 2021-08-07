@@ -14,7 +14,8 @@
 
 namespace DuckDev\Redirect\Views;
 
-use DuckDev\Redirect\Utils\Abstracts\View;
+// If this file is called directly, abort.
+defined( 'WPINC' ) || die;
 
 /**
  * Class Menu

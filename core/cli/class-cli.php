@@ -1,9 +1,8 @@
 <?php
 /**
- * The base class for CLI commands.
+ * The CLI commands class.
  *
- * Extend this class to add new command classes so that the
- * helper functions can be easily used.
+ * This class will register all our custom commands with WP CLI.
  *
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -18,8 +17,6 @@ namespace DuckDev\Redirect\CLI;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use WP_CLI;
-use WP_CLI\Utils;
 use WP_CLI_Command;
 
 /**
@@ -28,135 +25,80 @@ use WP_CLI_Command;
  * @package DuckDev\Redirect\CLI
  * @since   4.0.0
  */
-abstract class CLI extends WP_CLI_Command {
+final class CLI extends WP_CLI_Command {
 
 	/**
-	 * Create new instance of CLI command.
+	 * Get the plugin information.
 	 *
-	 * @since  4.0.0
-	 * @access public
+	 * ## OPTIONS
 	 *
-	 * @return static Called class instance.
-	 */
-	public static function instance() {
-		static $instances = array();
-
-		// @codingStandardsIgnoreLine Plugin-backported
-		$called_class_name = get_called_class();
-
-		// Only if not already exist.
-		if ( ! isset( $instances[ $called_class_name ] ) ) {
-			$instances[ $called_class_name ] = new $called_class_name();
-
-			// Add the command.
-			WP_CLI::add_command( '404-to-301', $called_class_name );
-		}
-
-		return $instances[ $called_class_name ];
-	}
-
-	/**
-	 * Display data as table if array.
+	 * [--item=<value>]
+	 * : The info item key (name, slug, version).
 	 *
-	 * Only single normal array is allowed. If there are
-	 * children array, it will be displayed as string.
+	 * ## EXAMPLES
 	 *
-	 * @param mixed $data   Data to display.
-	 * @param array $format Format of items.
+	 * wp 404-to-301 info --item=<value>
 	 *
-	 * @since  4.0.0
-	 * @access protected
+	 * @param array $args  Command arguments.
+	 * @param array $extra Extra options.
 	 *
 	 * @return void
 	 */
-	protected function maybe_as_table( $data, array $format = array( 'key', 'value' ) ) {
-		// Only if array.
-		if ( is_array( $data ) ) {
-			$output = array();
-			foreach ( $data as $key => $value ) {
-				$output[] = array(
-					$format[0] => $key,
-					$format[1] => $value,
-				);
-			}
-
-			// Show the output as table.
-			Utils\format_items( 'table', $output, $format );
-		} else {
-			// Show normal output.
-			$this->success( $data );
-		}
+	public function info( $args, $extra ) {
+		Info::instance()->command( $args, $extra );
 	}
 
 	/**
-	 * Display a message to CLI and ignore --quiet.
+	 * Get the plugin settings.
 	 *
-	 * @param string $message Message.
+	 * ## OPTIONS
 	 *
-	 * @since  4.0.0
-	 * @access protected
+	 * <action>
+	 * : The setting action type (get or set).
+	 *
+	 * [--module=<value>]
+	 * : The setting key name.
+	 *
+	 * [--key=<value>]
+	 * : The setting key name.
+	 *
+	 * [--value=<value>]
+	 * : The value to set.
+	 *
+	 * ## EXAMPLES
+	 *
+	 * wp 404-to-301 settings <action> --key=<value> --value=<value> --module=<value>
+	 *
+	 * @param array $args  Command arguments.
+	 * @param array $extra Extra options.
 	 *
 	 * @return void
 	 */
-	protected function show( $message ) {
-		WP_CLI::line( $message );
+	public function settings( $args, $extra ) {
+		Settings::instance()->command( $args, $extra );
 	}
 
 	/**
-	 * Display a message to CLI.
+	 * Get the plugin logs.
 	 *
-	 * @param string $message Message.
+	 * ## OPTIONS
 	 *
-	 * @since  4.0.0
-	 * @access protected
+	 * <action>
+	 * : The log action to perform (get,clean).
+	 *
+	 * [--limit=<value>]
+	 * : The no. of log items to show. Default limit is 100.
+	 *
+	 * ## EXAMPLES
+	 *
+	 * wp 404-to-301 logs <action> --limit=<value>
+	 *
+	 * @param array $args  Command arguments.
+	 * @param array $extra Extra options.
 	 *
 	 * @return void
 	 */
-	protected function log( $message ) {
-		WP_CLI::log( $message );
-	}
-
-	/**
-	 * Display success message to CLI.
-	 *
-	 * @param string $message Success message.
-	 *
-	 * @since  4.0.0
-	 * @access protected
-	 *
-	 * @return void
-	 */
-	protected function success( $message ) {
-		WP_CLI::success( $message );
-	}
-
-	/**
-	 * Display error message to CLI.
-	 *
-	 * @param string $message Error message.
-	 *
-	 * @since  4.0.0
-	 * @access protected
-	 *
-	 * @return void
-	 */
-	protected function error( $message = '' ) {
-		WP_CLI::error( empty( $message ) ? __( 'Invalid command.', '404-to-301' ) : $message );
-	}
-
-	/**
-	 * Get an argument value from the command.
-	 *
-	 * @param array  $args    Arguments.
-	 * @param string $key     Argument key.
-	 * @param mixed  $default Default value.
-	 *
-	 * @since  4.0.0
-	 * @access protected
-	 *
-	 * @return mixed
-	 */
-	protected function get_arg( $args, $key, $default = null ) {
-		return Utils\get_flag_value( $args, $key, $default );
+	public function logs( $args, $extra ) {
+		Logs::instance()->command( $args, $extra );
 	}
 }

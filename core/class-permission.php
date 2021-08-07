@@ -4,12 +4,14 @@
  *
  * This class contains the functionality to manage the permissions
  * inside the plugin.
+ * Currently, we use only one capability to manage everything.
  *
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    Controller
+ * @package    Core
+ *
  * @subpackage Permission
  */
 
@@ -18,32 +20,44 @@ namespace DuckDev\Redirect;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Abstracts\Base;
-
 /**
  * Class Permission
  *
- * @package DuckDev\Redirect\Controllers
+ * @since   4.0.0
+ * @package DuckDev\Redirect
  */
-class Permission extends Base {
+class Permission {
 
 	/**
-	 * Get the capability to manage settings.
+	 * Capability used to access plugin.
+	 *
+	 * @var string
+	 * @since 4.0.0
+	 */
+	const CAPABILITY = 'manage_options';
+
+	/**
+	 * Check if current user has access to our plugin.
 	 *
 	 * @since  4.0.0
 	 * @access public
 	 *
-	 * @return string
+	 * @todo   Use different capabilities for logs,redirects and settings.
+	 *
+	 * @return bool
 	 */
-	public static function settings_cap() {
+	public static function has_access() {
+		// Check if current user can.
+		$has = current_user_can( self::get_cap() );
+
 		/**
-		 * Filter hook to change the settings capability.
+		 * Filter hook to modify capability check.
 		 *
-		 * @param string $cap Capability.
+		 * @param bool $has Has access.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_permission_settings_cap', 'manage_options' );
+		return apply_filters( 'dd404_permission_has_access', $has );
 	}
 
 	/**
@@ -54,48 +68,14 @@ class Permission extends Base {
 	 *
 	 * @return string
 	 */
-	public static function logs_cap() {
+	public static function get_cap() {
 		/**
-		 * Filter hook to change the logs capability.
+		 * Filter hook to change the plugin capability.
 		 *
 		 * @param string $cap Capability.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd404_permission_logs_cap', 'manage_options' );
-	}
-
-	/**
-	 * Check if current user has the capability for an action.
-	 *
-	 * @param string $type Type.
-	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
-	 * @return bool
-	 */
-	public static function user_can( $type = 'settings' ) {
-		switch ( $type ) {
-			case 'settings':
-				$capable = current_user_can( self::settings_cap() );
-				break;
-			case 'logs':
-				$capable = current_user_can( self::logs_cap() );
-				break;
-			default:
-				$capable = false;
-				break;
-		}
-
-		/**
-		 * Filter hook to modify capability check.
-		 *
-		 * @param string $capable Capable.
-		 * @param string $type    Type.
-		 *
-		 * @since 4.0.0
-		 */
-		return apply_filters( 'dd404_permission_user_can', $capable, $type );
+		return apply_filters( 'dd404_permission_get_cap', self::CAPABILITY );
 	}
 }

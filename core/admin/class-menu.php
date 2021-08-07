@@ -67,6 +67,9 @@ class Menu extends Base {
 		// Error logs main menu.
 		$this->logs();
 
+		// Error logs main menu.
+		$this->redirects();
+
 		// Settings sub menu.
 		$this->settings();
 
@@ -119,11 +122,33 @@ class Menu extends Base {
 		add_menu_page(
 			__( '404 Error Logs', '404-to-301' ),
 			__( 'Logs', '404-to-301' ),
-			Permission::settings_cap(),
+			Permission::get_cap(),
 			self::SLUG,
 			array( Views\Logs::instance(), 'content' ),
 			'dashicons-redo',
 			89
+		);
+	}
+
+	/**
+	 * Register the menu for the redirects list.
+	 *
+	 * This is where the custom redirects for 404s listed.
+	 *
+	 * @since  4.0.0
+	 * @access private
+	 *
+	 * @return void
+	 */
+	private function redirects() {
+		// Redirects page.
+		add_submenu_page(
+			self::SLUG,
+			__( '404 to 301 Custom Redirects', '404-to-301' ),
+			__( 'Redirects', '404-to-301' ),
+			Permission::get_cap(),
+			'404-to-301-redirects',
+			array( Views\Redirects::instance(), 'content' )
 		);
 	}
 
@@ -143,7 +168,7 @@ class Menu extends Base {
 			self::SLUG,
 			__( '404 to 301 Settings', '404-to-301' ),
 			__( 'Settings', '404-to-301' ),
-			Permission::settings_cap(),
+			Permission::get_cap(),
 			'404-to-301-settings',
 			array( Views\Settings::instance(), 'base_content' )
 		);

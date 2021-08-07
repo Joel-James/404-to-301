@@ -25,7 +25,7 @@ defined( 'WPINC' ) || die;
  *
  * @package DuckDev\DD4T3\Models
  */
-class Options extends Model {
+class Redirects extends Model {
 
 	/**
 	 * Current table name.

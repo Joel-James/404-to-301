@@ -38,20 +38,32 @@ defined( 'ABSPATH' ) || exit;
 // Plugin version.
 define( 'DD404_VERSION', '4.0.0' );
 
+// Plugin database version.
+define( 'DD404_DB_VERSION', '4.0.0' );
+
 // Plugin path.
 define( 'DD404_URL', plugin_dir_url( __FILE__ ) );
 
 // Plugin URL.
 define( 'DD404_DIR', plugin_dir_path( __FILE__ ) );
 
-// Plugin URL.
+// Plugin file.
 define( 'DD404_FILE', __FILE__ );
+
+// Plugin file.
+define( 'DD404_BASE_NAME', plugin_basename( __FILE__ ) );
 
 // Auto load classes.
 require_once DD404_DIR . '/vendor/autoload.php';
 
 // Load functions.
 require_once DD404_DIR . '/core/functions/settings.php';
+
+// Activation actions.
+register_activation_hook( __FILE__, array( DuckDev\Redirect\Plugin::instance(), 'activate' ) );
+
+// Deactivation actions.
+register_deactivation_hook( __FILE__, array( DuckDev\Redirect\Plugin::instance(), 'deactivate' ) );
 
 /**
  * The main function for that returns JJ_404_to_301

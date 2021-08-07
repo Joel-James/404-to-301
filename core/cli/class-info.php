@@ -1,16 +1,13 @@
 <?php
 /**
- * The core plugin class.
- *
- * This is the main class that initialize the entire plugin functionality.
- * Only one instance of this class be created.
+ * The plugin info command class.
  *
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    Core
- * @subpackage Core
+ * @package    CLI
+ * @subpackage Info
  */
 
 namespace DuckDev\Redirect\CLI;
@@ -18,42 +15,41 @@ namespace DuckDev\Redirect\CLI;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use WP_CLI;
-use WP_CLI\Utils;
 use DuckDev\Redirect\Plugin;
+use DuckDev\QueryBuilder\Query;
 
 /**
- * Class CLI
+ * Class Info
  *
- * @package DuckDev\Redirect
+ * Plugin information CLI command.
+ *
+ * @package DuckDev\Redirect\CLI
  * @since   4.0.0
  */
-class Info extends CLI {
+class Info extends Command {
 
 	/**
 	 * Get the plugin information.
 	 *
-	 * ## OPTIONS
+	 * Show the basic plugin information such as
+	 * name, slug, version etc.
 	 *
-	 * [--item=<value>]
-	 * : The info item key (name, slug, version).
+	 * @param array $args  Command arguments.
+	 * @param array $extra Extra options.
 	 *
-	 * ## EXAMPLES
-	 *
-	 *     wp 404-to-301 info --item=<value>
-	 *
-	 * @param array $args Command arguments.
-	 *                    @param array $extra Extra options.
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
-	public function info( $args, $extra ) {
+	public function command( $args, $extra ) {
 		// Get available info.
 		$info = $this->get_info();
 
-		// Check if asked only for specific item.
+		// Item key.
 		$item = $this->get_arg( $extra, 'item' );
 
+		// Asking for single item.
 		if ( $item && isset( $info[ $item ] ) ) {
 			$this->show( $info[ $item ] );
 		} else {
@@ -64,6 +60,9 @@ class Info extends CLI {
 
 	/**
 	 * Get the plugin info data.
+	 *
+	 * Use dd404_cli_get_info filter to add more data
+	 * to the information list.
 	 *
 	 * @since  4.0.0
 	 * @access private

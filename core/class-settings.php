@@ -29,6 +29,13 @@ use DuckDev\Redirect\Utils\Abstracts\Base;
 class Settings extends Base {
 
 	/**
+	 * Settings key of the plugin.
+	 *
+	 * @since 4.0.0
+	 */
+	const KEY = '404_to_301_settings';
+
+	/**
 	 * Setup plugin class.
 	 *
 	 * @since  4.0.0
@@ -134,7 +141,7 @@ class Settings extends Base {
 		$values = array();
 
 		// Get settings.
-		$settings = get_option( Config::SETTINGS_KEY, array() );
+		$settings = get_option( self::KEY, array() );
 		// Default settings.
 		$defaults = $this->default_settings();
 
@@ -246,7 +253,7 @@ class Settings extends Base {
 		$settings = apply_filters( 'dd404_settings_before_update_settings', $settings, $values );
 
 		// Update the options.
-		return update_option( Config::SETTINGS_KEY, $settings );
+		return update_option( self::KEY, $settings );
 	}
 
 	/**
@@ -282,8 +289,7 @@ class Settings extends Base {
 				'recipient' => get_option( 'admin_email' ),
 			),
 			'misc'     => array(
-				'tables'        => array(),
-				'review_notice' => false,
+				'db_upgrading' => false,
 			),
 		);
 
@@ -340,6 +346,18 @@ class Settings extends Base {
 		return apply_filters( 'dd404_settings_format_settings', $old, $new );
 	}
 
+	/**
+	 * Get default empty value for the settings.
+	 *
+	 * @param string $key    Key.
+	 * @param string $module Module name.
+	 * @param mixed  $value  Default value.
+	 *
+	 * @since  4.0.0
+	 * @access private
+	 *
+	 * @return array|false|mixed|string
+	 */
 	private function get_empty_value( $key, $module, $value = false ) {
 		$default = $this->default_settings();
 
@@ -382,8 +400,8 @@ class Settings extends Base {
 	 */
 	public function register_settings() {
 		register_setting(
-			Config::SETTINGS_KEY,
-			Config::SETTINGS_KEY,
+			self::KEY,
+			self::KEY,
 			array(
 				'type'              => 'array',
 				'default'           => array(),
@@ -407,7 +425,7 @@ class Settings extends Base {
 	 * @return array
 	 */
 	public function sanitize_settings( $values ) {
-		wpmudev_debug($values);
+		wpmudev_debug( $values );
 		// Should be a proper array.
 		$values = empty( $values ) || ! is_array( $values ) ? array() : $values;
 

@@ -28,4 +28,19 @@ namespace {
 	function dd404_settings() {
 		return DuckDev\Redirect\Settings::instance();
 	}
+
+	/**
+	 * Get the plugin cache instance.
+	 *
+	 * Use this to access the plugin cache class from
+	 * anywhere in the WP.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return DuckDev\Redirect\Cache
+	 */
+	function dd404_cache() {
+		return DuckDev\Redirect\Cache::instance();
+	}
 }

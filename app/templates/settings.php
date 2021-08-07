@@ -20,7 +20,7 @@
 <div class="wrap duckdev-wrap" id="dd404-settings-app">
 	<form method="post" action="options.php" autocomplete="off">
 
-		<?php settings_fields( \DuckDev\Redirect\Data\Config::SETTINGS_KEY ); // Setup form fields. ?>
+		<?php settings_fields( dd404_settings()::KEY ); // Setup form fields. ?>
 
 		<div class="duckdev-top-wrap">
 			<h1>

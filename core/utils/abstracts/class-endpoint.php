@@ -21,7 +21,7 @@ defined( 'WPINC' ) || die;
 
 use WP_REST_Request;
 use WP_REST_Response;
-use DuckDev\Redirect\Controllers\Permission;
+use DuckDev\Redirect\Permission;
 
 /**
  * Class Base
@@ -135,9 +135,8 @@ abstract class Endpoint extends Base {
 	 * @return bool
 	 */
 	public function check_settings_permission( $request ) {
-		return true;
 		// Check capability.
-		$capable = Permission::user_can( 'settings' );
+		$capable = Permission::has_access();
 
 		/**
 		 * Filter to modify the settings capability check for API.

@@ -5,26 +5,30 @@
  * Extend this class whenever possible to avoid multiple instances
  * of the same classes being created.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
  * @link       https://duckdev.com/products/404-to-301/
  * @package    40to301
- * @since      4.0.0
  * @subpackage Core
  */
 
-namespace DuckDev\Redirect\Utils\Abstracts;
+namespace DuckDev\Redirect\Views;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
+use DuckDev\Redirect\Utils\Abstracts\Base;
+
 /**
  * Class View
  *
- * @package DuckDev\Redirect\Utils\Abstracts
+ * @since   4.0.0
+ * @extends Base
+ * @package DuckDev\Redirect\Views
  */
-abstract class View extends Base {
+class View extends Base {
 
 	/**
 	 * Render SVG icon template.
@@ -74,10 +78,10 @@ abstract class View extends Base {
 			extract( $args );
 
 			if ( $once ) {
-				/* @noinspection PhpIncludeInspection */
+				/* @noinspection */
 				include_once $path;
 			} else {
-				/* @noinspection PhpIncludeInspection */
+				/* @noinspection */
 				include $path;
 			}
 		}

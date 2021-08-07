@@ -18,15 +18,13 @@ namespace DuckDev\Redirect;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Abstracts\Base;
-
 /**
  * Creates a new object template.
  *
  * @since  5.0.0
  * @access public
  */
-class Plugin extends Base {
+class Plugin {
 
 	/**
 	 * Holds the name of the plugin in class format.
@@ -37,7 +35,7 @@ class Plugin extends Base {
 	 * @since  4.0.0
 	 * @access private
 	 */
-	private $slug = '404-to-301';
+	private static $slug = '404-to-301';
 
 	/**
 	 * Holds the name of the plugin in class format.
@@ -48,7 +46,7 @@ class Plugin extends Base {
 	 * @since  4.0.0
 	 * @access private
 	 */
-	private $name = '404 to 301';
+	private static $name = '404 to 301';
 
 	/**
 	 * Holds the screen IDs of plugin pages.
@@ -57,7 +55,7 @@ class Plugin extends Base {
 	 * @since  4.0.0
 	 * @access private
 	 */
-	private $pages = array(
+	private static $pages = array(
 		'logs'      => 'toplevel_page_404-to-301-logs',
 		'settings'  => 'logs_page_404-to-301-settings',
 		'redirects' => 'logs_page_404-to-301-redirects',
@@ -71,8 +69,8 @@ class Plugin extends Base {
 	 *
 	 * @return string
 	 */
-	public function slug() {
-		return $this->slug;
+	public static function slug() {
+		return self::$slug;
 	}
 
 	/**
@@ -83,23 +81,8 @@ class Plugin extends Base {
 	 *
 	 * @return string
 	 */
-	public function name() {
-		return $this->name;
-	}
-
-	/**
-	 * Check if the plugin is active networkwide.
-	 *
-	 * This is applicable only on a multisite. In single
-	 * sites, it will always return false.
-	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
-	 * @return bool
-	 */
-	public function is_network_wide() {
-		return true;
+	public static function name() {
+		return self::$name;
 	}
 
 	/**
@@ -110,10 +93,10 @@ class Plugin extends Base {
 	 *
 	 * @return string[]
 	 */
-	public function pages() {
+	public static function pages() {
 		$pages = array();
 
-		foreach ( $this->pages as $key => $id ) {
+		foreach ( self::$pages as $key => $id ) {
 			$pages[ $key ] = array(
 				'id'  => $id,
 				'url' => admin_url( 'admin.php?page=404-to-301-' . $key ),
@@ -121,5 +104,54 @@ class Plugin extends Base {
 		}
 
 		return $pages;
+	}
+
+	/**
+	 * Run plugin activation hooks.
+	 *
+	 * Make sure to call this in register_activation_hook().
+	 * Otherwise, it won't work.
+	 *
+	 * @since 4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	public function activate() {
+		// Setup database.
+		Database\DB::instance();
+
+		/**
+		 * Action hook to run after activating plugin.
+		 *
+		 * This won't work inside our plugin because our plugin
+		 * will boot only after the activation hook is fired.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd404_activated' );
+	}
+
+	/**
+	 * Run plugin deactivation hooks.
+	 *
+	 * Make sure to call this in register_deactivation_hook().
+	 * Otherwise, it won't work.
+	 *
+	 * @since 4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	public function deactivate() {
+		/**
+		 * Deactivation hook to run after activating plugin.
+		 *
+		 * This won't work inside our plugin because our plugin
+		 * will boot only after the activation hook is fired.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd404_deactivated' );
 	}
 }
