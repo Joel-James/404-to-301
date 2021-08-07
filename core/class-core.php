@@ -132,21 +132,6 @@ final class Core extends Base {
 	}
 
 	/**
-	 * Get the plugin's background process instance.
-	 *
-	 * Use this instance to manage queue tasks inside
-	 * our plugin.
-	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
-	 * @return Process
-	 */
-	public function process() {
-		return $this->process;
-	}
-
-	/**
 	 * Setup plugin WP CLI commands.
 	 *
 	 * WP CLI commands are added only if the WP CLI

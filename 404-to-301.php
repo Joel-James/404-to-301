@@ -60,10 +60,10 @@ require_once DD404_DIR . '/vendor/autoload.php';
 require_once DD404_DIR . '/core/functions/settings.php';
 
 // Activation actions.
-register_activation_hook( __FILE__, array( DuckDev\Redirect\Plugin::instance(), 'activate' ) );
+register_activation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'activate' ) );
 
 // Deactivation actions.
-register_deactivation_hook( __FILE__, array( DuckDev\Redirect\Plugin::instance(), 'deactivate' ) );
+register_deactivation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'deactivate' ) );
 
 /**
  * The main function for that returns JJ_404_to_301

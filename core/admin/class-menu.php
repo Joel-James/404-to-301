@@ -102,7 +102,7 @@ class Menu extends Base {
 			if ( isset( $data[2] ) && self::SLUG === $data[2] ) {
 				// Rename the plugin main menu title.
 				// phpcs:ignore
-				$menu[ $position ][0] = Plugin::instance()->name();
+				$menu[ $position ][0] = Plugin::name();
 			}
 		}
 	}

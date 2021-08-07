@@ -84,7 +84,7 @@ class Admin extends View {
 				'type'    => 'info',
 				'content' => sprintf(
 					__( '<strong>%s</strong> is upgrading database in background.', '404-to-301' ),
-					Plugin::instance()->name()
+					Plugin::name()
 				),
 			),
 			false

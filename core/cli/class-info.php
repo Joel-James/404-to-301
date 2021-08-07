@@ -71,8 +71,8 @@ class Info extends Command {
 	 */
 	private function get_info() {
 		$info = array(
-			'name'    => Plugin::instance()->name(),
-			'slug'    => Plugin::instance()->slug(),
+			'name'    => Plugin::name(),
+			'slug'    => Plugin::slug(),
 			'version' => DD404_VERSION,
 		);
 
