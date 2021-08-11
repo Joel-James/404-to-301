@@ -5,16 +5,16 @@
  * Extend this class whenever possible to avoid multiple instances
  * of the same classes being created.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    40to301
- * @since      4.0.0
- * @subpackage Core
+ * @package    Core
+ * @subpackage Base
  */
 
-namespace DuckDev\Redirect\Utils\Abstracts;
+namespace DuckDev\Redirect\Utils;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -22,7 +22,8 @@ defined( 'WPINC' ) || die;
 /**
  * Class Base
  *
- * @package DuckDev\Redirect\Abstracts
+ * @since   4.0.0
+ * @package DuckDev\Redirect\Utils
  */
 abstract class Base {
 
@@ -31,7 +32,8 @@ abstract class Base {
 	 *
 	 * Protect the class from being initiated multiple times.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access protected
 	 *
 	 * @return void
 	 */
@@ -42,7 +44,8 @@ abstract class Base {
 	/**
 	 * Instance obtaining method.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return static Called class instance.
 	 */

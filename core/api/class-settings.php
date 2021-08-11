@@ -4,12 +4,12 @@
  *
  * This class handles the API endpoint for managing settings.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
  * @package    Endpoint
- * @since      4.0.0
  * @subpackage Settings
  */
 
@@ -21,32 +21,31 @@ defined( 'WPINC' ) || die;
 use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
-use DuckDev\Redirect\Utils\Traits\Api;
-use DuckDev\Redirect\Utils\Abstracts\Endpoint;
+use DuckDev\Redirect\Utils\Endpoint;
 
 /**
  * Class Settings
  *
- * @package DuckDev\Redirect\Api
  * @since   4.0.0
+ * @extends Endpoint
+ * @package DuckDev\Redirect\Api
  */
 class Settings extends Endpoint {
-
-	use Api;
 
 	/**
 	 * API endpoint for the current api.
 	 *
 	 * @var string $endpoint
-	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access private
 	 */
 	private $endpoint = '/settings';
 
 	/**
 	 * Register the routes for handling settings functionality.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
@@ -59,7 +58,7 @@ class Settings extends Endpoint {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_settings' ),
-					'permission_callback' => array( $this, 'check_settings_permission' ),
+					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
 						'key'    => array(
 							'type'        => 'string',
@@ -77,7 +76,7 @@ class Settings extends Endpoint {
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_settings' ),
-					'permission_callback' => array( $this, 'check_settings_permission' ),
+					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
 						'key'    => array(
 							'type'        => 'string',

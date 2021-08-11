@@ -19,7 +19,7 @@ namespace DuckDev\Redirect\Views;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Abstracts\Base;
+use DuckDev\Redirect\Utils\Base;
 
 /**
  * Class View

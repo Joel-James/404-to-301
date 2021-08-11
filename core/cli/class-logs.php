@@ -22,8 +22,9 @@ defined( 'WPINC' ) || die;
  *
  * Plugin 404 logs CLI class.
  *
- * @package DuckDev\Redirect\CLI
  * @since   4.0.0
+ * @extends Command
+ * @package DuckDev\Redirect\CLI
  */
 class Logs extends Command {
 

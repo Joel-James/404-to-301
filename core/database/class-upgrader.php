@@ -19,16 +19,16 @@ namespace DuckDev\Redirect\Database;
 defined( 'WPINC' ) || die;
 
 use DuckDev\Upgrades\Process;
-use DuckDev\Upgrades\Upgrader;
+use DuckDev\Upgrades\Upgrader as Base;
 
 /**
  * Class Upgrade.
  *
  * @since   1.0.0
- * @extends Upgrader
+ * @extends Base
  * @package DuckDev\Redirect\Database
  */
-class Upgrade extends Upgrader {
+class Upgrader extends Base {
 
 	/**
 	 * Holds the name of the background process action.

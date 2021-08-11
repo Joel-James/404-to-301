@@ -1,6 +1,6 @@
 <?php
 /**
- * The plugin base class.
+ * The plugin information class.
  *
  * This class contains the properties of the plugin and the basic
  * information you need about the plugin.
@@ -9,8 +9,8 @@
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    40to301
- * @subpackage Core
+ * @package    Core
+ * @subpackage Plugin
  */
 
 namespace DuckDev\Redirect;
@@ -19,17 +19,17 @@ namespace DuckDev\Redirect;
 defined( 'WPINC' ) || die;
 
 /**
- * Creates a new object template.
+ * Class Plugin.
  *
- * @since  5.0.0
- * @access public
+ * @since    4.0.0
+ * @package  DuckDev\Redirect
  */
 class Plugin {
 
 	/**
-	 * Holds the name of the plugin in class format.
+	 * Holds the slug of the plugin.
 	 *
-	 * To access this property, you should use the name().
+	 * To access this property, you should use Plugin::slug().
 	 *
 	 * @var    string
 	 * @since  4.0.0
@@ -38,9 +38,10 @@ class Plugin {
 	private static $slug = '404-to-301';
 
 	/**
-	 * Holds the name of the plugin in class format.
+	 * Holds the name of the plugin.
 	 *
-	 * To access this property, you should use the name().
+	 * To access this property, you should use Plugin::name().
+	 * This can not be translated.
 	 *
 	 * @var    string
 	 * @since  4.0.0
@@ -49,7 +50,7 @@ class Plugin {
 	private static $name = '404 to 301';
 
 	/**
-	 * Holds the screen IDs of plugin pages.
+	 * Holds the screen IDs of our plugin pages.
 	 *
 	 * @var string[]
 	 * @since  4.0.0
@@ -62,9 +63,11 @@ class Plugin {
 	);
 
 	/**
-	 * Getter method to get the plugin name.
+	 * Get the plugin slug name.
 	 *
-	 * @since  5.0.0
+	 * This slug should be same as wp.org slug.
+	 *
+	 * @since  4.0.0
 	 * @access public
 	 *
 	 * @return string
@@ -74,7 +77,9 @@ class Plugin {
 	}
 
 	/**
-	 * Getter method to get the plugin name.
+	 * Get the plugin name string.
+	 *
+	 * This should not be translated.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -86,7 +91,21 @@ class Plugin {
 	}
 
 	/**
-	 * Getter method to get the plugin admin page IDs.
+	 * Get the plugin name admin screens.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return string[]
+	 */
+	public static function screens() {
+		return self::$pages;
+	}
+
+	/**
+	 * Getter method to get the plugin admin pages.
+	 *
+	 * Admin page id and url will be keyed with short name as key.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -96,7 +115,7 @@ class Plugin {
 	public static function pages() {
 		$pages = array();
 
-		foreach ( self::$pages as $key => $id ) {
+		foreach ( self::screens() as $key => $id ) {
 			$pages[ $key ] = array(
 				'id'  => $id,
 				'url' => admin_url( 'admin.php?page=404-to-301-' . $key ),
@@ -107,19 +126,35 @@ class Plugin {
 	}
 
 	/**
+	 * Get URL of one of our plugin pages.
+	 *
+	 * @param string $page Page key.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return string
+	 */
+	public static function get_url( $page = 'settings' ) {
+		$pages = self::pages();
+
+		return isset( $pages[ $page ] ) ? $pages[ $page ] : '';
+	}
+
+	/**
 	 * Run plugin activation hooks.
 	 *
 	 * Make sure to call this in register_activation_hook().
 	 * Otherwise, it won't work.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
 	 * @access public
 	 *
 	 * @return void
 	 */
-	public function activate() {
+	public static function activate() {
 		// Setup database.
-		Database\DB::instance();
+		Database\Database::instance();
 
 		/**
 		 * Action hook to run after activating plugin.
@@ -138,12 +173,12 @@ class Plugin {
 	 * Make sure to call this in register_deactivation_hook().
 	 * Otherwise, it won't work.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
 	 * @access public
 	 *
 	 * @return void
 	 */
-	public function deactivate() {
+	public static function deactivate() {
 		/**
 		 * Deactivation hook to run after activating plugin.
 		 *

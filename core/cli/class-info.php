@@ -16,15 +16,15 @@ namespace DuckDev\Redirect\CLI;
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Plugin;
-use DuckDev\QueryBuilder\Query;
 
 /**
  * Class Info
  *
  * Plugin information CLI command.
  *
- * @package DuckDev\Redirect\CLI
  * @since   4.0.0
+ * @extends Command
+ * @package DuckDev\Redirect\CLI
  */
 class Info extends Command {
 
@@ -74,6 +74,7 @@ class Info extends Command {
 			'name'    => Plugin::name(),
 			'slug'    => Plugin::slug(),
 			'version' => DD4T3_VERSION,
+			'screens' => array_values( Plugin::screens() ),
 		);
 
 		/**

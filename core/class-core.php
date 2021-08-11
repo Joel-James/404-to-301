@@ -5,9 +5,10 @@
  * This is the main class that initialize the entire plugin functionality.
  * Only one instance of this class be created.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
  * @subpackage Core
@@ -18,13 +19,14 @@ namespace DuckDev\Redirect;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Abstracts\Base;
+use DuckDev\Redirect\Utils\Base;
 
 /**
  * Class Core
  *
  * @since   4.0.0
  * @package DuckDev\Redirect
+ * @extends Base
  */
 final class Core extends Base {
 
@@ -37,7 +39,6 @@ final class Core extends Base {
 	 * @return void
 	 */
 	protected function init() {
-		// Setup sub classes.
 		$this->common();
 		$this->admin();
 		$this->front();
@@ -59,10 +60,10 @@ final class Core extends Base {
 	}
 
 	/**
-	 * Setup all classes for the common functionality.
+	 * Setup all classes for that is common.
 	 *
 	 * These classes are required for both front end and
-	 * back of WordPress.
+	 * back end of WordPress.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -70,9 +71,7 @@ final class Core extends Base {
 	 * @return void
 	 */
 	private function common() {
-		// Setup background process.
 		Processes::instance();
-		// Setup settings.
 		Settings::instance();
 	}
 

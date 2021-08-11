@@ -18,13 +18,14 @@ namespace DuckDev\Redirect\Admin;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Abstracts\Base;
+use DuckDev\Redirect\Utils\Base;
 
 /**
  * Class Vars
  *
- * @package DuckDev\Redirect\Admin
  * @since   4.0.0
+ * @extends Base
+ * @package DuckDev\Redirect\Admin
  */
 class Vars extends Base {
 
@@ -38,33 +39,9 @@ class Vars extends Base {
 	 */
 	public function init() {
 		// Add required vars for javascript.
-		add_action( 'dd4t3_assets_vars_dd4t3-logs', array( $this, 'common' ) );
 		add_action( 'dd4t3_assets_vars_dd4t3-logs', array( $this, 'logs' ) );
-		add_action( 'dd4t3_assets_vars_dd4t3-settings', array( $this, 'common' ) );
 		add_action( 'dd4t3_assets_vars_dd4t3-settings', array( $this, 'settings' ) );
-	}
-
-	/**
-	 * Add the vars common for all scripts.
-	 *
-	 * @param array $vars Script vars.
-	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
-	 * @return array $vars
-	 */
-	public function common( $vars ) {
-		// Rest API data.
-		$vars['rest'] = array(
-			'base'  => rest_url( '404-to-301/v1/' ),
-			'nonce' => wp_create_nonce( 'wp_rest' ),
-		);
-
-		// Settings data.
-		$vars['settings'] = dd4t3_settings()->get_settings();
-
-		return $vars;
+		add_action( 'dd4t3_assets_vars_dd4t3-redirects', array( $this, 'redirects' ) );
 	}
 
 	/**
@@ -78,6 +55,11 @@ class Vars extends Base {
 	 * @return array $vars
 	 */
 	public function settings( $vars ) {
+		// Include common vars.
+		$vars = $this->common( $vars );
+
+		$vars['test'] = '';
+
 		return $vars;
 	}
 
@@ -92,6 +74,56 @@ class Vars extends Base {
 	 * @return array $vars
 	 */
 	public function logs( $vars ) {
+		// Include common vars.
+		$vars = $this->common( $vars );
+
+		$vars['test'] = '';
+
+		return $vars;
+	}
+
+	/**
+	 * Add the vars only required in redirects script.
+	 *
+	 * @param array $vars Script vars.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return array $vars
+	 */
+	public function redirects( $vars ) {
+		// Include common vars.
+		$vars = $this->common( $vars );
+
+		$vars['test'] = '';
+
+		return $vars;
+	}
+
+	/**
+	 * Add the vars common for all scripts.
+	 *
+	 * Make sure to limit the items which are only needed in all
+	 * our scripts. Use separate method for individual scripts.
+	 *
+	 * @param array $vars Script vars.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return array $vars
+	 */
+	private function common( $vars ) {
+		// Rest API data.
+		$vars['rest'] = array(
+			'base'  => rest_url( '404-to-301/v1/' ),
+			'nonce' => wp_create_nonce( 'wp_rest' ),
+		);
+
+		// Settings data.
+		$vars['settings'] = dd4t3_settings()->get_settings();
+
 		return $vars;
 	}
 }

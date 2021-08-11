@@ -5,6 +5,7 @@
  * Extend this class to add new command classes so that the
  * helper functions can be easily used.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
@@ -20,13 +21,14 @@ defined( 'WPINC' ) || die;
 
 use WP_CLI;
 use WP_CLI\Utils;
-use DuckDev\Redirect\Utils\Abstracts\Base;
+use DuckDev\Redirect\Utils\Base;
 
 /**
  * Class Command
  *
- * @package DuckDev\Redirect\CLI
  * @since   4.0.0
+ * @extends Base
+ * @package DuckDev\Redirect\CLI
  */
 abstract class Command extends Base {
 

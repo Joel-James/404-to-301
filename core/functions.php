@@ -40,5 +40,12 @@ function dd4t3_settings() {
  * @return DuckDev\Redirect\Cache
  */
 function dd4t3_cache() {
-	return DuckDev\Redirect\Cache::instance();
+	static $cache = null;
+
+	// Make sure only one instance is available.
+	if ( null === $cache ) {
+		$cache = new DuckDev\Redirect\Cache();
+	}
+
+	return $cache;
 }

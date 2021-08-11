@@ -4,20 +4,67 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "23777c52089e52b9d58e3e21185a36fd",
+    "content-hash": "637f0dda3008099afa02f26b4877abee",
     "packages": [
         {
-            "name": "duckdev/wp-query-builder",
+            "name": "duckdev/wp-cache-helper",
             "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/duckdev/wp-query-builder.git",
-                "reference": "c99f2f9514e272e9ec2b75f1ac8d41d863dd95e3"
+                "url": "https://github.com/duckdev/wp-cache-helper.git",
+                "reference": "70093a4064924e8722b3702ae9c7224d54308340"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/duckdev/wp-query-builder/zipball/c99f2f9514e272e9ec2b75f1ac8d41d863dd95e3",
-                "reference": "c99f2f9514e272e9ec2b75f1ac8d41d863dd95e3",
+                "url": "https://api.github.com/repos/duckdev/wp-cache-helper/zipball/70093a4064924e8722b3702ae9c7224d54308340",
+                "reference": "70093a4064924e8722b3702ae9c7224d54308340",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DuckDev\\Cache\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Joel James",
+                    "email": "me@joelsays.com",
+                    "homepage": "https://duckdev.com"
+                }
+            ],
+            "description": "Helper class for the WordPress object cache and transients with group flush feature.",
+            "keywords": [
+                "cache",
+                "object-cache",
+                "transients",
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/duckdev/wp-cache-helper/issues/",
+                "source": "https://github.com/duckdev/wp-cache-helper/tree/v1.0.0"
+            },
+            "time": "2021-08-08T19:49:49+00:00"
+        },
+        {
+            "name": "duckdev/wp-query-builder",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/duckdev/wp-query-builder.git",
+                "reference": "15cfabe22492e4ed849a194f6597f42af812e4b1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/duckdev/wp-query-builder/zipball/15cfabe22492e4ed849a194f6597f42af812e4b1",
+                "reference": "15cfabe22492e4ed849a194f6597f42af812e4b1",
                 "shasum": ""
             },
             "require": {
@@ -50,9 +97,9 @@
             ],
             "support": {
                 "issues": "https://github.com/duckdev/queries/issues/",
-                "source": "https://github.com/duckdev/wp-query-builder/tree/v1.0.0"
+                "source": "https://github.com/duckdev/wp-query-builder/tree/v1.0.1"
             },
-            "time": "2021-07-31T08:52:13+00:00"
+            "time": "2021-08-09T08:04:28+00:00"
         },
         {
             "name": "duckdev/wp-queue-process",
@@ -150,16 +197,16 @@
         },
         {
             "name": "duckdev/wp-review-notice",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/duckdev/wp-review-notice.git",
-                "reference": "d8498539c8634689d42a0cb9c3dbc278becd088c"
+                "reference": "cb6ba56de8d443ad74f5dbb88723382ac1472ae3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/duckdev/wp-review-notice/zipball/d8498539c8634689d42a0cb9c3dbc278becd088c",
-                "reference": "d8498539c8634689d42a0cb9c3dbc278becd088c",
+                "url": "https://api.github.com/repos/duckdev/wp-review-notice/zipball/cb6ba56de8d443ad74f5dbb88723382ac1472ae3",
+                "reference": "cb6ba56de8d443ad74f5dbb88723382ac1472ae3",
                 "shasum": ""
             },
             "require": {
@@ -190,9 +237,9 @@
             ],
             "support": {
                 "issues": "https://github.com/duckdev/wp-review-notice/issues/",
-                "source": "https://github.com/duckdev/wp-review-notice/tree/v1.0.0"
+                "source": "https://github.com/duckdev/wp-review-notice/tree/v1.0.1"
             },
-            "time": "2021-07-27T07:02:26+00:00"
+            "time": "2021-08-11T06:53:32+00:00"
         }
     ],
     "packages-dev": [],

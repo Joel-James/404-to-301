@@ -6,12 +6,12 @@
  * inside the plugin.
  * Currently, we use only one capability to manage everything.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
- *
  * @subpackage Permission
  */
 

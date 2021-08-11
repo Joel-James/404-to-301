@@ -20,7 +20,7 @@ defined( 'WPINC' ) || die;
 use Exception;
 use DuckDev\Redirect\Front\Main;
 use DuckDev\Redirect\Front\Request;
-use DuckDev\Redirect\Utils\Abstracts\Base;
+use DuckDev\Redirect\Utils\Base;
 
 /**
  * Class Menu

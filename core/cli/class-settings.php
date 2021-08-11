@@ -20,8 +20,9 @@ defined( 'WPINC' ) || die;
  *
  * Plugin settings CLI command.
  *
- * @package DuckDev\Redirect\CLI
  * @since   4.0.0
+ * @extends Command
+ * @package DuckDev\Redirect\CLI
  */
 class Settings extends Command {
 

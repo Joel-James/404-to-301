@@ -5,12 +5,12 @@
  * Extend this class whenever possible to make use of common
  * methods.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    40to301
- * @since      4.0.0
+ * @package    Core
  * @subpackage Model
  */
 
@@ -19,12 +19,16 @@ namespace DuckDev\Redirect\Models;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Abstracts\Base;
+use DuckDev\Redirect\Database;
+use DuckDev\QueryBuilder\Query;
+use DuckDev\Redirect\Utils\Base;
 
 /**
- * Class Base
+ * Class Model
  *
- * @package DuckDev\Redirect\Abstracts
+ * @since   4.0.0
+ * @extends Base
+ * @package DuckDev\Redirect\Models\Model
  */
 abstract class Model extends Base {
 
@@ -32,63 +36,108 @@ abstract class Model extends Base {
 	 * Current model table name.
 	 *
 	 * @var string $table Table name.
-	 *
-	 * @since 4.0
+	 * @since  4.0.0
+	 * @access protected
 	 */
 	protected $name;
 
 	/**
-	 * Get the table name appending prefix.
+	 * Use object cache for model data.
 	 *
-	 * Classes can override this by extending it.
+	 * Get from cache before making complex db cals.
 	 *
-	 * @since 4.0
+	 * @param string   $key      Cache key.
+	 * @param callable $callback Callback.
 	 *
-	 * @return string
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return false|mixed
 	 */
-	public function table_name() {
-		return DB::instance()->table_name( $this->name );
+	protected function remember( $key, $callback ) {
+		// Use cache.
+		$log = dd4t3_cache()->remember( $key, $callback );
+
+		return empty( $log ) ? false : $log;
 	}
 
 	/**
-	 * Get the field names of the table.
+	 * Get the table name appending prefix.
 	 *
-	 * @since 4.0
+	 * If the $core param is true, we will simply prefix the
+	 * table name with current site's prefix.
+	 *
+	 * @param string $name Table name.
+	 * @param bool   $core Is core tables.
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return string
+	 */
+	protected function table_name( $name, $core = false ) {
+		if ( $core ) {
+			return Database\Database::instance()->get_table_name( $name );
+		} else {
+			$tables = Database\Installer::instance()->tables();
+
+			return isset( $tables[ $name ] ) ? $tables[ $name ] : '';
+		}
+	}
+
+	/**
+	 * Get the field names of a table.
+	 *
+	 * @param string $table Table name.
+	 *
+	 * @since  4.0.0
+	 * @access protected
 	 *
 	 * @return string[]
 	 */
-	protected function field_names() {
-		return DB::instance()->field_names( $this->name );
+	protected function field_names( $table ) {
+		$fields = Database\Installer::instance()->fields();
+
+		return isset( $fields[ $table ] ) ? array_keys( $fields[ $table ] ) : array();
 	}
 
 	/**
-	 * Get the field format string.
+	 * Get the field format form a table field.
 	 *
-	 * @param string $name Field name.
+	 * @param string $field Field name.
+	 * @param string $table Table name.
 	 *
-	 * @since 4.0
+	 * @since  4.0.0
+	 * @access protected
 	 *
 	 * @return string
 	 */
-	protected function field_format( $name ) {
-		$formats = DB::instance()->field_formats( $this->name );
+	protected function field_format( $field, $table ) {
+		$fields = Database\Installer::instance()->fields();
 
-		return isset( $formats[ $name ] ) ? $formats[ $name ] : '%s';
+		// If field is valid.
+		if ( isset( $fields[ $table ][ $field ] ) ) {
+			return $fields[ $table ][ $field ];
+		}
+
+		return '%s';
 	}
 
 	/**
 	 * Prepare data to process it with DB.
 	 *
 	 * Allow only the fields defined in the table.
-	 * Get formatting strings for each fields.
+	 * Get formatting strings for each field.
 	 *
-	 * @param array $data Data.
+	 * @param array  $data  Data.
+	 * @param string $table Table name.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access protected
 	 *
 	 * @return array
 	 */
-	protected function prepare_data( $data ) {
+	protected function prepare_data( $data, $table ) {
 		$final = array(
 			'values' => array(),
 			'format' => array(),
@@ -97,9 +146,9 @@ abstract class Model extends Base {
 		// Data validation.
 		foreach ( $data as $field => $value ) {
 			// Only if allowed.
-			if ( in_array( $field, $this->field_names(), true ) ) {
+			if ( in_array( $field, $this->field_names( $table ), true ) ) {
 				// Get format string.
-				$final['format'][] = $this->field_format( $field );
+				$final['format'][] = $this->field_format( $table, $field );
 				// Get value.
 				$final['values'][ $field ] = $value;
 			}
@@ -113,22 +162,61 @@ abstract class Model extends Base {
 	 *
 	 * We will allow only fields added in $fields var.
 	 *
-	 * @param array $data Data.
+	 * @param array  $data  Data.
+	 * @param string $table Table name.
 	 *
-	 * @since 4.0
+	 * @since  4.0.0
+	 * @access protected
 	 *
 	 * @return bool
 	 */
-	protected function insert( $data ) {
-		global $wpdb;
-
+	protected function insert( $data, $table ) {
 		// Data validation.
-		list( $data, $format ) = $this->prepare_data( $data );
+		list( $data, $format ) = $this->prepare_data( $data, $table );
 
 		// Insert data to table.
 		if ( ! empty( $values ) ) {
 			// phpcs:ignore
-			$result = $wpdb->insert( $this->table_name(), $data, $format );
+			return Query::init()
+				->from( $this->table_name( $table ) )
+				->insert( $data, $format );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Perform data update in current table.
+	 *
+	 * We will allow only defined table fields.
+	 *
+	 * @param array  $data  Data.
+	 * @param array  $where Where fields.
+	 * @param string $table Table name.
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return bool
+	 */
+	protected function update( $data, $where, $table ) {
+		global $wpdb;
+
+		// Get data and formats.
+		list( $data, $format ) = $this->prepare_data( $data, $table );
+		// Get where formats.
+		list( $where, $where_format ) = $this->prepare_data( $where, $table );
+
+		// Update data in table.
+		if ( ! empty( $values ) && ! empty( $where ) ) {
+			// phpcs:ignore
+			$wpdb->update(
+				$this->table_name( $table ),
+				$data,
+				$where,
+				$format,
+				$where_format
+			);
 
 			return ! empty( $result );
 		}
@@ -139,31 +227,26 @@ abstract class Model extends Base {
 	/**
 	 * Perform data update in current table.
 	 *
-	 * We will allow only fields added in $fields var.
+	 * We will allow only defined table fields.
 	 *
-	 * @param array $data  Data.
-	 * @param array $where Where fields.
+	 * @param array  $data  Data.
 	 *
-	 * @since 4.0
+	 * @since  4.0.0
+	 * @access protected
 	 *
-	 * @return bool
+	 * @return array
 	 */
-	protected function update( $data, $where ) {
-		global $wpdb;
-
-		// Get data and formats.
-		list( $data, $format ) = $this->prepare_data( $data );
-		// Get where formats.
-		list( $where, $where_format ) = $this->prepare_data( $where );
-
-		// Update data in table.
-		if ( ! empty( $values ) && ! empty( $where ) ) {
-			// phpcs:ignore
-			$wpdb->update( $this->table_name(), $data, $where, $format, $where_format );
-
-			return ! empty( $result );
+	protected function sanitize( array $data ) {
+		if ( isset( $data['id'] ) ) {
+			// ID should always be integer.
+			$data['id'] = (int) $data['id'];
 		}
 
-		return false;
+		if ( isset( $data['url'] ) ) {
+			// ID should always be integer.
+			$data['url'] = substr( $url, 0, self::MAX_URL_LENGTH );
+		}
+
+		return $data;
 	}
 }

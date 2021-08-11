@@ -42,7 +42,9 @@
     "sass": "^1.35.1",
     "sass-loader": "^10",
     "webpack": "^4.46.0",
-    "webpack-fix-style-only-entries": "^0.6.1"
+    "webpack-fix-style-only-entries": "^0.6.1",
+    "jsdoc": "^3.6.7",
+    "wp-hookdoc": "^0.2.0"
   },
   "eslintConfig": {
     "root": true,

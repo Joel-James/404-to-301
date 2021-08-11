@@ -14,14 +14,13 @@
  * @subpackage Versions\Current
  */
 
-namespace DuckDev\Redirect\Database\Upgrades;
+namespace DuckDev\Redirect\Database;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Settings;
-use DuckDev\Redirect\Database\DB;
-use DuckDev\Redirect\Utils\Abstracts\Base;
+use DuckDev\Redirect\Utils\Base;
 
 /**
  * Class Current.
@@ -29,7 +28,7 @@ use DuckDev\Redirect\Utils\Abstracts\Base;
  * @since   4.0.0
  * @package DuckDev\Redirect\Database\Versions
  */
-class Current extends Base {
+class Installer extends Base {
 
 	/**
 	 * Get current table names.
@@ -40,9 +39,55 @@ class Current extends Base {
 	 */
 	public function tables() {
 		return array(
-			'logs'      => DB::instance()->get_table_name( '404_to_301_logs' ),
-			'options'   => DB::instance()->get_table_name( '404_to_301_options' ),
-			'redirects' => DB::instance()->get_table_name( '404_to_301_redirects' ),
+			'logs'      => Database::instance()->get_table_name( '404_to_301_logs' ),
+			'options'   => Database::instance()->get_table_name( '404_to_301_options' ),
+			'redirects' => Database::instance()->get_table_name( '404_to_301_redirects' ),
+		);
+	}
+
+	/**
+	 * Get current table names.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public function fields() {
+		return array(
+			'logs'      => array(
+				'id'         => '%d',
+				'url'        => '%s',
+				'referrer'   => '%s',
+				'ip'         => '%s',
+				'agent'      => '%s',
+				'method'     => '%s',
+				'request'    => '%s',
+				'created_at' => '%d',
+				'updated_at' => '%d',
+			),
+			'options'   => array(
+				'id'              => '%d',
+				'log_id'          => '%d',
+				'redirect_id'     => '%d',
+				'redirect_status' => '%s',
+				'log_status'      => '%s',
+				'email_status'    => '%s',
+				'created_at'      => '%d',
+				'updated_at'      => '%d',
+				'updated_by'      => '%d',
+			),
+			'redirects' => array(
+				'id'          => '%d',
+				'source'      => '%s',
+				'destination' => '%s',
+				'code'        => '%d',
+				'options'     => '%s',
+				'status'      => '%s',
+				'created_at'  => '%d',
+				'updated_at'  => '%d',
+				'created_by'  => '%d',
+				'updated_by'  => '%d',
+			),
 		);
 	}
 

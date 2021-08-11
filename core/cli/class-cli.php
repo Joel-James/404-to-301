@@ -22,8 +22,9 @@ use WP_CLI_Command;
 /**
  * Class CLI
  *
- * @package DuckDev\Redirect\CLI
  * @since   4.0.0
+ * @extends WP_CLI_Command
+ * @package DuckDev\Redirect\CLI
  */
 final class CLI extends WP_CLI_Command {
 

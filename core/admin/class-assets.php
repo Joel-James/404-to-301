@@ -5,11 +5,12 @@
  * This class contains the functionality to manage the assets
  * inside the plugin admin screens.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    Core
+ * @package    Admin
  * @subpackage Assets
  */
 
@@ -18,12 +19,14 @@ namespace DuckDev\Redirect\Admin;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Data;
-use DuckDev\Redirect\Utils\Abstracts\Base;
+use DuckDev\Redirect\Plugin;
+use DuckDev\Redirect\Utils\Base;
 
 /**
  * Class Assets
  *
+ * @since   4.0.0
+ * @extends Base
  * @package DuckDev\Redirect\Admin
  */
 class Assets extends Base {
@@ -43,10 +46,13 @@ class Assets extends Base {
 		// Enqueue assets only on plugin pages.
 		add_action( 'dd4t3_enqueue_assets_logs', array( $this, 'logs_assets' ) );
 		add_action( 'dd4t3_enqueue_assets_settings', array( $this, 'settings_assets' ) );
+		add_action( 'dd4t3_enqueue_assets_redirects', array( $this, 'redirects_assets' ) );
 	}
 
 	/**
-	 * Assets for our front end functionality.
+	 * Register and set up enqueue hooks for assets.
+	 *
+	 * Assets will be enqueued only when required on the page.
 	 *
 	 * @param string $hook_suffix The current admin page.
 	 *
@@ -65,7 +71,10 @@ class Assets extends Base {
 	}
 
 	/**
-	 * Assets for our front end functionality.
+	 * Set up action hooks for assets enqueue.
+	 *
+	 * We will register new action hook only if the current
+	 * page is one of plugin's admin page.
 	 *
 	 * @param string $hook_suffix The current admin page.
 	 *
@@ -76,7 +85,7 @@ class Assets extends Base {
 	 */
 	private function do_enqueue_action( $hook_suffix ) {
 		// Check if current page is one of our pages.
-		$page = array_search( $hook_suffix, Data\Page::PAGES, true );
+		$page = array_search( $hook_suffix, Plugin::screens(), true );
 
 		// If our page.
 		if ( ! empty( $page ) ) {
@@ -97,7 +106,7 @@ class Assets extends Base {
 			/**
 			 * Action hook to enqueue assets for our pages.
 			 *
-			 * This hooks will be fired for all plugin pages.
+			 * This hook will be fired for all plugin pages.
 			 *
 			 * @param string $page        Current page key.
 			 * @param string $hook_suffix The current admin page.
@@ -113,10 +122,11 @@ class Assets extends Base {
 	 *
 	 * We are just registering the assets with WP now.
 	 * We will enqueue them when it's really required.
-	 * To enqueue a script @see Assets::enqueue_style().
+	 * To enqueue a script use Assets::enqueue_style().
 	 *
 	 * @since  4.0.0
 	 * @access private
+	 * @see    Assets::enqueue_style().
 	 * @uses   wp_register_style()
 	 *
 	 * @return void
@@ -145,10 +155,11 @@ class Assets extends Base {
 	 *
 	 * We are just registering the scripts with WP now.
 	 * We will enqueue them when it's really required.
-	 * To enqueue a script @see Assets::enqueue_script().
+	 * To enqueue a script use Assets::enqueue_script().
 	 *
 	 * @since  4.0.0
 	 * @access private
+	 * @see    Assets::enqueue_script().
 	 * @uses   wp_register_script()
 	 *
 	 * @return void
@@ -210,11 +221,13 @@ class Assets extends Base {
 			wp_enqueue_script( $script );
 
 			// Javascript translations.
-			wp_set_script_translations(
-				$script,
-				'404-to-301',
-				DD4T3_DIR . '/languages/'
-			);
+			if ( function_exists( 'wp_set_script_translations' ) ) {
+				wp_set_script_translations(
+					$script,
+					'404-to-301',
+					DD4T3_DIR . '/languages/'
+				);
+			}
 		}
 	}
 
@@ -253,12 +266,18 @@ class Assets extends Base {
 	private function get_scripts() {
 		$scripts = array(
 			// Logs scripts.
-			'dd4t3-logs'     => array(
-				'src' => 'logs.min.js',
+			'dd4t3-logs'      => array(
+				'src'  => 'logs.min.js',
+				'deps' => array( 'wp-i18n' ),
 			),
-			// Settings scripts.
-			'dd4t3-settings' => array(
+			// Setting scripts.
+			'dd4t3-settings'  => array(
 				'src'  => 'settings.min.js',
+				'deps' => array( 'wp-i18n' ),
+			),
+			// Redirects scripts.
+			'dd4t3-redirects' => array(
+				'src'  => 'redirects.min.js',
 				'deps' => array( 'wp-i18n' ),
 			),
 		);
@@ -290,12 +309,16 @@ class Assets extends Base {
 	private function get_styles() {
 		$styles = array(
 			// Logs styles.
-			'dd4t3-logs'     => array(
+			'dd4t3-logs'      => array(
 				'src' => 'logs.min.css',
 			),
 			// Settings styles.
-			'dd4t3-settings' => array(
-				'src' => 'admin.min.css',
+			'dd4t3-settings'  => array(
+				'src' => 'settings.min.css',
+			),
+			// Settings styles.
+			'dd4t3-redirects' => array(
+				'src' => 'redirects.min.css',
 			),
 		);
 
@@ -314,9 +337,6 @@ class Assets extends Base {
 	/**
 	 * Enqueue assets for the logs page.
 	 *
-	 * Enqueue styles and scripts which are only
-	 * required on error logs page.
-	 *
 	 * @since  4.0.0
 	 * @access public
 	 *
@@ -330,9 +350,6 @@ class Assets extends Base {
 	/**
 	 * Enqueue assets for the settings page.
 	 *
-	 * Enqueue styles and scripts which are only
-	 * required on error settings page.
-	 *
 	 * @since  4.0.0
 	 * @access public
 	 *
@@ -341,5 +358,18 @@ class Assets extends Base {
 	public function settings_assets() {
 		$this->enqueue_script( 'dd4t3-settings' );
 		$this->enqueue_style( 'dd4t3-settings' );
+	}
+
+	/**
+	 * Enqueue assets for the redirects page.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return void
+	 */
+	public function redirects_assets() {
+		$this->enqueue_script( 'dd4t3-redirects' );
+		$this->enqueue_style( 'dd4t3-redirects' );
 	}
 }

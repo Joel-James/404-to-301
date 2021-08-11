@@ -5,16 +5,16 @@
  * Extend this class whenever possible to avoid multiple instances
  * of the same classes being created.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    40to301
- * @since      4.0.0
- * @subpackage Core
+ * @package    Core
+ * @subpackage Endpoint
  */
 
-namespace DuckDev\Redirect\Utils\Abstracts;
+namespace DuckDev\Redirect\Utils;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -24,8 +24,10 @@ use WP_REST_Response;
 use DuckDev\Redirect\Permission;
 
 /**
- * Class Base
+ * Class Endpoint
  *
+ * @since   4.0.0
+ * @extends Base
  * @package DuckDev\Redirect\Abstracts
  */
 abstract class Endpoint extends Base {
@@ -34,8 +36,8 @@ abstract class Endpoint extends Base {
 	 * API endpoint version.
 	 *
 	 * @var int $version
-	 *
-	 * @since 3.2.4
+	 * @since  4.0.0
+	 * @access protected
 	 */
 	protected $version = 1;
 
@@ -43,24 +45,27 @@ abstract class Endpoint extends Base {
 	 * API endpoint version.
 	 *
 	 * @var int $version
-	 *
-	 * @since 3.2.4
+	 * @since  3.2.4
+	 * @access protected
 	 */
-	private $base = '404-to-301';
+	protected $base = '404-to-301';
 
 	/**
 	 * API endpoint namespace.
 	 *
 	 * @var string $namespace
-	 *
-	 * @since 3.2.4
+	 * @since  3.2.4
+	 * @access protected
 	 */
-	private $namespace;
+	protected $namespace;
 
 	/**
-	 * Set up WordPress hooks and filters
+	 * Set up API endpoints.
 	 *
-	 * @since 3.2.4
+	 * Namespace will be created based on the base and version.
+	 *
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
@@ -68,6 +73,7 @@ abstract class Endpoint extends Base {
 		// Setup namespace of the endpoint.
 		$this->namespace = $this->base . '/v' . $this->version;
 
+		// Register endpoints.
 		add_action( 'rest_api_init', array( $this, 'routes' ) );
 	}
 
@@ -76,29 +82,34 @@ abstract class Endpoint extends Base {
 	 *
 	 * This should be defined in extending class.
 	 *
-	 * @since 3.2.4
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return void
 	 */
 	abstract public function routes();
 
 	/**
 	 * Get namespace of the endpoint.
 	 *
-	 * @since 3.2.4
+	 * @since  4.0.0
+	 * @access protected
 	 *
 	 * @return string
 	 */
-	public function get_namespace() {
+	protected function get_namespace() {
 		return $this->namespace;
 	}
 
 	/**
 	 * Get current version of the endpoint.
 	 *
-	 * @since 3.2.4
+	 * @since  4.0.0
+	 * @access protected
 	 *
-	 * @return string
+	 * @return int
 	 */
-	public function get_version() {
+	protected function get_version() {
 		return $this->version;
 	}
 
@@ -108,11 +119,12 @@ abstract class Endpoint extends Base {
 	 * @param array $data    Response data.
 	 * @param bool  $success Is request success.
 	 *
-	 * @since 3.2.4
+	 * @since  4.0.0
+	 * @access protected
 	 *
 	 * @return WP_REST_Response
 	 */
-	public function get_response( $data = array(), $success = true ) {
+	protected function get_response( $data = array(), $success = true ) {
 		// Response status.
 		$status = $success ? 200 : 400;
 
@@ -128,46 +140,54 @@ abstract class Endpoint extends Base {
 	/**
 	 * Check if the current user can manage settings using API.
 	 *
+	 * Use this to check if current user has the capability to
+	 * manage our plugin.
+	 *
 	 * @param WP_REST_Request $request Request object.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access protected
 	 *
 	 * @return bool
 	 */
-	public function check_settings_permission( $request ) {
+	protected function has_access( $request ) {
 		// Check capability.
 		$capable = Permission::has_access();
 
 		/**
-		 * Filter to modify the settings capability check for API.
+		 * Filter to modify the has access check for rest endpoint.
 		 *
-		 * @paran bool $capable Is capable.
+		 * @param bool            $capable Is capable.
+		 * @param WP_REST_Request $request Request.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( '404_to_301_rest_check_settings_permission', $capable );
+		return apply_filters( 'dd4t3_rest_has_access', $capable, $request );
 	}
 
 	/**
 	 * Check if current user is logged in to access API.
 	 *
+	 * Use this method to check if current user is logged in.
+	 *
 	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return bool
 	 */
-	public function check_loggedin_permission( $request ) {
+	public function is_logged_in( $request ) {
 		// Check if user is logged in.
 		$capable = is_user_logged_in();
 
 		/**
-		 * Filter to modify the loggedin capability check for API.
+		 * Filter to modify the login check for rest endpoint.
 		 *
-		 * @paran bool $capable Is capable.
+		 * @param bool            $capable Is capable.
+		 * @param WP_REST_Request $request Request.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( '404_to_301_rest_check_loggedin_permission', $capable );
+		return apply_filters( '404_to_301_rest_is_logged_in', $capable, $request );
 	}
 }

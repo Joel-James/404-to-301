@@ -5,6 +5,7 @@ import {Flags} from '@/store/flags'
 // Import required components.
 import FormSubmit from '@/components/form-submit'
 import RepeatTable from '@/modules/settings/components/table/repeat-table'
+require('@/../styles/settings.scss')
 
 // WP's function.
 const {__} = wp.i18n;

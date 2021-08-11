@@ -18,8 +18,8 @@ namespace DuckDev\Redirect;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Abstracts\Base;
-use DuckDev\Redirect\Utils\Abstracts\Process;
+use DuckDev\Redirect\Utils\Base;
+use DuckDev\Redirect\Utils\Process;
 
 /**
  * Class Processes
@@ -56,7 +56,7 @@ class Processes extends Base {
 		foreach ( $this->processes() as $process => $class ) {
 			if (
 				! isset( $this->processes[ $process ] ) &&
-				is_subclass_of( $class, '\DuckDev\Redirect\Utils\Abstracts\Process' )
+				is_subclass_of( $class, '\DuckDev\Redirect\Utils\Process' )
 			) {
 				// Initialize the process class.
 				$this->processes[ $process ] = new $class();

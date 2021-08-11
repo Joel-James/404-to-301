@@ -18,7 +18,7 @@ namespace DuckDev\Redirect\Database;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Abstracts\Base;
+use DuckDev\Redirect\Utils\Base;
 
 /**
  * Class DB.
@@ -27,7 +27,7 @@ use DuckDev\Redirect\Utils\Abstracts\Base;
  * @extends Base
  * @package DuckDev\Redirect\Database
  */
-class DB extends Base {
+class Database extends Base {
 
 	/**
 	 * Initialize class and run install or upgrade.
@@ -128,7 +128,7 @@ class DB extends Base {
 		//dd4t3_cache()->set_transient( 'db_installing', true, true );
 
 		// Perform install actions.
-		//$actions = new Upgrades\Current();
+		//$actions = new Installer();
 		//$actions->install();
 
 		/**
@@ -151,14 +151,14 @@ class DB extends Base {
 	 * @return void
 	 */
 	public function upgrade() {
-		static $upgrade = null;
+		static $upgrader = null;
 
 		// Set the flag.
 		dd4t3_cache()->set_transient( 'db_upgrading', true, true );
 
 		// Initialize upgrader.
-		if ( null === $upgrade ) {
-			$upgrade = new Upgrade();
+		if ( null === $upgrader ) {
+			$upgrader = new Upgrader();
 		}
 	}
 
@@ -178,8 +178,8 @@ class DB extends Base {
 		// Set the flag.
 		dd4t3_cache()->set_transient( 'db_uninstalling', true, true );
 
-		$current = new Upgrades\Current();
-		$current->uninstall();
+		$installer = new Installer();
+		$installer->uninstall();
 
 		// Remove the flag.
 		dd4t3_cache()->delete_transient( 'db_uninstalling' );
@@ -187,11 +187,11 @@ class DB extends Base {
 		/**
 		 * Action hook to run after db uninstall.
 		 *
-		 * @param Upgrades\Current $current Current version db class instance.
+		 * @param Installer $installer Current version db class instance.
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_db_after_uninstall', $current );
+		do_action( 'dd4t3_db_after_uninstall', $installer );
 	}
 
 	/**

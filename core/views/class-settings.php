@@ -113,7 +113,7 @@ class Settings extends View {
 	public function redirect_content() {
 		// Arguments.
 		$args = array(
-			'types' => Data\Redirect::redirect_types(),
+			'types' => Data::redirect_types(),
 		);
 
 		// Admin settings template.

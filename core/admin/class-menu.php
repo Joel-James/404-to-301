@@ -20,13 +20,14 @@ defined( 'WPINC' ) || die;
 use DuckDev\Redirect\Views;
 use DuckDev\Redirect\Plugin;
 use DuckDev\Redirect\Permission;
-use DuckDev\Redirect\Utils\Abstracts\Base;
+use DuckDev\Redirect\Utils\Base;
 
 /**
  * Class Menu
  *
- * @package DuckDev\Redirect\Admin
  * @since   4.0.0
+ * @extends Base
+ * @package DuckDev\Redirect\Admin
  */
 class Menu extends Base {
 
@@ -56,7 +57,7 @@ class Menu extends Base {
 	 * Register the menu for the admin area of the plugin.
 	 *
 	 * This method should handle all the submenus that the plugin
-	 * needs also.
+	 * needs.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -64,13 +65,13 @@ class Menu extends Base {
 	 * @return void
 	 */
 	public function admin_menu() {
-		// Error logs main menu.
+		// Error logs.
 		$this->logs();
 
-		// Error logs main menu.
+		// Redirects list.
 		$this->redirects();
 
-		// Settings sub menu.
+		// Settings page.
 		$this->settings();
 
 		/**
@@ -79,7 +80,7 @@ class Menu extends Base {
 		 * Other plugins can use this hook to add new sub menu items
 		 * to the main 404 to 301 menu.
 		 *
-		 * @since 4.0
+		 * @since 4.0.0
 		 */
 		do_action( 'dd4t3_admin_menu' );
 	}
@@ -89,8 +90,9 @@ class Menu extends Base {
 	 *
 	 * This is to make sure the main label is plugin's name.
 	 *
-	 * @global array $menu Menus registered in this site.
 	 * @since  4.0.0
+	 * @access public
+	 * @global array $menu Menus registered in this site.
 	 *
 	 * @return void
 	 */
@@ -120,7 +122,7 @@ class Menu extends Base {
 	private function logs() {
 		// Main logs page.
 		add_menu_page(
-			__( '404 Error Logs', '404-to-301' ),
+			__( 'Error Logs - 404 to 301', '404-to-301' ),
 			__( 'Logs', '404-to-301' ),
 			Permission::get_cap(),
 			self::SLUG,
@@ -133,7 +135,7 @@ class Menu extends Base {
 	/**
 	 * Register the menu for the redirects list.
 	 *
-	 * This is where the custom redirects for 404s listed.
+	 * This is where the custom redirects are listed.
 	 *
 	 * @since  4.0.0
 	 * @access private
@@ -144,7 +146,7 @@ class Menu extends Base {
 		// Redirects page.
 		add_submenu_page(
 			self::SLUG,
-			__( '404 to 301 Custom Redirects', '404-to-301' ),
+			__( 'Custom Redirects - 404 to 301', '404-to-301' ),
 			__( 'Redirects', '404-to-301' ),
 			Permission::get_cap(),
 			'404-to-301-redirects',
@@ -166,7 +168,7 @@ class Menu extends Base {
 		// Settings sub page.
 		add_submenu_page(
 			self::SLUG,
-			__( '404 to 301 Settings', '404-to-301' ),
+			__( 'Settings - 404 to 301', '404-to-301' ),
 			__( 'Settings', '404-to-301' ),
 			Permission::get_cap(),
 			'404-to-301-settings',

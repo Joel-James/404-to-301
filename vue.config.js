@@ -12,9 +12,9 @@ try {
 
 // List of source files.
 const pages = {
-	admin: './app/src/styles/admin.scss',
 	logs: './app/src/scripts/modules/logs/main.js',
 	settings: './app/src/scripts/modules/settings/main.js',
+	redirects: './app/src/scripts/modules/redirects/main.js',
 }
 
 let config = {

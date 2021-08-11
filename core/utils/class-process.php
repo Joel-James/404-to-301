@@ -4,15 +4,16 @@
  *
  * All background process should extend this class.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
  * @package    Abstracts
  * @subpackage Process
  */
 
-namespace DuckDev\Redirect\Utils\Abstracts;
+namespace DuckDev\Redirect\Utils;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -23,8 +24,8 @@ use DuckDev\Queue\Task;
  * Class Process
  *
  * @since   4.0.0
- * @package DuckDev\Redirect\Utils\Abstracts
  * @extends Task
+ * @package DuckDev\Redirect\Utils
  */
 abstract class Process extends Task {
 

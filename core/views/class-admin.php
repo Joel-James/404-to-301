@@ -17,7 +17,6 @@ namespace DuckDev\Redirect\Views;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Data;
 use DuckDev\Reviews\Notice;
 use DuckDev\Redirect\Plugin;
 
@@ -102,7 +101,7 @@ class Admin extends View {
 		$screen = get_current_screen();
 
 		// Only on our pages.
-		if ( ! empty( $screen->id ) && in_array( $screen->id, Data\Page::PAGES, true ) ) {
+		if ( ! empty( $screen->id ) && in_array( $screen->id, Plugin::screens(), true ) ) {
 			$items = array(
 				'overview' => __( 'Overview', '404-to-301' ),
 				'help'     => __( 'Help & Support', '404-to-301' ),
@@ -144,8 +143,8 @@ class Admin extends View {
 	 */
 	public function action_links( $links ) {
 		// Add settings and log links.
-		array_unshift( $links, '<a href="' . esc_url( Data\Page::url( 'logs' ) ) . '">' . __( 'Logs', '404-to-301' ) . '</a>' );
-		array_unshift( $links, '<a href="' . esc_url( Data\Page::url() ) . '">' . __( 'Settings', '404-to-301' ) . '</a>' );
+		array_unshift( $links, '<a href="' . esc_url( Plugin::get_url( 'logs' ) ) . '">' . __( 'Logs', '404-to-301' ) . '</a>' );
+		array_unshift( $links, '<a href="' . esc_url( Plugin::get_url( 'settings' ) ) . '">' . __( 'Settings', '404-to-301' ) . '</a>' );
 
 		return $links;
 	}

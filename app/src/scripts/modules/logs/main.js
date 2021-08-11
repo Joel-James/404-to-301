@@ -1,1 +1,1 @@
-
+require('@/../styles/logs.scss')

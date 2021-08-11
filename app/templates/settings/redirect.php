@@ -13,8 +13,6 @@
  * @subpackage Pages
  */
 
-use DuckDev\Redirect\Data\Page;
-
 ?>
 
 <h4><?php esc_html_e( 'Enable Redirects', '404-to-301' ); ?></h4>
@@ -24,7 +22,7 @@ use DuckDev\Redirect\Data\Page;
 	printf(
 	// translators: %s link to logs page.
 		__( 'These options can be customized for each individual 404 errors from <a href="%s">the logs page</a>.', '404-to-301' ),
-		esc_url( Page::url( 'logs' ) )
+		esc_url( DuckDev\Redirect\Plugin::get_url( 'logs' ) )
 	);
 	?>
 </p>

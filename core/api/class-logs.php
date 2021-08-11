@@ -4,12 +4,12 @@
  *
  * This class handles the API endpoint for logs settings.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
  * @package    Endpoint
- * @since      4.0.0
  * @subpackage Logs
  */
 
@@ -21,26 +21,23 @@ defined( 'WPINC' ) || die;
 use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
-use DuckDev\Redirect\Utils\Traits\Api;
-use DuckDev\Redirect\Utils\Abstracts\Endpoint;
-use DuckDev\Redirect\Controllers\Settings as Options;
+use DuckDev\Redirect\Utils\Endpoint;
 
 /**
- * Class Settings
+ * Class Logs
  *
- * @package DuckDev\Redirect\Api
  * @since   4.0.0
+ * @extends Endpoint
+ * @package DuckDev\Redirect\Api
  */
 class Logs extends Endpoint {
-
-	use Api;
 
 	/**
 	 * API endpoint for the current api.
 	 *
 	 * @var string $endpoint
-	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access private
 	 */
 	private $endpoint = '/logs';
 
@@ -178,7 +175,7 @@ class Logs extends Endpoint {
 		// Get single setting value.
 		if ( ! empty( $key ) && ! empty( $module ) ) {
 			// Get value.
-			$value = Options::get( $key, $module, false, $valid );
+			$value = dd4t3_settings()->get( $key, $module, false, $valid );
 
 			return $this->get_response(
 				array(
