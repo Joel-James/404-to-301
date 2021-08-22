@@ -1,15 +1,14 @@
 <?php
 /**
- * The plugin pages view class.
+ * The plugin redirects list page view class.
  *
- * This class handles the admin pages views for the plugin.
- *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
  * @package    View
- * @subpackage Pages
+ * @subpackage Redirects
  */
 
 namespace DuckDev\Redirect\Views;
@@ -18,36 +17,26 @@ namespace DuckDev\Redirect\Views;
 defined( 'WPINC' ) || die;
 
 /**
- * Class Menu
+ * Class Redirects
  *
- * @package DuckDev\Redirect
+ * @extends View
  * @since   4.0.0
+ * @package DuckDev\Redirect\Views
  */
 class Redirects extends View {
 
 	/**
-	 * Register the menu for the error logs page.
+	 * Content for redirects page.
 	 *
-	 * @since  4.0
+	 * Render the template file for redirects page with data.
+	 *
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
 	public function content() {
-		/**
-		 * Action hook to run something after rendering logs page.
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( 'dd4t3_before_admin_pages_redirects_render' );
-
-		// Admin logs template.
+		// Admin redirects template.
 		$this->render( 'redirects' );
-
-		/**
-		 * Action hook to run something after rendering logs page.
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( 'dd4t3_after_admin_pages_redirects_render' );
 	}
 }

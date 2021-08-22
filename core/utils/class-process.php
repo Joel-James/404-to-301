@@ -91,6 +91,18 @@ abstract class Process extends Task {
 	}
 
 	/**
+	 * Check if current process is running.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return bool
+	 */
+	public function is_running() {
+		return $this->is_process_running();
+	}
+
+	/**
 	 * Current queued process is completed.
 	 *
 	 * Don't forget to call parent:complete() when you

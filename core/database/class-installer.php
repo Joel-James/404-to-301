@@ -63,7 +63,6 @@ class Installer extends Base {
 				'method'     => '%s',
 				'request'    => '%s',
 				'created_at' => '%d',
-				'updated_at' => '%d',
 			),
 			'options'   => array(
 				'id'              => '%d',
@@ -111,8 +110,9 @@ class Installer extends Base {
 		// All table schema.
 		$queries = array(
 			$this->logs_table_sql( $charset ),
-			$this->options_table_sql( $charset ),
 			$this->redirects_table_sql( $charset ),
+			// Options table should be created last to add foreign keys.
+			$this->options_table_sql( $charset ),
 		);
 
 		// Create all tables.
@@ -147,7 +147,7 @@ class Installer extends Base {
 	public function uninstall() {
 		global $wpdb;
 
-		foreach ( $this->tables() as $key => $name ) {
+		foreach ( array_reverse( $this->tables() ) as $key => $name ) {
 			// Drop table.
 			$wpdb->query( "DROP TABLE IF EXISTS {$name}" ); // phpcs:ignore
 		}
@@ -210,34 +210,6 @@ class Installer extends Base {
 			`method` VARCHAR(10) DEFAULT NULL,
 			`request` MEDIUMTEXT,
 			`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			`updated_at` TIMESTAMP DEFAULT NULL,
-			PRIMARY KEY (`id`)
-	  ) $charset";
-	}
-
-	/**
-	 * SQL query to create logs options table.
-	 *
-	 * @param string $charset Charset.
-	 *
-	 * @since  4.0.0
-	 * @access private
-	 *
-	 * @return string
-	 */
-	private function options_table_sql( $charset ) {
-		$table = $this->tables()['options'];
-
-		return "CREATE TABLE IF NOT EXISTS `{$table}` (
-			`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-			`log_id` INT(11) unsigned DEFAULT NULL,
-			`redirect_id` INT(11) unsigned DEFAULT NULL,
-			`redirect_status` ENUM('global', 'enabled', 'disabled') DEFAULT 'global',
-			`log_status` ENUM('global', 'enabled', 'disabled') DEFAULT 'global',
-			`email_status` ENUM('global', 'enabled', 'disabled') DEFAULT 'global',
-			`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			`updated_at` TIMESTAMP DEFAULT NULL,
-			`updated_by` INT(11) unsigned DEFAULT NULL,
 			PRIMARY KEY (`id`)
 	  ) $charset";
 	}
@@ -266,6 +238,41 @@ class Installer extends Base {
 			`updated_at` TIMESTAMP DEFAULT NULL,
 			`created_by` INT(11) unsigned DEFAULT NULL,
 			`updated_by` INT(11) unsigned DEFAULT NULL,
+			PRIMARY KEY (`id`)
+	  ) $charset";
+	}
+
+	/**
+	 * SQL query to create logs options table.
+	 *
+	 * This should be called only after creating other 2 tables.
+	 * Otherwise, foreign key mapping will fail.
+	 *
+	 * @param string $charset Charset.
+	 *
+	 * @since  4.0.0
+	 * @access private
+	 *
+	 * @return string
+	 */
+	private function options_table_sql( $charset ) {
+		$table           = $this->tables()['options'];
+		$logs_table      = $this->tables()['logs'];
+		$redirects_table = $this->tables()['redirects'];
+
+		return "CREATE TABLE IF NOT EXISTS `{$table}` (
+			`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+			`log_id` INT(11) unsigned DEFAULT NULL,
+			`redirect_id` INT(11) unsigned DEFAULT NULL,
+			`redirect_status` ENUM('global', 'enabled', 'disabled') DEFAULT 'global',
+			`log_status` ENUM('global', 'enabled', 'disabled') DEFAULT 'global',
+			`email_status` ENUM('global', 'enabled', 'disabled') DEFAULT 'global',
+			`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			`updated_at` TIMESTAMP DEFAULT NULL,
+			`updated_by` INT(11) unsigned DEFAULT NULL,
+			CONSTRAINT options_unique_ids UNIQUE (log_id, redirect_id),
+			CONSTRAINT fk_options_log_id FOREIGN KEY (log_id) REFERENCES {$logs_table}(id) ON DELETE CASCADE,
+			CONSTRAINT fk_options_redirect_id FOREIGN KEY (redirect_id) REFERENCES {$redirects_table}(id) ON DELETE CASCADE,
 			PRIMARY KEY (`id`)
 	  ) $charset";
 	}

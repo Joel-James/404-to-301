@@ -42,7 +42,11 @@ class Settings extends Endpoint {
 	private $endpoint = '/settings';
 
 	/**
-	 * Register the routes for handling settings functionality.
+	 * Register the routes for handling settings.
+	 *
+	 * Available endpoints:
+	 * - /404-to-301/v1/settings - GET
+	 * - /404-to-301/v1/settings - POST
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -50,7 +54,6 @@ class Settings extends Endpoint {
 	 * @return void
 	 */
 	public function routes() {
-		// Routes to manage the entire settings.
 		register_rest_route(
 			$this->get_namespace(),
 			$this->endpoint,
@@ -100,11 +103,16 @@ class Settings extends Endpoint {
 	}
 
 	/**
-	 * Get the plugin settings value.
+	 * Get the plugin setting(s) value.
+	 *
+	 * If module and key is provided, specific setting will be returned.
+	 * If only module is given, array of module settings.
+	 * If no params provided, the entire settings will be returned.
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -127,7 +135,7 @@ class Settings extends Endpoint {
 				$valid
 			);
 		} elseif ( ! empty( $module ) ) {
-			// Get values.
+			// Get module values.
 			$values = dd4t3_settings()->get_module( $module, false, $valid );
 
 			// Get module settings.
@@ -147,9 +155,14 @@ class Settings extends Endpoint {
 	/**
 	 * Update the plugin settings values.
 	 *
+	 * If module and key is provided, specific setting will be updated.
+	 * If only module is given, module settings will be updated.
+	 * If no params provided, the entire settings will be updated.
+	 *
 	 * @param WP_REST_Request $request Request object.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return WP_REST_Response
 	 */

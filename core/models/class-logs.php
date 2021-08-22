@@ -41,7 +41,7 @@ class Logs extends Model {
 	 * @throws \Exception Exception.
 	 * @return mixed|false
 	 */
-	public function get( $id ) {
+	public function get_log( $id ) {
 		return $this->remember(
 			"log_$id",
 			function () use ( $id ) {
@@ -50,6 +50,29 @@ class Logs extends Model {
 					->find( intval( $id ) );
 			}
 		);
+	}
+
+	/**
+	 * Get log data by ID.
+	 *
+	 * Return the log data from using the ID.
+	 *
+	 * @param array $args Filter items.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @throws \Exception Exception.
+	 * @return mixed|false
+	 */
+	public function get_logs( array $args = array() ) {
+		$query = Query::init( 'logs_get' )
+			->from( $this->table_name( 'logs' ) );
+
+		// Add search term.
+		if ( ! empty( $args['search'] ) ) {
+			$columns = empty( $args['search_by'] ) ? array( 'url', 'ip', 'referrer', 'agent', 'method' ) : (array) $args['search_by'];
+			$query->search( $args['search'], $columns );
+		}
 	}
 
 	/**

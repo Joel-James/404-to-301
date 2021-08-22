@@ -23,6 +23,8 @@ use DuckDev\Redirect\Utils\Base;
 /**
  * Class Main
  *
+ * @since   4.0.0
+ * @extends Base
  * @package DuckDev\Redirect\Controllers
  */
 class Main extends Base {

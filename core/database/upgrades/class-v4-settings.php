@@ -18,16 +18,14 @@ namespace DuckDev\Redirect\Database\Upgrades;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Upgrades\Process;
-
 /**
  * Class V4_Settings.
  *
  * @since   4.0.0
  * @package DuckDev\Redirect\Database\Upgrades
- * @extends Process
+ * @extends Upgrade
  */
-class V4_Settings extends Process {
+class V4_Settings extends Upgrade {
 
 	/**
 	 * Holds a unique name for the process.

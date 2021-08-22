@@ -1,16 +1,16 @@
 <?php
 /**
- * The plugin permissions class.
+ * The plugin data class.
  *
- * This class contains the functionality to manage the permissions
- * inside the plugin.
+ * This class contains the data objects for the plugin.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    Controller
- * @subpackage Permission
+ * @package    Core
+ * @subpackage Data
  */
 
 namespace DuckDev\Redirect;
@@ -19,16 +19,20 @@ namespace DuckDev\Redirect;
 defined( 'WPINC' ) || die;
 
 /**
- * Class Permission
+ * Class Data
  *
- * @package DuckDev\Redirect\Controllers
+ * @since   4.0.0
+ * @package DuckDev\Redirect
  */
 class Data {
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * @since 4.0.0
+	 * To add or remove redirect types, use dd4t3_redirect_types filter.
+	 *
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return mixed|void
 	 */
@@ -49,6 +53,6 @@ class Data {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( '404_to_301_redirect_types', $types );
+		return apply_filters( 'dd4t3_redirect_types', $types );
 	}
 }

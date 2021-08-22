@@ -20,17 +20,25 @@ namespace DuckDev\Redirect\Database\Upgrades;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Upgrades\Process;
 use DuckDev\QueryBuilder\Query;
 
 /**
  * Class V4.
  *
  * @since   4.0.0
+ * @extends Upgrade
  * @package DuckDev\Redirect\Database\Upgrades
  */
-class V4_Logs extends Process {
+class V4_Logs extends Upgrade {
 
+	/**
+	 * Holds a unique name for the process.
+	 *
+	 * @var string $id
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 */
 	protected $id = 'v4_logs';
 
 	/**
@@ -44,30 +52,6 @@ class V4_Logs extends Process {
 	private $limit = 100;
 
 	/**
-	 * Register all hooks for the settings UI.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return void
-	 */
-	public function init() {
-		add_action( 'dd4t3_db_after_upgrade', array( $this, 'delete_table' ) );
-		add_action( 'dd4t3_db_upgrade_task_v4_upgrade', array( $this, 'upgrade_item' ) );
-	}
-
-	/**
-	 * List of actions available.
-	 *
-	 * @var array $actions
-	 *
-	 * @since  4.0.0
-	 * @access protect
-	 */
-	protected $actions = array(
-		'upgrade_logs',
-	);
-
-	/**
 	 * Check if we can continue with upgrade.
 	 *
 	 * Continue only if old table exist.
@@ -78,8 +62,7 @@ class V4_Logs extends Process {
 	 * @return bool
 	 */
 	public function should_upgrade() {
-		$settings = $this->get_old_settings();
-		return ! empty( $settings ) || $this->old_table_exist();
+		return $this->old_table_exist();
 	}
 
 	/**
@@ -137,26 +120,29 @@ class V4_Logs extends Process {
 	 * @return void
 	 */
 	public function upgrade_task( $id ) {
+		error_log( $id );
 		// Get old log.
-		$log = $this->get_old_log( $id );
+		if ( ! empty( $id ) ) {
+			$log = $this->get_old_log( $id );
 
-		if ( ! empty( $log ) ) {
-			// Get options.
-			$options = $this->get_value( 'options', $log, array() );
-			$options = empty( $options ) ? array() : maybe_unserialize( $options );
+			if ( ! empty( $log ) ) {
+				// Get options.
+				$options = $this->get_value( 'options', $log, array() );
+				$options = empty( $options ) ? array() : maybe_unserialize( $options );
 
-			// Create new log.
-			$log_id = $this->create_log( $log );
-			// Create redirect if required.
-			$redirect_id = $this->create_redirect( $log, $options );
-			// Options can be created only if log is created.
-			if ( ! empty( $log_id ) ) {
-				// Options should be created last.
-				$this->create_options( $options, $log_id, $redirect_id );
+				// Create new log.
+				$log_id = $this->create_log( $log );
+				// Create redirect if required.
+				$redirect_id = $this->create_redirect( $log, $options );
+				// Options can be created only if log is created.
+				if ( ! empty( $log_id ) ) {
+					// Options should be created last.
+					$this->create_options( $options, $log_id, $redirect_id );
+				}
+
+				// Now delete it.
+				$this->delete_log( $id );
 			}
-
-			// Now delete it.
-			$this->delete_log( $id );
 		}
 	}
 
@@ -185,13 +171,12 @@ class V4_Logs extends Process {
 			$insert = $wpdb->insert(
 				$this->get_table_name( '404_to_301_logs' ),
 				array(
-					'url'      => esc_url_raw( $url ),
-					'referrer' => $this->get_value( 'ref', $log ),
-					'ip'       => $this->get_value( 'ip', $log ),
-					'agent'    => $this->get_value( 'ua', $log ),
-					'method'   => 'GET',
-					'request'  => array(),
-					'created'  => strtotime( $this->get_value( 'date', $log, '' ) ),
+					'url'        => esc_url_raw( $url ),
+					'referrer'   => $this->get_value( 'ref', $log ),
+					'ip'         => $this->get_value( 'ip', $log ),
+					'agent'      => $this->get_value( 'ua', $log ),
+					'method'     => 'GET',
+					'created_at' => $this->get_value( 'date', $log, current_time( 'mysql' ) ),
 				)
 			);
 
@@ -239,9 +224,8 @@ class V4_Logs extends Process {
 					'source'      => $source,
 					'destination' => $destination,
 					'code'        => (int) $code,
-					'options'     => array(),
 					'status'      => 'enabled',
-					'created'     => strtotime( $this->get_value( 'date', $log, '' ) ),
+					'created_at'  => current_time( 'mysql' ),
 				)
 			);
 
@@ -288,7 +272,7 @@ class V4_Logs extends Process {
 
 		// Now create options.
 		$wpdb->insert( // phpcs:ignore
-			$this->get_table_name( '404_to_301_redirects' ),
+			$this->get_table_name( '404_to_301_options' ),
 			$data
 		);
 	}
@@ -343,7 +327,7 @@ class V4_Logs extends Process {
 	 */
 	private function get_next_ids() {
 		return Query::init( __METHOD__ )
-			->from( $this->get_old_table_name() )
+			->from( '404_to_301' )
 			->select( 'id' ) // Select only id.
 			->limit( 0, $this->limit )
 			->column();
@@ -365,7 +349,7 @@ class V4_Logs extends Process {
 	private function delete_log( $id ) {
 		try {
 			return Query::init( __METHOD__ )
-				->from( $this->get_old_table_name() )
+				->from( '404_to_301' )
 				->where( 'id', $id )
 				->delete();
 		} catch ( \Exception $e ) {
@@ -396,6 +380,7 @@ class V4_Logs extends Process {
 	 * @return bool
 	 */
 	private function old_table_exist() {
+		return true;
 		global $wpdb;
 		// Table name.
 		$table = $this->get_old_table_name();
@@ -418,7 +403,7 @@ class V4_Logs extends Process {
 	private function get_old_log( $id ) {
 		try {
 			return Query::init( __METHOD__ . $id )
-				->from( $this->get_old_table_name() )
+				->from( '404_to_301' )
 				->where( 'id', $id )
 				->one( ARRAY_A );
 		} catch ( \Exception $e ) {

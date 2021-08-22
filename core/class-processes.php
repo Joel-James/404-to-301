@@ -54,12 +54,9 @@ class Processes extends Base {
 	 */
 	protected function init() {
 		foreach ( $this->processes() as $process => $class ) {
-			if (
-				! isset( $this->processes[ $process ] ) &&
-				is_subclass_of( $class, '\DuckDev\Redirect\Utils\Process' )
-			) {
+			if ( is_subclass_of( $class, '\DuckDev\Redirect\Utils\Process' ) ) {
 				// Initialize the process class.
-				$this->processes[ $process ] = new $class();
+				$this->processes[ $process ] = call_user_func( array( $class, 'get' ) );
 
 				/**
 				 * Action hook to run after a queue process is initialized.
@@ -132,19 +129,16 @@ class Processes extends Base {
 	 *
 	 * @param string $name Process name.
 	 *
-	 * @since  1.0.0
-	 * @access protected
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return bool
 	 */
 	public function is_running( $name ) {
-		if ( $this->get_process( $name ) ) {
-			// Setup transient key.
-			$key = $this->get_process( $name )->get_id() . '_process_lock';
-			// Process already running if transient is set.
-			if ( get_site_transient( $key ) ) {
-				return true;
-			}
+		$process = $this->get_process( $name );
+
+		if ( $process ) {
+			return $process->is_running();
 		}
 
 		return false;
@@ -162,7 +156,9 @@ class Processes extends Base {
 	 * @return array
 	 */
 	private function processes() {
-		$processes = array();
+		$processes = array(
+			'db_upgrade' => 'DuckDev\Redirect\Database\Upgrader',
+		);
 
 		/**
 		 * Filter to add new processes to plugin processes.

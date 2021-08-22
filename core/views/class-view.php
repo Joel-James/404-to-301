@@ -8,7 +8,7 @@
  * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
  * @package    40to301
  * @subpackage Core
@@ -31,30 +31,6 @@ use DuckDev\Redirect\Utils\Base;
 class View extends Base {
 
 	/**
-	 * Render SVG icon template.
-	 *
-	 * @param string $name   Icon name.
-	 * @param int    $width  Width.
-	 * @param int    $height Height.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return void
-	 */
-	public function render_icon( $name, $width = 6, $height = 6 ) {
-		// Render icon file.
-		$this->render(
-			'components/icons/icon',
-			array(
-				'icon'   => $name,
-				'width'  => $width,
-				'height' => $height,
-			),
-			false
-		);
-	}
-
-	/**
 	 * Render a template.
 	 *
 	 * This will look for the template file inside
@@ -65,7 +41,8 @@ class View extends Base {
 	 * @param bool   $once   Should include once.
 	 * @param bool   $return Return content.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
@@ -97,7 +74,8 @@ class View extends Base {
 	 * @param array  $args Arguments.
 	 * @param bool   $once Should include once.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return string
 	 */

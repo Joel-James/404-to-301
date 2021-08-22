@@ -1,15 +1,14 @@
 <?php
 /**
- * The plugin pages view class.
+ * The plugin settings page view class.
  *
- * This class handles the admin pages views for the plugin.
- *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
  * @package    View
- * @subpackage Pages
+ * @subpackage Settings
  */
 
 namespace DuckDev\Redirect\Views;
@@ -20,183 +19,190 @@ defined( 'WPINC' ) || die;
 use DuckDev\Redirect\Data;
 
 /**
- * Class Menu
+ * Class Settings
  *
- * @package DuckDev\Redirect
+ * @extends View
  * @since   4.0.0
+ * @package DuckDev\Redirect\Views
  */
 class Settings extends View {
 
 	/**
 	 * Register all hooks for the settings UI.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
 	public function init() {
-		// Render settings pages.
+		// Render settings page templates.
 		add_action( 'dd4t3_admin_settings_general_form_content', array( $this, 'general_content' ) );
 		add_action( 'dd4t3_admin_settings_redirect_form_content', array( $this, 'redirect_content' ) );
 		add_action( 'dd4t3_admin_settings_logs_form_content', array( $this, 'logs_content' ) );
 		add_action( 'dd4t3_admin_settings_email_form_content', array( $this, 'email_content' ) );
 		add_action( 'dd4t3_admin_settings_info_form_content', array( $this, 'info_content' ) );
 
+		// Render notice for settings page.
 		add_action( 'dd4t3_admin_notices', array( $this, 'show_settings_notice' ) );
 	}
 
 	/**
-	 * Register the sub menu for the admin settings.
+	 * Render base content template for settings.
 	 *
-	 * @since  4.0
+	 * Actual contents are rendered as separate tabs.
+	 *
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
 	public function base_content() {
-		// Arguments.
-		$args = array(
-			'page'        => $this->get_current_tab(),
-			'user_name'   => 'Joel',
-			'menu_config' => array(
-				'current' => $this->get_current_tab(),
-				'items'   => $this->get_settings_tabs(),
-			),
+		// Current user.
+		$user = wp_get_current_user();
+
+		// Render template.
+		$this->render(
+			'settings',
+			array(
+				'page'        => $this->get_current_tab(),
+				'user_name'   => empty( $user->display_name ) ? $user->user_login : $user->display_name,
+				'menu_config' => array(
+					'current' => $this->get_current_tab(),
+					'items'   => $this->get_settings_tabs(),
+				),
+			)
 		);
-
-		/**
-		 * Action hook to run something after rendering settings page.
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( 'dd4t3_before_admin_pages_settings_render' );
-
-		// Admin settings template.
-		$this->render( 'settings', $args );
-
-		/**
-		 * Action hook to run something after rendering settings page.
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( 'dd4t3_after_admin_pages_settings_render' );
 	}
 
 	/**
-	 * Register the sub menu for the admin settings.
+	 * Render general settings template.
 	 *
-	 * @since  4.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
 	public function general_content() {
-		// Arguments.
-		$args = array();
-
-		// Admin settings template.
-		$this->render( 'settings/general', $args );
+		// Render template.
+		$this->render(
+			'settings/general',
+			array()
+		);
 
 		/**
 		 * Action hook to run something after rendering general settings page.
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_after_admin_pages_general_settings_render' );
+		do_action( 'dd4t3_after_general_settings_render' );
 	}
 
 	/**
-	 * Register the sub menu for the admin settings.
+	 * Render redirect settings template.
 	 *
-	 * @since  4.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
 	public function redirect_content() {
-		// Arguments.
-		$args = array(
-			'types' => Data::redirect_types(),
+		// Render template.
+		$this->render(
+			'settings/redirect',
+			array(
+				'types' => Data::redirect_types(),
+			)
 		);
-
-		// Admin settings template.
-		$this->render( 'settings/redirect', $args );
 
 		/**
 		 * Action hook to run something after rendering redirect settings page.
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_after_admin_pages_redirect_settings_render' );
+		do_action( 'dd4t3_after_redirect_settings_render' );
 	}
 
 	/**
-	 * Register the sub menu for the admin settings.
+	 * Render logs settings template.
 	 *
-	 * @since  4.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
 	public function logs_content() {
-		// Arguments.
-		$args = array();
-
-		// Admin settings template.
-		$this->render( 'settings/logs', $args );
+		// Render template.
+		$this->render(
+			'settings/logs',
+			array()
+		);
 
 		/**
 		 * Action hook to run something after rendering logs settings page.
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_after_admin_pages_logs_settings_render' );
+		do_action( 'dd4t3_after_logs_settings_render' );
 	}
 
 	/**
-	 * Register the sub menu for the admin settings.
+	 * Render email settings template.
 	 *
-	 * @since  4.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
 	public function email_content() {
-		// Arguments.
-		$args = array();
-
-		// Admin settings template.
-		$this->render( 'settings/email', $args );
+		// Render template.
+		$this->render(
+			'settings/email',
+			array()
+		);
 
 		/**
 		 * Action hook to run something after rendering email settings page.
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_after_admin_pages_email_settings_render' );
+		do_action( 'dd4t3_after_email_settings_render' );
 	}
 
 	/**
-	 * Register the sub menu for the admin settings.
+	 * Render info section template.
 	 *
-	 * @since  4.0
+	 * This section contains the plugin help and support details,
+	 * addons and documentation links.
+	 *
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
 	public function info_content() {
-		// Arguments.
-		$args = array();
-
-		// Admin settings template.
-		$this->render( 'settings/info', $args );
+		// Render template.
+		$this->render(
+			'settings/info',
+			array()
+		);
 
 		/**
-		 * Action hook to run something after rendering email settings page.
+		 * Action hook to run something after rendering info section.
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_after_admin_pages_info_settings_render' );
+		do_action( 'dd4t3_after_info_settings_render' );
 	}
 
 	/**
-	 * Register the sub menu for the admin settings.
+	 * Get plugin settings tabs configuration.
 	 *
-	 * @since  4.0
+	 * Other plugins should hook into dd4t3_settings_page_get_tabs filter
+	 * to add new tab item.
+	 *
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return array
 	 */
@@ -225,17 +231,22 @@ class Settings extends View {
 		);
 
 		/**
-		 * Action hook to run something after rendering settings page.
+		 * Filter to add or remove settings tabs.
+		 *
+		 * @param array $tabs Tabs config.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd4t3_admin_settings_page_get_tabs', $tabs );
+		return apply_filters( 'dd4t3_settings_page_get_tabs', $tabs );
 	}
 
 	/**
-	 * Register the sub menu for the admin settings.
+	 * Check if we need to show submit button section.
 	 *
-	 * @since  4.0
+	 * Only settings forms require submit buttons.
+	 *
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return array
 	 */
@@ -245,31 +256,40 @@ class Settings extends View {
 		$show = ! in_array( $this->get_current_tab(), $hidden, true );
 
 		/**
-		 * Action hook to run something after rendering settings page.
+		 * Filter to modify settings submit section hidden status.
+		 *
+		 * @param bool  $show   Should show.
+		 * @param array $hidden Hidden items.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd4t3_admin_settings_show_submit', $show );
+		return apply_filters( 'dd4t3_admin_settings_show_submit', $show, $hidden );
 	}
 
 	/**
-	 * Register the sub menu for the admin settings.
+	 * Render settings update notices.
+	 *
+	 * Show success/error notices after processing the form.
 	 *
 	 * @param string $page Current page.
 	 *
-	 * @since  4.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
 	public function show_settings_notice( $page ) {
+		// Only on settings page.
 		if ( 'settings' === $page ) {
 			// Get the errors.
 			$errors = get_settings_errors();
 
+			// No need to continue if no messages.
 			if ( empty( $errors ) ) {
 				return;
 			}
 
+			// Render each message as notice.
 			foreach ( $errors as $details ) {
 				$this->render(
 					'components/notices/notice',
@@ -285,11 +305,15 @@ class Settings extends View {
 	}
 
 	/**
-	 * Register the sub menu for the admin settings.
+	 * Get currently active tab name.
+	 *
+	 * This is required to show current tab content, add
+	 * active class to tab etc.
 	 *
 	 * @param string $default Default tab.
 	 *
-	 * @since  4.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return array
 	 */
@@ -304,7 +328,10 @@ class Settings extends View {
 		$tab = empty( $tab ) || ! in_array( $tab, $tabs, true ) ? $default : $tab;
 
 		/**
-		 * Action hook to run something after rendering settings page.
+		 * Filter to modify active tabs logic.
+		 *
+		 * @param string $tab  Current tab.
+		 * @param array  $tabs Allowed tabs.
 		 *
 		 * @since 4.0.0
 		 */

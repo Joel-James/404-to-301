@@ -20,6 +20,7 @@ namespace DuckDev\Redirect;
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Utils\Base;
+use DuckDev\Redirect\Database\Database;
 
 /**
  * Class Core
@@ -71,7 +72,8 @@ final class Core extends Base {
 	 * @return void
 	 */
 	private function common() {
-		Processes::instance();
+		//Processes::instance();
+		Database::instance();
 		Settings::instance();
 	}
 

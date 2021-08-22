@@ -138,7 +138,7 @@ class Plugin {
 	public static function get_url( $page = 'settings' ) {
 		$pages = self::pages();
 
-		return isset( $pages[ $page ] ) ? $pages[ $page ] : '';
+		return isset( $pages[ $page ]['url'] ) ? $pages[ $page ]['url'] : '';
 	}
 
 	/**

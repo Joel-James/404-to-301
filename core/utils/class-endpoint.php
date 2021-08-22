@@ -146,11 +146,11 @@ abstract class Endpoint extends Base {
 	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @since  4.0.0
-	 * @access protected
+	 * @access public
 	 *
 	 * @return bool
 	 */
-	protected function has_access( $request ) {
+	public function has_access( $request ) {
 		// Check capability.
 		$capable = Permission::has_access();
 
@@ -172,7 +172,8 @@ abstract class Endpoint extends Base {
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return bool
 	 */

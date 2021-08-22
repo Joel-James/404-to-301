@@ -268,7 +268,7 @@ class Request {
 		}
 
 		/**
-		 * Filter hook to add add or remove redirect types.
+		 * Filter hook to add or remove redirect types.
 		 *
 		 * Other plugins can use this filter to add new redirect
 		 * types to 404 to 301.
@@ -298,7 +298,7 @@ class Request {
 		}
 
 		/**
-		 * Filter hook to add add or remove redirect types.
+		 * Filter hook to add or remove redirect types.
 		 *
 		 * Other plugins can use this filter to add new redirect
 		 * types to 404 to 301.
@@ -328,7 +328,7 @@ class Request {
 		}
 
 		/**
-		 * Filter hook to add add or remove redirect types.
+		 * Filter hook to add or remove redirect types.
 		 *
 		 * Other plugins can use this filter to add new redirect
 		 * types to 404 to 301.

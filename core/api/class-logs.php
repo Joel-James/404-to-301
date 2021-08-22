@@ -2,7 +2,7 @@
 /**
  * The logs API endpoint class.
  *
- * This class handles the API endpoint for logs settings.
+ * This class handles the API endpoint for logs management.
  *
  * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
@@ -42,52 +42,70 @@ class Logs extends Endpoint {
 	private $endpoint = '/logs';
 
 	/**
-	 * Register the routes for handling logs functionality.
+	 * Register the routes for handling logs.
 	 *
-	 * @since 4.0.0
+	 * Available endpoints:
+	 * - /wp-json/404-to-301/v1/logs/ - GET
+	 *
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return void
 	 */
 	public function routes() {
+		// List logs.
 		register_rest_route(
 			$this->get_namespace(),
 			$this->endpoint,
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'create_log' ),
-					'permission_callback' => array( $this, 'check_settings_permission' ),
+					'callback'            => array( $this, 'get_logs' ),
+					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
-						'url'      => array(
-							'type'        => 'string',
-							'required'    => true,
-							'description' => __( 'The requested URL that caused the 404 log entry.', '404-to-301' ),
-						),
-						'agent'    => array(
+						'search'    => array(
 							'type'        => 'string',
 							'required'    => false,
-							'description' => __( 'User agent of the client initiating the request.', '404-to-301' ),
+							'description' => __( 'Search term to filter logs.', '404-to-301' ),
 						),
-						'referrer' => array(
+						'search_by' => array(
 							'type'        => 'string',
 							'required'    => false,
-							'description' => __( 'HTTP referrer of the client initiating the request.', '404-to-301' ),
+							'enum'        => array( 'url', 'ip', 'referrer', 'agent', 'method' ),
+							'description' => __( 'Search field to filter logs.', '404-to-301' ),
 						),
-						'ip'       => array(
+						'group_by'  => array(
 							'type'        => 'string',
 							'required'    => false,
-							'description' => __( 'IP address of the client initiating the request.', '404-to-301' ),
+							'enum'        => array( 'url', 'ip' ),
+							'description' => __( 'Group results by.', '404-to-301' ),
 						),
-						'status'   => array(
+						'order_by'  => array(
+							'type'        => 'string',
+							'required'    => false,
+							'enum'        => array( 'url', 'ip', 'referrer', 'agent' ),
+							'description' => __( 'Order by field name.', '404-to-301' ),
+						),
+						'order'     => array(
+							'type'        => 'string',
+							'required'    => false,
+							'enum'        => array( 'asc', 'desc' ),
+							'description' => __( 'Order for the results (asc or desc)', '404-to-301' ),
+						),
+						'per_page'  => array(
 							'type'        => 'integer',
-							'enum'        => array( 0, 1 ),
-							'description' => __( 'Status of 404 log entry.', '404-to-301' ),
+							'description' => __( 'No of logs per page.', '404-to-301' ),
+						),
+						'page'      => array(
+							'type'        => 'integer',
+							'description' => __( 'Current page number.', '404-to-301' ),
 						),
 					),
 				),
 			)
 		);
 
+		// Log item.
 		register_rest_route(
 			$this->get_namespace(),
 			$this->endpoint . '(?P<id>\d+)',
@@ -95,7 +113,7 @@ class Logs extends Endpoint {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_log' ),
-					'permission_callback' => array( $this, 'check_settings_permission' ),
+					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
 						'id' => array(
 							'type'        => 'integer',
@@ -105,52 +123,64 @@ class Logs extends Endpoint {
 					),
 				),
 				array(
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'update_log' ),
-					'permission_callback' => array( $this, 'check_settings_permission' ),
-					'args'                => array(
-						'id'       => array(
-							'type'        => 'integer',
-							'required'    => true,
-							'description' => __( 'ID of 404 log entry to update.', '404-to-301' ),
-						),
-						'url'      => array(
-							'type'        => 'string',
-							'required'    => false,
-							'description' => __( 'The requested URL that caused the 404 log entry.', '404-to-301' ),
-						),
-						'agent'    => array(
-							'type'        => 'string',
-							'required'    => false,
-							'description' => __( 'User agent of the client initiating the request.', '404-to-301' ),
-						),
-						'referrer' => array(
-							'type'        => 'string',
-							'required'    => false,
-							'description' => __( 'HTTP referrer of the client initiating the request.', '404-to-301' ),
-						),
-						'ip'       => array(
-							'type'        => 'string',
-							'required'    => false,
-							'description' => __( 'IP address of the client initiating the request.', '404-to-301' ),
-						),
-						'status'   => array(
-							'type'        => 'integer',
-							'required'    => false,
-							'enum'        => array( 0, 1 ),
-							'description' => __( 'Status of 404 log entry.', '404-to-301' ),
-						),
-					),
-				),
-				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'delete_log' ),
-					'permission_callback' => array( $this, 'check_settings_permission' ),
+					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
 						'id' => array(
 							'type'        => 'integer',
 							'required'    => true,
-							'description' => __( 'ID of 404 log entry to delete.', '404-to-301' ),
+							'description' => __( 'Log ID to delete.', '404-to-301' ),
+						),
+					),
+				),
+			)
+		);
+
+		// Log options.
+		register_rest_route(
+			$this->get_namespace(),
+			$this->endpoint . '(?P<id>\d+)/options/',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_options' ),
+					'permission_callback' => array( $this, 'has_access' ),
+					'args'                => array(
+						'id' => array(
+							'type'        => 'integer',
+							'required'    => true,
+							'description' => __( 'Log ID to get the options.', '404-to-301' ),
+						),
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'update_options' ),
+					'permission_callback' => array( $this, 'has_access' ),
+					'args'                => array(
+						'id'       => array(
+							'type'        => 'integer',
+							'required'    => true,
+							'description' => __( 'Log ID to update the options.', '404-to-301' ),
+						),
+						'redirect' => array(
+							'type'        => 'string',
+							'required'    => false,
+							'enum'        => array( 'global', 'enabled', 'disabled' ),
+							'description' => __( 'Change the status of redirect for this log.', '404-to-301' ),
+						),
+						'log'      => array(
+							'type'        => 'string',
+							'required'    => false,
+							'enum'        => array( 'global', 'enabled', 'disabled' ),
+							'description' => __( 'Change the status of logging for this log.', '404-to-301' ),
+						),
+						'email'    => array(
+							'type'        => 'string',
+							'required'    => false,
+							'enum'        => array( 'global', 'enabled', 'disabled' ),
+							'description' => __( 'Change the status of email notification for this log.', '404-to-301' ),
 						),
 					),
 				),
@@ -159,80 +189,98 @@ class Logs extends Endpoint {
 	}
 
 	/**
-	 * Get the plugin settings value.
+	 * Get the list of logs.
+	 *
+	 * These logs can be filtered using available params.
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return WP_REST_Response
 	 */
-	public function get_settings( $request ) {
+	public function get_logs( $request ) {
 		// Get parameters.
-		$key    = $request->get_param( 'key' );
-		$module = $request->get_param( 'module' );
+		$search    = $request->get_param( 'search' );
+		$search_by = $request->get_param( 'search_by' );
 
-		// Get single setting value.
-		if ( ! empty( $key ) && ! empty( $module ) ) {
-			// Get value.
-			$value = dd4t3_settings()->get( $key, $module, false, $valid );
-
-			return $this->get_response(
-				array(
-					'key'    => $key,
-					'module' => $module,
-					'value'  => $value,
-				),
-				$valid
-			);
-		} elseif ( ! empty( $module ) ) {
-			// Get values.
-			$values = Options::get_module( $module, false, $valid );
-
-			// Get module settings.
-			return $this->get_response(
-				array(
-					'module' => $module,
-					'value'  => $values,
-				),
-				$valid
-			);
-		}
-
-		// Get all settings.
-		return $this->get_response( Options::get_settings() );
+		// Get all logs.
+		return $this->get_response();
 	}
 
 	/**
-	 * Update the plugin settings values.
+	 * Get a single log item.
+	 *
+	 * Log options will also be available.
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return WP_REST_Response
 	 */
-	public function update_settings( $request ) {
+	public function get_log( $request ) {
 		// Get parameters.
-		$key    = $request->get_param( 'key' );
-		$module = $request->get_param( 'module' );
-		$value  = $request->get_param( 'value' );
+		$id = $request->get_param( 'id' );
 
-		if ( ! empty( $key ) && ! empty( $module ) && ! empty( $value ) ) {
-			// Update single setting value.
-			$success = Options::update( $key, $value, $module );
-		} elseif ( ! empty( $module ) ) {
-			// Update module settings.
-			$success = Options::update_module( $value, $module );
-		} else {
-			// Update the settings.
-			$success = Options::update_settings( $value );
-		}
+		return $this->get_response();
+	}
 
-		// Get updated settings.
-		$settings = Options::get_settings();
+	/**
+	 * Delete a single log item.
+	 *
+	 * Log options will also be deleted.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function delete_log( $request ) {
+		// Get parameters.
+		$id = $request->get_param( 'id' );
 
-		// Send response.
-		return $this->get_response( $settings, $success );
+		return $this->get_response();
+	}
+
+	/**
+	 * Get a single log options.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function get_options( $request ) {
+		// Get parameters.
+		$id = $request->get_param( 'id' );
+
+		return $this->get_response();
+	}
+
+	/**
+	 * Get a single log options.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function update_options( $request ) {
+		// Get parameters.
+		$id       = $request->get_param( 'id' );
+		$redirect = $request->get_param( 'redirect' );
+		$log      = $request->get_param( 'log' );
+		$email    = $request->get_param( 'email' );
+
+		return $this->get_response();
 	}
 }

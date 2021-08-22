@@ -18,7 +18,6 @@ namespace DuckDev\Redirect\Front\Actions;
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Front\Request;
-use DuckDev\Redirect\Models\Query;
 
 /**
  * Class Menu
@@ -56,29 +55,6 @@ class Redirect extends Action {
 		 * @since 4.0
 		 */
 		do_action( 'dd4t3_redirect_pre_redirect', $this->request );
-		$query = new Query();
-		$query->table( 'wp_404_to_301' )
-		      ->select( array( 'id', 'url', 'ip', 'comment_author_url' ) )
-		      ->join( 'wp_comments', 'wp_404_to_301.id', 'wp_comments.comment_ID' )
-		      ->where( 'url', 'tests' )
-		      ->where( 'ip', 'dd', '!=' )
-		      ->or_where( 'ua', 'nones' )
-		      ->or_where(
-			      array(
-				      array(
-					      'field' => 'ua',
-					      'value' => 'none',
-				      ),
-				      array(
-					      'field' => 'url',
-					      'value' => 'test',
-					      //'operator' => '>',
-				      ),
-			      )
-		      )
-		      ->order_by( 'id' );
-		//$query->group_by( 'id' );
-		error_log( print_r( $query->get_row(), true ) );
 
 		// Perform redirect using WordPress.
 		// phpcs:ignore

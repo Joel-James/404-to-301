@@ -291,7 +291,7 @@ class Settings extends Base {
 				'recipient' => get_option( 'admin_email' ),
 			),
 			'misc'     => array(
-				'db_upgrading' => false,
+				'db_version' => 0,
 			),
 		);
 
