@@ -17,14 +17,14 @@
 <p><?php esc_html_e( 'Do you want to receive and email notification for each 404 errors?', '404-to-301' ); ?></p>
 <p><?php esc_html_e( 'You will get an email notification for every single 404 error. Please think twice if your site is getting 100s of 404s everyday!', '404-to-301' ); ?></p>
 <div class="duckdev-fields">
-	<label for="email-enable">
+	<label for="email-enabled">
 		<input
 			type="checkbox"
-			name="404_to_301_settings[email][enable]"
-			id="email-enable"
+			name="404_to_301_settings[email_enable]"
+			id="email-enabled"
 			value="1"
 			@change="toggleEmail"
-			<?php checked( dd4t3_settings()->get( 'enable', 'email' ) ); ?>
+			<?php checked( dd4t3_settings()->get( 'email_enabled' ) ); ?>
 		> <?php esc_html_e( 'Enable email notifications for 404 errors?', '404-to-301' ); ?>
 	</label>
 </div>
@@ -34,7 +34,7 @@
 <fieldset :class="{'duckdev-disabled': !email}">
 
 	<p>
-		<label for="email">
+		<label for="email-recipient">
 			<strong><?php esc_html_e( 'Recipient email', '404-to-301' ); ?></strong>
 		</label>
 	</p>
@@ -42,11 +42,11 @@
 	<p>
 		<input
 			type="email"
-			name="404_to_301_settings[email][recipient]"
-			id="email"
+			name="404_to_301_settings[email_recipient]"
+			id="email-recipient"
 			class="regular-text"
 			placeholder="admin@duckdev.com"
-			value="<?php echo esc_html( dd4t3_settings()->get( 'recipient', 'email' ) ); ?>"
+			value="<?php echo esc_html( dd4t3_settings()->get( 'email_recipient', '' ) ); ?>"
 		>
 	</p>
 

@@ -6,7 +6,7 @@
 				<input
 					type="text"
 					class="large-text"
-					name="404_to_301_settings[general][exclude][]"
+					name="404_to_301_settings[exclude_paths][]"
 					v-model="item.value"
 					placeholder="wp-content/"
 				>
@@ -45,7 +45,7 @@ export default {
 
 	data() {
 		let rows = [],
-			items = window?.dd4t3?.settings?.general?.exclude ?? []
+			items = window?.dd4t3?.settings?.exclude_paths ?? []
 		// Setup rows from settings.
 		items.forEach((item) => {
 			rows.push({value: item})

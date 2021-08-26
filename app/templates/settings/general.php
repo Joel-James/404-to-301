@@ -24,13 +24,13 @@
 	?>
 </p>
 <div class="duckdev-fields">
-	<label for="guessing">
+	<label for="disable-guessing">
 		<input
 			type="checkbox"
-			name="404_to_301_settings[general][disable_guess]"
-			id="guessing"
+			name="404_to_301_settings[disable_guessing]"
+			id="disable-guessing"
 			value="1"
-			<?php checked( dd4t3_settings()->get( 'disable_guess', 'general' ) ); ?>
+			<?php checked( dd4t3_settings()->get( 'disable_guessing' ) ); ?>
 		> <?php esc_html_e( 'Stop WordPress from guessing URLs', '404-to-301' ); ?>
 	</label>
 </div>
@@ -40,13 +40,13 @@
 <h4><?php esc_html_e( 'Permalink Changes', '404-to-301' ); ?></h4>
 <p><?php esc_html_e( 'New 404 errors can be created when you change an existing page/post permalink to a new one. Instead of waiting for someone to visit and create a 404 error, ww can create a redirect ourself to the new permalink.', '404-to-301' ); ?></p>
 <div class="duckdev-fields">
-	<label for="monitor">
+	<label for="monitor-changes">
 		<input
 			type="checkbox"
-			name="404_to_301_settings[general][monitor_changes]"
-			id="monitor"
+			name="404_to_301_settings[monitor_changes]"
+			id="monitor-changes"
 			value="1"
-			<?php checked( dd4t3_settings()->get( 'monitor_changes', 'general' ) ); ?>
+			<?php checked( dd4t3_settings()->get( 'monitor_changes' ) ); ?>
 		> <?php esc_html_e( 'Monitor permalink changes and create redirects', '404-to-301' ); ?>
 	</label>
 </div>

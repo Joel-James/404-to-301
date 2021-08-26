@@ -69,7 +69,7 @@ class Upgrader extends Base {
 	 */
 	public function settings_upgrade() {
 		// Get current plugin version.
-		$version = dd4t3_settings()->get( 'version', 'misc', 0 );
+		$version = dd4t3_settings()->get( 'plugin_version', 0 );
 
 		// Only if the current version is higher than existing.
 		if ( version_compare( DD4T3_VERSION, $version, '>' ) ) {
@@ -77,7 +77,7 @@ class Upgrader extends Base {
 			$settings->upgrade( $version );
 
 			// Update the plugin version.
-			dd4t3_settings()->update( 'version', DD4T3_VERSION, 'misc' );
+			dd4t3_settings()->set( 'plugin_version', DD4T3_VERSION );
 		}
 	}
 

@@ -122,7 +122,7 @@ class Vars extends Base {
 		);
 
 		// Settings data.
-		$vars['settings'] = dd4t3_settings()->get_settings();
+		$vars['settings'] = dd4t3_settings()->all();
 
 		return $vars;
 	}

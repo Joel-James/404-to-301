@@ -235,7 +235,7 @@ class Logs extends Process {
 		// Only if source and destination can be set.
 		if ( ! empty( $source ) && ! empty( $destination ) ) {
 			if ( empty( $options['type'] ) ) {
-				$code = dd4t3_settings()->get( 'type', 'redirect', 301 );
+				$code = dd4t3_settings()->get( 'redirect_type', 301 );
 			} else {
 				$code = $options['type'];
 			}

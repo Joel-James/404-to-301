@@ -10,7 +10,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    Controller
+ * @package    Core
  * @subpackage Settings
  */
 
@@ -54,7 +54,6 @@ class Settings extends Base {
 	 * Get single setting value.
 	 *
 	 * @param string $key     Setting key.
-	 * @param string $module  Module name.
 	 * @param array  $default Default values.
 	 * @param bool   $valid   Is the setting key and module valid.
 	 *
@@ -62,14 +61,14 @@ class Settings extends Base {
 	 *
 	 * @return string
 	 */
-	public function get( $key, $module = 'general', $default = false, &$valid = true ) {
-		// Get module values.
-		$values = $this->get_module( $module );
+	public function get( $key, $default = false, &$valid = true ) {
+		// Get settings.
+		$settings = $this->all();
 
 		// Value is set.
-		if ( isset( $values[ $key ] ) ) {
+		if ( isset( $settings[ $key ] ) ) {
 			$valid = true;
-			$value = $values[ $key ];
+			$value = $settings[ $key ];
 		} else {
 			$valid = false;
 			// Use default value if not set.
@@ -77,96 +76,49 @@ class Settings extends Base {
 		}
 
 		/**
-		 * Filter hook to change the settings capability.
+		 * Filter hook to change the settings value of single item.
 		 *
 		 * @param mixed  $value   Setting value.
 		 * @param string $key     Setting key.
-		 * @param string $module  Module name.
 		 * @param array  $default Default values.
 		 * @param bool   $valid   Is the setting key and module valid.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd4t3_settings_get', $value, $key, $module, $default, $valid );
+		return apply_filters( 'dd4t3_settings_get', $value, $key, $default, $valid );
 	}
 
 	/**
-	 * Get a module settings values.
-	 *
-	 * @param string $module  Module name.
-	 * @param array  $default Default values.
-	 * @param bool   $valid   Is the setting module valid.
-	 *
-	 * @since  4.0.0
-	 *
-	 * @return array
-	 */
-	public function get_module( $module, $default = array(), &$valid = true ) {
-		// Get settings.
-		$settings = $this->get_settings();
-
-		// Module is set.
-		if ( isset( $settings[ $module ] ) ) {
-			$valid  = true;
-			$values = $settings[ $module ];
-		} else {
-			$valid = false;
-			// Use default values if not set.
-			$values = $default;
-		}
-
-		/**
-		 * Filter hook to modify a module settings before returning it.
-		 *
-		 * @param array  $values  Values.
-		 * @param string $module  Module name.
-		 * @param array  $default Default values.
-		 * @param bool   $valid   Is the setting module valid.
-		 *
-		 * @since 4.0.0
-		 */
-		return apply_filters( 'dd4t3_settings_get_module', $values, $module, $default, $valid );
-	}
-
-	/**
-	 * Get the plugin settings data.
+	 * Get the all plugin settings data.
 	 *
 	 * This will return the full settings.
 	 * If there are extra fields which is not registered
 	 * into default settings, we won't return it.
 	 *
+	 * @param bool $use_default Should use default values as fallback.
+	 *
 	 * @since 4.0.0
 	 *
 	 * @return array
 	 */
-	public function get_settings() {
-		$values = array();
-
+	public function all( $use_default = false ) {
 		// Get settings.
-		$settings = get_option( self::KEY, array() );
-		// Default settings.
-		$defaults = $this->default_settings();
+		$settings = get_option( self::KEY );
 
-		// Make sure the data is in proper format.
-		foreach ( $defaults as $module => $options ) {
-			// If there is nothing set in the current option, we use the default set.
-			if ( ! isset( $settings[ $module ] ) ) {
-				$settings[ $module ] = $options;
-			}
-
-			// Else we combine defaults with current options.
-			$values[ $module ] = wp_parse_args( $settings[ $module ], $options );
+		if ( false === $settings ) {
+			// Use default settings if asked.
+			$settings = $use_default ? $this->defaults() : array();
 		}
 
 		/**
-		 * Filter hook to change the settings data.
+		 * Filter hook to change the whole settings data.
 		 *
-		 * @param array $values   Settings.
-		 * @param array $defaults Default settings.
+		 * @param array $settings    Settings.
+		 * @param bool  $use_default Should use default values as fallback.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd4t3_settings_get_settings', $values, $defaults );
+		return apply_filters( 'dd4t3_settings_all', $settings, $use_default );
 	}
 
 	/**
@@ -174,88 +126,50 @@ class Settings extends Base {
 	 *
 	 * It will only allow registered setting items.
 	 *
-	 * @param string $key    Setting key.
-	 * @param mixed  $value  Setting value.
-	 * @param string $module Module name.
+	 * @param string $key   Setting key.
+	 * @param mixed  $value Setting value.
 	 *
 	 * @since  4.0.0
 	 *
 	 * @return bool
 	 */
-	public function update( $key, $value, $module = 'general' ) {
+	public function set( $key, $value ) {
 		// Get settings.
-		$settings = $this->get_settings();
+		$settings = $this->all();
 
-		// Allow only registered items.
-		if ( isset( $settings[ $module ][ $key ] ) ) {
-			// Set new value.
-			$settings[ $module ][ $key ] = $value;
+		// Set value.
+		$settings[ $key ] = $value;
 
-			// Update the values.
-			return $this->update_module( $settings[ $module ], $module );
-		}
-
-		return false;
-	}
-
-	/**
-	 * Update a single module settings.
-	 *
-	 * Handy when updating a module settings only.
-	 *
-	 * @param array  $values Values.
-	 * @param string $module Module name.
-	 *
-	 * @since  4.0.0
-	 *
-	 * @return bool
-	 */
-	public function update_module( array $values, $module = 'general' ) {
-		// Get settings.
-		$settings = $this->get_settings();
-
-		// Allow only registered items.
-		if ( isset( $settings[ $module ] ) ) {
-			// Set new value.
-			$settings[ $module ] = $values;
-
-			// Update the values.
-			return $this->update_settings( $settings );
-		}
-
-		return false;
+		// Update the values.
+		return $this->update( $settings );
 	}
 
 	/**
 	 * Update the entire settings.
 	 *
-	 * All update functions are using this.
+	 * Be careful when you use this. If you don't pass
+	 * all items, the missing items will be removed.
 	 *
 	 * @param array $values Values.
 	 *
-	 * @since  4.0.0
+	 * @since 4.0.0
 	 *
 	 * @return bool
 	 */
-	public function update_settings( array $values ) {
-		// Get settings.
-		$settings = $this->get_settings();
-
-		// Format the settings.
-		$settings = $this->format_settings( $values, $settings );
-
+	public function update( array $values ) {
 		/**
 		 * Filter to modify plugin settings before updating it.
 		 *
-		 * @param array $settings Processed to be updated.
-		 * @param array $values   Values passed to update.
+		 * This filter values will be formatted later.
+		 *
+		 * @param array $values Values to update.
 		 *
 		 * @since 4.0.0
 		 */
-		$settings = apply_filters( 'dd4t3_settings_before_update_settings', $settings, $values );
+		$values = apply_filters( 'dd4t3_settings_pre_update', $values );
 
 		// Update the options.
-		return update_option( self::KEY, $settings );
+		return update_option( self::KEY, $this->format_values( $values ) );
 	}
 
 	/**
@@ -268,31 +182,26 @@ class Settings extends Base {
 	 *
 	 * @return array
 	 */
-	public function default_settings() {
+	public function defaults() {
 		$settings = array(
-			'general'  => array(
-				'disable_guess'   => true,
-				'monitor_changes' => false,
-				'exclude'         => array(),
-			),
-			'redirect' => array(
-				'enable' => true,
-				'type'   => '301',
-				'target' => 'link',
-				'link'   => home_url(),
-				'page'   => '',
-			),
-			'logs'     => array(
-				'enable'          => true,
-				'skip_duplicates' => false,
-			),
-			'email'    => array(
-				'enable'    => false,
-				'recipient' => get_option( 'admin_email' ),
-			),
-			'misc'     => array(
-				'version' => 0,
-			),
+			// General.
+			'disable_guessing'     => true,
+			'monitor_changes'      => false,
+			'exclude_paths'        => array(),
+			// Redirects.
+			'redirect_enabled'     => true,
+			'redirect_type'        => '301',
+			'redirect_target'      => 'link',
+			'redirect_link'        => home_url(),
+			'redirect_page'        => '',
+			// Error logs.
+			'logs_enabled'         => true,
+			'logs_skip_duplicates' => false,
+			// Email notification.
+			'email_enabled'        => false,
+			'email_recipient'      => get_option( 'admin_email' ),
+			// Others.
+			'plugin_version'       => 0,
 		);
 
 		/**
@@ -305,91 +214,7 @@ class Settings extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd4t3_settings_default_settings', $settings );
-	}
-
-	/**
-	 * Format the entire settings before update.
-	 *
-	 * Should use this to ensure the plugin settings
-	 * data is in correct format.
-	 *
-	 * @param array $new New values.
-	 * @param array $old Old values.
-	 *
-	 * @since  4.0.0
-	 *
-	 * @return array
-	 */
-	public function format_settings( array $new, array $old ) {
-		// Default settings.
-		$defaults = $this->default_settings();
-		wpmudev_debug($new);
-
-		// Only allow registered items.
-		foreach ( $defaults as $module => $options ) {
-			// If the module is set.
-			if ( isset( $new[ $module ] ) && is_array( $new[ $module ] ) ) {
-				foreach ( $options as $key => $value ) {
-					// Overwrite with the value from new array.
-					if ( isset( $new[ $module ][ $key ] ) ) {
-						$old[ $module ][ $key ] = $new[ $module ][ $key ];
-					} else {
-						$old[ $module ][ $key ] = $this->get_empty_value( $key, $module );
-					}
-				}
-			}
-		}
-
-		/**
-		 * Filter to modify plugin settings formatted result.
-		 *
-		 * @param array $old Processed to be updated.
-		 * @param array $new Values passed to update.
-		 *
-		 * @since 4.0.0
-		 */
-		return apply_filters( 'dd4t3_settings_format_settings', $old, $new );
-	}
-
-	/**
-	 * Get default empty value for the settings.
-	 *
-	 * @param string $key    Key.
-	 * @param string $module Module name.
-	 * @param mixed  $value  Default value.
-	 *
-	 * @since  4.0.0
-	 * @access private
-	 *
-	 * @return array|false|mixed|string
-	 */
-	private function get_empty_value( $key, $module, $value = false ) {
-		$default = $this->default_settings();
-
-		if ( isset( $default[ $module ][ $key ] ) ) {
-			if ( is_array( $default[ $module ][ $key ] ) ) {
-				$value = array();
-			} elseif ( is_string( $default[ $module ][ $key ] ) ) {
-				$value = '';
-			} else {
-				$value = false;
-			}
-		}
-
-		return $value;
-	}
-
-	/**
-	 * Get the list of settings modules.
-	 *
-	 * @since  4.0.0
-	 *
-	 * @return array
-	 */
-	public function get_modules() {
-		// Keys of the settings are modules.
-		return array_keys( $this->default_settings() );
+		return apply_filters( 'dd4t3_settings_defaults', $settings );
 	}
 
 	/**
@@ -398,9 +223,9 @@ class Settings extends Base {
 	 * This function is used to register all settings options to the db using
 	 * WordPress settings API.
 	 *
-	 * @since  2.0.0
+	 * @since  4.0.0
 	 * @access public
-	 * @uses   hooks  register_setting Hook to register our options in db.
+	 * @uses   register_setting
 	 *
 	 * @return void
 	 */
@@ -434,20 +259,88 @@ class Settings extends Base {
 		// Should be a proper array.
 		$values = empty( $values ) || ! is_array( $values ) ? array() : $values;
 
-		// Get settings.
-		$settings = $this->get_settings();
-
-		// Format the settings.
-		$settings = $this->format_settings( $values, $settings );
-
 		/**
 		 * Filter to modify plugin settings before updating it.
 		 *
-		 * @param array $settings Processed to be updated.
-		 * @param array $values   Values passed to update.
+		 * This filter values will be formatted later.
+		 *
+		 * @param array $values Values to update.
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd4t3_settings_before_update_settings', $settings, $values );
+		$values = apply_filters( 'dd4t3_settings_pre_update', $values );
+
+		// Format the settings.
+		return $this->format_values( $values );
+	}
+
+	/**
+	 * Format the entire settings before update.
+	 *
+	 * Should use this to ensure the plugin settings
+	 * data is in correct format.
+	 *
+	 * @param array $values Values to format.
+	 *
+	 * @since  4.0.0
+	 *
+	 * @return array
+	 */
+	private function format_values( array $values ) {
+		$processed = array();
+
+		// Default items.
+		$defaults = $this->defaults();
+
+		// Format the settings.
+		foreach ( $defaults as $key => $value ) {
+			if ( isset( $values[ $key ] ) ) {
+				$processed[ $key ] = $values[ $key ];
+			} else {
+				// If the field is missing, set empty value.
+				$processed[ $key ] = $this->get_empty_value( $key );
+			}
+		}
+
+		/**
+		 * Filter to modify plugin settings formatted result.
+		 *
+		 * @param array $old Processed to be updated.
+		 * @param array $new Values passed to update.
+		 *
+		 * @since 4.0.0
+		 */
+		return apply_filters( 'dd4t3_settings_format_values', $processed, $values );
+	}
+
+	/**
+	 * Get default empty value for the settings.
+	 *
+	 * This is useful to format the settings if trying to update
+	 * settings without all fields.
+	 *
+	 * @param string $key Key.
+	 *
+	 * @since  4.0.0
+	 * @access private
+	 *
+	 * @return array|false|string
+	 */
+	private function get_empty_value( $key ) {
+		$value = false;
+
+		// Default values.
+		$default = $this->defaults();
+
+		// Check default values to decide value type.
+		if ( isset( $default[ $key ] ) ) {
+			if ( is_array( $default[ $key ] ) ) {
+				$value = array();
+			} elseif ( is_string( $default[ $key ] ) ) {
+				$value = '';
+			}
+		}
+
+		return $value;
 	}
 }

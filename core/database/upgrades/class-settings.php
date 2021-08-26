@@ -81,30 +81,22 @@ class Settings {
 
 			if ( ! empty( $old ) ) {
 				$settings = array(
-					'general'  => array(
-						'disable_guess'   => ! empty( $old['disable_guessing'] ),
-						'monitor_changes' => true,
-						'exclude'         => empty( $old['exclude_paths'] ) ? array() : explode( "\n", $old['exclude_paths'] ),
-					),
-					'redirect' => array(
-						'enable' => ! empty( $old['redirect_to'] ),
-						'type'   => $old['redirect_type'],
-						'target' => 'page' === $old['redirect_to'] ? 'page' : 'link',
-						'link'   => empty( $old['redirect_link'] ) ? home_url() : esc_url_raw( $old['redirect_link'] ),
-						'page'   => empty( $old['redirect_page'] ) ? '' : esc_url_raw( $old['redirect_page'] ),
-					),
-					'logs'     => array(
-						'enable'          => ! empty( $old['redirect_log'] ),
-						'skip_duplicates' => true,
-					),
-					'email'    => array(
-						'enable'    => ! empty( $old['email_notify'] ),
-						'recipient' => empty( $old['email_notify_address'] ) ? get_option( 'admin_email' ) : $old['email_notify_address'],
-					),
+					'disable_guessing'     => ! empty( $old['disable_guessing'] ),
+					'monitor_changes'      => true,
+					'exclude_paths'        => empty( $old['exclude_paths'] ) ? array() : explode( "\n", $old['exclude_paths'] ),
+					'redirect_enabled'     => ! empty( $old['redirect_to'] ),
+					'redirect_type'        => $old['redirect_type'],
+					'redirect_target'      => 'page' === $old['redirect_to'] ? 'page' : 'link',
+					'redirect_link'        => empty( $old['redirect_link'] ) ? home_url() : esc_url_raw( $old['redirect_link'] ),
+					'redirect_page'        => empty( $old['redirect_page'] ) ? '' : esc_url_raw( $old['redirect_page'] ),
+					'logs_enabled'         => ! empty( $old['redirect_log'] ),
+					'logs_skip_duplicates' => true,
+					'email_enabled'        => ! empty( $old['email_notify'] ),
+					'email_recipient'      => empty( $old['email_notify_address'] ) ? get_option( 'admin_email' ) : $old['email_notify_address'],
 				);
 
 				// Update the settings.
-				dd4t3_settings()->update_settings( $settings );
+				dd4t3_settings()->update( $settings );
 			}
 
 			// Upgrade review notice time.

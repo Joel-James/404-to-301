@@ -21,6 +21,7 @@ defined( 'WPINC' ) || die;
 use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
+use DuckDev\Redirect\Models;
 use DuckDev\Redirect\Utils\Endpoint;
 
 /**
@@ -205,8 +206,11 @@ class Logs extends Endpoint {
 		$search    = $request->get_param( 'search' );
 		$search_by = $request->get_param( 'search_by' );
 
+		// Get logs.
+		$logs = Models\Logs::instance()->get_logs();
+
 		// Get all logs.
-		return $this->get_response();
+		return $this->get_response( $logs );
 	}
 
 	/**
@@ -225,7 +229,10 @@ class Logs extends Endpoint {
 		// Get parameters.
 		$id = $request->get_param( 'id' );
 
-		return $this->get_response();
+		// Get log.
+		$log = Models\Logs::instance()->get( $id );
+
+		return $this->get_response( $log );
 	}
 
 	/**
@@ -244,7 +251,10 @@ class Logs extends Endpoint {
 		// Get parameters.
 		$id = $request->get_param( 'id' );
 
-		return $this->get_response();
+		// Delete log.
+		$success = Models\Logs::instance()->delete( $id );
+
+		return $this->get_response( array(), $success );
 	}
 
 	/**

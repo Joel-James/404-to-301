@@ -63,16 +63,11 @@ class Settings extends Endpoint {
 					'callback'            => array( $this, 'get_settings' ),
 					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
-						'key'    => array(
+						'key' => array(
 							'type'        => 'string',
 							'required'    => false,
+							'enum'        => array_keys( dd4t3_settings()->defaults() ),
 							'description' => __( 'Setting key.', '404-to-301' ),
-						),
-						'module' => array(
-							'type'        => 'string',
-							'required'    => false,
-							'enum'        => dd4t3_settings()->get_modules(),
-							'description' => __( 'Module name.', '404-to-301' ),
 						),
 					),
 				),
@@ -81,18 +76,13 @@ class Settings extends Endpoint {
 					'callback'            => array( $this, 'update_settings' ),
 					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
-						'key'    => array(
+						'key'   => array(
 							'type'        => 'string',
 							'required'    => false,
+							'enum'        => array_keys( dd4t3_settings()->defaults() ),
 							'description' => __( 'Setting key.', '404-to-301' ),
 						),
-						'module' => array(
-							'type'        => 'string',
-							'required'    => false,
-							'enum'        => dd4t3_settings()->get_modules(),
-							'description' => __( 'Module name.', '404-to-301' ),
-						),
-						'value'  => array(
+						'value' => array(
 							'required'    => true,
 							'description' => __( 'Value(s) to update.', '404-to-301' ),
 						),
@@ -105,8 +95,7 @@ class Settings extends Endpoint {
 	/**
 	 * Get the plugin setting(s) value.
 	 *
-	 * If module and key is provided, specific setting will be returned.
-	 * If only module is given, array of module settings.
+	 * If key is provided, specific setting will be returned.
 	 * If no params provided, the entire settings will be returned.
 	 *
 	 * @param WP_REST_Request $request Request object.
@@ -118,44 +107,30 @@ class Settings extends Endpoint {
 	 */
 	public function get_settings( $request ) {
 		// Get parameters.
-		$key    = $request->get_param( 'key' );
-		$module = $request->get_param( 'module' );
+		$key = $request->get_param( 'key' );
 
 		// Get single setting value.
-		if ( ! empty( $key ) && ! empty( $module ) ) {
+		if ( ! empty( $key ) ) {
 			// Get value.
-			$value = dd4t3_settings()->get( $key, $module, false, $valid );
+			$value = dd4t3_settings()->get( $key, false, $valid );
 
 			return $this->get_response(
 				array(
-					'key'    => $key,
-					'module' => $module,
-					'value'  => $value,
-				),
-				$valid
-			);
-		} elseif ( ! empty( $module ) ) {
-			// Get module values.
-			$values = dd4t3_settings()->get_module( $module, false, $valid );
-
-			// Get module settings.
-			return $this->get_response(
-				array(
-					'module' => $module,
-					'value'  => $values,
+					'key'   => $key,
+					'value' => $value,
 				),
 				$valid
 			);
 		}
 
 		// Get all settings.
-		return $this->get_response( dd4t3_settings()->get_settings() );
+		return $this->get_response( dd4t3_settings()->all() );
 	}
 
 	/**
 	 * Update the plugin settings values.
 	 *
-	 * If module and key is provided, specific setting will be updated.
+	 * If key is provided, specific setting will be updated.
 	 * If only module is given, module settings will be updated.
 	 * If no params provided, the entire settings will be updated.
 	 *
@@ -167,24 +142,21 @@ class Settings extends Endpoint {
 	 * @return WP_REST_Response
 	 */
 	public function update_settings( $request ) {
+		$success = false;
 		// Get parameters.
-		$key    = $request->get_param( 'key' );
-		$module = $request->get_param( 'module' );
-		$value  = $request->get_param( 'value' );
+		$key   = $request->get_param( 'key' );
+		$value = $request->get_param( 'value' );
 
-		if ( ! empty( $key ) && ! empty( $module ) && ! empty( $value ) ) {
+		if ( ! empty( $key ) && ! empty( $value ) ) {
 			// Update single setting value.
-			$success = dd4t3_settings()->update( $key, $value, $module );
-		} elseif ( ! empty( $module ) ) {
-			// Update module settings.
-			$success = dd4t3_settings()->update_module( $value, $module );
-		} else {
+			$success = dd4t3_settings()->set( $key, $value );
+		} elseif ( ! empty( $value ) ) {
 			// Update the settings.
-			$success = dd4t3_settings()->update_settings( $value );
+			$success = dd4t3_settings()->update( $value );
 		}
 
 		// Get updated settings.
-		$settings = dd4t3_settings()->get_settings();
+		$settings = dd4t3_settings()->all();
 
 		// Send response.
 		return $this->get_response( $settings, $success );

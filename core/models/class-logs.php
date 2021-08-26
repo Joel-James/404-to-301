@@ -18,7 +18,7 @@ namespace DuckDev\Redirect\Models;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\QueryBuilder\Query;
+use DuckDev\Redirect\Database;
 
 /**
  * Class Logs.
@@ -30,61 +30,59 @@ use DuckDev\QueryBuilder\Query;
 class Logs extends Model {
 
 	/**
-	 * Get log data by ID.
+	 * Get a log by ID.
 	 *
-	 * Return the log data from using the ID.
+	 * @param int $log_id Log ID.
 	 *
-	 * @param int $id Log ID.
+	 * @since  4.0.0
+	 * @access public
 	 *
-	 * @since 4.0.0
-	 *
-	 * @throws \Exception Exception.
-	 * @return mixed|false
+	 * @return object|false Log object if successful, false otherwise.
 	 */
-	public function get_log( $id ) {
-		return $this->remember(
-			"log_$id",
-			function () use ( $id ) {
-				return Query::init( 'logs_get' )
-					->from( $this->table_name( 'logs' ) )
-					->find( intval( $id ) );
-			}
-		);
+	public function get( $log_id ) {
+		$logs = new Database\Queries\Log();
+
+		// Return log.
+		return $logs->get_item( $log_id );
 	}
 
 	/**
-	 * Get log data by ID.
+	 * Get error logs.
 	 *
 	 * Return the log data from using the ID.
 	 *
-	 * @param array $args Filter items.
+	 * @param array $args Filter items using fields.
 	 *
-	 * @since 4.0.0
+	 * @since  4.0.0
+	 * @access public
 	 *
-	 * @throws \Exception Exception.
-	 * @return mixed|false
+	 * @return array
 	 */
 	public function get_logs( array $args = array() ) {
-		$query = Query::init( 'logs_get' )
-			->from( $this->table_name( 'logs' ) );
+		// Parse args.
+		$args = wp_parse_args(
+			$args,
+			array(
+				'number' => 50,
+			)
+		);
 
-		// Add search term.
-		if ( ! empty( $args['search'] ) ) {
-			$columns = empty( $args['search_by'] ) ? array( 'url', 'ip', 'referrer', 'agent', 'method' ) : (array) $args['search_by'];
-			$query->search( $args['search'], $columns );
-		}
+		// Create a query object.
+		$logs = new Database\Queries\Log();
+
+		// Return logs.
+		return $logs->query( $args );
 	}
 
 	/**
-	 * Setup the plugin and register all hooks.
+	 * Create a new error log.
 	 *
-	 * Pro version features and not initialized yet, so do not
-	 * execute something on this hooks if you are checking for
-	 * Pro version.
+	 * Make sure to validate all fields before adding it.
 	 *
 	 * @param array $data Data.
 	 *
-	 * @since 1.8.0
+	 * @since  4.0.0
+	 * @access public
 	 *
 	 * @return bool
 	 */
@@ -94,6 +92,59 @@ class Logs extends Model {
 			return false;
 		}
 
-		return $this->insert( $data, 'logs' );
+		// Create a query object.
+		$logs = new Database\Queries\Log();
+
+		// Create log.
+		return $logs->add_item( $data );
+	}
+
+	/**
+	 * Update an existing log entry.
+	 *
+	 * @param int   $log_id Log ID.
+	 * @param array $data   Data.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return bool
+	 */
+	public function update( $log_id, array $data ) {
+		// Can not continue if id is empty.
+		if ( empty( $log_id ) ) {
+			return false;
+		}
+
+		// Create a query object.
+		$logs = new Database\Queries\Log();
+
+		// Create log.
+		return $logs->update_item( $log_id, $data );
+	}
+
+	/**
+	 * Delete a log entry.
+	 *
+	 * Deleting a log won't delete it's redirect.
+	 *
+	 * @param int $log_id Log ID.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return bool
+	 */
+	public function delete( $log_id ) {
+		// Can not continue if id is empty.
+		if ( empty( $log_id ) ) {
+			return false;
+		}
+
+		// Create a query object.
+		$logs = new Database\Queries\Log();
+
+		// Delete log.
+		return $logs->delete_item( $log_id );
 	}
 }

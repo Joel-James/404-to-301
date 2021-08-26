@@ -43,20 +43,16 @@ class Settings extends Command {
 		// Action.
 		$action = $args[0];
 		// Setting keys.
-		$module = $this->get_arg( $extra, 'module' );
-		$key    = $this->get_arg( $extra, 'key' );
-		$value  = $this->get_arg( $extra, 'value' );
+		$key   = $this->get_arg( $extra, 'key' );
+		$value = $this->get_arg( $extra, 'value' );
 
 		// If updating one setting.
-		if ( 'set' === $action && $module && $key && $value ) {
-			$this->set_setting( $key, $value, $module );
+		if ( 'set' === $action && $key && $value ) {
+			$this->set_setting( $key, $value );
 		} elseif ( 'get' === $action ) {
-			if ( $module && $key ) {
+			if ( $key ) {
 				// Get single setting.
-				$this->get_setting( $module, $key );
-			} elseif ( $module ) {
-				// Get module setting.
-				$this->get_module( $module );
+				$this->get_setting( $key );
 			} else {
 				// Get the whole settings.
 				$this->get_all_settings();
@@ -69,9 +65,8 @@ class Settings extends Command {
 	/**
 	 * Update a single setting value.
 	 *
-	 * @param string $key    Setting key.
-	 * @param mixed  $value  Setting value.
-	 * @param string $module Setting module.
+	 * @param string $key   Setting key.
+	 * @param mixed  $value Setting value.
 	 *
 	 * @since  4.0.0
 	 * @access private
@@ -79,8 +74,8 @@ class Settings extends Command {
 	 *
 	 * @return void
 	 */
-	private function set_setting( $key, $value, $module ) {
-		if ( dd4t3_settings()->update( $key, $value, $module ) ) {
+	private function set_setting( $key, $value ) {
+		if ( dd4t3_settings()->set( $key, $value ) ) {
 			$this->success( __( 'Setting updated successfully!', '404-to-301' ) );
 		} else {
 			$this->error( __( 'Setting update failed.', '404-to-301' ) );
@@ -90,8 +85,7 @@ class Settings extends Command {
 	/**
 	 * Get a single setting value and display it.
 	 *
-	 * @param string $module Setting module.
-	 * @param string $key    Setting key.
+	 * @param string $key Setting key.
 	 *
 	 * @since  4.0.0
 	 * @access private
@@ -99,29 +93,11 @@ class Settings extends Command {
 	 *
 	 * @return void
 	 */
-	private function get_setting( $module, $key ) {
+	private function get_setting( $key ) {
 		// Get the setting value.
-		$value = dd4t3_settings()->get( $key, $module, false, $valid );
+		$value = dd4t3_settings()->get( $key, false, $valid );
 		// Display result.
 		$valid ? $this->show( $value ) : $this->error( __( 'Invalid settings.', '404-to-301' ) );
-	}
-
-	/**
-	 * Get a module settings values and display.
-	 *
-	 * @param string $module Setting module.
-	 *
-	 * @since  4.0.0
-	 * @access private
-	 * @uses   dd4t3_settings()
-	 *
-	 * @return void
-	 */
-	private function get_module( $module ) {
-		// Get the module values.
-		$values = dd4t3_settings()->get_module( $module, array(), $valid );
-		// Display result.
-		$valid ? $this->maybe_as_table( $values ) : $this->error( __( 'Invalid settings.', '404-to-301' ) );
 	}
 
 	/**
@@ -135,7 +111,7 @@ class Settings extends Command {
 	 */
 	private function get_all_settings() {
 		$this->maybe_as_table(
-			dd4t3_settings()->get_settings(),
+			dd4t3_settings()->all(),
 			array( 'module', 'values' )
 		);
 	}

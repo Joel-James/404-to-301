@@ -100,7 +100,7 @@ final class Logs extends Table {
 			referrer varchar(255) DEFAULT NULL,
 			ip varchar(45) DEFAULT NULL,
 			agent varchar(255) DEFAULT NULL,
-			request_method varchar(10) DEFAULT NULL,
+			request_method varchar(10) DEFAULT 'GET',
 			request_data mediumtext DEFAULT NULL,
 			visits bigint(20) unsigned DEFAULT '1',
 			redirect_status enum('global', 'enabled', 'disabled') DEFAULT 'global',

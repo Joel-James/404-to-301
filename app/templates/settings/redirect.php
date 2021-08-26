@@ -27,14 +27,14 @@
 	?>
 </p>
 <div class="duckdev-fields">
-	<label for="redirect-enable">
+	<label for="redirect-enabled">
 		<input
 			type="checkbox"
-			id="redirect-enable"
-			name="404_to_301_settings[redirect][enable]"
+			id="redirect-enabled"
+			name="404_to_301_settings[redirect_enabled]"
 			value="1"
 			@change="toggleRedirect"
-			<?php checked( dd4t3_settings()->get( 'enable', 'redirect' ) ); ?>
+			<?php checked( dd4t3_settings()->get( 'redirect_enabled' ) ); ?>
 		> <?php esc_html_e( 'Enable redirects for 404 errors', '404-to-301' ); ?>
 	</label>
 </div>
@@ -60,9 +60,9 @@
 					<input
 						type="radio"
 						id="redirect-type-<?php echo esc_attr( $redirect_type ); ?>"
-						name="404_to_301_settings[redirect][type]"
+						name="404_to_301_settings[redirect_type]"
 						value="<?php echo esc_attr( $redirect_type ); ?>"
-						<?php checked( dd4t3_settings()->get( 'type', 'redirect' ), $redirect_type ); ?>
+						<?php checked( dd4t3_settings()->get( 'redirect_type' ), $redirect_type ); ?>
 					> <?php echo esc_attr( $label ); ?>
 				</label>
 			</p>
@@ -80,7 +80,7 @@
 				<input
 					type="radio"
 					id="redirect-target-page"
-					name="404_to_301_settings[redirect][target]"
+					name="404_to_301_settings[redirect_target]"
 					value="page"
 					v-model="target"
 				> <?php esc_html_e( 'Select an existing page on this website', '404-to-301' ); ?>
@@ -91,7 +91,7 @@
 				<input
 					type="radio"
 					id="redirect-target-link"
-					name="404_to_301_settings[redirect][target]"
+					name="404_to_301_settings[redirect_target]"
 					value="link"
 					v-model="target"
 				> <?php esc_html_e( 'Enter a custom URL', '404-to-301' ); ?>
@@ -111,8 +111,8 @@
 			wp_dropdown_pages(
 				array(
 					'id'       => 'redirect-target-page-value',
-					'name'     => '404_to_301_settings[redirect][page]',
-					'selected' => esc_attr( dd4t3_settings()->get( 'page', 'redirect' ) ),
+					'name'     => '404_to_301_settings[redirect_page]',
+					'selected' => esc_attr( dd4t3_settings()->get( 'redirect_page' ) ),
 				)
 			);
 			?>
@@ -128,11 +128,11 @@
 		<p>
 			<input
 				type="url"
-				name="404_to_301_settings[redirect][link]"
+				name="404_to_301_settings[redirect_link]"
 				id="redirect-target-link-value"
 				class="large-text"
 				placeholder="https://example.com"
-				value="<?php echo esc_url( dd4t3_settings()->get( 'link', 'redirect', '' ) ); ?>"
+				value="<?php echo esc_url( dd4t3_settings()->get( 'redirect_link', '' ) ); ?>"
 			>
 		</p>
 	</div>
