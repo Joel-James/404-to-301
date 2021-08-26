@@ -32,11 +32,20 @@ class Log extends Query {
 	/**
 	 * Name of the database table to query.
 	 *
-	 * @var   string
+	 * @var    string
 	 * @since  4.0.0
 	 * @access protected
 	 */
-	protected $table_name = '404_to_301_logs';
+	protected $table_name = 'logs';
+
+	/**
+	 * Global prefix used for tables/hooks/cache-groups/etc.
+	 *
+	 * @var    string
+	 * @access protected
+	 * @since  4.0.0
+	 */
+	protected $prefix = '404_to_301';
 
 	/**
 	 * String used to alias the database table in MySQL statement.

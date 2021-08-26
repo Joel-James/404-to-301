@@ -2,15 +2,15 @@
 /**
  * The upgrade process class.
  *
- * This class handles the upgrade processes using background processing.
+ * This class will handle settings and logs upgrades.
  *
- * @since      1.0.0
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    Upgrade
- * @subpackage Upgrade
+ * @package    Database
+ * @subpackage Upgrader
  */
 
 namespace DuckDev\Redirect\Database;
@@ -18,299 +18,105 @@ namespace DuckDev\Redirect\Database;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Process;
+use DuckDev\Redirect\Permission;
+use DuckDev\Redirect\Utils\Base;
 
 /**
- * Class Upgrade.
+ * Class Upgrader.
  *
  * @since   1.0.0
- * @extends Process
+ * @extends Base
  * @package DuckDev\Redirect\Database
  */
-class Upgrader extends Process {
+class Upgrader extends Base {
 
 	/**
-	 * Holds the name of the background process action.
+	 * Logs upgrader class.
 	 *
-	 * @var    string
+	 * @var Upgrades\Logs
 	 * @since  4.0.0
-	 * @access protected
+	 * @access private
 	 */
-	protected $action = 'db_upgrade';
+	private $logs;
 
 	/**
-	 * Start the upgrader.
-	 *
-	 * This should be called once. Once started,
-	 * upgrader will continue by it's own.
+	 * Initialize the upgrader.
 	 *
 	 * @since  4.0.0
 	 * @access protected
 	 *
 	 * @return void
 	 */
-	public function start() {
-		if ( ! $this->is_upgrading() && ! $this->is_running() ) {
-			// Set the flag.
-			dd4t3_cache()->set_transient( 'db_upgrading', true );
+	protected function init() {
+		// This is a batch process, so it should always be initiated.
+		$this->logs = new Upgrades\Logs();
 
-			$this->maybe_upgrade();
+		// Everything should be after admin init.
+		add_action( 'admin_init', array( $this, 'logs_upgrade' ) );
+		add_action( 'admin_init', array( $this, 'settings_upgrade' ) );
+	}
+
+	/**
+	 * Start the settings upgrade.
+	 *
+	 * Different version upgrades should be handled inside settings
+	 * upgrader class.
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return void
+	 */
+	public function settings_upgrade() {
+		// Get current plugin version.
+		$version = dd4t3_settings()->get( 'version', 'misc', 0 );
+
+		// Only if the current version is higher than existing.
+		if ( version_compare( DD4T3_VERSION, $version, '>' ) ) {
+			$settings = new Upgrades\Settings();
+			$settings->upgrade( $version );
+
+			// Update the plugin version.
+			dd4t3_settings()->update( 'version', DD4T3_VERSION, 'misc' );
 		}
 	}
 
 	/**
-	 * Check if a process is preparing.
+	 * Start the logs upgrade.
 	 *
-	 * Check whether the upgrade process is being prepared.
-	 * This is to avoid infinite loop.
+	 * Post v4 error logs should be upgraded only if user manually
+	 * confirm. If skipped, delete logs and table.
 	 *
 	 * @since  4.0.0
 	 * @access protected
 	 *
-	 * @return bool
-	 */
-	public function is_upgrading() {
-		return (bool) dd4t3_cache()->get_transient( 'db_upgrading' );
-	}
-
-	/**
-	 * Get the list of completed upgrade processes.
-	 *
-	 * This will be available only during the upgrade.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 *
-	 * @return array
-	 */
-	public function get_completed() {
-		// Get the existing list.
-		$completed = get_site_transient( "{$this->identifier}_completed" );
-
-		return empty( $completed ) ? array() : (array) $completed;
-	}
-
-	/**
-	 * Check if an upgrade process is completed.
-	 *
-	 * @param string $name Name of upgrade.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 *
-	 * @return bool
-	 */
-	public function is_completed( $name ) {
-		// Check if current item is in list.
-		return in_array( $name, $this->get_completed(), true );
-	}
-
-	/**
-	 * Run upgrade for a batch of data.
-	 *
-	 * This will process a single item from the batch.
-	 *
-	 * @param array  $item  Item data to process.
-	 * @param string $group Name of the process.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 *
-	 * @return bool
-	 */
-	protected function task( $item, $group ) {
-		$upgrader = $this->get_upgrader( $group );
-
-		if ( $upgrader ) {
-			$upgrader->upgrade_task( $item );
-		}
-
-		return false;
-	}
-
-	/**
-	 * Complete the upgrade queue task.
-	 *
-	 * Please note this will be the completion of one upgrade
-	 * process. Not all upgrades.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 *
 	 * @return void
 	 */
-	protected function complete() {
-		// Mark as completed.
-		parent::complete();
-
-		// Continue if required.
-		$this->maybe_upgrade();
-	}
-
-	/**
-	 * Check if upgrade is required and then upgrade.
-	 *
-	 * Run pre-upgrade checks and if needed set the upgrade
-	 * process queue and run it in background.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 *
-	 * @return void
-	 */
-	private function maybe_upgrade() {
-		// Get available upgrades.
-		$upgrades = $this->get_upgrades();
-
-		// Go through each item.
-		foreach ( $upgrades as $upgrader ) {
-			// Already completed.
-			if ( $this->is_completed( $upgrader->get_id() ) ) {
-				continue;
+	public function logs_upgrade() {
+		if (
+			isset( $_GET['dd4t3_db_upgrade'], $_GET['dd4t3_nonce'] ) &&
+			wp_verify_nonce( $_GET['dd4t3_nonce'], 'dd4t3_db_upgrade' ) // phpcs:ignore
+		) {
+			// Perform logs upgrade.
+			if ( Permission::has_access() ) {
+				// Get the action.
+				$action = 'upgrade' === $_GET['dd4t3_db_upgrade'] ? 'upgrade' : 'skip';
+				// Start upgrade.
+				$this->logs()->start( $action );
 			}
-
-			// No need to upgrade.
-			if ( ! $upgrader->should_upgrade() ) {
-				$this->mark_completed( $upgrader->get_id() );
-			}
-
-			// Upgrade now.
-			$this->upgrade( $upgrader );
-		}
-
-		// Is finished?.
-		if ( count( $this->get_completed() ) === count( $upgrades ) ) {
-			$this->finish();
 		}
 	}
 
 	/**
-	 * Run a single upgrade process now.
+	 * Get the logs upgrader instance.
 	 *
-	 * This will get the next batch of data from the upgrader
-	 * and set it to queue and start a background process.
+	 * Useful to check the upgrade progress.
 	 *
-	 * @param Upgrades\Upgrade $upgrader Upgrader instance.
+	 * @since 4.0.0
 	 *
-	 * @since  1.0.0
-	 * @access protected
-	 *
-	 * @return void
+	 * @return Upgrades\Logs
 	 */
-	private function upgrade( $upgrader ) {
-		// Get upgrade data.
-		$data = $upgrader->get_data();
-
-		// Upgrade data is empty, that means it's completed.
-		if ( empty( $data ) ) {
-			$this->mark_completed( $upgrader->get_id() );
-
-			return;
-		}
-
-		// Set data to queue.
-		$this->set_queue( $data );
-		// Save the queue.
-		$this->save( $upgrader->get_id() );
-
-		// Run now.
-		$this->dispatch();
-	}
-
-	/**
-	 * Get the available upgrade processes.
-	 *
-	 * All plugins should override this method and return the
-	 * upgrade processes.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 *
-	 * @return Upgrades\Upgrade[] Array of processes.
-	 */
-	private function get_upgrades() {
-		return array(
-			'v4_settings' => Upgrades\V4_Settings::instance(),
-			'v4_logs'     => Upgrades\V4_Logs::instance(),
-		);
-	}
-
-	/**
-	 * Get the available upgrade processes.
-	 *
-	 * All plugins should override this method and return the
-	 * upgrade processes.
-	 *
-	 * @param string $name Name of upgrader.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 *
-	 * @return Upgrades\Upgrade|bool Upgrader or false.
-	 */
-	private function get_upgrader( $name ) {
-		$upgrades = $this->get_upgrades();
-
-		return isset( $upgrades[ $name ] ) ? $upgrades[ $name ] : false;
-	}
-
-	/**
-	 * Finish all the upgrade processes.
-	 *
-	 * This is called when all the registered upgrade processes
-	 * are processed. You can use the action hook to run post-upgrade
-	 * actions in your plugin.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 *
-	 * @return void
-	 */
-	private function finish() {
-		// Delete the transient.
-		delete_site_transient( "{$this->identifier}_completed" );
-		delete_site_transient( "{$this->identifier}_started" );
-
-		/**
-		 * Action hook to run after all processed completed.
-		 *
-		 * This will be executed once all the items in the upgrade
-		 * queue is processed. Use this hook to mark the upgrade
-		 * as completed in your plugin.
-		 *
-		 * @param string $action Current action name.
-		 *
-		 * @since 1.0.0
-		 */
-		do_action( 'dd4t3_db_upgrade_finished', $this->action );
-	}
-
-	/**
-	 * Mark a process in current upgrade list as completed.
-	 *
-	 * Set a flag in cache so that we can skip it later.
-	 *
-	 * @param string $name Name of the upgrade.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 *
-	 * @return void
-	 */
-	private function mark_completed( $name ) {
-		$upgrader = $this->get_upgrader( $name );
-
-		if ( $upgrader ) {
-			$upgrader->upgrade_complete();
-		}
-
-		// Get the existing list.
-		$completed = $this->get_completed();
-
-		// Add current item.
-		$completed[] = $name;
-
-		// Update transient.
-		set_site_transient( "{$this->identifier}_completed", $completed );
+	public function logs() {
+		return $this->logs;
 	}
 }

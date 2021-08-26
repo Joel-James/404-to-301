@@ -21,7 +21,7 @@ defined( 'WPINC' ) || die;
 use DuckDev\Redirect\Utils\Base;
 
 /**
- * Class DB.
+ * Class Database.
  *
  * @since   4.0.0
  * @extends Base
@@ -30,31 +30,13 @@ use DuckDev\Redirect\Utils\Base;
 class Database extends Base {
 
 	/**
-	 * Logs table object.
+	 * Custom database tables.
 	 *
-	 * @var Tables\Logs
+	 * @var    array
 	 * @access private
 	 * @since  4.0.0
 	 */
-	private $logs;
-
-	/**
-	 * Options table object.
-	 *
-	 * @var Tables\Options
-	 * @access private
-	 * @since  4.0.0
-	 */
-	private $options;
-
-	/**
-	 * Redirects table object.
-	 *
-	 * @var Tables\Redirects
-	 * @access private
-	 * @since  4.0.0
-	 */
-	private $redirects;
+	private $tables;
 
 	/**
 	 * Initialize class and run install or upgrade.
@@ -66,16 +48,19 @@ class Database extends Base {
 	 * @access public
 	 */
 	protected function init() {
-		$this->logs      = new Tables\Logs();
-		$this->options   = new Tables\Options();
-		$this->redirects = new Tables\Redirects();
+		$this->tables = array(
+			'logs'      => new Tables\Logs(),
+			'redirects' => new Tables\Redirects(),
+		);
+
+		// Upgrader.
+		if ( is_admin() ) {
+			Upgrader::instance();
+		}
 	}
 
 	/**
-	 * Initialize class and run install or upgrade.
-	 *
-	 * This class will always be initialized and the db install
-	 * or upgrade will automatically happen.
+	 * Get the error logs database table class.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -83,29 +68,11 @@ class Database extends Base {
 	 * @return Tables\Logs
 	 */
 	public function logs() {
-		return $this->logs;
+		return $this->tables['logs'];
 	}
 
 	/**
-	 * Initialize class and run install or upgrade.
-	 *
-	 * This class will always be initialized and the db install
-	 * or upgrade will automatically happen.
-	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
-	 * @return Tables\Options
-	 */
-	public function options() {
-		return $this->options;
-	}
-
-	/**
-	 * Initialize class and run install or upgrade.
-	 *
-	 * This class will always be initialized and the db install
-	 * or upgrade will automatically happen.
+	 * Get the redirects' database table class.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -113,14 +80,28 @@ class Database extends Base {
 	 * @return Tables\Redirects
 	 */
 	public function redirects() {
-		return $this->redirects;
+		return $this->tables['redirects'];
+	}
+
+	/**
+	 * Get all table class objects.
+	 *
+	 * This is a getter method to access tables property.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return array
+	 */
+	public function tables() {
+		return $this->tables;
 	}
 
 	/**
 	 * Install database tables and data.
 	 *
-	 * Call this after checking DB::needs_install() to avoid
-	 * unnecessary issues with data.
+	 * Use this to manually check if all database tables
+	 * exists and if not, install.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -128,16 +109,10 @@ class Database extends Base {
 	 * @return void
 	 */
 	public function install() {
-		if ( ! $this->logs->exists() ) {
-			$this->logs->install();
-		}
-
-		if ( ! $this->options->exists() ) {
-			$this->options->install();
-		}
-
-		if ( ! $this->redirects->exists() ) {
-			$this->redirects->install();
+		foreach ( $this->tables as $table ) {
+			if ( ! $table->exists() ) {
+				$table->install();
+			}
 		}
 
 		/**
@@ -151,8 +126,8 @@ class Database extends Base {
 	/**
 	 * Upgrade database tables and data.
 	 *
-	 * Call this after checking DB::needs_upgrade() to avoid
-	 * unnecessary issues with data.
+	 * Use this to manually check if all database tables
+	 * needs upgrade and then upgrade.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -160,18 +135,20 @@ class Database extends Base {
 	 * @return void
 	 */
 	public function upgrade() {
-		if ( isset( $_GET['upgrade_db'] ) ) {
-			// Initialize upgrader.
-			Upgrader::get()->start();
+		foreach ( $this->tables as $table ) {
+			$table->maybe_upgrade();
 		}
+
+		/**
+		 * Action hook to run after db upgrade.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'dd4t3_db_after_upgrade' );
 	}
 
 	/**
-	 * Remove tables and settings from database.
-	 *
-	 * This will remove all database tables and plugin
-	 * settings from the db. To perform a reset, call this
-	 * and call install again.
+	 * Remove all database tables from db.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -179,16 +156,10 @@ class Database extends Base {
 	 * @return void
 	 */
 	public function uninstall() {
-		if ( $this->logs->exists() ) {
-			$this->logs->uninstall();
-		}
-
-		if ( $this->options->exists() ) {
-			$this->options->uninstall();
-		}
-
-		if ( $this->redirects->exists() ) {
-			$this->redirects->uninstall();
+		foreach ( $this->tables as $table ) {
+			if ( $table->exists() ) {
+				$table->uninstall();
+			}
 		}
 
 		/**
@@ -197,26 +168,5 @@ class Database extends Base {
 		 * @since 4.0.0
 		 */
 		do_action( 'dd4t3_db_after_uninstall' );
-	}
-
-	/**
-	 * Remove tables and settings from database.
-	 *
-	 * This will remove all database tables and plugin
-	 * settings from the db. To perform a reset, call this
-	 * and call install again.
-	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
-	 * @return void
-	 */
-	public function deactivate() {
-		/**
-		 * Action hook to run after db uninstall.
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( 'dd4t3_db_after_deactivate' );
 	}
 }

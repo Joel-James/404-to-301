@@ -72,7 +72,6 @@ final class Core extends Base {
 	 * @return void
 	 */
 	private function common() {
-		//Processes::instance();
 		Database::instance();
 		Settings::instance();
 	}

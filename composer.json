@@ -24,7 +24,6 @@
     "duckdev/wp-cache-helper": "^1.0",
     "duckdev/wp-query-builder": "^1.0",
     "duckdev/wp-queue-process": "^1.0.2",
-    "duckdev/wp-queue-upgrades": "^1.0",
     "berlindb/core": "^2.0"
   }
 }

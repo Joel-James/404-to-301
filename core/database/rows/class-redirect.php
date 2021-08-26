@@ -30,6 +30,15 @@ use BerlinDB\Database\Row;
 class Redirect extends Row {
 
 	/**
+	 * Global prefix used for tables/hooks/cache-groups/etc.
+	 *
+	 * @var    string
+	 * @access protected
+	 * @since  4.0.0
+	 */
+	protected $prefix = '404_to_301';
+
+	/**
 	 * Redirect item constructor.
 	 *
 	 * @param mixed $item Item data.
@@ -45,7 +54,8 @@ class Redirect extends Row {
 		$this->source      = (string) $this->source;
 		$this->destination = (string) $this->destination;
 		$this->code        = (int) $this->code;
-		$this->options     = (string) $this->options;
+		$this->type        = (string) $this->type;
+		$this->meta        = (string) $this->meta;
 		$this->status      = (string) $this->status;
 		$this->created_at  = strtotime( $this->created_at );
 		$this->updated_at  = strtotime( $this->updated_at );

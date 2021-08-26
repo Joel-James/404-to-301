@@ -28,6 +28,15 @@ use BerlinDB\Database\Schema;
 class Logs extends Schema {
 
 	/**
+	 * Global prefix used for tables/hooks/cache-groups/etc.
+	 *
+	 * @var    string
+	 * @access protected
+	 * @since  4.0.0
+	 */
+	protected $prefix = '404_to_301';
+
+	/**
 	 * Columns schema.
 	 *
 	 * @var   array
@@ -35,7 +44,7 @@ class Logs extends Schema {
 	 * @access public
 	 */
 	public $columns = array(
-		'id'         => array(
+		'id'              => array(
 			'name'     => 'id',
 			'type'     => 'bigint',
 			'length'   => '20',
@@ -44,14 +53,14 @@ class Logs extends Schema {
 			'primary'  => true,
 			'sortable' => true,
 		),
-		'url'        => array(
+		'url'             => array(
 			'name'       => 'url',
 			'type'       => 'mediumtext',
 			'unsigned'   => true,
 			'searchable' => true,
 			'sortable'   => true,
 		),
-		'referrer'   => array(
+		'referrer'        => array(
 			'name'       => 'referrer',
 			'type'       => 'varchar',
 			'length'     => '255',
@@ -59,7 +68,7 @@ class Logs extends Schema {
 			'searchable' => true,
 			'sortable'   => true,
 		),
-		'ip'         => array(
+		'ip'              => array(
 			'name'       => 'ip',
 			'type'       => 'varchar',
 			'length'     => '45',
@@ -67,7 +76,7 @@ class Logs extends Schema {
 			'searchable' => true,
 			'sortable'   => true,
 		),
-		'agent'      => array(
+		'agent'           => array(
 			'name'       => 'agent',
 			'type'       => 'varchar',
 			'length'     => '255',
@@ -75,7 +84,7 @@ class Logs extends Schema {
 			'searchable' => true,
 			'sortable'   => true,
 		),
-		'method'     => array(
+		'request_method'  => array(
 			'name'       => 'method',
 			'type'       => 'varchar',
 			'length'     => '10',
@@ -83,17 +92,65 @@ class Logs extends Schema {
 			'searchable' => true,
 			'sortable'   => true,
 		),
-		'request'    => array(
+		'request_data'    => array(
 			'name'       => 'request',
 			'type'       => 'mediumtext',
 			'unsigned'   => true,
 			'searchable' => false,
 			'sortable'   => false,
 		),
-		'created_at' => array(
+		'visits'          => array(
+			'name'     => 'visits',
+			'type'     => 'bigint',
+			'length'   => '20',
+			'unsigned' => true,
+			'sortable' => true,
+		),
+		'redirect_status' => array(
+			'name'       => 'redirect_status',
+			'type'       => 'enum',
+			'searchable' => true,
+			'sortable'   => true,
+		),
+		'log_status'      => array(
+			'name'       => 'log_status',
+			'type'       => 'enum',
+			'searchable' => true,
+			'sortable'   => true,
+		),
+		'email_status'    => array(
+			'name'       => 'email_status',
+			'type'       => 'enum',
+			'searchable' => true,
+			'sortable'   => true,
+		),
+		'meta'            => array(
+			'name'       => 'meta',
+			'type'       => 'mediumtext',
+			'unsigned'   => true,
+			'searchable' => false,
+			'sortable'   => false,
+		),
+		'created_at'      => array(
 			'name'       => 'created_at',
 			'type'       => 'datetime',
 			'date_query' => true,
+			'unsigned'   => true,
+			'searchable' => true,
+			'sortable'   => true,
+		),
+		'updated_at'      => array(
+			'name'       => 'updated_at',
+			'type'       => 'datetime',
+			'date_query' => true,
+			'unsigned'   => true,
+			'searchable' => true,
+			'sortable'   => true,
+		),
+		'updated_by'      => array(
+			'name'       => 'updated_by',
+			'type'       => 'bigint',
+			'length'     => '20',
 			'unsigned'   => true,
 			'searchable' => true,
 			'sortable'   => true,

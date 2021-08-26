@@ -25,7 +25,7 @@ use BerlinDB\Database\Table;
  * @extends Table
  * @package DuckDev\Redirect\Database\Tables
  */
-class Redirects extends Table {
+final class Redirects extends Table {
 
 	/**
 	 * Table name, without the global table prefix.
@@ -34,16 +34,16 @@ class Redirects extends Table {
 	 * @access public
 	 * @since  4.0.0
 	 */
-	public $name = '404_to_301_redirects';
+	public $name = 'redirects';
 
 	/**
-	 * Database version key (saved in _options or _sitemeta)
+	 * Global prefix used for tables/hooks/cache-groups/etc.
 	 *
 	 * @var    string
 	 * @access protected
 	 * @since  4.0.0
 	 */
-	protected $db_version_key = '404_to_301_redirects_version';
+	protected $prefix = '404_to_301';
 
 	/**
 	 * Optional description for table.
@@ -62,6 +62,15 @@ class Redirects extends Table {
 	 * @since  4.0.0
 	 */
 	protected $version = '1.0.0';
+
+	/**
+	 * Database version key (saved in _options or _sitemeta).
+	 *
+	 * @var    string
+	 * @access protected
+	 * @since  4.0.0
+	 */
+	protected $db_version_key = '404_to_301_redirects_version';
 
 	/**
 	 * Key => value array of versions => methods.
@@ -87,8 +96,9 @@ class Redirects extends Table {
 			source mediumtext NOT NULL,
 			destination mediumtext NOT NULL,
 			code int(11) unsigned DEFAULT '301',
-			options mediumtext DEFAULT NULL,
+			type enum('url') DEFAULT 'url',
 			status enum('enabled', 'disabled', 'ignored') DEFAULT 'enabled',
+			meta mediumtext DEFAULT NULL,
 			created_at datetime NOT NULL default CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT NULL,
 			created_by bigint(20) unsigned DEFAULT NULL,

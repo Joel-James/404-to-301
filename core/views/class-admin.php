@@ -20,6 +20,7 @@ defined( 'WPINC' ) || die;
 
 use DuckDev\Reviews\Notice;
 use DuckDev\Redirect\Plugin;
+use DuckDev\Redirect\Database\Upgrader;
 
 /**
  * Class Admin
@@ -83,18 +84,26 @@ class Admin extends View {
 	 * @return void
 	 */
 	public function upgrade_notice() {
-		$this->render(
-			'components/notices/notice',
-			array(
-				'type'    => 'info',
-				'content' => sprintf(
-				// translators: %s plugin name.
-					__( '<strong>%s</strong> is upgrading database in background.', '404-to-301' ),
-					Plugin::name()
+		if ( Upgrader::instance()->logs()->table_exists() ) {
+			$this->render(
+				'components/notices/upgrade-notice',
+				array(
+					'plugin'       => Plugin::name(),
+					'upgrading'    => Upgrader::instance()->logs()->is_upgrading(),
+					'upgrade_link' => wp_nonce_url(
+						add_query_arg( 'dd4t3_db_upgrade', 'upgrade' ),
+						'dd4t3_db_upgrade',
+						'dd4t3_nonce'
+					),
+					'skip_link'    => wp_nonce_url(
+						add_query_arg( 'dd4t3_db_upgrade', 'skip' ),
+						'dd4t3_db_upgrade',
+						'dd4t3_nonce'
+					),
 				),
-			),
-			false
-		);
+				false
+			);
+		}
 	}
 
 	/**

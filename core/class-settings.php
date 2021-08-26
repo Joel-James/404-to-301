@@ -192,7 +192,7 @@ class Settings extends Base {
 			$settings[ $module ][ $key ] = $value;
 
 			// Update the values.
-			return $this->update_module( $settings, $module );
+			return $this->update_module( $settings[ $module ], $module );
 		}
 
 		return false;
@@ -291,7 +291,7 @@ class Settings extends Base {
 				'recipient' => get_option( 'admin_email' ),
 			),
 			'misc'     => array(
-				'db_version' => 0,
+				'version' => 0,
 			),
 		);
 
@@ -322,8 +322,12 @@ class Settings extends Base {
 	 * @return array
 	 */
 	public function format_settings( array $new, array $old ) {
+		// Default settings.
+		$defaults = $this->default_settings();
+		wpmudev_debug($new);
+
 		// Only allow registered items.
-		foreach ( $old as $module => $options ) {
+		foreach ( $defaults as $module => $options ) {
 			// If the module is set.
 			if ( isset( $new[ $module ] ) && is_array( $new[ $module ] ) ) {
 				foreach ( $options as $key => $value ) {
@@ -427,7 +431,6 @@ class Settings extends Base {
 	 * @return array
 	 */
 	public function sanitize_settings( $values ) {
-		wpmudev_debug( $values );
 		// Should be a proper array.
 		$values = empty( $values ) || ! is_array( $values ) ? array() : $values;
 

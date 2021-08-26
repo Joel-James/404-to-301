@@ -28,6 +28,15 @@ use BerlinDB\Database\Schema;
 class Redirects extends Schema {
 
 	/**
+	 * Global prefix used for tables/hooks/cache-groups/etc.
+	 *
+	 * @var    string
+	 * @access protected
+	 * @since  4.0.0
+	 */
+	protected $prefix = '404_to_301';
+
+	/**
 	 * Columns schema.
 	 *
 	 * @var   array
@@ -63,8 +72,14 @@ class Redirects extends Schema {
 			'searchable' => true,
 			'sortable'   => true,
 		),
-		'options'     => array(
-			'name'       => 'options',
+		'type'        => array(
+			'name'       => 'type',
+			'type'       => 'enum',
+			'searchable' => true,
+			'sortable'   => true,
+		),
+		'meta'        => array(
+			'name'       => 'meta',
 			'type'       => 'mediumtext',
 			'date_query' => true,
 			'unsigned'   => true,

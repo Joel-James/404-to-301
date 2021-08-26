@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bee22de2925b6df4d6e35d6b121d467a",
+    "content-hash": "5c5e85b52ea6f542527249773e6c89c9",
     "packages": [
         {
             "name": "berlindb/core",
@@ -177,54 +177,6 @@
                 "source": "https://github.com/duckdev/wp-queue-process/tree/v1.0.2"
             },
             "time": "2021-08-02T07:33:23+00:00"
-        },
-        {
-            "name": "duckdev/wp-queue-upgrades",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/duckdev/wp-queue-upgrades.git",
-                "reference": "308c439660dc27b62d1654e165329b4fa161c35a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/duckdev/wp-queue-upgrades/zipball/308c439660dc27b62d1654e165329b4fa161c35a",
-                "reference": "308c439660dc27b62d1654e165329b4fa161c35a",
-                "shasum": ""
-            },
-            "require": {
-                "duckdev/wp-queue-process": "^1.0.2",
-                "php": ">=5.6"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "DuckDev\\Upgrades\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Joel James",
-                    "email": "me@joelsays.com",
-                    "homepage": "https://duckdev.com"
-                }
-            ],
-            "description": " Upgrade WordPress plugin data in using background process. ",
-            "keywords": [
-                "queue",
-                "upgrades",
-                "wordpress",
-                "wordpress-plugin"
-            ],
-            "support": {
-                "issues": "https://github.com/duckdev/wp-queue-upgrades/issues/",
-                "source": "https://github.com/duckdev/wp-queue-upgrades/tree/v1.0.1"
-            },
-            "time": "2021-08-04T13:57:20+00:00"
         },
         {
             "name": "duckdev/wp-review-notice",

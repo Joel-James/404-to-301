@@ -30,6 +30,15 @@ use BerlinDB\Database\Row;
 class Log extends Row {
 
 	/**
+	 * Global prefix used for tables/hooks/cache-groups/etc.
+	 *
+	 * @var    string
+	 * @access protected
+	 * @since  4.0.0
+	 */
+	protected $prefix = '404_to_301';
+
+	/**
 	 * Log item constructor.
 	 *
 	 * @param mixed $item Item data.
@@ -41,13 +50,20 @@ class Log extends Row {
 		parent::__construct( $item );
 
 		// Set the type of each column, and prepare.
-		$this->id         = (int) $this->id;
-		$this->url        = (string) $this->url;
-		$this->referrer   = (string) $this->referrer;
-		$this->ip         = (string) $this->ip;
-		$this->agent      = (string) $this->agent;
-		$this->method     = (string) $this->method;
-		$this->request    = (array) $this->request;
-		$this->created_at = strtotime( $this->created_at );
+		$this->id              = (int) $this->id;
+		$this->url             = (string) $this->url;
+		$this->referrer        = (string) $this->referrer;
+		$this->ip              = (string) $this->ip;
+		$this->agent           = (string) $this->agent;
+		$this->request_method  = (string) $this->request_method;
+		$this->request_data    = (string) $this->request_data;
+		$this->visits          = (string) $this->visits;
+		$this->redirect_status = (string) $this->redirect_status;
+		$this->log_status      = (string) $this->log_status;
+		$this->email_status    = (string) $this->email_status;
+		$this->meta            = (string) $this->meta;
+		$this->created_at      = strtotime( $this->created_at );
+		$this->updated_at      = strtotime( $this->updated_at );
+		$this->updated_by      = (int) $this->updated_by;
 	}
 }
