@@ -17,7 +17,8 @@
 ?>
 
 <div class="wrap">
-	<h1 class="wp-heading-inline">404 Logs</h1>
+	<h1 class="wp-heading-inline">Redirects</h1>
+	<a href="" class="page-title-action">Add New</a>
 	<hr class="wp-header-end">
 
 	<div class="duckdev-notice-wrap">
@@ -36,7 +37,8 @@
 	<h2 class="screen-reader-text">Filter posts list</h2>
 	<ul class="subsubsub">
 		<li class="all"><a href="">All <span class="count">(7)</span></a> |</li>
-		<li class="publish"><a href="">Redirects <span class="count">(7)</span></a></li>
+		<li class="publish"><a href="">Disabled <span class="count">(2)</span></a></li>
+		<li class="publish"><a href="">Ignored <span class="count">(1)</span></a></li>
 	</ul>
 	<form id="posts-filter" method="get">
 

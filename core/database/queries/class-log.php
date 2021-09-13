@@ -18,8 +18,6 @@ namespace DuckDev\Redirect\Database\Queries;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use BerlinDB\Database\Query;
-
 /**
  * Class Log.
  *

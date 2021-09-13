@@ -25,6 +25,23 @@ use BerlinDB\Database\Row;
  *
  * @since   4.0.0
  * @extends Row
+ *
+ * @property int    $id              ID of the log.
+ * @property string $url             404 URL path.
+ * @property string $referrer        Referral link.
+ * @property string $ip              IP address.
+ * @property string $agent           User agent.
+ * @property string $request_method  Request method.
+ * @property array  $request_data    Request data.
+ * @property int    $visits          No. of visits.
+ * @property string $redirect_status Redirect status.
+ * @property string $log_status      Log status.
+ * @property string $email_status    Email status.
+ * @property array  $meta            Meta data.
+ * @property string $created_at      Created time.
+ * @property string $updated_at      Updated time.
+ * @property int    $updated_by      Updated user id.
+ *
  * @package DuckDev\Redirect\Database\Rows
  */
 class Log extends Row {
@@ -56,12 +73,12 @@ class Log extends Row {
 		$this->ip              = (string) $this->ip;
 		$this->agent           = (string) $this->agent;
 		$this->request_method  = (string) $this->request_method;
-		$this->request_data    = (string) $this->request_data;
-		$this->visits          = (string) $this->visits;
+		$this->request_data    = maybe_unserialize( $this->request_data );
+		$this->visits          = (int) $this->visits;
 		$this->redirect_status = (string) $this->redirect_status;
 		$this->log_status      = (string) $this->log_status;
 		$this->email_status    = (string) $this->email_status;
-		$this->meta            = (string) $this->meta;
+		$this->meta            = maybe_unserialize( $this->meta );
 		$this->created_at      = strtotime( $this->created_at );
 		$this->updated_at      = strtotime( $this->updated_at );
 		$this->updated_by      = (int) $this->updated_by;

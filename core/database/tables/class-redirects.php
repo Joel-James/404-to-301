@@ -96,7 +96,7 @@ final class Redirects extends Table {
 			source mediumtext NOT NULL,
 			destination mediumtext NOT NULL,
 			code int(11) unsigned DEFAULT '301',
-			type enum('url') DEFAULT 'url',
+			type enum('url', '404') DEFAULT 'url',
 			status enum('enabled', 'disabled', 'ignored') DEFAULT 'enabled',
 			meta mediumtext DEFAULT NULL,
 			created_at datetime NOT NULL default CURRENT_TIMESTAMP,

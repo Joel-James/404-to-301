@@ -47,6 +47,23 @@ class Redirects extends Model {
 	}
 
 	/**
+	 * Get a log by path.
+	 *
+	 * @param string $path Source path.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return object|false Redirect object if successful, false otherwise.
+	 */
+	public function get_by_source( $path ) {
+		$redirects = new Database\Queries\Redirect();
+
+		// Return redirect.
+		return $redirects->get_item_by( 'source', $path );
+	}
+
+	/**
 	 * Get redirects list.
 	 *
 	 * Return the redirect data from using the ID.
@@ -58,7 +75,7 @@ class Redirects extends Model {
 	 *
 	 * @return array
 	 */
-	public function get_logs( array $args = array() ) {
+	public function get_redirects( array $args = array() ) {
 		// Parse args.
 		$args = wp_parse_args(
 			$args,

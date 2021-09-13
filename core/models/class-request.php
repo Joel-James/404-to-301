@@ -13,7 +13,7 @@
  * @subpackage Menu
  */
 
-namespace DuckDev\Redirect\Front;
+namespace DuckDev\Redirect\Models;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -81,6 +81,15 @@ class Request {
 	private $headers = array();
 
 	/**
+	 * Get current request details.
+	 *
+	 * @var array $request
+	 *
+	 * @since 4.0
+	 */
+	private $others = array();
+
+	/**
 	 * Get current request's custom config.
 	 *
 	 * @var array $headers
@@ -104,6 +113,7 @@ class Request {
 		$this->set_config();
 		$this->set_referer();
 		$this->set_headers();
+		$this->set_others();
 	}
 
 	/**
@@ -196,6 +206,20 @@ class Request {
 	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
+	 * @since  4.0
+	 *
+	 * @return array
+	 */
+	public function get_others() {
+		return $this->others;
+	}
+
+	/**
+	 * Get available redirect types.
+	 *
+	 * Use `dd4t3_redirect_types` filter to add
+	 * new redirect type.
+	 *
 	 * @param string $name    Name of the config.
 	 * @param bool   $default Default value.
 	 *
@@ -261,7 +285,7 @@ class Request {
 	 * @return void
 	 */
 	private function set_method() {
-		$method = '';
+		$method = 'GET';
 
 		if ( isset( $_SERVER['REQUEST_METHOD'] ) ) {
 			$method = $_SERVER['REQUEST_METHOD']; // phpcs:ignore
@@ -324,7 +348,7 @@ class Request {
 		$agent = '';
 
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-			$referrer = $_SERVER['HTTP_USER_AGENT']; // phpcs:ignore
+			$agent = $_SERVER['HTTP_USER_AGENT']; // phpcs:ignore
 		}
 
 		/**
@@ -457,6 +481,34 @@ class Request {
 		 * @since 4.0
 		 */
 		$this->headers = apply_filters( 'dd4t3_request_headers', $headers );
+	}
+
+	/**
+	 * Get available redirect types.
+	 *
+	 * Use `dd4t3_redirect_types` filter to add
+	 * new redirect type.
+	 *
+	 * @since  4.0
+	 *
+	 * @return void
+	 */
+	private function set_others() {
+		$others = array(
+			'protocol' => is_ssl() ? 'https' : 'http',
+		);
+
+		/**
+		 * Filter hook to add add or remove redirect types.
+		 *
+		 * Other plugins can use this filter to add new redirect
+		 * types to 404 to 301.
+		 *
+		 * @param array $types Redirect types.
+		 *
+		 * @since 4.0
+		 */
+		$this->others = apply_filters( 'dd4t3_request_others', $others );
 	}
 
 	/**

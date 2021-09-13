@@ -1,29 +1,33 @@
 <?php
 /**
- * The plugin menu controller class.
+ * The error redirection class.
  *
- * This class handles the admin menu functionality for the plugin.
+ * This class will handle the redirection for 404s.
  *
+ * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    Controller
- * @subpackage Menu
+ * @package    Actions
+ * @subpackage Redirect
  */
 
-namespace DuckDev\Redirect\Front\Actions;
+namespace DuckDev\Redirect\Actions\Redirect;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Front\Request;
+use DuckDev\Redirect\Data;
+use DuckDev\Redirect\Actions\Action;
+use DuckDev\Redirect\Models\Request;
 
 /**
- * Class Menu
+ * Class Redirect
  *
- * @package DuckDev\Redirect
+ * @extends Action
  * @since   4.0.0
+ * @package DuckDev\Redirect
  */
 class Redirect extends Action {
 
@@ -31,8 +35,8 @@ class Redirect extends Action {
 	 * Action type - email.
 	 *
 	 * @var string $action
-	 *
-	 * @since 4.0
+	 * @access protected
+	 * @since  4.0
 	 */
 	protected $action = 'redirect';
 
@@ -42,11 +46,11 @@ class Redirect extends Action {
 	 * Use `dd4t3_redirect_types` filter to add
 	 * new redirect type.
 	 *
-	 * @since  4.0
+	 * @since  4.0.0
 	 *
 	 * @return void
 	 */
-	public function run() {
+	public function process() {
 		/**
 		 * Action hook to execute before performing redirect.
 		 *
@@ -96,19 +100,19 @@ class Redirect extends Action {
 			$link = apply_filters( 'dd4t3_redirect_default_link', home_url() );
 
 			// Get global target.
-			$target = dd4t3_settings()->get( 'target', 'redirect' );
+			$target = dd4t3_settings()->get( 'redirect_target' );
 
 			// If target is a page.
 			if ( 'page' === $target ) {
 				// Target page ID.
-				$page = dd4t3_settings()->get( 'page', 'redirect' );
+				$page = dd4t3_settings()->get( 'redirect_page' );
 				// Only consider if it's published page/post.
 				if ( ! empty( $page ) && 'publish' === get_post_status( $page ) ) {
 					$link = get_permalink( $page );
 				}
 			} else {
 				// Get link target.
-				$link = dd4t3_settings()->get( 'link', 'redirect', $link );
+				$link = dd4t3_settings()->get( 'redirect_link', $link );
 			}
 		}
 
@@ -143,11 +147,7 @@ class Redirect extends Action {
 		// If custom target is not set.
 		if ( empty( $type ) ) {
 			// Get global target.
-			$type = dd4t3_settings()->get(
-				'type',
-				'redirect',
-				301
-			);
+			$type = dd4t3_settings()->get( 'redirect_type', 301 );
 		}
 
 		/**
@@ -163,38 +163,6 @@ class Redirect extends Action {
 		 */
 		$type = apply_filters( 'dd4t3_redirect_redirect_type', $type, $this->request );
 
-		return in_array( $type, array_keys( self::types() ), true ) ? $type : 301;
-	}
-
-	/**
-	 * Get available redirect types.
-	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
-	 *
-	 * @since  4.0
-	 *
-	 * @return array
-	 */
-	public static function types() {
-		// Sub page.
-		$types = array(
-			301 => __( '301', '404-to-301' ),
-			302 => __( '302', '404-to-301' ),
-			307 => __( '307', '404-to-301' ),
-			404 => __( '404', '404-to-301' ),
-		);
-
-		/**
-		 * Filter hook to add add or remove redirect types.
-		 *
-		 * Other plugins can use this filter to add new redirect
-		 * types to 404 to 301.
-		 *
-		 * @param array $types Redirect types.
-		 *
-		 * @since 4.0
-		 */
-		return apply_filters( 'dd4t3_redirect_types', $types );
+		return in_array( $type, array_keys( Data::redirect_types() ), true ) ? $type : 301;
 	}
 }

@@ -53,6 +53,22 @@
 
 <hr/>
 
+<h4><?php esc_html_e( 'GDPR & Privacy', '404-to-301' ); ?></h4>
+<p><?php esc_html_e( 'To respect visitor\'s privacy and comply with GDPR policies, you may disable a few functionalities of the plugin.', '404-to-301' ); ?></p>
+<div class="duckdev-fields">
+	<label for="logs-ip-logging">
+		<input
+			type="checkbox"
+			name="404_to_301_settings[ip_logging]"
+			id="logs-ip-logging"
+			value="1"
+			<?php checked( dd4t3_settings()->get( 'ip_logging' ) ); ?>
+		> <?php esc_html_e( 'Do not log visitor\'s IP address', '404-to-301' ); ?>
+	</label>
+</div>
+
+<hr/>
+
 <h4><?php esc_html_e( 'Exclusions', '404-to-301' ); ?></h4>
 <p>
 	<?php

@@ -188,6 +188,7 @@ class Settings extends Base {
 			'disable_guessing'     => true,
 			'monitor_changes'      => false,
 			'exclude_paths'        => array(),
+			'ip_logging'           => true,
 			// Redirects.
 			'redirect_enabled'     => true,
 			'redirect_type'        => '301',

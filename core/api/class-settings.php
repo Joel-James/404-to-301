@@ -21,7 +21,6 @@ defined( 'WPINC' ) || die;
 use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
-use DuckDev\Redirect\Utils\Endpoint;
 
 /**
  * Class Settings

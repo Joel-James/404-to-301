@@ -49,4 +49,20 @@ abstract class Model extends Base {
 
 		return empty( $log ) ? false : $log;
 	}
+
+	/**
+	 * Set query arguments in supported format.
+	 *
+	 * @param array $raw_args Arguments.
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected function format_args( array $raw_args ) {
+		$args = array();
+
+		return $args;
+	}
 }

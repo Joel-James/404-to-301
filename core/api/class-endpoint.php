@@ -1,20 +1,17 @@
 <?php
 /**
- * Singleton class for all classes.
- *
- * Extend this class whenever possible to avoid multiple instances
- * of the same classes being created.
+ * API endpoint base class.
  *
  * @since      4.0.0
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * @copyright  Copyright (c) 2020, Joel James
+ * @copyright  Copyright (c) 2021, Joel James
  * @link       https://duckdev.com/products/404-to-301/
- * @package    Core
+ * @package    API
  * @subpackage Endpoint
  */
 
-namespace DuckDev\Redirect\Utils;
+namespace DuckDev\Redirect\Api;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -27,10 +24,9 @@ use DuckDev\Redirect\Permission;
  * Class Endpoint
  *
  * @since   4.0.0
- * @extends Base
- * @package DuckDev\Redirect\Abstracts
+ * @package DuckDev\Redirect\Api
  */
-abstract class Endpoint extends Base {
+abstract class Endpoint {
 
 	/**
 	 * API endpoint version.
@@ -69,7 +65,7 @@ abstract class Endpoint extends Base {
 	 *
 	 * @return void
 	 */
-	public function init() {
+	public function __construct() {
 		// Setup namespace of the endpoint.
 		$this->namespace = $this->base . '/v' . $this->version;
 
@@ -190,5 +186,28 @@ abstract class Endpoint extends Base {
 		 * @since 4.0.0
 		 */
 		return apply_filters( '404_to_301_rest_is_logged_in', $capable, $request );
+	}
+
+	/**
+	 * Retrieves a parameter from the request.
+	 *
+	 * Alias method to get default value if not set.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @param string          $key     Parameter name.
+	 * @param mixed           $default Default value.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @return mixed|null Value if set, null otherwise.
+	 */
+	protected function get_param( $request, $key, $default = null ) {
+		$value = $request->get_param( $key );
+
+		if ( null === $value ) {
+			$value = $default;
+		}
+
+		return $value;
 	}
 }

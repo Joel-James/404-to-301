@@ -25,6 +25,19 @@ use BerlinDB\Database\Row;
  *
  * @since   4.0.0
  * @extends Row
+ *
+ * @property int    $id          ID of the redirect.
+ * @property string $source      Source path.
+ * @property string $destination Destination link.
+ * @property int    $code        Redirect code.
+ * @property string $type        Redirect type.
+ * @property string $status      Redirect status.
+ * @property array  $meta        Meta data.
+ * @property string $created_at  Created time.
+ * @property string $updated_at  Updated time.
+ * @property int    $created_by  Created user id.
+ * @property int    $updated_by  Updated user id.
+ *
  * @package DuckDev\Redirect\Database\Rows
  */
 class Redirect extends Row {

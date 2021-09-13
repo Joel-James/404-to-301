@@ -99,6 +99,7 @@ class Logs extends Schema {
 			'type'       => 'mediumtext',
 			'default'    => null,
 			'allow_null' => true,
+			'validate'   => 'maybe_serialize',
 		),
 		'visits'          => array(
 			'name'     => 'visits',
@@ -106,7 +107,7 @@ class Logs extends Schema {
 			'length'   => '20',
 			'unsigned' => true,
 			'sortable' => true,
-			'default'  => '1',
+			'default'  => 1,
 		),
 		'redirect_status' => array(
 			'name'       => 'redirect_status',
@@ -131,6 +132,7 @@ class Logs extends Schema {
 			'type'       => 'mediumtext',
 			'default'    => null,
 			'allow_null' => true,
+			'validate'   => 'maybe_serialize',
 		),
 		'created_at'      => array(
 			'name'       => 'created_at',

@@ -1,6 +1,6 @@
 <?php
 /**
- * The log query class.
+ * The redirect query class.
  *
  * This class will help to make database queries.
  *
@@ -17,8 +17,6 @@ namespace DuckDev\Redirect\Database\Queries;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
-
-use BerlinDB\Database\Query;
 
 /**
  * Class Redirect.

@@ -47,6 +47,23 @@ class Logs extends Model {
 	}
 
 	/**
+	 * Get a log by url.
+	 *
+	 * @param string $url 404 url.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return object|false Log object if successful, false otherwise.
+	 */
+	public function get_by_url( $url ) {
+		$logs = new Database\Queries\Log();
+
+		// Return log.
+		return $logs->get_item_by( 'url', $url );
+	}
+
+	/**
 	 * Get error logs.
 	 *
 	 * Return the log data from using the ID.

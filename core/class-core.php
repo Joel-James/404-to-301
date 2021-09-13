@@ -109,10 +109,7 @@ final class Core extends Base {
 	 */
 	private function front() {
 		if ( ! is_admin() ) {
-			Front\Main::instance();
-			//Front\Actions\Log::instance();
-			//Front\Actions\Email::instance();
-			//Front\Actions\Redirect::instance();
+			Front::instance();
 		}
 	}
 
@@ -128,7 +125,9 @@ final class Core extends Base {
 	 * @return void
 	 */
 	private function api() {
-		Api\Settings::instance();
+		new Api\Logs();
+		new Api\Redirects();
+		new Api\Settings();
 	}
 
 	/**
