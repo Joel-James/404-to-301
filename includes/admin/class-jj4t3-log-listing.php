@@ -763,7 +763,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return void|boolean
 	 */
 	private function process_actions() {
-
 		// Get current action.
 		$action = $this->current_action();
 
@@ -772,6 +771,13 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 
 		// Verify only allowed actions are passed.
 		if ( ! in_array( $action, $allowed_actions ) && 'delete' !== $action ) {
+			return false;
+		}
+
+		$nonce = jj4t3_from_request( '_wpnonce' );
+
+		// Nonce verification.
+		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'bulk-404errorlogs' ) ) {
 			return false;
 		}
 
@@ -808,18 +814,17 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return void
 	 */
 	private function safe_redirect( $action_performed = false ) {
-
 		// If sensitive data found, remove those and redirect.
-		if ( ! empty( $_GET['_wp_http_referer'] ) || ! empty( $_GET['_wpnonce'] ) ) {
-			// Redirect to current page.
-			wp_redirect( remove_query_arg( array( '_wp_http_referer', '_wpnonce' ), wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
-			exit();
-		}
-
-		// If bulk actions performed, redirect.
-		if ( $action_performed === true ) {
-			// Redirect to current page.
-			wp_redirect( remove_query_arg( array( 'action', 'action2' ), wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+		if ( ! empty( $_GET['_wp_http_referer'] ) || ! empty( $_GET['_wpnonce'] ) || $action_performed ) {
+			$strings = array( '_wp_http_referer', '_wpnonce' );
+			// Remove processed actions.
+			if ( $action_performed ) {
+				$strings[] = 'action';
+				$strings[] = 'action2';
+			}
+			// Remove params.
+			$url = remove_query_arg( $strings );
+			wp_redirect( $url );
 			exit();
 		}
 	}
@@ -840,7 +845,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return void
 	 */
 	private function delete_logs( $ids, $action ) {
-
 		global $wpdb;
 
 		if ( is_numeric( $ids ) && 'delete' === $action ) {
