@@ -319,13 +319,13 @@ class Settings extends View {
 	 */
 	public function get_current_tab( $default = 'redirect' ) {
 		// Get tab value.
-		$tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
+		$tab = $this->get_param( 'tab', $default );
 
 		// Get allowed tabs.
 		$tabs = array_keys( $this->get_settings_tabs() );
 
 		// Make sure it's not empty.
-		$tab = empty( $tab ) || ! in_array( $tab, $tabs, true ) ? $default : $tab;
+		$tab = ! in_array( $tab, $tabs, true ) ? $default : $tab;
 
 		/**
 		 * Filter to modify active tabs logic.

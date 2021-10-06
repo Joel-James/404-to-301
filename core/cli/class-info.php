@@ -73,7 +73,7 @@ class Info extends Command {
 		$info = array(
 			'name'    => Plugin::name(),
 			'slug'    => Plugin::slug(),
-			'version' => DD4T3_VERSION,
+			'version' => Plugin::version(),
 			'screens' => array_values( Plugin::screens() ),
 		);
 

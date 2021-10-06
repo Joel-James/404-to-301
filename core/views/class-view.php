@@ -36,17 +36,16 @@ class View extends Base {
 	 * This will look for the template file inside
 	 * /app/templates/{file}.php
 	 *
-	 * @param string $file   File path.
-	 * @param array  $args   Arguments.
-	 * @param bool   $once   Should include once.
-	 * @param bool   $return Return content.
+	 * @param string $file File path.
+	 * @param array  $args Arguments.
+	 * @param bool   $once Should include once.
 	 *
 	 * @since  4.0.0
 	 * @access public
 	 *
 	 * @return void
 	 */
-	public function render( $file, array $args = array(), $once = true, $return = false ) {
+	public function render( $file, array $args = array(), $once = false ) {
 		// Full path to the file.
 		$path = DD4T3_DIR . "/app/templates/{$file}.php";
 
@@ -86,5 +85,37 @@ class View extends Base {
 		$this->render( $file, $args, $once );
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Get a parameter from the current URL.
+	 *
+	 * @param string $name    Name of param.
+	 * @param string $default Default value.
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected function get_param( $name, $default = '' ) {
+		// Get param value.
+		$value = filter_input( INPUT_GET, $name, FILTER_SANITIZE_STRING );
+
+		// If not exist or fails, use default value.
+		if ( is_null( $value ) || false === $value ) {
+			$value = $default;
+		}
+
+		/**
+		 * Filter to modify url param.
+		 *
+		 * @param mixed  $value   Value.
+		 * @param string $name    Name of param.
+		 * @param string $default Default value.
+		 *
+		 * @since 4.0.0
+		 */
+		return apply_filters( 'dd4t3_view_get_param', $value );
 	}
 }

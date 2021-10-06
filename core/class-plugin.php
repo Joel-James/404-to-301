@@ -91,6 +91,20 @@ class Plugin {
 	}
 
 	/**
+	 * Get the plugin version number.
+	 *
+	 * You can also use DD4T3_VERSION constant value directly.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return string
+	 */
+	public static function version() {
+		return DD4T3_VERSION;
+	}
+
+	/**
 	 * Get the plugin name admin screens.
 	 *
 	 * @since  4.0.0

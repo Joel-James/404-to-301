@@ -158,7 +158,7 @@ abstract class Endpoint {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd4t3_rest_has_access', $capable, $request );
+		return apply_filters( 'dd4t3_rest_has_access', true, $request );
 	}
 
 	/**
