@@ -15,21 +15,21 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * This class defines all the methods to output the error logs display table using
  * WordPress listing table class.
  *
- * @category   Core
- * @package    JJ4T3
- * @subpackage ErrorLogListing
  * @author     Joel James <mail@cjoel.com>
  * @license    http://www.gnu.org/licenses/ GNU General Public License
+ * @category   Core
  * @link       https://duckdev.com/products/404-to-301/
+ * @package    JJ4T3
+ * @subpackage ErrorLogListing
  */
 class JJ4T3_Log_Listing extends WP_List_Table {
 
 	/**
 	 * Group by column name.
 	 *
+	 * @var    string
 	 * @since  3.0.0
 	 * @access private
-	 * @var    string
 	 */
 	private $group_by = '';
 
@@ -44,8 +44,8 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		parent::__construct(
 			array(
 				'singular' => __( '404 Error Log', '404-to-301' ),
-				'plural' => __( '404 Error Logs', '404-to-301' ),
-				'ajax' => false,
+				'plural'   => __( '404 Error Logs', '404-to-301' ),
+				'ajax'     => false,
 			)
 		);
 	}
@@ -61,9 +61,9 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * $this->items - Push our custom log data to the listing table.
 	 * Registering filter - "jj4t3_logs_list_per_page".
 	 *
-	 * @global object $wpdb WP DB object
 	 * @since  2.0.0
 	 * @access public
+	 * @global object $wpdb WP DB object
 	 */
 	public function prepare_items() {
 
@@ -98,7 +98,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		$this->set_pagination_args(
 			array(
 				'total_items' => $total_items,
-				'per_page' => $per_page,
+				'per_page'    => $per_page,
 			)
 		);
 
@@ -113,13 +113,13 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * Apply all filtering, sorting and paginations.
 	 * Registering filter - "jj4t3_logs_list_result".
 	 *
-	 * @param int $per_page Logs per page.
-	 * @param int $page_number Current page number.
+	 * @param int     $per_page    Logs per page.
+	 * @param int     $page_number Current page number.
 	 *
-	 * @global object $wpdb WP DB object
 	 * @since  3.0.0
 	 * @access public
 	 *
+	 * @global object $wpdb        WP DB object
 	 * @return array
 	 */
 	private function get_error_logs( $per_page = 20, $page_number = 1 ) {
@@ -284,10 +284,10 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * listing, we need to get count of total items for proper pagination.
 	 * Registering filter - "jj4t3_log_list_count".
 	 *
-	 * @global object $wpdb WP DB object
 	 * @since  2.0.3
 	 * @access private
 	 *
+	 * @global object $wpdb WP DB object
 	 * @return int Total count.
 	 */
 	private function total_logs() {
@@ -324,13 +324,13 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	public function get_columns() {
 
 		$columns = array(
-			'cb' => '<input type="checkbox" style="width: 5%;" />',
-			'date' => __( 'Date', '404-to-301' ),
-			'url' => __( '404 Path', '404-to-301' ),
-			'ref' => __( 'From', '404-to-301' ),
-			'ip' => __( 'IP Address', '404-to-301' ),
-			'ua' => __( 'User Agent', '404-to-301' ),
-			'redirect' => __( 'Customization', '404-to-301' )
+			'cb'       => '<input type="checkbox" style="width: 5%;" />',
+			'date'     => __( 'Date', '404-to-301' ),
+			'url'      => __( '404 Path', '404-to-301' ),
+			'ref'      => __( 'From', '404-to-301' ),
+			'ip'       => __( 'IP Address', '404-to-301' ),
+			'ua'       => __( 'User Agent', '404-to-301' ),
+			'redirect' => __( 'Customization', '404-to-301' ),
 		);
 
 		/**
@@ -360,15 +360,15 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 
 		$columns = array(
 			'date' => array( 'date', true ),
-			'url' => array( 'url', false ),
-			'ref' => array( 'ref', false ),
-			'ip' => array( 'ip', false )
+			'url'  => array( 'url', false ),
+			'ref'  => array( 'ref', false ),
+			'ip'   => array( 'ip', false ),
 		);
 
 		/**
 		 * Filter hook to change column titles.
 		 *
-		 * @note DO NOT add extra columns.
+		 * @note  DO NOT add extra columns.
 		 *
 		 * @since 3.0.0
 		 */
@@ -404,7 +404,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * for switch, printing the whole array.
 	 * Registering filter - "jj4t3_log_list_column_default".
 	 *
-	 * @param array $item Column data
+	 * @param array  $item        Column data
 	 * @param string $column_name Column name
 	 *
 	 * @since  2.0.0
@@ -419,7 +419,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		/**
 		 * Filter hook to change column names.
 		 *
-		 * @note DO NOT add extra columns.
+		 * @note  DO NOT add extra columns.
 		 *
 		 * @since 3.0.0
 		 */
@@ -693,15 +693,15 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	public function get_bulk_actions() {
 
 		$actions = array(
-			'bulk_delete' => __( 'Delete Selected', '404-to-301' ),
-			'bulk_clean' => __( 'Delete All', '404-to-301' ),
+			'bulk_delete'     => __( 'Delete Selected', '404-to-301' ),
+			'bulk_clean'      => __( 'Delete All', '404-to-301' ),
 			'bulk_delete_all' => __( 'Delete All (Keep redirects)', '404-to-301' ),
 		);
 
 		/**
 		 * Filter hook to change actions.
 		 *
-		 * @note If you are adding extra actions
+		 * @note  If you are adding extra actions
 		 *    Make sure it's actions are properly added.
 		 *
 		 * @since 3.0.0
@@ -734,7 +734,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 			echo '<select name="group_by_top" class="404_group_by">';
 			echo '<option value="">' . __( 'Group by', '404-to-301' ) . '</option>';
 			foreach ( $column_names as $column ) {
-				echo '<option value="' . $column . '" ' . selected( $column, $this->group_by ) . '>' . $available_columns[ $column ] . '</option>';
+				echo '<option value="' . $column . '" ' . selected( $column, $this->group_by ) . '>' . esc_attr( $available_columns[ $column ] ) . '</option>';
 			}
 			echo '</select>';
 			submit_button( __( 'Apply', '404-to-301' ), 'button', 'filter_action', false, array( 'id' => 'post-query' ) );
@@ -743,7 +743,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 			/**
 			 * Action hook to add extra items in actions area.
 			 *
-			 * @param object $this Class instance.
+			 * @param object $this  Class instance.
 			 * @param string $which Current location (top or bottom).
 			 */
 			do_action( 'jj4t3_log_list_extra_tablenav', $this, $which );
@@ -836,7 +836,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * the user selection. We are using IF ELSE loop instead of
 	 * switch to easily handle conditions.
 	 *
-	 * @param mixed $ids ID(s) of the log(s).
+	 * @param mixed  $ids    ID(s) of the log(s).
 	 * @param string $action Current bulk action.
 	 *
 	 * @since  2.0.0
@@ -852,7 +852,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 			$query = "DELETE FROM " . JJ4T3_TABLE . " WHERE id = " . absint( $ids );
 		} elseif ( is_array( $ids ) && 'bulk_delete' === $action ) {
 			// If multiple selected logs are being deleted.
-			$ids = implode( ',', array_map( 'absint', $ids ) );
+			$ids   = implode( ',', array_map( 'absint', $ids ) );
 			$query = "DELETE FROM " . JJ4T3_TABLE . " WHERE id IN($ids)";
 		} elseif ( 'bulk_delete_all' === $action ) {
 			// If deleting all logs except custom redirected ones.
@@ -875,7 +875,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 *
 	 * @param string $status Status.
 	 * @param string $option Option name.
-	 * @param mixed $value Value of the option.
+	 * @param mixed  $value  Value of the option.
 	 *
 	 * @since  2.1.0
 	 * @access public
@@ -890,10 +890,10 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	/**
 	 * Get custom redirect modal content
 	 *
-	 * @global object $wpdb WP DB object
 	 * @since  2.2.0
 	 * @access public
 	 *
+	 * @global object $wpdb WP DB object
 	 * @return void
 	 */
 	public static function open_redirect() {
@@ -911,30 +911,30 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 			wp_die();
 		}
 
-		$url_404 = $_POST['url_404'];
+		$url_404 = esc_url_raw( $_POST['url_404'] );
 
 		global $wpdb;
 
 		// Get custom redirect value from db, if exist.
-		$result = $wpdb->get_row( $wpdb->prepare( "SELECT redirect, options FROM " . JJ4T3_TABLE . " WHERE url = %s AND redirect IS NOT NULL LIMIT 0,1", esc_url( $url_404 ) ), 'OBJECT' );
+		$result = $wpdb->get_row( $wpdb->prepare( "SELECT redirect, options FROM " . JJ4T3_TABLE . " WHERE url = %s AND redirect IS NOT NULL LIMIT 0,1", $url_404 ), 'OBJECT' );
 
 		// Get custom redirect type and url.
-		$url = empty( $result->redirect ) ? '' : esc_url( $result->redirect );
+		$url = empty( $result->redirect ) ? '' : esc_url_raw( $result->redirect );
 
 		// Get custom options.
 		$options = empty( $result->options ) ? array() : maybe_unserialize( $result->options );
 
 		// Get result in an array.
 		$data = array(
-			'url_404' => esc_url( $url_404 ),
-			'url' => esc_url( $url ),
+			'url_404' => $url_404,
+			'url'     => $url,
 		);
 
 		// Set the custom options for the 404.
-		$data['type'] = empty( $options['type'] ) ?  jj4t3_get_option( 'redirect_type' ) : intval( $options['type'] );
-		$data['redirect'] = isset( $options['redirect'] ) ? intval( $options['redirect'] ) : -1;
-		$data['log'] = isset( $options['log'] ) ? intval( $options['log'] ) : -1;
-		$data['alert'] = isset( $options['alert'] ) ? intval( $options['alert'] ) : -1;
+		$data['type']     = empty( $options['type'] ) ? jj4t3_get_option( 'redirect_type' ) : intval( $options['type'] );
+		$data['redirect'] = isset( $options['redirect'] ) ? intval( $options['redirect'] ) : - 1;
+		$data['log']      = isset( $options['log'] ) ? intval( $options['log'] ) : - 1;
+		$data['alert']    = isset( $options['alert'] ) ? intval( $options['alert'] ) : - 1;
 
 		/**
 		 * Filter to alter custom redirect modal response array.
@@ -952,12 +952,12 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * When user set a custom redirect url for a 404 link, save the data
 	 * from modal by updating all error logs of the current 404 links.
 	 *
-	 * @global object $wpdb WP DB object
 	 * @since  2.2.0
 	 * @access public
 	 *
-	 * @note Always die() for wp_ajax
+	 * @note   Always die() for wp_ajax
 	 *
+	 * @global object $wpdb WP DB object
 	 * @return void
 	 */
 	public static function save_redirect() {
@@ -973,20 +973,20 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		// Custom options for the 404 path.
 		$options = maybe_serialize(
 			array(
-				'redirect' => jj4t3_from_request( 'jj4t3_custom_redirect_redirect' ),
-				'log' => jj4t3_from_request( 'jj4t3_custom_redirect_log' ),
-				'alert' => jj4t3_from_request( 'jj4t3_custom_redirect_alert' ),
-				'type' => jj4t3_from_request( 'jj4t3_custom_redirect_type' ),
+				'redirect' => intval( jj4t3_from_request( 'jj4t3_custom_redirect_redirect' ) ),
+				'log'      => intval( jj4t3_from_request( 'jj4t3_custom_redirect_log' ) ),
+				'alert'    => intval( jj4t3_from_request( 'jj4t3_custom_redirect_alert' ) ),
+				'type'     => intval( jj4t3_from_request( 'jj4t3_custom_redirect_type' ) ),
 			)
 		);
 
 		// Get 404 url.
-		$url = jj4t3_from_request( 'jj4t3_custom_redirect', false ) ? esc_url( jj4t3_from_request( 'jj4t3_custom_redirect' ) ) : '';
+		$url = jj4t3_from_request( 'jj4t3_custom_redirect', false ) ? esc_url_raw( jj4t3_from_request( 'jj4t3_custom_redirect' ) ) : '';
 
 		global $wpdb;
 
 		// Get custom redirect url.
-		$url_404 = jj4t3_from_request( 'jj4t3_redirect_404', false ) ? esc_url( jj4t3_from_request( 'jj4t3_redirect_404' ) ) : '';
+		$url_404 = jj4t3_from_request( 'jj4t3_redirect_404', false ) ? esc_url_raw( jj4t3_from_request( 'jj4t3_redirect_404' ) ) : '';
 
 		/**
 		 * Action hook to run before updating a custom redirect.
@@ -995,7 +995,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		 * after your custom function.
 		 *
 		 * @param string $url_404 404 link.
-		 * @param string $url Link to redirect.
+		 * @param string $url     Link to redirect.
 		 *
 		 * @since 3.0.0
 		 */

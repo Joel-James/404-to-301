@@ -1,7 +1,7 @@
 <?php
 
 // If this file is called directly, abort.
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Get plugin setting value.
@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) or exit;
  * Handle the exceptional case properly
  * and return false.
  *
- * @param mixed $option Option name.
+ * @param mixed $option  Option name.
  * @param mixed $default Default value if not exist.
  *
  * @since  3.0.0
@@ -43,7 +43,7 @@ function jj4t3_get_option( $option = false, $default = false ) {
  * update the the array only.
  *
  * @param string $option Option name.
- * @param mixed $value Value to update.
+ * @param mixed  $value  Value to update.
  *
  * @since  3.0.0
  * @access public
@@ -219,6 +219,9 @@ function jj4t3_redirect_type() {
  * DO NOT relay on this function for serious actions
  * as it may be wrong in some cases.
  *
+ * @since  3.0.0
+ * @access private
+ *
  * @global bool $is_gecko
  * @global bool $is_opera
  * @global bool $is_safari
@@ -227,9 +230,6 @@ function jj4t3_redirect_type() {
  * @global bool $is_edge
  * @global bool $is_NS4
  * @global bool $is_lynx
- *
- * @since  3.0.0
- * @access private
  *
  * @return boolean
  */
@@ -271,7 +271,7 @@ function jj4t3_is_human() {
  * You can modify this to use more status using the filter.
  * Registering filter - "jj4t3_redirect_statuses".
  *
- * @link https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html HTTP status codes.
+ * @link   https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html HTTP status codes.
  * @since  3.0.0
  * @access private
  *
@@ -314,11 +314,11 @@ function jj4t3_redirect_statuses() {
 function jj4t3_log_columns() {
 
 	$columns = array(
-		'date' => __( 'Date', '404-to-301' ),
-		'url' => __( '404 Path', '404-to-301' ),
-		'ref' => __( 'From', '404-to-301' ),
-		'ip' => __( 'IP Address', '404-to-301' ),
-		'ua' => __( 'User Agent', '404-to-301' ),
+		'date'     => __( 'Date', '404-to-301' ),
+		'url'      => __( '404 Path', '404-to-301' ),
+		'ref'      => __( 'From', '404-to-301' ),
+		'ip'       => __( 'IP Address', '404-to-301' ),
+		'ua'       => __( 'User Agent', '404-to-301' ),
 		'redirect' => __( 'Redirect', '404-to-301' ),
 	);
 
@@ -345,8 +345,8 @@ function jj4t3_log_columns() {
  * or empty.
  * Output will be trimmed.
  *
- * @param string $key Key to get from request.
- * @param mixed $default Default value.
+ * @param string $key     Key to get from request.
+ * @param mixed  $default Default value.
  *
  * @since  3.0.0
  * @access public
@@ -361,15 +361,15 @@ function jj4t3_from_request( $key = '', $default = '' ) {
 	}
 
 	// Return default value if key not set.
-	if ( ! isset( $_REQUEST[ $key ] ) ) {
+	if ( ! isset( $_REQUEST[ $key ] ) ) { // phpcs:ignore
 		return $default;
 	}
 
 	// Trim output.
-	if ( is_string( $_REQUEST[ $key ] ) ) {
-		return trim( $_REQUEST[ $key ] );
-	} elseif ( is_array( $_REQUEST[ $key ] ) ) {
-		return array_map( 'trim', $_REQUEST[ $key ] );
+	if ( is_string( $_REQUEST[ $key ] ) ) { // phpcs:ignore
+		return trim( $_REQUEST[ $key ] ); // phpcs:ignore
+	} elseif ( is_array( $_REQUEST[ $key ] ) ) { // phpcs:ignore
+		return array_map( 'trim', $_REQUEST[ $key ] ); // phpcs:ignore
 	}
 
 	return $default;
