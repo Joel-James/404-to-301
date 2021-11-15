@@ -8,12 +8,12 @@ defined( 'ABSPATH' ) or exit;
  *
  * Register all hooks related to admin area of the website.
  *
- * @category   Core
- * @package    JJ4T3
- * @subpackage Admin
  * @author     Joel James <mail@cjoel.com>
  * @license    http://www.gnu.org/licenses/ GNU General Public License
+ * @category   Core
  * @link       https://duckdev.com/products/404-to-301/
+ * @package    JJ4T3
+ * @subpackage Admin
  */
 class JJ4T3_Admin {
 
@@ -87,19 +87,24 @@ class JJ4T3_Admin {
 	 * @return void
 	 */
 	public function styles() {
-
 		global $pagenow;
 
-		// Use minified assets if SCRIPT_DEBUG is turned off.
-		$file = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? 'assets/src/css/admin.css' : 'assets/css/admin.min.css';
-
-		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && in_array( $_GET['page'], array(
+		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && in_array(
+			$_GET['page'],
+			array(
 				'jj4t3-settings',
 				'jj4t3-logs',
-			) )
+			),
+			true
+		)
 		) {
-
-			wp_enqueue_style( JJ4T3_NAME, JJ4T3_URL . $file, array(), JJ4T3_VERSION, 'all' );
+			wp_enqueue_style(
+				JJ4T3_NAME,
+				JJ4T3_URL . 'assets/css/admin.min.css',
+				array(),
+				JJ4T3_VERSION,
+				'all'
+			);
 		}
 	}
 
@@ -113,27 +118,32 @@ class JJ4T3_Admin {
 	 * @since  2.0.0
 	 * @access public
 	 *
-	 * @uses   wp_enqueue_script  To register script.
-	 * @uses   wp_localize_script To translate strings in js.
-	 *
 	 * @global string $pagenow Current page.
 	 *
+	 * @uses   wp_localize_script To translate strings in js.
+	 *
+	 * @uses   wp_enqueue_script  To register script.
 	 * @return void
 	 */
 	public function scripts() {
-
 		global $pagenow;
 
-		// Use minified scripts if SCRIPT_DEBUG is turned off.
-		$file = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? 'assets/src/js/admin.js' : 'assets/js/admin.min.js';
-
-		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && in_array( $_GET['page'], array(
+		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && in_array(
+			$_GET['page'],
+			array(
 				'jj4t3-settings',
 				'jj4t3-logs',
-			) )
+			),
+			true
+		)
 		) {
-
-			wp_enqueue_script( JJ4T3_NAME, JJ4T3_URL . $file, array( 'jquery' ), JJ4T3_VERSION, false );
+			wp_enqueue_script(
+				JJ4T3_NAME,
+				JJ4T3_URL . 'assets/js/admin.min.js',
+				array( 'jquery' ),
+				JJ4T3_VERSION,
+				false
+			);
 
 			// Strings to translate in js.
 			$strings = array( 'redirect' => esc_html__( 'Custom Redirect', '404-to-301' ) );
@@ -160,19 +170,34 @@ class JJ4T3_Admin {
 	public function admin_menu() {
 
 		// Main menu for error logs list.
-		$hook = add_menu_page( __( '404 Error Logs', '404-to-301' ), __( '404 Errors', '404-to-301' ), JJ4T3_ACCESS, 'jj4t3-logs', array(
-			$this,
-			'error_list',
-		), 'dashicons-redo', 90 );
+		$hook = add_menu_page(
+			__( '404 Error Logs', '404-to-301' ),
+			__( '404 Errors', '404-to-301' ),
+			JJ4T3_ACCESS,
+			'jj4t3-logs',
+			array(
+				$this,
+				'error_list',
+			),
+			'dashicons-redo',
+			90
+		);
 
 		// Render screen options on listing table.
 		add_action( "load-$hook", array( $this, 'screen_option' ) );
 
 		// 404 to 301 settings menu.
-		add_submenu_page( 'jj4t3-logs', __( '404 to 301 Settings', '404-to-301' ), __( '404 Settings', '404-to-301' ), JJ4T3_ACCESS, 'jj4t3-settings', array(
-			$this,
-			'admin_page',
-		) );
+		add_submenu_page(
+			'jj4t3-logs',
+			__( '404 to 301 Settings', '404-to-301' ),
+			__( '404 Settings', '404-to-301' ),
+			JJ4T3_ACCESS,
+			'jj4t3-settings',
+			array(
+				$this,
+				'admin_page',
+			)
+		);
 
 		/**
 		 * Action hook to register new submenu item.
@@ -232,7 +257,8 @@ class JJ4T3_Admin {
 				<div id="post-body" class="metabox-holder">
 					<div id="post-body-content">
 						<div class="meta-box-sortables ui-sortable">
-							<?php $this->list_table->prepare_items();
+							<?php
+							$this->list_table->prepare_items();
 							/**
 							 * Action hook to add something above listing page.
 							 *
@@ -354,7 +380,7 @@ class JJ4T3_Admin {
 		$plugin_file = basename( '404-to-301.php' );
 
 		if ( basename( $file ) === $plugin_file ) {
-			$settings_link = '<a href="admin.php?page=jj4t3-settings">' . __( 'Settings', '404-to-301' ) . '</a>';
+			$settings_link  = '<a href="admin.php?page=jj4t3-settings">' . __( 'Settings', '404-to-301' ) . '</a>';
 			$settings_link .= ' | <a href="admin.php?page=jj4t3-logs">' . __( 'Logs', '404-to-301' ) . '</a>';
 
 			// Add quick links to plugins listing page.
@@ -406,11 +432,14 @@ class JJ4T3_Admin {
 		global $pagenow;
 
 		// Only on our page.
-		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && in_array( $_GET['page'], array(
+		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && in_array(
+			$_GET['page'],
+			array(
 				'jj4t3-settings',
 				'jj4t3-logs',
 				'jj4t3-logs-addons',
-			) )
+			)
+		)
 		) {
 			// Only for admins.
 			if ( ! current_user_can( 'manage_options' ) ) {
@@ -432,11 +461,15 @@ class JJ4T3_Admin {
 			if ( (int) $notice_time <= time() && ! $dismissed ) {
 				?>
 				<div class="notice notice-success">
-					<p><?php printf( __( 'Hey %1$s, I noticed you\'ve been using %2$s404 to 301%3$s for more than 1 week – that’s awesome! Could you please do me a BIG favor and give it a 5-star rating on WordPress? Just to help us spread the word and boost our motivation.', '404-to-301' ),
+					<p>
+						<?php
+						printf(
+							__( 'Hey %1$s, I noticed you\'ve been using %2$s404 to 301%3$s for more than 1 week – that’s awesome! Could you please do me a BIG favor and give it a 5-star rating on WordPress? Just to help us spread the word and boost our motivation.', '404-to-301' ),
 							empty( $current_user->display_name ) ? __( 'there', '404-to-301' ) : ucwords( $current_user->display_name ),
 							'<strong>',
 							'</strong>'
-						); ?>
+						);
+						?>
 					</p>
 					<p>
 						<a href="https://wordpress.org/support/plugin/404-to-301/reviews/#new-post" target="_blank"><?php esc_html_e( 'Ok, you deserve it', '404-to-301' ); ?></a>

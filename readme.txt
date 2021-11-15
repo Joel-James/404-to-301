@@ -4,7 +4,7 @@ Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo
 Donate link: https://www.paypal.me/JoelCJ
 Requires at least: 3.5
 Tested up to: 5.8
-Stable tag: 3.1.0
+Stable tag: 3.1.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -127,6 +127,11 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com
 
 
 == Changelog ==
+
+= 3.1.1 (15/11/2021) =
+**👌 Improvements**
+
+* Security checks and improvements.
 
 = 3.1.0 (18/10/2021) =
 **👌 Improvements**
@@ -445,8 +450,7 @@ Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com
 
 == Upgrade Notice ==
 
-= 3.0.9 (06/10/2021) =
+= 3.1.1 (15/11/2021) =
 **👌 Improvements**
 
-* Tested with WP 5.8.
-* Added nonce verification for bulk actions.
+* Security checks and improvements.

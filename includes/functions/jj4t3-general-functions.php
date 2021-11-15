@@ -367,9 +367,9 @@ function jj4t3_from_request( $key = '', $default = '' ) {
 
 	// Trim output.
 	if ( is_string( $_REQUEST[ $key ] ) ) { // phpcs:ignore
-		return trim( $_REQUEST[ $key ] ); // phpcs:ignore
+		return sanitize_text_field( $_REQUEST[ $key ] ); // phpcs:ignore
 	} elseif ( is_array( $_REQUEST[ $key ] ) ) { // phpcs:ignore
-		return array_map( 'trim', $_REQUEST[ $key ] ); // phpcs:ignore
+		return array_map( 'sanitize_text_field', $_REQUEST[ $key ] ); // phpcs:ignore
 	}
 
 	return $default;

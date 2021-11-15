@@ -40,7 +40,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @access public
 	 */
 	public function __construct() {
-
 		parent::__construct(
 			array(
 				'singular' => __( '404 Error Log', '404-to-301' ),
@@ -66,7 +65,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @global object $wpdb WP DB object
 	 */
 	public function prepare_items() {
-
 		$this->_column_headers = $this->get_column_info();
 
 		// Execute bulk actions.
@@ -123,7 +121,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return array
 	 */
 	private function get_error_logs( $per_page = 20, $page_number = 1 ) {
-
 		global $wpdb;
 
 		// Current offset.
@@ -141,7 +138,12 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		$order = $this->get_order();
 
 		// Get error logs.
-		$result = $wpdb->get_results( $wpdb->prepare( "SELECT *" . $count . " FROM " . JJ4T3_TABLE . " WHERE status != 0 " . $groupby_query . " ORDER BY %s %s LIMIT %d OFFSET %d", array( $orderby, $order, $per_page, $offset ) ), 'ARRAY_A' );
+		$result = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT *{$count} FROM " . JJ4T3_TABLE . " WHERE status != 0 $groupby_query ORDER BY $orderby $order LIMIT %d OFFSET %d",
+				array( $per_page, $offset ) ),
+			'ARRAY_A'
+		);
 
 		/**
 		 * Filter to alter the error logs listing data result.
@@ -169,7 +171,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return string Filtered column name.
 	 */
 	private function get_order_by() {
-
 		/**
 		 * Filter to alter the log listing orderby param.
 		 *
@@ -195,8 +196,8 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		$allowed_columns = array_intersect( $allowed_columns, array_keys( jj4t3_log_columns() ) );
 
 		// Check if given column is allowed.
-		if ( in_array( $orderby, $allowed_columns ) ) {
-			return esc_sql( $orderby );
+		if ( in_array( $orderby, $allowed_columns, true ) ) {
+			return sanitize_sql_orderby( $orderby );
 		}
 
 		return 'date';
@@ -216,9 +217,8 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return string Filtered column name.
 	 */
 	private function get_order() {
-
 		// Get order column name from request.
-		$order = jj4t3_from_request( 'order', 'DESC' ) == 'asc' ? 'ASC' : 'DESC';
+		$order = jj4t3_from_request( 'order', 'DESC' ) === 'asc' ? 'ASC' : 'DESC';
 
 		/**
 		 * Filter to alter the log listing order param.
@@ -243,7 +243,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @access private
 	 */
 	private function set_groupby() {
-
 		/**
 		 * Filter to alter the allowed group by values.
 		 *
@@ -263,7 +262,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		$group_by = jj4t3_from_request( 'group_by_top', '' );
 
 		// Verify if the group by value is allowed.
-		if ( ! in_array( $group_by, $allowed_values ) ) {
+		if ( ! in_array( $group_by, $allowed_values, true ) ) {
 			return;
 		}
 
@@ -291,13 +290,12 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return int Total count.
 	 */
 	private function total_logs() {
-
 		global $wpdb;
 
 		if ( empty( $this->group_by ) ) {
 			$total = $wpdb->get_var( "SELECT COUNT(id) FROM " . JJ4T3_TABLE );
 		} else {
-			$total = $total = $wpdb->get_var( "SELECT COUNT(DISTINCT " . $this->group_by . ") FROM " . JJ4T3_TABLE );
+			$total = $wpdb->get_var( "SELECT COUNT(DISTINCT " . $this->group_by . ") FROM " . JJ4T3_TABLE );
 		}
 
 		/**
@@ -319,10 +317,9 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @since  2.0.0
 	 * @access public
 	 *
-	 * @return array $columns Array of cloumn titles.
+	 * @return array $columns Array of column titles.
 	 */
 	public function get_columns() {
-
 		$columns = array(
 			'cb'       => '<input type="checkbox" style="width: 5%;" />',
 			'date'     => __( 'Date', '404-to-301' ),
@@ -357,7 +354,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return array Array of columns to enable sorting.
 	 */
 	protected function get_sortable_columns() {
-
 		$columns = array(
 			'date' => array( 'date', true ),
 			'url'  => array( 'url', false ),
@@ -388,13 +384,16 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return void
 	 */
 	public function no_items() {
+		$message = __( 'Ah! You are so clean that you still got ZERO errors.', '404-to-301' );
+
+		$message = apply_filters( 'jj4t3_log_list_no_items_message', $message );
 
 		/**
 		 * Filter hook to change no items message.
 		 *
 		 * @since 3.0.0
 		 */
-		_e( apply_filters( 'jj4t3_log_list_no_items_message', __( 'Ah! You are so clean that you still got ZERO errors.', '404-to-301' ) ) );
+		echo esc_html( $message );
 	}
 
 	/**
@@ -404,16 +403,15 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * for switch, printing the whole array.
 	 * Registering filter - "jj4t3_log_list_column_default".
 	 *
-	 * @param array  $item        Column data
-	 * @param string $column_name Column name
+	 * @param array  $item        Column data.
+	 * @param string $column_name Column name.
 	 *
 	 * @since  2.0.0
 	 * @access protected
 	 *
-	 * @return array
+	 * @return string
 	 */
 	protected function column_default( $item, $column_name ) {
-
 		$columns = array_keys( jj4t3_log_columns() );
 
 		/**
@@ -426,12 +424,11 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		$columns = apply_filters( 'jj4t3_log_list_column_default', $columns );
 
 		// If current column is allowed.
-		if ( in_array( $column_name, $columns ) ) {
+		if ( in_array( $column_name, $columns, true ) ) {
 			return $item[ $column_name ];
 		}
 
-		// Show the whole array for troubleshooting purposes.
-		return print_r( $item, true );
+		return '';
 	}
 
 	/**
@@ -440,15 +437,14 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * This function is used to add new checkbox for all entries in
 	 * the listing table. We use this checkbox to perform bulk actions.
 	 *
-	 * @param array $item Column data
+	 * @param array $item Column data.
 	 *
 	 * @since  2.1.0
 	 * @access public
 	 *
 	 * @return string
 	 */
-	function column_cb( $item ) {
-
+	public function column_cb( $item ) {
 		return sprintf( '<input type="checkbox" name="bulk-delete[]" value="%s"/>', $item['id'] );
 	}
 
@@ -459,18 +455,17 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * We can change styles, texts etc. using this function.
 	 * Registering filter - "jj4t3_log_list_date_column".
 	 *
-	 * @param array $item Column data
+	 * @param array $item Column data.
 	 *
 	 * @since  2.0.0
 	 * @access public
 	 *
 	 * @return string
 	 */
-	function column_date( $item ) {
-
+	public function column_date( $item ) {
 		$delete_nonce = wp_create_nonce( 'bulk-' . $this->_args['plural'] );
 
-		$title = mysql2date( "j M Y, g:i a", $item['date'] );
+		$title = mysql2date( 'j M Y, g:i a', $item['date'] );
 
 		$confirm = __( 'Are you sure you want to delete this item?', '404-to-301' );
 
@@ -491,15 +486,14 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * We can change styles, texts etc. using this function.
 	 * Registering filter - "jj4t3_log_list_url_column".
 	 *
-	 * @param array $item Column data
+	 * @param array $item Column data.
 	 *
 	 * @since  2.0.0
 	 * @access public
 	 *
 	 * @return string URL column html content
 	 */
-	function column_url( $item ) {
-
+	public function column_url( $item ) {
 		// Get default text if empty value.
 		$url = $this->get_empty_content( $item['url'] );
 		if ( ! $url ) {
@@ -523,15 +517,14 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * We can change styles, texts etc. using this function.
 	 * Registering filter - "jj4t3_log_list_ref_column".
 	 *
-	 * @param array $item Column data
+	 * @param array $item Column data.
 	 *
 	 * @since  2.0.0
 	 * @access public
 	 *
 	 * @return string Ref column html content.
 	 */
-	function column_ref( $item ) {
-
+	public function column_ref( $item ) {
 		// Get default text if empty value.
 		$ref = $this->get_empty_content( $item['ref'] );
 		if ( ! $ref ) {
@@ -553,15 +546,14 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * We can change styles, texts etc. using this function.
 	 * Registering filter - "jj4t3_log_list_ua_column".
 	 *
-	 * @param array $item Column data
+	 * @param array $item Column data.
 	 *
 	 * @since  2.0.9
 	 * @access public
 	 *
 	 * @return string User Agent column html content
 	 */
-	function column_ua( $item ) {
-
+	public function column_ua( $item ) {
 		// Sanitize text content.
 		$ua = sanitize_text_field( $item['ua'] );
 
@@ -580,15 +572,14 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * We can change styles, texts etc. using this function.
 	 * Registering filter - "jj4t3_log_list_ip_column".
 	 *
-	 * @param array $item Column data
+	 * @param array $item Column data.
 	 *
 	 * @since  2.0.9
 	 * @access public
 	 *
 	 * @return string IP column html content.
 	 */
-	function column_ip( $item ) {
-
+	public function column_ip( $item ) {
 		// Get default text if empty value.
 		$ip = $this->get_empty_content( $item['ip'] );
 		if ( ! $ip ) {
@@ -608,15 +599,14 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 *
 	 * This function is used to modify the column data for custom redirect in listing table.
 	 *
-	 * @param array $item Column data
+	 * @param array $item Column data.
 	 *
 	 * @since  2.0.9
 	 * @access public
 	 *
 	 * @return string HTML content for redirect column.
 	 */
-	function column_redirect( $item ) {
-
+	public function column_redirect( $item ) {
 		// Link for redirect.
 		$link = esc_url( $item['redirect'] );
 
@@ -641,10 +631,9 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @since  3.0.0
 	 * @access private
 	 *
-	 * @return string|boolean
+	 * @return string
 	 */
 	private function get_group_content( $content, $column, $item ) {
-
 		$count_text = '';
 		// Check if current column name is grouped.
 		// Add count text then.
@@ -669,7 +658,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return string|boolean
 	 */
 	private function get_empty_content( $value ) {
-
 		// Get default error text.
 		if ( strtolower( $value ) === 'n/a' || empty( $value ) ) {
 			return '<span class="jj4t3-url-p">n/a</span>';
@@ -691,7 +679,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return array $actions Options to be added to the action select box.
 	 */
 	public function get_bulk_actions() {
-
 		$actions = array(
 			'bulk_delete'     => __( 'Delete Selected', '404-to-301' ),
 			'bulk_clean'      => __( 'Delete All', '404-to-301' ),
@@ -720,8 +707,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return void
 	 */
 	public function extra_tablenav( $which ) {
-
-		if ( $this->has_items() && 'top' == $which ) {
+		if ( $this->has_items() && 'top' === $which ) {
 
 			// This filter is already documented above.
 			$allowed_values = apply_filters( 'jj4t3_log_list_groupby_allowed', array( 'url', 'ref', 'ip', 'ua' ) );
@@ -732,7 +718,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 			// Add dropdown.
 			echo '<div class="alignleft actions bulkactions">';
 			echo '<select name="group_by_top" class="404_group_by">';
-			echo '<option value="">' . __( 'Group by', '404-to-301' ) . '</option>';
+			echo '<option value="">' . esc_html__( 'Group by', '404-to-301' ) . '</option>';
 			foreach ( $column_names as $column ) {
 				echo '<option value="' . $column . '" ' . selected( $column, $this->group_by ) . '>' . esc_attr( $available_columns[ $column ] ) . '</option>';
 			}
@@ -760,7 +746,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @access private
 	 * @uses   check_admin_referer() For security check.
 	 *
-	 * @return void|boolean
+	 * @return bool
 	 */
 	private function process_actions() {
 		// Get current action.
@@ -770,7 +756,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		$allowed_actions = array_keys( $this->get_bulk_actions() );
 
 		// Verify only allowed actions are passed.
-		if ( ! in_array( $action, $allowed_actions ) && 'delete' !== $action ) {
+		if ( ! in_array( $action, $allowed_actions, true ) && 'delete' !== $action ) {
 			return false;
 		}
 
@@ -781,7 +767,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 			return false;
 		}
 
-		// IDs of log entires to process.
+		// IDs of log entries to process.
 		$ids = jj4t3_from_request( 'bulk-delete', true );
 
 		// Run custom bulk actions.
@@ -883,7 +869,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return string
 	 */
 	public static function set_screen( $status, $option, $value ) {
-
 		return $value;
 	}
 
@@ -897,7 +882,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return void
 	 */
 	public static function open_redirect() {
-
 		// Yes, security check is a must when you alter something.
 		check_ajax_referer( 'jj4t3_redirect_nonce', 'nonce' );
 
@@ -961,7 +945,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * @return void
 	 */
 	public static function save_redirect() {
-
 		// Yes, security check is a must when you alter something.
 		check_ajax_referer( 'jj4t3_redirect_nonce', 'jj4t3_redirect_nonce' );
 
@@ -1021,5 +1004,4 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 			include_once JJ4T3_DIR . 'includes/admin/views/custom-redirect.php';
 		}
 	}
-
 }
