@@ -15,6 +15,7 @@
 
 ?>
 
+<!-- Enable redirects -->
 <h4><?php esc_html_e( 'Enable Redirects', '404-to-301' ); ?></h4>
 <p><?php esc_html_e( 'Do you want to redirect the 404 errors to a new page or URL?', '404-to-301' ); ?></p>
 <p>
@@ -41,100 +42,100 @@
 
 <hr>
 
-<fieldset :class="{'duckdev-disabled': !redirect}">
-	<h4><?php esc_html_e( 'Redirect type', '404-to-301' ); ?></h4>
-	<p><?php esc_html_e( 'The redirect type is the HTTP response code sent to the browser telling the browser what type of redirect is served.', '404-to-301' ); ?></p>
+<!-- Redirect type -->
+<h4><?php esc_html_e( 'Redirect type', '404-to-301' ); ?></h4>
+<p><?php esc_html_e( 'The redirect type is the HTTP response code sent to the browser telling the browser what type of redirect is served.', '404-to-301' ); ?></p>
+<p>
+	<?php
+	printf(
+		__( 'Learn more about HTTP redirect types on <a href="%s" target="_blank">MDN Web Docs</a> before you select decide the type.', '404-to-301' ),
+		'https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections'
+	);
+	?>
+</p>
+
+<div class="duckdev-fields">
+	<?php foreach ( $types as $redirect_type => $label ) : ?>
+		<p>
+			<label for="redirect-type-<?php echo esc_attr( $redirect_type ); ?>">
+				<input
+					type="radio"
+					id="redirect-type-<?php echo esc_attr( $redirect_type ); ?>"
+					name="404_to_301_settings[redirect_type]"
+					value="<?php echo esc_attr( $redirect_type ); ?>"
+					<?php checked( dd4t3_settings()->get( 'redirect_type' ), $redirect_type ); ?>
+				> <?php echo esc_attr( $label ); ?>
+			</label>
+		</p>
+	<?php endforeach; ?>
+</div>
+
+<hr>
+
+<!-- Redirect target -->
+<h4><?php esc_html_e( 'Target', '404-to-301' ); ?></h4>
+<p><?php esc_html_e( 'From the target types, choose where you want to redirect the 404 errors to.', '404-to-301' ); ?></p>
+
+<div class="duckdev-fields">
+	<p>
+		<label for="redirect-target-page">
+			<input
+				type="radio"
+				id="redirect-target-page"
+				name="404_to_301_settings[redirect_target]"
+				value="page"
+				v-model="target"
+			> <?php esc_html_e( 'Select an existing page on this website', '404-to-301' ); ?>
+		</label>
+	</p>
+	<p>
+		<label for="redirect-target-link">
+			<input
+				type="radio"
+				id="redirect-target-link"
+				name="404_to_301_settings[redirect_target]"
+				value="link"
+				v-model="target"
+			> <?php esc_html_e( 'Enter a custom URL', '404-to-301' ); ?>
+		</label>
+	</p>
+</div>
+
+<!-- Redirect page -->
+<div class="duckdev-fields" v-if="'page' === target">
+	<p>
+		<label for="redirect-target-page-value">
+			<strong><?php esc_html_e( 'Select page', '404-to-301' ); ?></strong>
+		</label>
+	</p>
 	<p>
 		<?php
-		printf(
-			__( 'Learn more about HTTP redirect types on <a href="%s" target="_blank">MDN Web Docs</a> before you select decide the type.', '404-to-301' ),
-			'https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections'
+		wp_dropdown_pages(
+			array(
+				'id'       => 'redirect-target-page-value',
+				'name'     => '404_to_301_settings[redirect_page]',
+				'selected' => esc_attr( dd4t3_settings()->get( 'redirect_page' ) ),
+			)
 		);
 		?>
 	</p>
+</div>
 
-	<div class="duckdev-fields">
-		<?php foreach ( $types as $redirect_type => $label ) : ?>
-			<p>
-				<label for="redirect-type-<?php echo esc_attr( $redirect_type ); ?>">
-					<input
-						type="radio"
-						id="redirect-type-<?php echo esc_attr( $redirect_type ); ?>"
-						name="404_to_301_settings[redirect_type]"
-						value="<?php echo esc_attr( $redirect_type ); ?>"
-						<?php checked( dd4t3_settings()->get( 'redirect_type' ), $redirect_type ); ?>
-					> <?php echo esc_attr( $label ); ?>
-				</label>
-			</p>
-		<?php endforeach; ?>
-	</div>
-
-	<hr>
-
-	<h4><?php esc_html_e( 'Target', '404-to-301' ); ?></h4>
-	<p><?php esc_html_e( 'From the target types, choose where you want to redirect the 404 errors to.', '404-to-301' ); ?></p>
-
-	<div class="duckdev-fields">
-		<p>
-			<label for="redirect-target-page">
-				<input
-					type="radio"
-					id="redirect-target-page"
-					name="404_to_301_settings[redirect_target]"
-					value="page"
-					v-model="target"
-				> <?php esc_html_e( 'Select an existing page on this website', '404-to-301' ); ?>
-			</label>
-		</p>
-		<p>
-			<label for="redirect-target-link">
-				<input
-					type="radio"
-					id="redirect-target-link"
-					name="404_to_301_settings[redirect_target]"
-					value="link"
-					v-model="target"
-				> <?php esc_html_e( 'Enter a custom URL', '404-to-301' ); ?>
-			</label>
-		</p>
-	</div>
-
-
-	<div class="duckdev-fields" v-if="'page' === target">
-		<p>
-			<label for="redirect-target-page-value">
-				<strong><?php esc_html_e( 'Select page', '404-to-301' ); ?></strong>
-			</label>
-		</p>
-		<p>
-			<?php
-			wp_dropdown_pages(
-				array(
-					'id'       => 'redirect-target-page-value',
-					'name'     => '404_to_301_settings[redirect_page]',
-					'selected' => esc_attr( dd4t3_settings()->get( 'redirect_page' ) ),
-				)
-			);
-			?>
-		</p>
-	</div>
-
-	<div class="duckdev-fields" v-else-if="'link' === target">
-		<p>
-			<label for="redirect-target-link-value">
-				<strong><?php esc_html_e( 'Custom URL', '404-to-301' ); ?></strong>
-			</label>
-		</p>
-		<p>
-			<input
-				type="url"
-				name="404_to_301_settings[redirect_link]"
-				id="redirect-target-link-value"
-				class="large-text"
-				placeholder="https://example.com"
-				value="<?php echo esc_url( dd4t3_settings()->get( 'redirect_link', '' ) ); ?>"
-			>
-		</p>
-	</div>
-
-</fieldset>
+<!-- Redirect link -->
+<div class="duckdev-fields" v-else-if="'link' === target">
+	<p>
+		<label for="redirect-target-link-value">
+			<strong><?php esc_html_e( 'Custom URL', '404-to-301' ); ?></strong>
+		</label>
+	</p>
+	<p>
+		<input
+			type="url"
+			name="404_to_301_settings[redirect_link]"
+			id="redirect-target-link-value"
+			class="large-text"
+			placeholder="https://example.com"
+			value="<?php echo esc_url( dd4t3_settings()->get( 'redirect_link', '' ) ); ?>"
+		>
+	</p>
+</div>

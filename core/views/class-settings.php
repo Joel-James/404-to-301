@@ -63,7 +63,7 @@ class Settings extends View {
 
 		// Render template.
 		$this->render(
-			'settings',
+			'settings-vue',
 			array(
 				'page'        => $this->get_current_tab(),
 				'user_name'   => empty( $user->display_name ) ? $user->user_login : $user->display_name,

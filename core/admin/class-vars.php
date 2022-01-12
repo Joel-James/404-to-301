@@ -18,6 +18,7 @@ namespace DuckDev\Redirect\Admin;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
+use DuckDev\Redirect\Data;
 use DuckDev\Redirect\Utils\Base;
 
 /**
@@ -58,7 +59,7 @@ class Vars extends Base {
 		// Include common vars.
 		$vars = $this->common( $vars );
 
-		$vars['test'] = '';
+		$vars['types'] = Data::redirect_types();
 
 		return $vars;
 	}
@@ -123,6 +124,9 @@ class Vars extends Base {
 
 		// Settings data.
 		$vars['settings'] = dd4t3_settings()->all();
+
+		// Common items.
+		$vars['version'] = DD4T3_VERSION;
 
 		return $vars;
 	}

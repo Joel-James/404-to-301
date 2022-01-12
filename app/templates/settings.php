@@ -60,15 +60,15 @@
 		<div class="metabox-holder columns-2">
 			<div class="postbox-container-1">
 				<div id="main-sortables" class="meta-box-sortables ui-sortable">
-					<div id="autodescription-general-settings" class="postbox ">
+					<div class="postbox ">
 						<div class="postbox-header">
 							<h2 class="hndle ui-sortable-handle">
-								<?php esc_html_e( 'Settings', '404-to-301' ); ?>
+								<?php esc_html_e( 'Plugin Settings', '404-to-301' ); ?>
 							</h2>
 						</div>
 
 						<div class="inside">
-							<p><?php printf( esc_html__( 'Hey %s. You can configure how 404 to 301 plugin should handle 404 errors on your website.', '404-to-301' ), $user_name ); // phpcs:ignore ?></p>
+							<p><?php printf( esc_html__( 'Hey %s. Thank you for using 404 to 301. You can configure how 404 to 301 plugin should handle 404 errors on your website.', '404-to-301' ), $user_name ); // phpcs:ignore ?></p>
 							<?php $this->render( 'components/side-nav', $menu_config ); // Side nav menu. ?>
 
 							<div class="duckdev-tabs-content duckdev-active-tab-content" id="duckdev-tab-<?php echo esc_attr( $page ); ?>-content">
