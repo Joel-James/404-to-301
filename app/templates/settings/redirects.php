@@ -55,6 +55,7 @@
 </p>
 
 <div class="duckdev-fields">
+	<?php $selected = dd4t3_settings()->get( 'redirect_type', 301 ); ?>
 	<?php foreach ( $types as $redirect_type => $label ) : ?>
 		<p>
 			<label for="redirect-type-<?php echo esc_attr( $redirect_type ); ?>">
@@ -63,7 +64,7 @@
 					id="redirect-type-<?php echo esc_attr( $redirect_type ); ?>"
 					name="404_to_301_settings[redirect_type]"
 					value="<?php echo esc_attr( $redirect_type ); ?>"
-					<?php checked( dd4t3_settings()->get( 'redirect_type' ), $redirect_type ); ?>
+					<?php checked( $selected, $redirect_type ); ?>
 				> <?php echo esc_attr( $label ); ?>
 			</label>
 		</p>
@@ -82,9 +83,9 @@
 			<input
 				type="radio"
 				id="redirect-target-page"
+				class="redirect-target"
 				name="404_to_301_settings[redirect_target]"
 				value="page"
-				v-model="target"
 			> <?php esc_html_e( 'Select an existing page on this website', '404-to-301' ); ?>
 		</label>
 	</p>
@@ -93,16 +94,19 @@
 			<input
 				type="radio"
 				id="redirect-target-link"
+				class="redirect-target"
 				name="404_to_301_settings[redirect_target]"
 				value="link"
-				v-model="target"
 			> <?php esc_html_e( 'Enter a custom URL', '404-to-301' ); ?>
 		</label>
 	</p>
 </div>
 
 <!-- Redirect page -->
-<div class="duckdev-fields" v-if="'page' === target">
+<div
+	id="redirect-target-page-container"
+	class="duckdev-fields <?php echo 'page' !== dd4t3_settings()->get( 'redirect_target', 'link' ) ? 'duckdev-hidden' : ''; ?>"
+>
 	<p>
 		<label for="redirect-target-page-value">
 			<strong><?php esc_html_e( 'Select page', '404-to-301' ); ?></strong>
@@ -122,7 +126,10 @@
 </div>
 
 <!-- Redirect link -->
-<div class="duckdev-fields" v-else-if="'link' === target">
+<div
+	id="redirect-target-link-container"
+	class="duckdev-fields <?php echo 'page' === dd4t3_settings()->get( 'redirect_target', 'link' ) ? 'duckdev-hidden' : ''; ?>"
+>
 	<p>
 		<label for="redirect-target-link-value">
 			<strong><?php esc_html_e( 'Custom URL', '404-to-301' ); ?></strong>

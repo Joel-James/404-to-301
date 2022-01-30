@@ -83,4 +83,3 @@
 	);
 	?>
 </p>
-<repeat-table></repeat-table>

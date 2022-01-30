@@ -55,4 +55,49 @@ class Data {
 		 */
 		return apply_filters( 'dd4t3_redirect_types', $types );
 	}
+
+	/**
+	 * Get available addons list.
+	 *
+	 * To add or remove an addon, use dd4t3_addons_list filter.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return array
+	 */
+	public static function addons() {
+		$types = array(
+			array(
+				'slug'        => 'logs-cleaner',
+				'title'       => __( 'Logs Cleaner', '404-to-301' ),
+				'description' => __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', '404-to-301' ),
+				'link'        => 'https://duckdev.com/products/logs-cleaner/',
+				'is_paid'     => true,
+			),
+			array(
+				'slug'        => 'logs-exporter',
+				'title'       => __( 'Logs Exporter', '404-to-301' ),
+				'description' => __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', '404-to-301' ),
+				'link'        => 'https://duckdev.com/products/logs-exporter/',
+				'is_paid'     => false,
+			),
+			array(
+				'slug'        => 'notification-manager',
+				'title'       => __( 'Notification Manager', '404-to-301' ),
+				'description' => __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', '404-to-301' ),
+				'link'        => 'https://duckdev.com/products/notification-manager/',
+				'is_paid'     => true,
+			),
+		);
+
+		/**
+		 * Filter to add or remove addons.
+		 *
+		 * @param array $types Addon list.
+		 *
+		 * @since 4.0.0
+		 */
+		return apply_filters( 'dd4t3_addons_list', $types );
+	}
 }

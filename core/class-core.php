@@ -126,6 +126,7 @@ final class Core extends Base {
 	 */
 	private function api() {
 		new Api\Logs();
+		new Api\Data();
 		new Api\Redirects();
 		new Api\Settings();
 	}

@@ -37,11 +37,11 @@ class Settings extends View {
 	 */
 	public function init() {
 		// Render settings page templates.
-		add_action( 'dd4t3_admin_settings_general_form_content', array( $this, 'general_content' ) );
-		add_action( 'dd4t3_admin_settings_redirect_form_content', array( $this, 'redirect_content' ) );
-		add_action( 'dd4t3_admin_settings_logs_form_content', array( $this, 'logs_content' ) );
-		add_action( 'dd4t3_admin_settings_email_form_content', array( $this, 'email_content' ) );
 		add_action( 'dd4t3_admin_settings_info_form_content', array( $this, 'info_content' ) );
+		add_action( 'dd4t3_admin_settings_logs_form_content', array( $this, 'logs_content' ) );
+		add_action( 'dd4t3_admin_settings_general_form_content', array( $this, 'general_content' ) );
+		add_action( 'dd4t3_admin_settings_redirects_form_content', array( $this, 'redirects_content' ) );
+		add_action( 'dd4t3_admin_settings_notifications_form_content', array( $this, 'notifications_content' ) );
 
 		// Render notice for settings page.
 		add_action( 'dd4t3_admin_notices', array( $this, 'show_settings_notice' ) );
@@ -63,7 +63,7 @@ class Settings extends View {
 
 		// Render template.
 		$this->render(
-			'settings-vue',
+			'settings',
 			array(
 				'page'        => $this->get_current_tab(),
 				'user_name'   => empty( $user->display_name ) ? $user->user_login : $user->display_name,
@@ -106,10 +106,10 @@ class Settings extends View {
 	 *
 	 * @return void
 	 */
-	public function redirect_content() {
+	public function redirects_content() {
 		// Render template.
 		$this->render(
-			'settings/redirect',
+			'settings/redirects',
 			array(
 				'types' => Data::redirect_types(),
 			)
@@ -154,10 +154,10 @@ class Settings extends View {
 	 *
 	 * @return void
 	 */
-	public function email_content() {
+	public function notifications_content() {
 		// Render template.
 		$this->render(
-			'settings/email',
+			'settings/notifications',
 			array()
 		);
 
@@ -166,7 +166,7 @@ class Settings extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_after_email_settings_render' );
+		do_action( 'dd4t3_after_notifications_settings_render' );
 	}
 
 	/**
@@ -208,23 +208,23 @@ class Settings extends View {
 	 */
 	public function get_settings_tabs() {
 		$tabs = array(
-			'redirect' => array(
+			'redirects'     => array(
 				'title' => __( 'Redirect', '404-to-301' ),
 				'icon'  => 'randomize',
 			),
-			'logs'     => array(
+			'logs'          => array(
 				'title' => __( 'Logs', '404-to-301' ),
 				'icon'  => 'media-default',
 			),
-			'email'    => array(
-				'title' => __( 'Email', '404-to-301' ),
+			'notifications' => array(
+				'title' => __( 'Notifications', '404-to-301' ),
 				'icon'  => 'email-alt',
 			),
-			'general'  => array(
+			'general'       => array(
 				'title' => __( 'General', '404-to-301' ),
 				'icon'  => 'admin-generic',
 			),
-			'info'     => array(
+			'info'          => array(
 				'title' => __( 'Info', '404-to-301' ),
 				'icon'  => 'info',
 			),
@@ -317,7 +317,7 @@ class Settings extends View {
 	 *
 	 * @return array
 	 */
-	public function get_current_tab( $default = 'redirect' ) {
+	public function get_current_tab( $default = 'redirects' ) {
 		// Get tab value.
 		$tab = $this->get_param( 'tab', $default );
 

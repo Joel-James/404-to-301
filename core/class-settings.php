@@ -239,6 +239,12 @@ class Settings extends Base {
 				'default'           => array(),
 				'description'       => __( '404 to 301 plugin settings', '404-to-301' ),
 				'sanitize_callback' => array( $this, 'sanitize_settings' ),
+//				'show_in_rest'      => array(
+//					'schema' => array(
+//						'type'    => 'boolean',
+//						'default' => true,
+//					),
+//				),
 			)
 		);
 	}

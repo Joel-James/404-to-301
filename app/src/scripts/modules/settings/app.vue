@@ -30,26 +30,31 @@ export default {
 					name: 'redirect',
 					label: this.__('Redirect', '404-to-301'),
 					icon: 'randomize',
+					component: '',
 				},
 				{
 					name: 'logs',
 					label: this.__('Logs', '404-to-301'),
 					icon: 'media-default',
+					component: '',
 				},
 				{
 					name: 'email',
 					label: this.__('Email', '404-to-301'),
 					icon: 'email-alt',
+					component: '',
 				},
 				{
 					name: 'general',
 					label: this.__('General', '404-to-301'),
 					icon: 'admin-generic',
+					component: '',
 				},
 				{
 					name: 'info',
 					label: this.__('Info', '404-to-301'),
 					icon: 'info',
+					component: '',
 				}
 			],
 		}

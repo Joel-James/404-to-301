@@ -1,13 +1,17 @@
 .#{$prefix}-wrap {
 
-  .nav-tab-wrapper {
+  .wp-filter {
+    .filter-links {
+      a {
+        &:hover,
+        &:focus {
+          color: #1d2327
+        }
 
-    a.nav-tab {
-      font-size: 13px !important;
-
-      &:focus {
-        box-shadow: none !important;
-        outline: none !important;
+        &:focus {
+          box-shadow: none !important;
+          outline: none !important;
+        }
       }
     }
   }

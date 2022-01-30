@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5c5e85b52ea6f542527249773e6c89c9",
+    "content-hash": "ac70a24009296d08d85f0bf1ecde0284",
     "packages": [
         {
             "name": "berlindb/core",
@@ -180,16 +180,16 @@
         },
         {
             "name": "duckdev/wp-review-notice",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/duckdev/wp-review-notice.git",
-                "reference": "cb6ba56de8d443ad74f5dbb88723382ac1472ae3"
+                "reference": "569ef315f269abcabf9df2cf1afd60b2a56f3169"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/duckdev/wp-review-notice/zipball/cb6ba56de8d443ad74f5dbb88723382ac1472ae3",
-                "reference": "cb6ba56de8d443ad74f5dbb88723382ac1472ae3",
+                "url": "https://api.github.com/repos/duckdev/wp-review-notice/zipball/569ef315f269abcabf9df2cf1afd60b2a56f3169",
+                "reference": "569ef315f269abcabf9df2cf1afd60b2a56f3169",
                 "shasum": ""
             },
             "require": {
@@ -220,9 +220,9 @@
             ],
             "support": {
                 "issues": "https://github.com/duckdev/wp-review-notice/issues/",
-                "source": "https://github.com/duckdev/wp-review-notice/tree/v1.0.1"
+                "source": "https://github.com/duckdev/wp-review-notice/tree/v1.0.2"
             },
-            "time": "2021-08-11T06:53:32+00:00"
+            "time": "2022-01-29T06:59:27+00:00"
         }
     ],
     "packages-dev": [],
