@@ -1,4 +1,3 @@
-import React from 'react'
 import classNames from 'classnames'
 
 export default (props) => {
@@ -17,6 +16,7 @@ export default (props) => {
 		>
 			{Object.keys(props.navs).map((key) =>
 				<a
+					key={key}
 					href="#"
 					className={classNames({
 						'dd4t3-nav-tab': true,

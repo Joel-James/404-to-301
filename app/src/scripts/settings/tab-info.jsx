@@ -1,12 +1,11 @@
-import React from 'react'
-
+const {Component} = wp.element
 const {__} = wp.i18n
 const {
 	Button,
 	PanelBody
 } = wp.components
 
-export default class Info extends React.Component {
+export default class TabInfo extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {}

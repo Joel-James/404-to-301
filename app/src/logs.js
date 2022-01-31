@@ -1,16 +1,12 @@
-require('./styles/settings.scss')
+const {render} = wp.element
 
-import React from 'react'
-import ReactDOM from 'react-dom'
-import Settings from './scripts/settings'
+import './styles/logs.scss'
+import Logs from './scripts/logs'
 
-wp.domReady(function () {
-	let settingsApp = document.getElementById('dd4t3-settings-app')
-
-	if (settingsApp !== null) {
-		ReactDOM.render(
-			<Settings/>,
-			document.getElementById('dd4t3-settings-app')
-		);
-	}
-});
+// Only if the app container found.
+if (document.getElementById('dd4t3-logs-app') !== null) {
+	render(
+		<Logs/>,
+		document.getElementById('dd4t3-logs-app')
+	)
+}

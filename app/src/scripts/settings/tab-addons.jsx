@@ -1,5 +1,3 @@
-import React from 'react'
-
 const {__} = wp.i18n
 const {
 	Card,
@@ -28,7 +26,7 @@ export default (props) => {
 				:
 				<__experimentalGrid columns={2}>
 					{props.addons.map((addon) =>
-						<Card>
+						<Card key={addon.title}>
 							<CardHeader>
 								<__experimentalHeading level={5}>{addon.title}</__experimentalHeading>
 							</CardHeader>
@@ -42,7 +40,7 @@ export default (props) => {
 									iconPosition="right"
 									href={addon.link}
 								>
-									View Details
+									{__('View Details', '404-to-301')}
 								</Button>
 							</CardFooter>
 						</Card>

@@ -1,5 +1,3 @@
-import React from 'react'
-
 const {__} = wp.i18n
 const {
 	PanelBody,
@@ -10,17 +8,12 @@ const {
 	ToggleControl,
 	SelectControl
 } = wp.components
+const {Component} = wp.element
 
-export default class RedirectsPanel extends React.Component {
+export default class RedirectsPanel extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			enable: false,
-			customUrl: '',
-			redirectTarget: 'link',
-			redirectPage: '',
-			redirectType: 301,
-		}
+		this.state = {}
 
 		// Bind updates.
 		this.updateValue = this.updateValue.bind(this);
@@ -51,7 +44,7 @@ export default class RedirectsPanel extends React.Component {
 
 		return (
 			<PanelBody
-				title={__('Redirects')}
+				title={__('Redirects', '404-to-301')}
 			>
 				<PanelRow>
 					<ToggleControl
@@ -64,8 +57,8 @@ export default class RedirectsPanel extends React.Component {
 
 				<PanelRow>
 					<RadioControl
-						label={__('Redirect type')}
-						help={__('The redirect type is the HTTP response code sent to the browser telling the browser what type of redirect is served.', '4045-to-301')}
+						label={__('Redirect type', '404-to-301')}
+						help={__('The redirect type is the HTTP response code sent to the browser telling the browser what type of redirect is served.', '404-to-301')}
 						selected={settings.redirect_type}
 						options={types}
 						onChange={(selected) => this.updateValue('redirect_type', selected)}
@@ -102,7 +95,7 @@ export default class RedirectsPanel extends React.Component {
 					:
 					<PanelRow>
 						<BaseControl
-							label={__('Custom URL')}
+							label={__('Custom URL', '404-to-301')}
 							help={__('Enter the email address where you want to get the email notification.', '404-to-301')}
 							id="dd4t3-custom-url"
 							className="dd4t3-full-width"

@@ -1,27 +1,17 @@
-import React from 'react'
-import LogsPanel from './panels/logs'
-import GeneralPanel from './panels/general'
-import RedirectsPanel from './panels/redirects'
-import NotificationsPanel from './panels/notifications'
+import LogsPanel from './settings-panels/logs'
+import GeneralPanel from './settings-panels/general'
+import RedirectsPanel from './settings-panels/redirects'
+import NotificationsPanel from './settings-panels/notifications'
 
 const {
 	Notice,
 	Dashicon
 } = wp.components
-
 const {__} = wp.i18n
 const {Button} = wp.components
-const axios = require('axios');
-const axiosConfig = {
-	baseURL: dd4t3.rest.base,
-	headers: {
-		'X-WP-Nonce': dd4t3.rest.nonce,
-	},
-}
-// Create new axios instance.
-const request = axios.create(axiosConfig)
+const {Component} = wp.element
 
-export default class Settings extends React.Component {
+export default class TabSettings extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -61,8 +51,6 @@ export default class Settings extends React.Component {
 
 		// Make progress button.
 		this.setState({saving: true})
-
-		window.scrollTo({ top: 0, behavior: 'smooth' });
 
 		// Get the list of addons.
 		await request.post('/settings', {

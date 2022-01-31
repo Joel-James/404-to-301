@@ -92,6 +92,7 @@ module.exports = {
 	resolve: {
 		extensions: ['.js', '.jsx'],
 		alias: {
+			'@': path.join(__dirname, 'app/src/scripts'),
 			react: path.resolve('./node_modules/react'),
 		},
 	},

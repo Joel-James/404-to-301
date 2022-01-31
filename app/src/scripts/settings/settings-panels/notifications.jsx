@@ -1,5 +1,3 @@
-import React from 'react'
-
 const {__} = wp.i18n
 const {
 	PanelBody,
@@ -7,8 +5,9 @@ const {
 	TextControl,
 	ToggleControl
 } = wp.components
+const {Component} = wp.element
 
-export default class Notifications extends React.Component {
+export default class Notifications extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -17,17 +16,32 @@ export default class Notifications extends React.Component {
 		}
 	}
 
+	/**
+	 * Update a field value in state.
+	 *
+	 * @param {string} field Field name.
+	 * @param {mixed} value Field value.
+	 *
+	 * @since 4.0.0
+	 */
+	updateValue(field, value) {
+		// Update field value.
+		this.props.onUpdate(field, value)
+	}
+
 	render() {
+		const settings = this.props.settings
+
 		return (
 			<PanelBody
 				title={__('Notifications', '404-to-301')}
 			>
 				<PanelRow>
 					<ToggleControl
-						checked={this.state.enable}
+						checked={settings.email_enabled}
 						label={__('Enable email notifications for 404 errors', '404-to-301')}
 						help={__('Do you want to receive and email notification for each 404 errors?', '404-to-301')}
-						onChange={(checked) => this.setState({enable: checked})}
+						onChange={(checked) => this.updateValue('email_enabled', checked)}
 					/>
 				</PanelRow>
 
@@ -35,7 +49,8 @@ export default class Notifications extends React.Component {
 					<TextControl
 						label={__('Recipient email', '404-to-301')}
 						help={__('Enter the email address where you want to get the email notification.', '404-to-301')}
-						onChange={(value) => this.setState({recipient: value})}
+						value={settings.email_recipient}
+						onChange={(value) => this.updateValue('email_recipient', value)}
 					/>
 				</PanelRow>
 			</PanelBody>
