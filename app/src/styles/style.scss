@@ -1,3 +1,5 @@
+@import '~react-notifications-component/dist/scss/notification';
+
 // Fix for padding in wrap class.
 #wpcontent {
   padding-left: 0 !important;
@@ -134,5 +136,15 @@
         }
       }
     }
+  }
+
+  .dd4t3-footer {
+    text-align: center;
+    margin: 0 0 1rem;
+  }
+
+  .rnc__notification-container--bottom-left {
+    left: 15px;
+    bottom: 30px;
   }
 }

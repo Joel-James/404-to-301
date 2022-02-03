@@ -2,11 +2,9 @@ import LogsPanel from './settings-panels/logs'
 import GeneralPanel from './settings-panels/general'
 import RedirectsPanel from './settings-panels/redirects'
 import NotificationsPanel from './settings-panels/notifications'
+import notify from '@/helpers/notify'
+import request from '@/helpers/request'
 
-const {
-	Notice,
-	Dashicon
-} = wp.components
 const {__} = wp.i18n
 const {Button} = wp.components
 const {Component} = wp.element
@@ -58,6 +56,14 @@ export default class TabSettings extends Component {
 		})
 		.then(function (response) {
 			self.setState({settings: response.data.data})
+			// Show notification.
+			notify(__('Changes have been updated.', '404-to-301'))
+		}).catch(function (error) {
+			// Show notification.
+			notify(
+				__('Could not save the changes. Please try again.', '404-to-301'),
+				'error'
+			)
 		})
 
 		// Remove progress button.
@@ -67,12 +73,6 @@ export default class TabSettings extends Component {
 	render() {
 		return (
 			<>
-				<Notice status="success">
-					<p>
-						<Dashicon icon="yes" />
-						Settings has been updated.
-					</p>
-				</Notice>
 				<RedirectsPanel
 					settings={this.state.settings}
 					onUpdate={this.updateSetting}
@@ -93,15 +93,17 @@ export default class TabSettings extends Component {
 					onUpdate={this.updateSetting}
 				/>
 
-				<Button
-					disabled={this.state.saving}
-					isBusy={this.state.saving}
-					variant="primary"
-					icon={this.state.saving ? null : 'yes'}
-					onClick={() => this.saveSettings()}
-				>
-					{this.state.saving ? __('Saving..', '404-to-301') : __('Save Changes', '404-to-301')}
-				</Button>
+				<div className="dd4t3-footer">
+					<Button
+						disabled={this.state.saving}
+						isBusy={this.state.saving}
+						variant="primary"
+						icon={this.state.saving ? null : 'yes'}
+						onClick={() => this.saveSettings()}
+					>
+						{this.state.saving ? __('Saving..', '404-to-301') : __('Save Changes', '404-to-301')}
+					</Button>
+				</div>
 			</>
 		);
 	}

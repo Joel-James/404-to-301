@@ -12,6 +12,7 @@ import TabInfo from './settings/tab-info'
 import TabAddons from './settings/tab-addons'
 import TabSettings from './settings/tab-settings'
 import NavTabs from './settings/components/nav-tabs'
+import { ReactNotifications } from 'react-notifications-component'
 
 export default class Settings extends Component {
 	constructor(props) {
@@ -48,6 +49,7 @@ export default class Settings extends Component {
 	render() {
 		return (
 			<>
+				<ReactNotifications />
 				<div className="dd4t3-header">
 					<div className="dd4t3-title-section">
 						<h1>404 to 301</h1>
