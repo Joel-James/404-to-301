@@ -1,0 +1,17 @@
+.#{$prefix}-settings-wrap {
+
+  .components-button {
+    &.has-icon:not(.is-small) {
+      padding-left: 6px;
+      padding-right: 12px;
+    }
+  }
+
+  .#{$prefix}-button-group {
+    display: flex;
+
+    .components-button:not(:last-child) {
+      margin-right: 15px;
+    }
+  }
+}

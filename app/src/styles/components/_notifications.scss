@@ -1,0 +1,10 @@
+// External scss for notifications.
+@import '~react-notifications-component/dist/scss/notification';
+
+.#{$prefix}-settings-wrap {
+
+  .rnc__notification-container--bottom-left {
+    left: 15px;
+    bottom: 30px;
+  }
+}

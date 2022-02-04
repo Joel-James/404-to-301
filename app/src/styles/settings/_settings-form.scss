@@ -1,0 +1,44 @@
+.#{$prefix}-settings-wrap {
+
+  .#{$prefix}-main {
+
+    .components-panel__body {
+
+      // Toggle elements.
+      .components-panel__body-toggle {
+        border-bottom: 1px solid #d6e2ed;
+      }
+
+      .components-base-control {
+        .components-base-control__field {
+          align-items: center;
+          margin-bottom: 10px;
+
+          .components-radio-control__option {
+            margin-bottom: 12px;
+          }
+        }
+
+        // Make labels bold.
+        .components-base-control__label,
+        label:not(.components-toggle-control__label) {
+          font-weight: 600;
+          margin-bottom: 10px;
+        }
+
+        .components-radio-control__option {
+          label {
+            font-weight: normal;
+          }
+        }
+
+        &.#{$prefix}-full-width {
+          // Make input inside full width.
+          input:not([type=radio]) {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}

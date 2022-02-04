@@ -1,6 +1,6 @@
 const {render} = wp.element
 
-import './styles/style.scss'
+import './styles/settings.scss'
 import Settings from './scripts/settings'
 
 // Only if the app container found.

@@ -87,7 +87,7 @@ export default class RepeatTable extends Component {
 
 	render() {
 		return (
-			<table className="duckdev-table">
+			<table className="dd4t3-repeat-table">
 				<tbody>
 				{this.state.items.map((item, index) =>
 					<tr key={index}>
@@ -98,7 +98,7 @@ export default class RepeatTable extends Component {
 								onChange={(value) => this.updateRow(value, index)}
 							/>
 						</td>
-						<td className="dd4t3-repeat-table-delete-column">
+						<td className="dd4t3-repeat-table-delete">
 							<Button
 								variant="tertiary"
 								className="dd4t3-repeat-table-delete-button"

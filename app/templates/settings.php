@@ -17,5 +17,4 @@
  */
 
 ?>
-<div id="dd4t3-settings-app">
-</div>
+<div id="dd4t3-settings-app" class="dd4t3-settings-wrap"></div>
