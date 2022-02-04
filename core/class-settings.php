@@ -171,13 +171,16 @@ class Settings extends Base {
 		// Get old settings.
 		$old_values = $this->all();
 
+		// Now format it.
+		$values = $this->format_values( $values );
+
 		// No need to update if values are same, but tell WP it's updated.
 		if ( $values === $old_values ) {
 			return true;
 		}
 
 		// Update the options.
-		return update_option( self::KEY, $this->format_values( $values ) );
+		return update_option( self::KEY, $values );
 	}
 
 	/**
@@ -304,14 +307,12 @@ class Settings extends Base {
 		// Format the settings.
 		foreach ( $defaults as $key => $value ) {
 			if ( isset( $values[ $key ] ) ) {
-				$processed[ $key ] = $values[ $key ];
+				$processed[ $key ] = $this->sanitize_field( $key, $values[ $key ] );
 			} else {
 				// If the field is missing, set empty value.
 				$processed[ $key ] = $this->get_empty_value( $key );
 			}
 		}
-
-		wpmudev_debug('inside');
 
 		/**
 		 * Filter to modify plugin settings formatted result.
@@ -350,6 +351,41 @@ class Settings extends Base {
 			} elseif ( is_string( $default[ $key ] ) ) {
 				$value = '';
 			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Format specially attention required fields.
+	 *
+	 * Some fields should only accept properly formatted
+	 * values. For example an email field.
+	 *
+	 * @param string $field Field name.
+	 * @param mixed  $value Field value.
+	 *
+	 * @since  4.0.0
+	 *
+	 * @return array
+	 */
+	private function sanitize_field( $field, $value ) {
+		switch ( $field ) {
+			case 'exclude_paths':
+				$value = array_filter(
+					(array) $value,
+					function ( $index, $path ) {
+						return '' !== $path;
+					},
+					ARRAY_FILTER_USE_BOTH
+				);
+				break;
+			case 'redirect_link':
+				$value = esc_url_raw( $value );
+				break;
+			case 'email_recipient':
+				$value = is_email( $value ) ? $value : '';
+				break;
 		}
 
 		return $value;
