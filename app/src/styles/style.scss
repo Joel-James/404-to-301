@@ -99,7 +99,8 @@
             }
           }
 
-          label:not(.components-toggle-control__label) {
+          label:not(.components-toggle-control__label),
+          .components-base-control__label {
             font-weight: 600;
             margin-bottom: 10px;
           }
@@ -124,6 +125,16 @@
     .duckdev-table {
       width: 100%;
       border-spacing: 0 5px;
+
+      .dd4t3-repeat-table-delete-column {
+        vertical-align: middle;
+        padding-bottom: 10px;
+        padding-left: 6px;
+
+        .dd4t3-repeat-table-delete-button {
+          padding: 14px;
+        }
+      }
     }
 
     .dd4t3-info {
@@ -141,6 +152,13 @@
   .dd4t3-footer {
     text-align: center;
     margin: 0 0 1rem;
+
+    .components-button {
+      &.has-icon {
+        padding-left: 6px;
+        padding-right: 12px;
+      }
+    }
   }
 
   .rnc__notification-container--bottom-left {

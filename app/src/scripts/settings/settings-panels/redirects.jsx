@@ -103,6 +103,7 @@ export default class RedirectsPanel extends Component {
 							<TextControl
 								value={settings.redirect_link}
 								id="dd4t3-custom-url"
+								type="url"
 								placeholder={__('https://google.com')}
 								onChange={(value) => this.updateValue('redirect_link', value)}
 							/>

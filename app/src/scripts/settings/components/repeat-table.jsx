@@ -29,7 +29,7 @@ export default class RepeatTable extends Component {
 	}
 
 	/**
-	 * Add new row to the table.
+	 * Update an item in the table.
 	 *
 	 * @since 4.0.0
 	 */
@@ -59,6 +59,32 @@ export default class RepeatTable extends Component {
 		})
 	}
 
+	/**
+	 * Check if last item of the array is empty.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return {boolean}
+	 */
+	isLastItemEmpty() {
+		let items = this.state.items
+		return '' === items.slice(-1)[0]
+	}
+
+	/**
+	 * On state change update items in settings.
+	 *
+	 * @param {object} prevProps Previous props.
+	 * @param {object} prevState Previous state.
+	 *
+	 * @since 4.0.0
+	 */
+	componentDidUpdate(prevProps, prevState) {
+		if (this.state.items !== prevState.items) {
+			this.props.onChange(this.state.items)
+		}
+	}
+
 	render() {
 		return (
 			<table className="duckdev-table">
@@ -72,10 +98,13 @@ export default class RepeatTable extends Component {
 								onChange={(value) => this.updateRow(value, index)}
 							/>
 						</td>
-						<td>
+						<td className="dd4t3-repeat-table-delete-column">
 							<Button
 								variant="tertiary"
+								className="dd4t3-repeat-table-delete-button"
 								isSmall={true}
+								isDestructive={true}
+								showTooltip={true}
 								icon="trash"
 								onClick={() => this.deleteRow(index)}
 							>
@@ -92,6 +121,7 @@ export default class RepeatTable extends Component {
 							isSmall={true}
 							icon="plus"
 							onClick={() => this.addRow()}
+							disabled={this.isLastItemEmpty()}
 						>
 							{__('Add', '404-to-301')}
 						</Button>

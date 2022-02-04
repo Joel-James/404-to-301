@@ -72,10 +72,8 @@ export default class General extends Component {
 						help={__('Use this option to exclude a URL from being detected as 404 by the plugin. It will be wildcard checked using', '404-to-301')}
 					>
 						<RepeatTable
-							items={[
-								'test',
-								'test2'
-							]}
+							items={settings.exclude_paths}
+							onChange={(paths) => this.updateValue('exclude_paths', paths)}
 						/>
 					</BaseControl>
 				</PanelRow>

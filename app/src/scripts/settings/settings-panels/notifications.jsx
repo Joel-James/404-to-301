@@ -49,6 +49,7 @@ export default class Notifications extends Component {
 					<TextControl
 						label={__('Recipient email', '404-to-301')}
 						help={__('Enter the email address where you want to get the email notification.', '404-to-301')}
+						type="email"
 						value={settings.email_recipient}
 						onChange={(value) => this.updateValue('email_recipient', value)}
 					/>

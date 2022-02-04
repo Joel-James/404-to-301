@@ -168,6 +168,14 @@ class Settings extends Base {
 		 */
 		$values = apply_filters( 'dd4t3_settings_pre_update', $values );
 
+		// Get old settings.
+		$old_values = $this->all();
+
+		// No need to update if values are same, but tell WP it's updated.
+		if ( $values === $old_values ) {
+			return true;
+		}
+
 		// Update the options.
 		return update_option( self::KEY, $this->format_values( $values ) );
 	}
@@ -239,12 +247,6 @@ class Settings extends Base {
 				'default'           => array(),
 				'description'       => __( '404 to 301 plugin settings', '404-to-301' ),
 				'sanitize_callback' => array( $this, 'sanitize_settings' ),
-//				'show_in_rest'      => array(
-//					'schema' => array(
-//						'type'    => 'boolean',
-//						'default' => true,
-//					),
-//				),
 			)
 		);
 	}
@@ -308,6 +310,8 @@ class Settings extends Base {
 				$processed[ $key ] = $this->get_empty_value( $key );
 			}
 		}
+
+		wpmudev_debug('inside');
 
 		/**
 		 * Filter to modify plugin settings formatted result.
