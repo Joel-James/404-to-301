@@ -5,7 +5,7 @@
  * This file contains the cleanup after the plugin is uninstalled.
  *
  * @category   Core
- * @package    JJ4T3
+ * @package    DD4T3
  * @subpackage Uninstall
  * @author     Joel James <mail@cjoel.com>
  * @license    http://www.gnu.org/licenses/ GNU General Public License
