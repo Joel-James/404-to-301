@@ -1,12 +1,12 @@
-const {render} = wp.element
-
+import React from 'react'
+import ReactDOM from 'react-dom'
 import './styles/settings.scss'
 import Settings from './scripts/settings'
 
+// Get settings app container.
+const container = document.getElementById('dd4t3-settings-app')
+
 // Only if the app container found.
-if (document.getElementById('dd4t3-settings-app') !== null) {
-	render(
-		<Settings/>,
-		document.getElementById('dd4t3-settings-app')
-	)
+if (container !== null) {
+	ReactDOM.render(<Settings />, container)
 }

@@ -1,13 +1,12 @@
-const {Component} = wp.element
-const {__} = wp.i18n
-const {
-	Button,
-	PanelBody
-} = wp.components
+/* global wp */
+import React from 'react'
+import { Button, PanelBody } from '@wordpress/components'
 
-export default class TabInfo extends Component {
+const { __ } = wp.i18n
+
+export default class TabInfo extends React.Component {
 	constructor(props) {
-		super(props);
+		super(props)
 		this.state = {}
 	}
 
@@ -15,7 +14,12 @@ export default class TabInfo extends Component {
 		return (
 			<>
 				<PanelBody title={__('Help & Support', '404-to-301')}>
-					<p>{__('Our extensive documentation contains references and guides for most situations you may encounter. We have an active and friendly community on our wp.org forum who may be able to help you figure out the ‘how-tos’ of the 404 to 301 world.', '404-to-301')}</p>
+					<p>
+						{__(
+							'Our extensive documentation contains references and guides for most situations you may encounter. We have an active and friendly community on our wp.org forum who may be able to help you figure out the ‘how-tos’ of the 404 to 301 world.',
+							'404-to-301'
+						)}
+					</p>
 					<div className="dd4t3-button-group">
 						<Button
 							variant="secondary"
@@ -38,7 +42,12 @@ export default class TabInfo extends Component {
 				</PanelBody>
 
 				<PanelBody title={__('About the Author', '404-to-301')}>
-					<p>{__('Hey, I am Joel James, a WordPress developer from Kerala, India. I spend a few hours every week to contribute to open source. I have a few other WordPress plugin which I would recommend you to try out.', '404-to-301')}</p>
+					<p>
+						{__(
+							'Hey, I am Joel James, a WordPress developer from Kerala, India. I spend a few hours every week to contribute to open source. I have a few other WordPress plugin which I would recommend you to try out.',
+							'404-to-301'
+						)}
+					</p>
 					<div className="dd4t3-button-group">
 						<Button
 							variant="secondary"
@@ -60,6 +69,6 @@ export default class TabInfo extends Component {
 					</div>
 				</PanelBody>
 			</>
-		);
+		)
 	}
 }

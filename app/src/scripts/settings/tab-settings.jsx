@@ -1,24 +1,25 @@
+/* global wp */
+import React from 'react'
 import LogsPanel from './settings-panels/logs'
 import GeneralPanel from './settings-panels/general'
 import RedirectsPanel from './settings-panels/redirects'
 import NotificationsPanel from './settings-panels/notifications'
 import notify from '@/helpers/notify'
 import request from '@/helpers/request'
+import { Button } from '@wordpress/components'
 
-const {__} = wp.i18n
-const {Button} = wp.components
-const {Component} = wp.element
+const { __ } = wp.i18n
 
-export default class TabSettings extends Component {
+export default class TabSettings extends React.Component {
 	constructor(props) {
-		super(props);
+		super(props)
 		this.state = {
 			saving: false,
-			settings: this.props.settings
+			settings: this.props.settings,
 		}
 
 		// Bind updates.
-		this.updateSetting = this.updateSetting.bind(this);
+		this.updateSetting = this.updateSetting.bind(this)
 	}
 
 	/**
@@ -34,9 +35,9 @@ export default class TabSettings extends Component {
 		this.setState({
 			settings: {
 				...this.state.settings,
-				[field]: value
-			}
-		});
+				[field]: value,
+			},
+		})
 	}
 
 	/**
@@ -48,26 +49,31 @@ export default class TabSettings extends Component {
 		const self = this
 
 		// Make progress button.
-		this.setState({saving: true})
+		this.setState({ saving: true })
 
 		// Get the list of addons.
-		await request.post('/settings', {
-			value: self.state.settings
-		})
-		.then(function (response) {
-			self.setState({settings: response.data.data})
-			// Show notification.
-			notify(__('Changes have been updated.', '404-to-301'))
-		}).catch(function (error) {
-			// Show notification.
-			notify(
-				__('Could not save the changes. Please try again.', '404-to-301'),
-				'error'
-			)
-		})
+		await request
+			.post('/settings', {
+				value: self.state.settings,
+			})
+			.then(function (response) {
+				self.setState({ settings: response.data.data })
+				// Show notification.
+				notify(__('Changes have been updated.', '404-to-301'))
+			})
+			.catch(function (error) {
+				// Show notification.
+				notify(
+					__(
+						'Could not save the changes. Please try again.',
+						'404-to-301'
+					),
+					'error'
+				)
+			})
 
 		// Remove progress button.
-		this.setState({saving: false})
+		this.setState({ saving: false })
 	}
 
 	render() {
@@ -101,10 +107,12 @@ export default class TabSettings extends Component {
 						icon={this.state.saving ? null : 'yes'}
 						onClick={() => this.saveSettings()}
 					>
-						{this.state.saving ? __('Saving..', '404-to-301') : __('Save Changes', '404-to-301')}
+						{this.state.saving
+							? __('Saving..', '404-to-301')
+							: __('Save Changes', '404-to-301')}
 					</Button>
 				</div>
 			</>
-		);
+		)
 	}
 }

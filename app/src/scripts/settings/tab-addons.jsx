@@ -1,5 +1,6 @@
-const {__} = wp.i18n
-const {
+/* global wp */
+import React from 'react'
+import {
 	Card,
 	Button,
 	CardHeader,
@@ -9,29 +10,30 @@ const {
 	__experimentalGrid,
 	__experimentalText,
 	__experimentalHeading,
-} = wp.components
+} from '@wordpress/components'
 
-export default (props) => {
+const { __ } = wp.i18n
+
+export default function TabAddons(props) {
 	return (
 		<>
-			{props.addons.length <= 0 ?
-				<Notice
-					status="info"
-					isDismissible={false}
-				>
-					<p>
-						{__('No addons found.', '404-to-301')}
-					</p>
+			{props.addons.length <= 0 ? (
+				<Notice status="info" isDismissible={false}>
+					<p>{__('No addons found.', '404-to-301')}</p>
 				</Notice>
-				:
+			) : (
 				<__experimentalGrid columns={2}>
-					{props.addons.map((addon) =>
+					{props.addons.map((addon) => (
 						<Card key={addon.title}>
 							<CardHeader>
-								<__experimentalHeading level={5}>{addon.title}</__experimentalHeading>
+								<__experimentalHeading level={5}>
+									{addon.title}
+								</__experimentalHeading>
 							</CardHeader>
 							<CardBody>
-								<__experimentalText>{addon.description}</__experimentalText>
+								<__experimentalText>
+									{addon.description}
+								</__experimentalText>
 							</CardBody>
 							<CardFooter>
 								<Button
@@ -44,9 +46,9 @@ export default (props) => {
 								</Button>
 							</CardFooter>
 						</Card>
-					)}
+					))}
 				</__experimentalGrid>
-			}
+			)}
 		</>
 	)
 }

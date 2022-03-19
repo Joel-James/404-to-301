@@ -15,19 +15,19 @@ import { createStore } from 'vuex'
 export const Flags = createStore({
 	namespaced: true,
 
-	state () {
+	state() {
 		return {
-			loading: false
+			loading: false,
 		}
 	},
 
 	mutations: {
-		startLoading (state) {
+		startLoading(state) {
 			state.loading = true
 		},
 
-		stopLoading (state) {
+		stopLoading(state) {
 			state.loading = false
-		}
-	}
+		},
+	},
 })

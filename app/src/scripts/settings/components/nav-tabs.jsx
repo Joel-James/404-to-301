@@ -1,6 +1,7 @@
+import React from 'react'
 import classNames from 'classnames'
 
-export default (props) => {
+export default function NavTabs(props) {
 	let grids = []
 	// We need to calculate grid size.
 	Object.keys(props.navs).forEach(() => {
@@ -11,10 +12,10 @@ export default (props) => {
 		<nav
 			className="dd4t3-tabs-wrapper"
 			style={{
-				gridTemplateColumns: grids.join(' ')
+				gridTemplateColumns: grids.join(' '),
 			}}
 		>
-			{Object.keys(props.navs).map((key) =>
+			{Object.keys(props.navs).map((key) => (
 				<a
 					key={key}
 					href="#"
@@ -26,7 +27,7 @@ export default (props) => {
 				>
 					{props.navs[key]}
 				</a>
-			)}
+			))}
 		</nav>
-	);
+	)
 }

@@ -1,5 +1,6 @@
-const {__} = wp.i18n
-import {Store} from 'react-notifications-component'
+/* global wp */
+const { __ } = wp.i18n
+import { Store } from 'react-notifications-component'
 
 const notify = (message = '', type = 'success') => {
 	let title = ''
@@ -21,7 +22,6 @@ const notify = (message = '', type = 'success') => {
 			type = 'default'
 			title = __('Note', '404-to-301')
 			break
-
 	}
 
 	// Show notification.
@@ -36,8 +36,8 @@ const notify = (message = '', type = 'success') => {
 		dismiss: {
 			duration: 5000,
 			onScreen: true,
-			pauseOnHover: true
-		}
+			pauseOnHover: true,
+		},
 	})
 }
 

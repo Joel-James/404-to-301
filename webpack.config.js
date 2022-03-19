@@ -1,9 +1,9 @@
 const path = require('path'),
 	ATP = require('autoprefixer'),
-	CSSExtract = require('mini-css-extract-plugin');
+	CSSExtract = require('mini-css-extract-plugin')
 
-const TerserPlugin = require('terser-webpack-plugin'); // Included with Webpack v5.
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin') // Included with Webpack v5.
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 // The path where the Shared UI fonts & images should be sent.
 const config = {
@@ -11,13 +11,13 @@ const config = {
 		imagesDirectory: '../images',
 		fontsDirectory: '../fonts',
 	},
-};
+}
 
 module.exports = {
 	mode: 'production',
 
 	entry: {
-		'settings': './app/src/settings.js',
+		settings: './app/src/settings.js',
 	},
 
 	output: {
@@ -30,9 +30,7 @@ module.exports = {
 		rules: [
 			{
 				test: /\.(js|jsx)$/,
-				include: [
-					path.resolve(__dirname, 'app/src')
-				],
+				include: [path.resolve(__dirname, 'app/src')],
 				exclude: /node_modules/,
 				use: {
 					loader: 'babel-loader',
@@ -133,4 +131,4 @@ module.exports = {
 			}),
 		],
 	},
-};
+}

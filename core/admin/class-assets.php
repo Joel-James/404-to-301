@@ -273,7 +273,7 @@ class Assets extends Base {
 			// Setting scripts.
 			'dd4t3-settings'  => array(
 				'src'  => 'settings.min.js',
-				'deps' => array( 'jquery', 'wp-api', 'wp-i18n', 'wp-components', 'wp-element' ),
+				'deps' => array( 'jquery', 'wp-i18n' ),
 			),
 			// Redirects scripts.
 			'dd4t3-redirects' => array(

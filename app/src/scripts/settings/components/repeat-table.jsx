@@ -1,15 +1,14 @@
-const {Component} = wp.element
-const {__} = wp.i18n
-const {
-	Button,
-	TextControl,
-} = wp.components
+/* global wp */
+import React from 'react'
+import { Button, TextControl } from '@wordpress/components'
 
-export default class RepeatTable extends Component {
+const { __ } = wp.i18n
+
+export default class RepeatTable extends React.Component {
 	constructor(props) {
-		super(props);
+		super(props)
 		this.state = {
-			items: this.props.items
+			items: this.props.items,
 		}
 	}
 
@@ -24,7 +23,7 @@ export default class RepeatTable extends Component {
 		items.push('')
 		// Push new row.
 		this.setState({
-			items: items
+			items: items,
 		})
 	}
 
@@ -39,7 +38,7 @@ export default class RepeatTable extends Component {
 		items[index] = value
 		// Push new row.
 		this.setState({
-			items: items
+			items: items,
 		})
 	}
 
@@ -55,7 +54,7 @@ export default class RepeatTable extends Component {
 		// Remove one item from array.
 		items.splice(index, 1)
 		this.setState({
-			items: items
+			items: items,
 		})
 	}
 
@@ -89,46 +88,47 @@ export default class RepeatTable extends Component {
 		return (
 			<table className="dd4t3-repeat-table">
 				<tbody>
-				{this.state.items.map((item, index) =>
-					<tr key={index}>
-						<td>
-							<TextControl
-								placeholder="wp-content/"
-								value={item}
-								onChange={(value) => this.updateRow(value, index)}
-							/>
-						</td>
-						<td className="dd4t3-repeat-table-delete">
+					{this.state.items.map((item, index) => (
+						<tr key={index}>
+							<td>
+								<TextControl
+									placeholder="wp-content/"
+									value={item}
+									onChange={(value) =>
+										this.updateRow(value, index)
+									}
+								/>
+							</td>
+							<td className="dd4t3-repeat-table-delete">
+								<Button
+									variant="tertiary"
+									className="dd4t3-repeat-table-delete-button"
+									isSmall={true}
+									isDestructive={true}
+									showTooltip={true}
+									icon="trash"
+									onClick={() => this.deleteRow(index)}
+								></Button>
+							</td>
+						</tr>
+					))}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colSpan="2">
 							<Button
-								variant="tertiary"
-								className="dd4t3-repeat-table-delete-button"
+								variant="secondary"
 								isSmall={true}
-								isDestructive={true}
-								showTooltip={true}
-								icon="trash"
-								onClick={() => this.deleteRow(index)}
+								icon="plus"
+								onClick={() => this.addRow()}
+								disabled={this.isLastItemEmpty()}
 							>
+								{__('Add', '404-to-301')}
 							</Button>
 						</td>
 					</tr>
-				)}
-				</tbody>
-				<tfoot>
-				<tr>
-					<td colSpan="2">
-						<Button
-							variant="secondary"
-							isSmall={true}
-							icon="plus"
-							onClick={() => this.addRow()}
-							disabled={this.isLastItemEmpty()}
-						>
-							{__('Add', '404-to-301')}
-						</Button>
-					</td>
-				</tr>
 				</tfoot>
 			</table>
-		);
+		)
 	}
 }

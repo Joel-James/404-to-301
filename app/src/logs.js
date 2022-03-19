@@ -1,12 +1,13 @@
-const {render} = wp.element
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 import './styles/logs.scss'
 import Logs from './scripts/logs'
 
+// Get logs app container.
+const container = document.getElementById('dd4t3-logs-app')
+
 // Only if the app container found.
-if (document.getElementById('dd4t3-logs-app') !== null) {
-	render(
-		<Logs/>,
-		document.getElementById('dd4t3-logs-app')
-	)
+if (container !== null) {
+	ReactDOM.render(<Logs />, container)
 }
