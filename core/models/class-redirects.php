@@ -5,10 +5,10 @@
  * This class handles the database queries for redirects.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Model
  * @subpackage Redirects
  */
@@ -32,10 +32,10 @@ class Redirects extends Model {
 	/**
 	 * Get a redirect by ID.
 	 *
-	 * @param int $redirect_id Redirect ID.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param int $redirect_id Redirect ID.
 	 *
 	 * @return object|false Redirect object if successful, false otherwise.
 	 */
@@ -49,10 +49,10 @@ class Redirects extends Model {
 	/**
 	 * Get a log by path.
 	 *
-	 * @param string $path Source path.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param string $path Source path.
 	 *
 	 * @return object|false Redirect object if successful, false otherwise.
 	 */
@@ -68,10 +68,10 @@ class Redirects extends Model {
 	 *
 	 * Return the redirect data from using the ID.
 	 *
-	 * @param array $args Filter items using fields.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param array $args Filter items using fields.
 	 *
 	 * @return array
 	 */
@@ -96,10 +96,10 @@ class Redirects extends Model {
 	 *
 	 * Make sure to validate all fields before adding it.
 	 *
-	 * @param array $data Data.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param array $data Data.
 	 *
 	 * @return bool
 	 */
@@ -119,11 +119,11 @@ class Redirects extends Model {
 	/**
 	 * Update an existing redirect.
 	 *
-	 * @param int   $redirect_id Redirect ID.
-	 * @param array $data        Data.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param int   $redirect_id Redirect ID.
+	 * @param array $data        Data.
 	 *
 	 * @return bool
 	 */
@@ -145,10 +145,10 @@ class Redirects extends Model {
 	 *
 	 * Deleting a redirect won't delete it's error log (if any).
 	 *
-	 * @param int $redirect_id Redirect ID.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param int $redirect_id Redirect ID.
 	 *
 	 * @return bool
 	 */

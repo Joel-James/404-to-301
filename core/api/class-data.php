@@ -5,10 +5,10 @@
  * This class handles the API endpoint for getting data.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Endpoint
  * @subpackage Data
  */
@@ -35,9 +35,9 @@ class Data extends Endpoint {
 	/**
 	 * API endpoint for the current api.
 	 *
-	 * @var string $endpoint
 	 * @since  4.0.0
 	 * @access private
+	 * @var string $endpoint
 	 */
 	private $endpoint = '/data';
 
@@ -73,15 +73,14 @@ class Data extends Endpoint {
 	 * Addon list is currently static. We will soon get it from
 	 * and external API endpoint.
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response
 	 */
 	public function get_addons( $request ) {
-		// Currently only a few items available.
 		return $this->get_response( Redirect\Data::addons() );
 	}
 }

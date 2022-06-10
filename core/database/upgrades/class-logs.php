@@ -5,10 +5,10 @@
  * Upgrading old error logs to new tables using background processing.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Upgrade
  * @subpackage Upgrade
  */
@@ -32,9 +32,9 @@ class Logs extends Process {
 	/**
 	 * Holds the name of the background process action.
 	 *
-	 * @var    string
 	 * @since  4.0.0
 	 * @access protected
+	 * @var    string
 	 */
 	protected $action = 'logs_upgrade';
 
@@ -44,10 +44,10 @@ class Logs extends Process {
 	 * This should be called once. Once started,
 	 * upgrader will continue by it's own.
 	 *
-	 * @param string $action Action name (skip, start).
-	 *
 	 * @since  4.0.0
 	 * @access protected
+	 *
+	 * @param string $action Action name (skip, start).
 	 *
 	 * @return void
 	 */
@@ -89,11 +89,11 @@ class Logs extends Process {
 	 * This will process a single item from the batch.
 	 * Move old to logs, options and redirects tables.
 	 *
-	 * @param int    $item  Log id.
-	 * @param string $group Name of the process.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param int    $item  Log id.
+	 * @param string $group Name of the process.
 	 *
 	 * @return bool
 	 */
@@ -174,11 +174,11 @@ class Logs extends Process {
 	 *
 	 * Few field names has been changed and new fields are added.
 	 *
-	 * @param array $log     Log data.
-	 * @param array $options Old options.
-	 *
 	 * @since  4.0.0
 	 * @access private
+	 *
+	 * @param array $log     Log data.
+	 * @param array $options Old options.
 	 *
 	 * @return void
 	 */
@@ -216,11 +216,12 @@ class Logs extends Process {
 	 * If a custom redirect link is found, create an item
 	 * for our redirects table.
 	 *
-	 * @param array $log     Log item.
-	 * @param array $options Old options.
-	 *
 	 * @since  4.0.0
 	 * @access private
+	 *
+	 * @param array $options Old options.
+	 *
+	 * @param array $log     Log item.
 	 *
 	 * @return void
 	 */
@@ -258,10 +259,10 @@ class Logs extends Process {
 	/**
 	 * Helper method to get a new status value from old one.
 	 *
-	 * @param mixed $value Value to check.
-	 *
 	 * @since  4.0.0
 	 * @access private
+	 *
+	 * @param mixed $value Value to check.
 	 *
 	 * @return string
 	 */
@@ -282,12 +283,13 @@ class Logs extends Process {
 	 *
 	 * If not found, return default value.
 	 *
-	 * @param string $key     Item key.
+	 * @since  1.0.0
+	 * @access protected
+	 *
 	 * @param array  $data    Data to check.
 	 * @param mixed  $default Default value.
 	 *
-	 * @since  1.0.0
-	 * @access protected
+	 * @param string $key     Item key.
 	 *
 	 * @return mixed
 	 */
@@ -320,10 +322,10 @@ class Logs extends Process {
 	/**
 	 * Get the old log item from old table.
 	 *
-	 * @param int $id Log item id.
-	 *
 	 * @since  4.0.0
 	 * @access private
+	 *
+	 * @param int $id Log item id.
 	 *
 	 * @return array|bool
 	 */
@@ -403,10 +405,10 @@ class Logs extends Process {
 	/**
 	 * Get the table name appending prefix.
 	 *
-	 * @param string $table Table key.
-	 *
 	 * @since  4.0.0
 	 * @access protected
+	 *
+	 * @param string $table Table key.
 	 *
 	 * @return string
 	 */

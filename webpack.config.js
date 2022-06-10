@@ -17,6 +17,7 @@ module.exports = {
 	mode: 'production',
 
 	entry: {
+		logs: './app/src/logs.js',
 		settings: './app/src/settings.js',
 	},
 
@@ -90,7 +91,7 @@ module.exports = {
 	resolve: {
 		extensions: ['.js', '.jsx'],
 		alias: {
-			'@': path.join(__dirname, 'app/src/scripts'),
+			'@': path.join(__dirname, 'app/src'),
 			react: path.resolve('./node_modules/react'),
 		},
 	},

@@ -6,10 +6,10 @@
  * management.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Endpoint
  * @subpackage Settings
  */
@@ -32,32 +32,32 @@ class Validator extends Base {
 	/**
 	 * IP address maximum length.
 	 *
-	 * @var int
 	 * @since 4.0.0
+	 * @var int
 	 */
 	const IP_LENGTH = 45;
 
 	/**
 	 * URL maximum length.
 	 *
-	 * @var int
 	 * @since 4.0.0
+	 * @var int
 	 */
 	const URL_LENGTH = 2000;
 
 	/**
 	 * User agent maximum length.
 	 *
-	 * @var int
 	 * @since 4.0.0
+	 * @var int
 	 */
 	const AGENT_LENGTH = 255;
 
 	/**
 	 * Referral maximum length.
 	 *
-	 * @var int
 	 * @since 4.0.0
+	 * @var int
 	 */
 	const REF_LENGTH = 255;
 
@@ -68,11 +68,11 @@ class Validator extends Base {
 	 * execute something on these hooks if you are checking for
 	 * Pro version.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $field Field name.
 	 * @param mixed  $value Field value.
 	 * @param string $table Table name.
-	 *
-	 * @since 4.0.0
 	 *
 	 * @return mixed
 	 */
@@ -122,11 +122,11 @@ class Validator extends Base {
 		/**
 		 * Filter to modify sanitized field values.
 		 *
+		 * @since 4.0.0
+		 *
 		 * @param mixed  $value Field value.
 		 * @param string $field Field name.
 		 * @param string $table Table name.
-		 *
-		 * @since 4.0.0
 		 */
 		return apply_filters( 'dd4t3_validator_sanitize', $value, $field, $table );
 	}
@@ -136,11 +136,11 @@ class Validator extends Base {
 	 *
 	 * Allow only defined fields to be used.
 	 *
-	 * @param mixed  $value Field value.
-	 * @param string $table Table name.
-	 *
 	 * @since  4.0.0
 	 * @access private
+	 *
+	 * @param mixed  $value Field value.
+	 * @param string $table Table name.
 	 *
 	 * @return string
 	 */

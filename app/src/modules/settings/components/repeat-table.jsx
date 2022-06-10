@@ -86,47 +86,47 @@ export default class RepeatTable extends React.Component {
 
 	render() {
 		return (
-			<table className="dd4t3-repeat-table">
+			<table className="dd4t3-settings-repeat-table">
 				<tbody>
-					{this.state.items.map((item, index) => (
-						<tr key={index}>
-							<td>
-								<TextControl
-									placeholder="wp-content/"
-									value={item}
-									onChange={(value) =>
-										this.updateRow(value, index)
-									}
-								/>
-							</td>
-							<td className="dd4t3-repeat-table-delete">
-								<Button
-									variant="tertiary"
-									className="dd4t3-repeat-table-delete-button"
-									isSmall={true}
-									isDestructive={true}
-									showTooltip={true}
-									icon="trash"
-									onClick={() => this.deleteRow(index)}
-								></Button>
-							</td>
-						</tr>
-					))}
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colSpan="2">
+				{this.state.items.map((item, index) => (
+					<tr key={index}>
+						<td>
+							<TextControl
+								placeholder="wp-content/"
+								value={item}
+								onChange={(value) =>
+									this.updateRow(value, index)
+								}
+							/>
+						</td>
+						<td className="dd4t3-settings-repeat-table-delete">
 							<Button
-								variant="secondary"
+								variant="tertiary"
+								className="dd4t3-settings-repeat-table-delete-button"
 								isSmall={true}
-								icon="plus"
-								onClick={() => this.addRow()}
-								disabled={this.isLastItemEmpty()}
-							>
-								{__('Add', '404-to-301')}
-							</Button>
+								isDestructive={true}
+								showTooltip={true}
+								icon="trash"
+								onClick={() => this.deleteRow(index)}
+							></Button>
 						</td>
 					</tr>
+				))}
+				</tbody>
+				<tfoot>
+				<tr>
+					<td colSpan="2">
+						<Button
+							variant="secondary"
+							isSmall={true}
+							icon="plus"
+							onClick={() => this.addRow()}
+							disabled={this.isLastItemEmpty()}
+						>
+							{__('Add', '404-to-301')}
+						</Button>
+					</td>
+				</tr>
 				</tfoot>
 			</table>
 		)

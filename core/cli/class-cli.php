@@ -4,10 +4,10 @@
  *
  * This class will register all our custom commands with WP CLI.
  *
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    CLI
  * @subpackage CLI
  */
@@ -46,7 +46,8 @@ final class CLI extends WP_CLI_Command {
 	 * @return void
 	 */
 	public function info( $args, $extra ) {
-		Info::instance()->command( $args, $extra );
+		$info = new Info();
+		$info->command( $args, $extra );
 	}
 
 	/**
@@ -76,7 +77,8 @@ final class CLI extends WP_CLI_Command {
 	 * @return void
 	 */
 	public function settings( $args, $extra ) {
-		Settings::instance()->command( $args, $extra );
+		$settings = new Settings();
+		$settings->command( $args, $extra );
 	}
 
 	/**
@@ -100,6 +102,7 @@ final class CLI extends WP_CLI_Command {
 	 * @return void
 	 */
 	public function logs( $args, $extra ) {
-		Logs::instance()->command( $args, $extra );
+		$logs = new Logs();
+		$logs->command( $args, $extra );
 	}
 }

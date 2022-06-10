@@ -5,10 +5,10 @@
  * This class handles the database queries for error logs.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Model
  * @subpackage Logs
  */
@@ -32,10 +32,10 @@ class Logs extends Model {
 	/**
 	 * Get a log by ID.
 	 *
-	 * @param int $log_id Log ID.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param int $log_id Log ID.
 	 *
 	 * @return object|false Log object if successful, false otherwise.
 	 */
@@ -49,17 +49,16 @@ class Logs extends Model {
 	/**
 	 * Get a log by url.
 	 *
-	 * @param string $url 404 url.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param string $url 404 url.
 	 *
 	 * @return object|false Log object if successful, false otherwise.
 	 */
 	public function get_by_url( $url ) {
 		$logs = new Database\Queries\Log();
 
-		// Return log.
 		return $logs->get_item_by( 'url', $url );
 	}
 
@@ -68,10 +67,10 @@ class Logs extends Model {
 	 *
 	 * Return the log data from using the ID.
 	 *
-	 * @param array $args Filter items using fields.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param array $args Filter items using fields.
 	 *
 	 * @return array
 	 */
@@ -96,10 +95,10 @@ class Logs extends Model {
 	 *
 	 * Make sure to validate all fields before adding it.
 	 *
-	 * @param array $data Data.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param array $data Data.
 	 *
 	 * @return bool
 	 */
@@ -119,11 +118,11 @@ class Logs extends Model {
 	/**
 	 * Update an existing log entry.
 	 *
-	 * @param int   $log_id Log ID.
-	 * @param array $data   Data.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param int   $log_id Log ID.
+	 * @param array $data   Data.
 	 *
 	 * @return bool
 	 */
@@ -145,10 +144,10 @@ class Logs extends Model {
 	 *
 	 * Deleting a log won't delete it's redirect.
 	 *
-	 * @param int $log_id Log ID.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param int $log_id Log ID.
 	 *
 	 * @return bool
 	 */
@@ -163,5 +162,23 @@ class Logs extends Model {
 
 		// Delete log.
 		return $logs->delete_item( $log_id );
+	}
+
+	/**
+	 * Update multiple logs using where conditions.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param array $data  Data to update.
+	 * @param array $where Where conditions.
+	 *
+	 * @return bool
+	 */
+	public function update_logs( array $data, array $where ) {
+		// Create a query object.
+		$logs = new Database\Queries\Log();
+
+		return $logs->update_multiple( $data, $where );
 	}
 }

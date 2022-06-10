@@ -1,16 +1,16 @@
 <?php
 /**
- * The plugin menu controller class.
+ * The request object for all actions.
  *
- * This class handles the admin menu functionality for the plugin.
- * Thanks to Redirection (wordpress.org/plugins/redirection/)
+ * This class sets/gets all data required for the actions
+ * from the current request.
  *
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
- * @link       https://duckdev.com/products/404-to-301/
- * @package    Controller
- * @subpackage Menu
+ * @package    Model
+ * @subpackage Request
  */
 
 namespace DuckDev\Redirect\Models;
@@ -19,89 +19,93 @@ namespace DuckDev\Redirect\Models;
 defined( 'WPINC' ) || die;
 
 /**
- * Class Menu
+ * Class Request
  *
- * @package DuckDev\Redirect
  * @since   4.0.0
+ * @package DuckDev\Redirect\Models
  */
 class Request {
 
 	/**
 	 * Current request URL.
 	 *
-	 * @var string $url
-	 *
 	 * @since 4.0
+	 * @var string $url
 	 */
 	private $url = '';
 
 	/**
 	 * Current request method.
 	 *
-	 * @var string $method
-	 *
 	 * @since 4.0
+	 * @var string $method
 	 */
 	private $method = 'GET';
 
 	/**
 	 * Current request referer.
 	 *
-	 * @var string $referrer
-	 *
 	 * @since 4.0
+	 * @var string $referrer
 	 */
 	private $referrer = '';
 
 	/**
 	 * Current request IP address.
 	 *
-	 * @var string $ip
-	 *
 	 * @since 4.0
+	 * @var string $ip
 	 */
 	private $ip = '';
 
 	/**
 	 * Current request user agent.
 	 *
-	 * @var string $agent
-	 *
 	 * @since 4.0
+	 * @var string $agent
 	 */
 	private $agent = '';
 
 	/**
 	 * Get current request headers.
 	 *
-	 * @var array $headers
-	 *
 	 * @since 4.0
+	 * @var array $headers
 	 */
 	private $headers = array();
 
 	/**
-	 * Get current request details.
-	 *
-	 * @var array $request
+	 * Get current request extra data.
 	 *
 	 * @since 4.0
+	 * @var array $request
 	 */
 	private $others = array();
 
 	/**
-	 * Get current request's custom config.
-	 *
-	 * @var array $headers
+	 * Get current request's matching error log.
 	 *
 	 * @since 4.0
+	 * @var object|false $log
 	 */
-	private $config = array();
+	private $log = false;
 
 	/**
-	 * Initialize assets functionality.
+	 * Get current request's custom redirect data.
 	 *
-	 * @since 3.2.4
+	 * @since 4.0
+	 * @var object|false $redirect
+	 */
+	private $redirect = false;
+
+	/**
+	 * Create new request object.
+	 *
+	 * Please use DuckDev\Redirect\Front::get_request() method to
+	 * get the current request object. Creating new instances every time
+	 * is a bad idea. Do only if required.
+	 *
+	 * @since 4.0
 	 *
 	 * @return void
 	 */
@@ -110,19 +114,17 @@ class Request {
 		$this->set_url();
 		$this->set_agent();
 		$this->set_method();
-		$this->set_config();
 		$this->set_referer();
 		$this->set_headers();
 		$this->set_others();
+		$this->set_redirect();
+		$this->set_log();
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Get current request method.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
-	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return string
 	 */
@@ -131,12 +133,9 @@ class Request {
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Get current request referer.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
-	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return string
 	 */
@@ -145,12 +144,9 @@ class Request {
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Get current request user agent name.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
-	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return string
 	 */
@@ -159,12 +155,11 @@ class Request {
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Get current request IP address.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * Masking IP address will be done while using it.
 	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return string
 	 */
@@ -173,12 +168,11 @@ class Request {
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Get current request URL path.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * This is the main property we need for all actions.
 	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return string
 	 */
@@ -187,12 +181,12 @@ class Request {
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Get current request header items.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * Few of the sensitive header items are ignored.
+	 * See set_headers method for more.
 	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return array
 	 */
@@ -201,12 +195,9 @@ class Request {
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Get if any extra data available for current request.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
-	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return array
 	 */
@@ -215,212 +206,183 @@ class Request {
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Get custom redirect data for the request.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * If no custom redirect is set, it will return false.
+	 * If a name is given, it will return the single item
+	 * or else the entire data.
 	 *
-	 * @param string $name    Name of the config.
-	 * @param bool   $default Default value.
+	 * @since 4.0
 	 *
-	 * @since  4.0
+	 * @param bool|string $name    Name of the item.
+	 * @param bool        $default Default value.
 	 *
-	 * @return array|mixed
+	 * @return object|mixed
 	 */
-	public function get_config( $name = '', $default = false ) {
-		// If asking for specific config.
-		if ( ! empty( $name ) ) {
-			return isset( $this->config[ $name ] ) ? $this->config[ $name ] : $default;
-		}
-
-		return $this->config;
+	public function get_redirect( $name = false, $default = false ) {
+		return $this->get_item( $this->redirect, $name, $default );
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Get log data for the request.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * If no matching log is set, it will return false.
+	 * If a name is given, it will return the single item
+	 * or else the entire data.
 	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
-	 * @return void
+	 * @param bool|string $name    Name of the item.
+	 * @param bool        $default Default value.
+	 *
+	 * @return object|mixed
 	 */
-	private function set_config() {
-		$config = array(
-			'log'             => 'global',
-			'redirect'        => 'global',
-			'email'           => 'global',
-			'redirect_type'   => 301,
-			'redirect_target' => '',
-		);
-
-		// @todo Get options from db.
-		$options = array();
-
-		// Merge with default config.
-		$config = wp_parse_args( $options, $config );
-
-		/**
-		 * Filter hook to add add or remove redirect types.
-		 *
-		 * Other plugins can use this filter to add new redirect
-		 * types to 404 to 301.
-		 *
-		 * @param array $types Redirect types.
-		 *
-		 * @since 4.0
-		 */
-		$this->config = apply_filters( 'dd4t3_request_config', $config );
+	public function get_log( $name = false, $default = false ) {
+		return $this->get_item( $this->log, $name, $default );
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Set current request method.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * We will use REQUEST_METHOD value from the server.
+	 * Default method wille be "GET".
+	 * This should be called by constructor method only.
 	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return void
 	 */
 	private function set_method() {
-		$method = 'GET';
-
-		if ( isset( $_SERVER['REQUEST_METHOD'] ) ) {
-			$method = $_SERVER['REQUEST_METHOD']; // phpcs:ignore
-		}
+		// phpcs:ignore
+		$method = isset( $_SERVER['REQUEST_METHOD'] ) ? $_SERVER['REQUEST_METHOD'] : 'GET';
 
 		/**
-		 * Filter hook to add or remove redirect types.
-		 *
-		 * Other plugins can use this filter to add new redirect
-		 * types to 404 to 301.
-		 *
-		 * @param array $types Redirect types.
+		 * Filter hook to modify current request method.
 		 *
 		 * @since 4.0
+		 *
+		 * @param string  $method Request method.
+		 * @param Request $this   Request instance.
 		 */
-		$this->method = apply_filters( 'dd4t3_request_method', $method );
+		$this->method = apply_filters( 'dd4t3_request_method', $method, $this );
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Set current request referer.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * We will use HTTP_REFERER value from the server.
+	 * This should be called by constructor method only.
 	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return void
 	 */
 	private function set_referer() {
-		$referrer = '';
-
-		if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-			$referrer = $_SERVER['HTTP_REFERER']; // phpcs:ignore
-		}
+		// phpcs:ignore
+		$referrer = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '';
 
 		/**
-		 * Filter hook to add or remove redirect types.
-		 *
-		 * Other plugins can use this filter to add new redirect
-		 * types to 404 to 301.
-		 *
-		 * @param array $types Redirect types.
+		 * Filter hook to modify current request referer.
 		 *
 		 * @since 4.0
+		 *
+		 * @param string  $referrer Request referer.
+		 * @param Request $this     Request instance.
 		 */
-		$this->referrer = apply_filters( 'dd4t3_request_referer', $referrer );
+		$this->referrer = apply_filters( 'dd4t3_request_referer', $referrer, $this );
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Set current request user agent.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * We will use HTTP_USER_AGENT value from the server.
+	 * This should be called by constructor method only.
 	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return void
 	 */
 	private function set_agent() {
-		$agent = '';
-
-		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-			$agent = $_SERVER['HTTP_USER_AGENT']; // phpcs:ignore
-		}
+		// phpcs:ignore
+		$agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
 
 		/**
-		 * Filter hook to add or remove redirect types.
-		 *
-		 * Other plugins can use this filter to add new redirect
-		 * types to 404 to 301.
-		 *
-		 * @param array $types Redirect types.
+		 * Filter hook to modify current request user agent.
 		 *
 		 * @since 4.0
+		 *
+		 * @param string  $agent Request user agent.
+		 * @param Request $this  Request instance.
 		 */
-		$this->agent = apply_filters( 'dd4t3_request_agent', $agent );
+		$this->agent = apply_filters( 'dd4t3_request_agent', $agent, $this );
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Set current URL from the request.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * We will use REQUEST_URI value from the server.
+	 * This should be called by constructor method only.
 	 *
 	 * @since  4.0
 	 *
 	 * @return void
 	 */
 	private function set_url() {
-		$url = '';
-
-		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-			$url = $_SERVER['REQUEST_URI']; // phpcs:ignore
-		}
+		// phpcs:ignore
+		$url = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
 
 		/**
-		 * Filter hook to add add or remove redirect types.
-		 *
-		 * Other plugins can use this filter to add new redirect
-		 * types to 404 to 301.
-		 *
-		 * @param array $types Redirect types.
+		 * Filter hook to modify current url for request object.
 		 *
 		 * @since 4.0
+		 *
+		 * @param string  $url  Current URL.
+		 * @param Request $this Request instance.
 		 */
-		$this->url = apply_filters( 'dd4t3_request_url', $url );
+		$this->url = apply_filters( 'dd4t3_request_url', $url, $this );
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Set current request IP address.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * Even if the IP masking is enabled we will try to get
+	 * the IP address. But we won't store or show it anywhere.
+	 * This should be called by constructor method only.
 	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return void
 	 */
 	private function set_ip() {
-		$ip = '';
+		/**
+		 * Filter hook to short circuit IP checking.
+		 *
+		 * If you return false here, we will skip IP address finding.
+		 * Use this filter instead of `dd4t3_request_ip` filter to avoid
+		 * unnecessary IP findings.
+		 *
+		 * @since 4.0
+		 *
+		 * @param bool $check Should check for IP.
+		 */
+		$ip = apply_filters( 'dd4t3_request_set_ip', true );
 
-		foreach ( $this->ip_headers() as $header ) {
-			if ( ! empty( $_SERVER[ $header ] ) ) {
-				$ip = $_SERVER[ $header ]; // phpcs:ignore
-				$ip = explode( ',', $ip );
-				$ip = array_shift( $ip );
-				break;
+		if ( $ip ) {
+			foreach ( $this->ip_headers() as $header ) {
+				if ( ! empty( $_SERVER[ $header ] ) ) {
+					$ip = $_SERVER[ $header ]; // phpcs:ignore
+					$ip = explode( ',', $ip );
+					$ip = array_shift( $ip );
+					break;
+				}
 			}
-		}
 
-		// Convert to binary.
-		$ip = @inet_pton( trim( $ip ) ); // phpcs:ignore
-		if ( false !== $ip ) {
-			// Convert back to string.
-			$ip = @inet_ntop( $ip );  // phpcs:ignore
+			// Convert to binary.
+			$ip = @inet_pton( trim( $ip ) ); // phpcs:ignore
+			if ( false !== $ip ) {
+				// Convert back to string.
+				$ip = @inet_ntop( $ip );  // phpcs:ignore
+			}
 		}
 
 		if ( empty( $ip ) ) {
@@ -428,25 +390,23 @@ class Request {
 		}
 
 		/**
-		 * Filter hook to add add or remove redirect types.
-		 *
-		 * Other plugins can use this filter to add new redirect
-		 * types to 404 to 301.
-		 *
-		 * @param array $types Redirect types.
+		 * Filter hook to modify current request IP address.
 		 *
 		 * @since 4.0
+		 *
+		 * @param string  $ip   Current IP address.
+		 * @param Request $this Request instance.
 		 */
-		$this->ip = apply_filters( 'dd4t3_request_ip', $ip );
+		$this->ip = apply_filters( 'dd4t3_request_ip', $ip, $this );
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Set current request header values.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * We will ignore a few of the sensitive items.
+	 * This should be called by constructor method only.
 	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return void
 	 */
@@ -471,25 +431,23 @@ class Request {
 		}
 
 		/**
-		 * Filter hook to add add or remove redirect types.
-		 *
-		 * Other plugins can use this filter to add new redirect
-		 * types to 404 to 301.
-		 *
-		 * @param array $types Redirect types.
+		 * Filter hook to modify current request headers.
 		 *
 		 * @since 4.0
+		 *
+		 * @param array   $headers Redirect headers.
+		 * @param Request $this    Request instance.
 		 */
-		$this->headers = apply_filters( 'dd4t3_request_headers', $headers );
+		$this->headers = apply_filters( 'dd4t3_request_headers', $headers, $this );
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Set current request extra data.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * Use the filter to add additional data if needed.
+	 * This should be called by constructor method only.
 	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return void
 	 */
@@ -499,25 +457,84 @@ class Request {
 		);
 
 		/**
-		 * Filter hook to add add or remove redirect types.
+		 * Filter hook to modify current request extra data.
 		 *
-		 * Other plugins can use this filter to add new redirect
-		 * types to 404 to 301.
-		 *
-		 * @param array $types Redirect types.
+		 * Use this filter to add or remove data.
 		 *
 		 * @since 4.0
+		 *
+		 * @param array   $others Redirect extra data.
+		 * @param Request $this   Request instance.
 		 */
-		$this->others = apply_filters( 'dd4t3_request_others', $others );
+		$this->others = apply_filters( 'dd4t3_request_others', $others, $this );
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Set custom redirect data for the request.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * This should be called after setting up all request details.
+	 * This should be called by constructor method only while creating
+	 * new instance.
+	 *
+	 * @since 4.0
+	 *
+	 * @return void
+	 */
+	private function set_redirect() {
+		// Get matching redirect.
+		$redirect = Redirects::instance()->get_by_source(
+			$this->get_url()
+		);
+
+		/**
+		 * Filter hook to modify current request redirect data.
+		 *
+		 * @since 4.0
+		 *
+		 * @param object|false $redirect Redirect data.
+		 * @param Request      $this     Request instance.
+		 */
+		$this->redirect = apply_filters( 'dd4t3_request_redirect', $redirect, $this );
+	}
+
+	/**
+	 * Set the matching log data for the current URL.
+	 *
+	 * Data will be set only if current request is a 404 request.
+	 * This should be called after setting up all request details.
+	 * This should be called by constructor method only while creating
+	 * new instance.
 	 *
 	 * @since  4.0
+	 *
+	 * @return void
+	 */
+	private function set_log() {
+		// Only if a 404.
+		if ( $this->is_404() ) {
+			// Get log.
+			$log = Logs::instance()->get_by_url(
+				$this->get_url()
+			);
+
+			/**
+			 * Filter hook to modify current request log data.
+			 *
+			 * @since 4.0
+			 *
+			 * @param object|false $log  Log data.
+			 * @param Request      $this Request instance.
+			 */
+			$this->log = apply_filters( 'dd4t3_request_log', $log, $this );
+		}
+	}
+
+	/**
+	 * Get the list of ignored header items.
+	 *
+	 * Use filter to ignore more items.
+	 *
+	 * @since 4.0
 	 *
 	 * @return array
 	 */
@@ -527,25 +544,25 @@ class Request {
 		/**
 		 * Filter to ignore header items from the list.
 		 *
-		 * @param array $ignored Ignored list.
-		 *
 		 * @since 4.0
+		 *
+		 * @param array   $ignored Ignored list.
+		 * @param Request $this    Request instance.
 		 */
-		return apply_filters( 'dd4t3_request_ignored_headers', $ignored );
+		return apply_filters( 'dd4t3_request_ignored_headers', $ignored, $this );
 	}
 
 	/**
-	 * Get available redirect types.
+	 * Get the list of request header names for IP.
 	 *
-	 * Use `dd4t3_redirect_types` filter to add
-	 * new redirect type.
+	 * These are the header items we use to get IP address.
+	 * If any of these values are available, we will stop checking.
 	 *
-	 * @since  4.0
+	 * @since 4.0
 	 *
 	 * @return array
 	 */
 	private function ip_headers() {
-		// Sub page.
 		$headers = array(
 			'HTTP_CF_CONNECTING_IP',
 			'HTTP_CLIENT_IP',
@@ -559,15 +576,56 @@ class Request {
 		);
 
 		/**
-		 * Filter hook to add add or remove redirect types.
-		 *
-		 * Other plugins can use this filter to add new redirect
-		 * types to 404 to 301.
-		 *
-		 * @param array $types Redirect types.
+		 * Filter hook to add or remove header items for IP address.
 		 *
 		 * @since 4.0
+		 *
+		 * @param array   $headers Header item names.
+		 * @param Request $this    Request instance.
 		 */
-		return apply_filters( 'dd4t3_request_ip_headers', $headers );
+		return apply_filters( 'dd4t3_request_ip_headers', $headers, $this );
+	}
+
+	/**
+	 * Check if current request is 404.
+	 *
+	 * We are using WP's core function is_404() to check this.
+	 * You can use the filter to do an additional check.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public function is_404() {
+		/**
+		 * Filter hook to modify 404 check.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param bool $is_404 Is current request a 404.
+		 */
+		return apply_filters( 'dd4t3_request_is_404', is_404() );
+	}
+
+	/**
+	 * Get a single item from the data object.
+	 *
+	 * If name is not given, entire data will be retuned back.
+	 *
+	 * @since 4.0
+	 *
+	 * @param object      $data    Data to process.
+	 * @param bool|string $name    Name of the item.
+	 * @param bool        $default Default value.
+	 *
+	 * @return object|mixed
+	 */
+	private function get_item( $data, $name = false, $default = false ) {
+		// If asking for specific item.
+		if ( ! empty( $name ) ) {
+			return is_object( $data ) && property_exists( $data, $name ) ? $data->$name : $default;
+		}
+
+		return $data;
 	}
 }

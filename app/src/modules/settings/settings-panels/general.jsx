@@ -16,7 +16,7 @@ export default class General extends React.Component {
 		this.state = {
 			disableGuessing: false,
 			monitorChanges: false,
-			ipLogging: false,
+			disableIp: false,
 		}
 	}
 
@@ -74,7 +74,7 @@ export default class General extends React.Component {
 
 				<PanelRow>
 					<ToggleControl
-						checked={settings.ip_logging}
+						checked={settings.disable_ip}
 						label={__(
 							"Do not log visitor's IP address",
 							'404-to-301'
@@ -84,7 +84,7 @@ export default class General extends React.Component {
 							'404-to-301'
 						)}
 						onChange={(checked) =>
-							this.updateValue('ip_logging', checked)
+							this.updateValue('disable_ip', checked)
 						}
 					/>
 				</PanelRow>

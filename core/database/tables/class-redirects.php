@@ -3,10 +3,10 @@
  * The redirects table class.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Database\Tables
  * @subpackage Redirects
  */
@@ -30,54 +30,54 @@ final class Redirects extends Table {
 	/**
 	 * Table name, without the global table prefix.
 	 *
+	 * @since  4.0.0
 	 * @var    string
 	 * @access public
-	 * @since  4.0.0
 	 */
 	public $name = 'redirects';
 
 	/**
 	 * Global prefix used for tables/hooks/cache-groups/etc.
 	 *
+	 * @since  4.0.0
 	 * @var    string
 	 * @access protected
-	 * @since  4.0.0
 	 */
 	protected $prefix = '404_to_301';
 
 	/**
 	 * Optional description for table.
 	 *
+	 * @since  4.0.0
 	 * @var    string
 	 * @access public
-	 * @since  4.0.0
 	 */
 	public $description = 'Redirects';
 
 	/**
 	 * Current database table version.
 	 *
+	 * @since  4.0.0
 	 * @var    mixed
 	 * @access protected
-	 * @since  4.0.0
 	 */
 	protected $version = '1.0.0';
 
 	/**
 	 * Database version key (saved in _options or _sitemeta).
 	 *
+	 * @since  4.0.0
 	 * @var    string
 	 * @access protected
-	 * @since  4.0.0
 	 */
 	protected $db_version_key = '404_to_301_redirects_version';
 
 	/**
 	 * Key => value array of versions => methods.
 	 *
+	 * @since  4.0.0
 	 * @var    array
 	 * @access protected
-	 * @since  4.0.0
 	 */
 	protected $upgrades = array();
 
@@ -93,7 +93,7 @@ final class Redirects extends Table {
 		// phpcs:ignore
 		$this->schema = "
 			id bigint(20) unsigned NOT NULL auto_increment,
-			source mediumtext NOT NULL,
+			source mediumtext NOT NULL UNIQUE,
 			destination mediumtext NOT NULL,
 			code int(11) unsigned DEFAULT '301',
 			type enum('url', '404') DEFAULT 'url',

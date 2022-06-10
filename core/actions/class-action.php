@@ -2,12 +2,12 @@
 /**
  * The action base class.
  *
- * This class is the base for all 404 actions.
+ * This class is the base for all front end actions.
  *
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
  * @subpackage Action
  */
@@ -31,81 +31,105 @@ abstract class Action {
 	/**
 	 * Action type (redirect, email and log).
 	 *
-	 * @var string $action
 	 * @since  4.0.0
 	 * @access protected
+	 * @var string $action
 	 */
 	protected $action = '';
 
 	/**
-	 * Current request object.
+	 * Action priority for hook.
 	 *
-	 * @var Request $request
+	 * Redirect action should happen at last or else
+	 * other actions won't be triggered.
+	 *
 	 * @since  4.0.0
 	 * @access protected
+	 * @var int $priority
 	 */
-	protected $request = null;
+	protected $priority = 10;
+
+	/**
+	 * Current request object.
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 * @var Request $request
+	 */
+	protected $request;
 
 	/**
 	 * Initialize the class hooks.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param Request $request Request object.
 	 *
-	 * @since 4.0.0
 	 * @return void
 	 */
 	public function __construct( Request $request ) {
+		// Set current request.
 		$this->request = $request;
 
-		// Process the action if allowed.
-		if ( $this->can_proceed() ) {
-			$this->process();
-		}
+		// Process normal request.
+		add_action( 'dd4t3_request', array( $this, 'process_request' ), $this->priority );
+		// Process 404 error request.
+		add_action( 'dd4t3_404_request', array( $this, 'process_error' ), $this->priority );
 	}
 
 	/**
-	 * Process the current action.
+	 * Process the current request action.
 	 *
-	 * Actions should implement this method and perform the
-	 * action using the request data available.
+	 * Override this method on action class to perform something
+	 * on every page load.
 	 *
 	 * @since  4.0.0
 	 * @access protected
+	 *
 	 * @return void
 	 */
-	abstract protected function process();
+	public function process_error() {
+
+	}
+
+	/**
+	 * Process the 404 error action.
+	 *
+	 * Override this method on action class to perform something
+	 * on every 404 request.
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return void
+	 */
+	public function process_request() {
+
+	}
 
 	/**
 	 * Check if current action can be executed.
 	 *
-	 * Check settings and see if the action is enabled.
-	 * Do extra checks before executing the action.
+	 * Use the filter to disable/enable an action.
 	 *
 	 * @since  4.0.0
 	 * @access protected
+	 *
 	 * @return bool
 	 */
 	protected function can_proceed() {
-		// Check if enabled.
-		$can = $this->enabled();
-
 		/**
 		 * Filter hook to block an action.
 		 *
 		 * Other plugins can use this filter to stop executing one action.
 		 *
+		 * @since 4.0
+		 *
 		 * @param bool    $can     Can proceed.
 		 * @param string  $action  Action name.
 		 * @param Request $request Request object.
-		 *
-		 * @since 4.0.0
 		 */
-		return apply_filters(
-			'dd4t3_action_can_proceed',
-			$can,
-			$this->action,
-			$this->request
-		);
+		return apply_filters( 'dd4t3_action_can_proceed', true, $this->action, $this->request );
 	}
 
 	/**
@@ -116,37 +140,33 @@ abstract class Action {
 	 *
 	 * @since  4.0.0
 	 * @access protected
+	 *
+	 * @param string $log_key      Log key for status check.
+	 * @param string $settings_key Settings key.
+	 *
 	 * @return bool
 	 */
-	protected function enabled() {
+	protected function is_enabled( $log_key, $settings_key ) {
 		// Get status.
-		$status = $this->request->get_config(
-			"{$this->action}_status",
-			'global'
-		);
+		$status = $this->request->get_log( $log_key, 'global' );
 
 		if ( 'global' === $status ) {
 			// Get global option.
-			$status = dd4t3_settings()->get( "{$this->action}_enabled" );
+			$status = dd4t3_settings()->get( $settings_key );
 		}
+
+		// Get boolean value.
+		$enabled = Helpers::get_boolean( $status );
 
 		/**
 		 * Filter hook to enable/disable action.
 		 *
-		 * Other plugins can use this filter to enable
-		 * or disable action.
+		 * @since 4.0
 		 *
 		 * @param bool    $enabled Is enabled.
 		 * @param string  $action  Action name.
 		 * @param Request $request Request object.
-		 *
-		 * @since 4.0
 		 */
-		return apply_filters(
-			'dd4t3_action_enabled',
-			Helpers::get_boolean( $status ),
-			$this->action,
-			$this->request
-		);
+		return apply_filters( 'dd4t3_action_is_enabled', $enabled, $this->action, $this->request );
 	}
 }

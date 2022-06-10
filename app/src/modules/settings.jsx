@@ -1,6 +1,6 @@
 /* global wp, dd4t3 */
 import React from 'react'
-import request from './helpers/request'
+import request from '@/helpers/request'
 import TabInfo from './settings/tab-info'
 import TabAddons from './settings/tab-addons'
 import TabSettings from './settings/tab-settings'
@@ -44,8 +44,8 @@ export default class Settings extends React.Component {
 		return (
 			<>
 				<ReactNotifications />
-				<div className="dd4t3-header">
-					<div className="dd4t3-title-section">
+				<div className="dd4t3-settings-header">
+					<div className="dd4t3-settings-title-section">
 						<h1>404 to 301</h1>
 						<abbr
 							title={'Version: ' + dd4t3.version}
@@ -71,7 +71,7 @@ export default class Settings extends React.Component {
 				</div>
 
 				{this.state.loaded ? (
-					<div className="dd4t3-main">
+					<div className="dd4t3-settings-main">
 						{this.state.currentTab === 'settings' && (
 							<TabSettings settings={this.state.settings} />
 						)}
@@ -81,7 +81,7 @@ export default class Settings extends React.Component {
 						{this.state.currentTab === 'info' && <TabInfo />}
 					</div>
 				) : (
-					<div className="dd4t3-main">
+					<div className="dd4t3-settings-main">
 						<Placeholder>
 							<Spinner />
 						</Placeholder>

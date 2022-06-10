@@ -6,10 +6,10 @@
  * of the same classes being created.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
  * @subpackage Base
  */
@@ -52,7 +52,6 @@ abstract class Base {
 	public static function instance() {
 		static $instances = array();
 
-		// @codingStandardsIgnoreLine Plugin-backported
 		$called_class_name = get_called_class();
 
 		// Only if not already exist.

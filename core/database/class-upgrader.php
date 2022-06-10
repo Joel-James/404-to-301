@@ -5,10 +5,10 @@
  * This class will handle settings and logs upgrades.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Database
  * @subpackage Upgrader
  */
@@ -33,9 +33,9 @@ class Upgrader extends Base {
 	/**
 	 * Logs upgrader class.
 	 *
-	 * @var Upgrades\Logs
 	 * @since  4.0.0
 	 * @access private
+	 * @var Upgrades\Logs
 	 */
 	private $logs;
 

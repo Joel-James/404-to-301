@@ -14,10 +14,11 @@
 // If this file is called directly, abort.
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit();
 
-use DuckDev\Redirect\Settings;
-
 // Delete settings.
-delete_option( Settings::KEY );
+delete_option( DuckDev\Redirect\Settings::KEY );
+// DB versions.
+delete_option( '404_to_301_logs_version' );
+delete_option( '404_to_301_redirects_version' );
 
 global $wpdb;
 

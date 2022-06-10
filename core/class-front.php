@@ -1,17 +1,16 @@
 <?php
 /**
- * The main actions class.
+ * The front end actions class.
  *
- * This class starts the main functionality which is handling 404
- * errors on the site.
+ * This class starts the main functionality of the plugin which is on front end of the site.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
- * @subpackage Cache
+ * @subpackage Front
  */
 
 namespace DuckDev\Redirect;
@@ -32,127 +31,96 @@ use DuckDev\Redirect\Models\Request;
 class Front extends Base {
 
 	/**
-	 * Current request object.
-	 *
-	 * @var Request $request
-	 * @since  4.0.0
-	 * @access private
-	 */
-	private $request = null;
-
-	/**
 	 * Initialize the front end.
 	 *
 	 * @since 4.0.0
 	 * @return void
 	 */
 	public function init() {
-		// Setup redirection matches.
-		add_action( 'init', array( $this, 'setup_request' ) );
 		// Disable guessing.
 		add_filter( 'redirect_canonical', array( $this, 'url_guessing' ) );
+
 		// Disable IP if required.
-		add_filter( 'dd4t3_request_ip', array( $this, 'hide_ip' ) );
-		// Process redirect actions.
-		//add_action( 'dd4t3_request_init', '' );
-		// Handle 404s.
-		add_action( 'template_redirect', array( $this, 'handle_404' ) );
+		add_filter( 'dd4t3_request_set_ip', array( $this, 'hide_ip' ) );
+
+		// Handle request actions.
+		add_action( 'template_redirect', array( $this, 'process_request' ) );
 	}
 
 	/**
-	 * Setup current request match data.
+	 * Perform redirect actions.
 	 *
-	 * Setup current request details and optionally setup
-	 * all custom redirect details if required.
+	 * Perform redirect and other actions before template redirect happens.
+	 * This method doesn't do anything. We will trigger actions which is used
+	 * by the actions.
 	 *
-	 * @since 4.0.0
+	 * - dd4t3_request : This is fired on all requests.
+	 * - dd4t3_404_request : This action is fired if the current request is 404.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
 	 * @return void
 	 */
-	public function setup_request() {
-		// Don't do anything for WP admin.
-		if ( is_admin() ) {
+	public function process_request() {
+		// Only if a valid request.
+		if ( ! $this->is_valid_request() ) {
 			return;
 		}
 
-		// Setup request.
+		// Get current request instance.
 		$request = $this->get_request();
 
-		/**
-		 * Action hook to perform plugin redirect actions.
-		 *
-		 * @param Request $request Request object.
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( 'dd4t3_setup_request', $request );
-	}
+		// Init actions.
+		new Actions\Log( $request );
+		new Actions\Email( $request );
+		new Actions\Redirect( $request );
 
-	/**
-	 * Perform 404 actions.
-	 *
-	 * This method checks if the current request is a 404
-	 * and if so, start the actions
-	 *
-	 * @since 4.0.0
-	 * @return void
-	 */
-	public function handle_404() {
-		// Only if 404 and not admin.
-		if ( ! is_404() || is_admin() ) {
-			return;
-		}
-
-		// Error actions.
-		$error_actions = array(
-			'log'      => 'DuckDev\Redirect\Actions\Log',
-			'email'    => 'DuckDev\Redirect\Actions\Email',
-			'redirect' => 'DuckDev\Redirect\Actions\Redirect',
-		);
-
-		/**
-		 * Filter hook to add new error actions to 404 to 301.
-		 *
-		 * Key should be the name of the action and value
-		 * should be the class name. The action class should
-		 * extend DuckDev\Redirect\Actions\Action.
-		 *
-		 * @param array $actions Available actions.
-		 *
-		 * @since 4.0.0
-		 */
-		$error_actions = apply_filters( 'dd4t3_error_actions', $error_actions );
-
-		// Perform actions.
-		foreach ( $error_actions as $action ) {
-			new $action( $this->get_request() );
+		if ( $request->is_404() ) {
+			/**
+			 * Action hook fired on a 404 request.
+			 *
+			 * All 404 actions such as logging, emailing should be hooked into this.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param Request $request Request object.
+			 */
+			do_action( 'dd4t3_404_request', $request );
 		}
 
 		/**
-		 * Action hook to execute on 404 page.
+		 * Action hook fired on all requests.
 		 *
-		 * All plugin actions will be performed before this hook.
-		 *
-		 * @param Request $request Request object.
+		 * This hook can be used to do something on every request such
+		 * as checking for custom redirects and do the redirect.
 		 *
 		 * @since 4.0.0
+		 *
+		 * @param Request $request Request object.
 		 */
-		do_action( 'dd4t3_404_request', $this->get_request() );
+		do_action( 'dd4t3_request', $request );
 	}
 
 	/**
 	 * Disable URL guessing if enabled.
 	 *
+	 * If URL guessing is disabled, we need to stop WordPress from doing
+	 * canonical redirects.
+	 *
+	 * @since  3.0.4
+	 * @since  4.0.0 Refactored.
+	 * @access public
+	 *
 	 * @param bool $guess Current status.
 	 *
-	 * @since 3.0.4
 	 * @return bool
 	 */
 	public function url_guessing( $guess ) {
 		// Check if guessing is disabled.
 		$disabled = dd4t3_settings()->get( 'disable_guessing' );
 
-		// Disable only on 404.
-		if ( $disabled && is_404() && ! isset( $_GET['p'] ) ) { // phpcs:ignore
+		if ( $disabled && ! isset( $_GET['p'] ) ) { // phpcs:ignore
 			$guess = false;
 		}
 
@@ -162,69 +130,79 @@ class Front extends Base {
 	/**
 	 * Disable IP logging if required.
 	 *
-	 * @param string $ip IP address.
+	 * To respect the privacy, we need to stop logging or showing IP
+	 * address anywhere on the plugin logs or emails.
+	 * Doing this will skip IP address check for the request.
 	 *
-	 * @since 4.0.0
-	 * @return string
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param bool $check IP checking.
+	 *
+	 * @return bool
 	 */
-	public function hide_ip( $ip ) {
+	public function hide_ip( $check ) {
 		// Disable only if asked.
-		if ( ! dd4t3_settings()->get( 'ip_logging' ) ) {
-			$ip = '';
+		if ( dd4t3_settings()->get( 'disable_ip' ) ) {
+			return false;
 		}
 
-		return $ip;
+		return $check;
 	}
 
 	/**
 	 * Get current request data.
 	 *
+	 * Prepare current request object with all available data.
+	 * Use this method to obtain the request object. Do not create
+	 * multiple instances by initializing request class everytime.
+	 *
+	 * - To get current IP : Front::instance()->get_request()->get_ip();
+	 *
 	 * @since  4.0.0
-	 * @access private
-	 * @return array
+	 * @access public
+	 *
+	 * @return Request
 	 */
 	public function get_request() {
+		static $request = null;
+
 		// Setup request.
-		if ( null === $this->request ) {
-			$this->request = new Request();
+		if ( null === $request ) {
+			$request = new Request();
 		}
 
 		/**
-		 * Filter hook to modify current request.
-		 *
-		 * @param array $request Current request.
+		 * Filter hook to modify current request object.
 		 *
 		 * @since 4.0.0
+		 *
+		 * @param array $request Current request.
 		 */
-		return apply_filters( 'dd4t3_get_request', $this->request );
+		return apply_filters( 'dd4t3_get_request', $request );
 	}
 
 	/**
-	 * Get available actions.
+	 * Check if current request is valid.
 	 *
-	 * Use `dd4t3_actions` filter to add new actions that perform
-	 * during a 404 is found.
+	 * As of now we don't process WP Admin requests.
 	 *
 	 * @since  4.0.0
-	 * @access private
-	 * @return array
+	 * @access public
+	 *
+	 * @return bool
 	 */
-	private function actions() {
-		$actions = array(
-			'redirect' => 'DuckDev\Redirect\Actions\Redirect',
-		);
+	private function is_valid_request() {
+		// Admin side is an exception.
+		$valid = ! is_admin();
 
 		/**
-		 * Filter hook to add new actions to 404 to 301.
-		 *
-		 * Key should be the name of the action and value
-		 * should be the class name. The action class should
-		 * extend DuckDev\Redirect\Actions\Action.
-		 *
-		 * @param array $actions Available actions.
+		 * Filter hook to modify valid request check.
 		 *
 		 * @since 4.0.0
+		 *
+		 * @param bool $valid Is current request valid.
 		 */
-		return apply_filters( 'dd4t3_actions', $actions );
+		return apply_filters( 'dd4t3_is_valid_request', $valid );
 	}
 }

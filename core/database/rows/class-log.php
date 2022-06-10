@@ -5,10 +5,10 @@
  * This class will should format a single log item.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Database\Rows
  * @subpackage Log
  */
@@ -49,19 +49,19 @@ class Log extends Row {
 	/**
 	 * Global prefix used for tables/hooks/cache-groups/etc.
 	 *
+	 * @since  4.0.0
 	 * @var    string
 	 * @access protected
-	 * @since  4.0.0
 	 */
 	protected $prefix = '404_to_301';
 
 	/**
 	 * Log item constructor.
 	 *
-	 * @param mixed $item Item data.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param mixed $item Item data.
 	 */
 	public function __construct( $item ) {
 		parent::__construct( $item );

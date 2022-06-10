@@ -2,14 +2,13 @@
 /**
  * The error email class.
  *
- * This class will send email notifications for the 404 error
- * in details to the recipients.
+ * This class will send email notifications for the 404 error.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Actions
  * @subpackage Email
  */
@@ -33,48 +32,81 @@ class Email extends Action {
 	/**
 	 * Action type - email.
 	 *
+	 * @since  4.0.0
 	 * @var string $action
 	 * @access protected
-	 * @since  4.0.0
 	 */
 	protected $action = 'email';
 
 	/**
-	 * Process the email notification action.
+	 * Perform 404 email action if required.
 	 *
-	 * Send email using wp_mail function.
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return void
+	 */
+	public function process_error() {
+		// Abort action.
+		if ( ! $this->can_proceed() ) {
+			return;
+		}
+
+		// Action not enabled.
+		if ( ! $this->is_enabled( 'email_status', 'email_enabled' ) ) {
+			return;
+		}
+
+		// Send email.
+		$this->notify();
+	}
+
+	/**
+	 * Send an email to notify about 404 error.
 	 *
 	 * @since  4.0.0
 	 * @access public
 	 * @return void
 	 */
-	public function process() {
+	private function notify() {
+		// Get required data.
+		$recipient = $this->get_recipient();
+		$subject   = $this->get_subject();
+		$body      = $this->get_body();
+		$headers   = $this->get_headers();
+
 		/**
-		 * Action hook to execute before sending email.
+		 * Action hook to execute before performing a redirect.
 		 *
-		 * @param Request $request Request object.
+		 * @since 4.0
 		 *
-		 * @since 4.0.0
+		 * @param string|string[] $recipient Email recipient.
+		 * @param string          $subject   Email subject.
+		 * @param string          $body      Email content.
+		 * @param array           $headers   Email headers.
+		 * @param Request         $request   Request object.
 		 */
-		do_action( 'dd4t3_email_pre_email', $this->request );
+		do_action( 'dd4t3_before_email', $recipient, $subject, $body, $headers, $this->request );
 
 		// Send email using wp_mail().
-		$success = wp_mail(
-			$this->get_recipient(),
-			$this->get_subject(),
-			$this->get_body(),
-			$this->get_headers()
-		);
+		$success = wp_mail( $recipient, $subject, $body, $headers );
 
 		/**
-		 * Action hook to execute after sending email.
+		 * Action hook to execute after adding a log.
 		 *
-		 * @param Request $request Request object.
-		 * @param bool    $success Is email sent.
+		 * This will be fired even if the log creation failed.
+		 * Please check the $success param to know if the log is created.
 		 *
-		 * @since 4.0.0
+		 * @since 4.0
+		 *
+		 * @param bool|mixed|void $success   Email status.
+		 * @param string          $recipient Email recipient.
+		 * @param string          $subject   Email subject.
+		 * @param string          $body      Email content.
+		 * @param array           $headers   Email headers.
+		 * @param Request         $request   Request object.
 		 */
-		do_action( 'dd4t3_email_post_email', $this->request, $success );
+		do_action( 'dd4t3_after_email', $success, $recipient, $subject, $body, $headers, $this->request );
 	}
 
 	/**
@@ -96,10 +128,10 @@ class Email extends Action {
 		/**
 		 * Filter hook to modify email recipient.
 		 *
-		 * @param bool    $recipient Recipient.
-		 * @param Request $request   Request object.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param string|string[] $recipient Email recipient.
+		 * @param Request         $request   Request object.
 		 */
 		return apply_filters( 'dd4t3_email_get_recipient', $recipient, $this->request );
 	}
@@ -120,10 +152,10 @@ class Email extends Action {
 		/**
 		 * Filter hook to modify email subject.
 		 *
-		 * @param bool    $subject Subject.
-		 * @param Request $request Request object.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param string  $subject Subject.
+		 * @param Request $request Request object.
 		 */
 		return apply_filters( 'dd4t3_email_get_subject', $subject, $this->request );
 	}
@@ -141,18 +173,18 @@ class Email extends Action {
 		/**
 		 * Filter to alter "From" name of email alert.
 		 *
-		 * @param string $name From name (Default: Site name).
-		 *
 		 * @since 3.0.0
+		 *
+		 * @param string $name From name (Default: Site name).
 		 */
 		$name = apply_filters( 'dd4t3_email_get_headers_name', get_bloginfo( 'name' ) );
 
 		/**
 		 * Filter to alter From email address of email alert.
 		 *
-		 * @param string $from From email (Default: admin_email option).
-		 *
 		 * @since 3.0.0
+		 *
+		 * @param string $from From email (Default: admin_email option).
 		 */
 		$from = apply_filters( 'dd4t3_email_get_headers_from', get_option( 'admin_email' ) );
 
@@ -165,10 +197,10 @@ class Email extends Action {
 		/**
 		 * Filter hook to modify email headers.
 		 *
-		 * @param bool    $headers Headers.
-		 * @param Request $request Request object.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param array   $headers Email headers.
+		 * @param Request $request Request object.
 		 */
 		return apply_filters( 'dd4t3_email_get_headers', $headers, $this->request );
 	}
@@ -189,10 +221,10 @@ class Email extends Action {
 		/**
 		 * Filter hook to modify email body.
 		 *
-		 * @param bool    $subject Body.
-		 * @param Request $request Request object.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param string  $subject Email body.
+		 * @param Request $request Request object.
 		 */
 		return apply_filters( 'dd4t3_email_get_body', $body, $this->request );
 	}

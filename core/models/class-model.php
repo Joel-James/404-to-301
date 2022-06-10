@@ -6,10 +6,10 @@
  * methods.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
  * @subpackage Model
  */
@@ -35,11 +35,11 @@ abstract class Model extends Base {
 	 *
 	 * Get from cache before making complex db cals.
 	 *
-	 * @param string   $key      Cache key.
-	 * @param callable $callback Callback.
-	 *
 	 * @since  4.0.0
 	 * @access protected
+	 *
+	 * @param string   $key      Cache key.
+	 * @param callable $callback Callback.
 	 *
 	 * @return false|mixed
 	 */
@@ -53,16 +53,14 @@ abstract class Model extends Base {
 	/**
 	 * Set query arguments in supported format.
 	 *
-	 * @param array $raw_args Arguments.
-	 *
 	 * @since  4.0.0
 	 * @access protected
+	 *
+	 * @param array $raw_args Arguments.
 	 *
 	 * @return array
 	 */
 	protected function format_args( array $raw_args ) {
-		$args = array();
-
-		return $args;
+		return $raw_args;
 	}
 }

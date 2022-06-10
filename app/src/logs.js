@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import './styles/logs.scss'
-import Logs from './scripts/logs'
+import '@/styles/logs.scss'
+import Logs from './modules/logs'
 
 // Get logs app container.
 const container = document.getElementById('dd4t3-logs-app')
