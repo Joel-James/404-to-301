@@ -44,8 +44,8 @@ class Logs extends Schema {
 	 * @var   array
 	 */
 	public $columns = array(
-		'id'              => array(
-			'name'     => 'id',
+		'log_id'          => array(
+			'name'     => 'log_id',
 			'type'     => 'bigint',
 			'length'   => '20',
 			'unsigned' => true,
@@ -101,6 +101,13 @@ class Logs extends Schema {
 			'allow_null' => true,
 			'validate'   => 'maybe_serialize',
 		),
+		'meta'            => array(
+			'name'       => 'meta',
+			'type'       => 'mediumtext',
+			'default'    => null,
+			'allow_null' => true,
+			'validate'   => 'maybe_serialize',
+		),
 		'visits'          => array(
 			'name'     => 'visits',
 			'type'     => 'bigint',
@@ -127,12 +134,13 @@ class Logs extends Schema {
 			'default'    => 'global',
 			'allow_null' => true,
 		),
-		'meta'            => array(
-			'name'       => 'meta',
-			'type'       => 'mediumtext',
+		'redirect_id'     => array(
+			'name'       => 'redirect_id',
+			'type'       => 'bigint',
+			'length'     => '20',
+			'unsigned'   => true,
 			'default'    => null,
 			'allow_null' => true,
-			'validate'   => 'maybe_serialize',
 		),
 		'created_at'      => array(
 			'name'       => 'created_at',

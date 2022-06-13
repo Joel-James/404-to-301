@@ -5,15 +5,15 @@
  * This class handles the API endpoint for redirects management.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Endpoint
  * @subpackage Redirects
  */
 
-namespace DuckDev\Redirect\Api;
+namespace DuckDev\Redirect\Api\V1;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -36,9 +36,9 @@ class Redirects extends Endpoint {
 	/**
 	 * API endpoint for the current api.
 	 *
-	 * @var string $endpoint
 	 * @since  4.0.0
 	 * @access private
+	 * @var string $endpoint
 	 */
 	private $endpoint = '/redirects';
 
@@ -148,7 +148,7 @@ class Redirects extends Endpoint {
 		// Manage single redirect item using ID.
 		register_rest_route(
 			$this->get_namespace(),
-			$this->endpoint . '/(?P<id>\d+)',
+			$this->endpoint . '/(?P<redirect_id>\d+)',
 			array(
 				// Get redirect.
 				array(
@@ -156,7 +156,7 @@ class Redirects extends Endpoint {
 					'callback'            => array( $this, 'get_redirect' ),
 					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
-						'id' => array(
+						'redirect_id' => array(
 							'type'        => 'integer',
 							'required'    => true,
 							'description' => __( 'Redirect ID to get the details.', '404-to-301' ),
@@ -169,7 +169,7 @@ class Redirects extends Endpoint {
 					'callback'            => array( $this, 'update_redirect' ),
 					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
-						'id'          => array(
+						'redirect_id' => array(
 							'type'        => 'integer',
 							'required'    => true,
 							'description' => __( 'Redirect ID to update.', '404-to-301' ),
@@ -207,7 +207,7 @@ class Redirects extends Endpoint {
 					'callback'            => array( $this, 'delete_redirect' ),
 					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
-						'id' => array(
+						'redirect_id' => array(
 							'type'        => 'integer',
 							'required'    => true,
 							'description' => __( 'Redirect ID to delete.', '404-to-301' ),
@@ -243,10 +243,10 @@ class Redirects extends Endpoint {
 	 *
 	 * These redirects can be filtered using available params.
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -288,19 +288,19 @@ class Redirects extends Endpoint {
 	/**
 	 * Get a single redirect item.
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response
 	 */
 	public function get_redirect( $request ) {
 		// Get parameters.
-		$id = $request->get_param( 'id' );
+		$redirect_id = $request->get_param( 'redirect_id' );
 
 		// Get redirect.
-		$log = Models\Redirects::instance()->get( $id );
+		$log = Models\Redirects::instance()->get( $redirect_id );
 
 		return $this->get_response( $log );
 	}
@@ -310,10 +310,10 @@ class Redirects extends Endpoint {
 	 *
 	 * Useful to check if a redirect exist for a url.
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -334,10 +334,10 @@ class Redirects extends Endpoint {
 	/**
 	 * Delete a single redirect item.
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -345,7 +345,7 @@ class Redirects extends Endpoint {
 		$data = array();
 
 		// Get parameters.
-		$id = $request->get_param( 'id' );
+		$redirect_id = $request->get_param( 'redirect_id' );
 
 		// Fields to update.
 		$fields = array( 'visits', 'redirect', 'log', 'email' );
@@ -358,8 +358,8 @@ class Redirects extends Endpoint {
 		}
 
 		// Update if data is not empty.
-		if ( ! empty( $id ) && ! empty( $data ) ) {
-			return $this->get_response( Models\Redirects::instance()->update( $id, $data ) );
+		if ( ! empty( $redirect_id ) && ! empty( $data ) ) {
+			return $this->get_response( Models\Redirects::instance()->update( $redirect_id, $data ) );
 		}
 
 		// Error response.
@@ -369,19 +369,19 @@ class Redirects extends Endpoint {
 	/**
 	 * Delete a single redirect item.
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response
 	 */
 	public function delete_redirect( $request ) {
 		// Get parameters.
-		$id = $request->get_param( 'id' );
+		$redirect_id = $request->get_param( 'redirect_id' );
 
 		// Delete redirects.
-		$success = Models\Redirects::instance()->delete( $id );
+		$success = Models\Redirects::instance()->delete( $redirect_id );
 
 		return $this->get_response( array(), $success );
 	}

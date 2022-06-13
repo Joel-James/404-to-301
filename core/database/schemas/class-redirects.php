@@ -44,8 +44,8 @@ class Redirects extends Schema {
 	 * @var   array
 	 */
 	public $columns = array(
-		'id'          => array(
-			'name'     => 'id',
+		'redirect_id' => array(
+			'name'     => 'redirect_id',
 			'type'     => 'bigint',
 			'length'   => '20',
 			'unsigned' => true,

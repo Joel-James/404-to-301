@@ -13,19 +13,19 @@
  * @subpackage Email
  */
 
-namespace DuckDev\Redirect\Actions;
+namespace DuckDev\Redirect\Front\Actions;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Models\Request;
+use DuckDev\Redirect\Front\Request;
 
 /**
  * Class Email
  *
  * @since   4.0.0
  * @extends Action
- * @package DuckDev\Redirect
+ * @package DuckDev\Redirect\Front\Actions
  */
 class Email extends Action {
 

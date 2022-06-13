@@ -5,15 +5,15 @@
  * This class handles the API endpoint for logs management.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Endpoint
  * @subpackage Logs
  */
 
-namespace DuckDev\Redirect\Api;
+namespace DuckDev\Redirect\Api\V1;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -35,9 +35,9 @@ class Logs extends Endpoint {
 	/**
 	 * API endpoint for the current api.
 	 *
-	 * @var string $endpoint
 	 * @since  4.0.0
 	 * @access private
+	 * @var string $endpoint
 	 */
 	private $endpoint = '/logs';
 
@@ -112,7 +112,7 @@ class Logs extends Endpoint {
 		// Manage single log item using ID.
 		register_rest_route(
 			$this->get_namespace(),
-			$this->endpoint . '/(?P<id>\d+)',
+			$this->endpoint . '/(?P<log_id>\d+)',
 			array(
 				// Get log.
 				array(
@@ -120,7 +120,7 @@ class Logs extends Endpoint {
 					'callback'            => array( $this, 'get_log' ),
 					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
-						'id' => array(
+						'log_id' => array(
 							'type'        => 'integer',
 							'required'    => true,
 							'description' => __( 'Log ID to get the details.', '404-to-301' ),
@@ -133,29 +133,24 @@ class Logs extends Endpoint {
 					'callback'            => array( $this, 'update_log' ),
 					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
-						'id'       => array(
+						'log_id'          => array(
 							'type'        => 'integer',
 							'required'    => true,
 							'description' => __( 'Log ID to update.', '404-to-301' ),
 						),
-						'visits'   => array(
-							'type'        => 'integer',
-							'required'    => false,
-							'description' => __( 'Visit count.', '404-to-301' ),
-						),
-						'redirect' => array(
+						'redirect_status' => array(
 							'type'        => 'string',
 							'required'    => false,
 							'enum'        => array( 'global', 'enabled', 'disabled' ),
 							'description' => __( 'Redirect status.', '404-to-301' ),
 						),
-						'log'      => array(
+						'log_status'      => array(
 							'type'        => 'string',
 							'required'    => false,
 							'enum'        => array( 'global', 'enabled', 'disabled' ),
 							'description' => __( 'Log status.', '404-to-301' ),
 						),
-						'email'    => array(
+						'email_status'    => array(
 							'type'        => 'string',
 							'required'    => false,
 							'enum'        => array( 'global', 'enabled', 'disabled' ),
@@ -169,7 +164,7 @@ class Logs extends Endpoint {
 					'callback'            => array( $this, 'delete_log' ),
 					'permission_callback' => array( $this, 'has_access' ),
 					'args'                => array(
-						'id' => array(
+						'log_id' => array(
 							'type'        => 'integer',
 							'required'    => true,
 							'description' => __( 'Log ID to delete.', '404-to-301' ),
@@ -182,7 +177,7 @@ class Logs extends Endpoint {
 		// Get log by 404 url.
 		register_rest_route(
 			$this->get_namespace(),
-			$this->endpoint . '/get',
+			$this->endpoint . '/url',
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
@@ -205,10 +200,10 @@ class Logs extends Endpoint {
 	 *
 	 * These logs can be filtered using available params.
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -256,19 +251,19 @@ class Logs extends Endpoint {
 	/**
 	 * Get a single log item.
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response
 	 */
 	public function get_log( $request ) {
 		// Get parameters.
-		$id = $request->get_param( 'id' );
+		$log_id = $request->get_param( 'log_id' );
 
 		// Get log.
-		$log = Models\Logs::instance()->get( $id );
+		$log = Models\Logs::instance()->get( $log_id );
 
 		return $this->get_response( $log );
 	}
@@ -278,10 +273,10 @@ class Logs extends Endpoint {
 	 *
 	 * Useful to check if log exist for a url.
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -302,10 +297,10 @@ class Logs extends Endpoint {
 	/**
 	 * Update a singe log item.
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -313,21 +308,21 @@ class Logs extends Endpoint {
 		$data = array();
 
 		// Get parameters.
-		$id = $request->get_param( 'id' );
+		$log_id = $request->get_param( 'log_id' );
 
 		// Fields to update.
-		$fields = array( 'visits', 'redirect', 'log', 'email' );
+		$fields = array( 'redirect_status', 'log_status', 'email_status' );
 
 		// No. of hits to the url.
 		foreach ( $fields as $field ) {
 			if ( $request->offsetExists( $field ) ) {
-				$data[ $field ] = (int) $request->get_param( $field );
+				$data[ $field ] = $request->get_param( $field );
 			}
 		}
 
 		// Update if data is not empty.
-		if ( ! empty( $id ) && ! empty( $data ) ) {
-			return $this->get_response( Models\Logs::instance()->update( $id, $data ) );
+		if ( ! empty( $log_id ) && ! empty( $data ) ) {
+			return $this->get_response( Models\Logs::instance()->update( $log_id, $data ) );
 		}
 
 		// Error response.
@@ -337,19 +332,19 @@ class Logs extends Endpoint {
 	/**
 	 * Delete a single log item.
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response
 	 */
 	public function delete_log( $request ) {
 		// Get parameters.
-		$id = $request->get_param( 'id' );
+		$log_id = $request->get_param( 'log_id' );
 
 		// Delete log.
-		$success = Models\Logs::instance()->delete( $id );
+		$success = Models\Logs::instance()->delete( $log_id );
 
 		return $this->get_response( array(), $success );
 	}

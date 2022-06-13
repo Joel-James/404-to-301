@@ -12,19 +12,19 @@
  * @subpackage Action
  */
 
-namespace DuckDev\Redirect\Actions;
+namespace DuckDev\Redirect\Front\Actions;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Utils\Helpers;
-use DuckDev\Redirect\Models\Request;
+use DuckDev\Redirect\Front\Request;
 
 /**
  * Class Action
  *
  * @since   4.0.0
- * @package DuckDev\Redirect\Actions
+ * @package DuckDev\Redirect\Front\Actions
  */
 abstract class Action {
 
@@ -148,7 +148,7 @@ abstract class Action {
 	 */
 	protected function is_enabled( $log_key, $settings_key ) {
 		// Get status.
-		$status = $this->request->get_log( $log_key, 'global' );
+		$status = $this->request->get_info( $log_key, 'global' );
 
 		if ( 'global' === $status ) {
 			// Get global option.

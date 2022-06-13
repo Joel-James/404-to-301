@@ -92,7 +92,7 @@ final class Redirects extends Table {
 	protected function set_schema() {
 		// phpcs:ignore
 		$this->schema = "
-			id bigint(20) unsigned NOT NULL auto_increment,
+			redirect_id bigint(20) unsigned NOT NULL auto_increment,
 			source mediumtext NOT NULL UNIQUE,
 			destination mediumtext NOT NULL,
 			code int(11) unsigned DEFAULT '301',
@@ -103,7 +103,7 @@ final class Redirects extends Table {
 			updated_at datetime DEFAULT NULL,
 			created_by bigint(20) unsigned DEFAULT NULL,
 			updated_by bigint(20) unsigned DEFAULT NULL,
-			PRIMARY KEY (id)
+			PRIMARY KEY (redirect_id)
 			";
 	}
 }

@@ -26,17 +26,17 @@ use BerlinDB\Database\Row;
  * @since   4.0.0
  * @extends Row
  *
- * @property int    $id          ID of the redirect.
- * @property string $source      Source path.
- * @property string $destination Destination link.
- * @property int    $code        Redirect code.
- * @property string $type        Redirect type.
- * @property string $status      Redirect status.
- * @property array  $meta        Meta data.
- * @property string $created_at  Created time.
- * @property string $updated_at  Updated time.
- * @property int    $created_by  Created user id.
- * @property int    $updated_by  Updated user id.
+ * @property int    $redirect_id          ID of the redirect.
+ * @property string $source               Source path.
+ * @property string $destination          Destination link.
+ * @property int    $code                 Redirect code.
+ * @property string $type                 Redirect type.
+ * @property string $status               Redirect status.
+ * @property array  $meta                 Meta data.
+ * @property string $created_at           Created time.
+ * @property string $updated_at           Updated time.
+ * @property int    $created_by           Created user id.
+ * @property int    $updated_by           Updated user id.
  *
  * @package DuckDev\Redirect\Database\Rows
  */
@@ -63,12 +63,12 @@ class Redirect extends Row {
 		parent::__construct( $item );
 
 		// Set the type of each column, and prepare.
-		$this->id          = (int) $this->id;
+		$this->redirect_id = (int) $this->redirect_id;
 		$this->source      = (string) $this->source;
 		$this->destination = (string) $this->destination;
 		$this->code        = (int) $this->code;
 		$this->type        = (string) $this->type;
-		$this->meta        = (string) $this->meta;
+		$this->meta        = is_null( $this->meta ) ? null : maybe_unserialize( $this->meta );
 		$this->status      = (string) $this->status;
 		$this->created_at  = strtotime( $this->created_at );
 		$this->updated_at  = strtotime( $this->updated_at );

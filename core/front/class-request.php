@@ -13,16 +13,18 @@
  * @subpackage Request
  */
 
-namespace DuckDev\Redirect\Models;
+namespace DuckDev\Redirect\Front;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
+
+use DuckDev\Redirect\Models;
 
 /**
  * Class Request
  *
  * @since   4.0.0
- * @package DuckDev\Redirect\Models
+ * @package DuckDev\Redirect\Front
  */
 class Request {
 
@@ -237,7 +239,7 @@ class Request {
 	 *
 	 * @return object|mixed
 	 */
-	public function get_log( $name = false, $default = false ) {
+	public function get_info( $name = false, $default = false ) {
 		return $this->get_item( $this->log, $name, $default );
 	}
 
@@ -482,7 +484,7 @@ class Request {
 	 */
 	private function set_redirect() {
 		// Get matching redirect.
-		$redirect = Redirects::instance()->get_by_source(
+		$redirect = Models\Redirects::instance()->get_by_source(
 			$this->get_url()
 		);
 
@@ -513,7 +515,7 @@ class Request {
 		// Only if a 404.
 		if ( $this->is_404() ) {
 			// Get log.
-			$log = Logs::instance()->get_by_url(
+			$log = Models\Logs::instance()->get_by_url(
 				$this->get_url()
 			);
 

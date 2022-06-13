@@ -125,10 +125,10 @@ final class Core extends Base {
 	 * @return void
 	 */
 	private function api() {
-		new Api\Logs();
-		new Api\Data();
-		new Api\Redirects();
-		new Api\Settings();
+		new Api\V1\Logs();
+		new Api\V1\Data();
+		new Api\V1\Redirects();
+		new Api\V1\Settings();
 	}
 
 	/**

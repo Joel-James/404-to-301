@@ -22,7 +22,7 @@ defined( 'WPINC' ) || die;
 use BerlinDB\Database\Table;
 
 /**
- * Class Table.
+ * Class Logs.
  *
  * @since   4.0.0
  * @extends Table
@@ -95,22 +95,23 @@ final class Logs extends Table {
 	protected function set_schema() {
 		// phpcs:ignore
 		$this->schema = "
-			id bigint(20) unsigned NOT NULL auto_increment,
+			log_id bigint(20) unsigned NOT NULL auto_increment,
 			url mediumtext NOT NULL,
 			referrer varchar(255) DEFAULT NULL,
 			ip varchar(45) DEFAULT NULL,
 			agent varchar(255) DEFAULT NULL,
 			request_method varchar(10) DEFAULT 'GET',
 			request_data mediumtext DEFAULT NULL,
+			meta mediumtext DEFAULT NULL,
 			visits bigint(20) unsigned DEFAULT '1',
 			redirect_status enum('global', 'enabled', 'disabled') DEFAULT 'global',
 			log_status enum('global', 'enabled', 'disabled') DEFAULT 'global',
 			email_status enum('global', 'enabled', 'disabled') DEFAULT 'global',
-			meta mediumtext DEFAULT NULL,
+			redirect_id bigint(20) unsigned DEFAULT NULL,
 			created_at datetime NOT NULL default CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT NULL,
 			updated_by bigint(20) unsigned DEFAULT NULL,
-			PRIMARY KEY (id)
+			PRIMARY KEY (log_id)
 			";
 	}
 }

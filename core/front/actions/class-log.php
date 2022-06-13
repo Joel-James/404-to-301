@@ -13,20 +13,20 @@
  * @subpackage Log
  */
 
-namespace DuckDev\Redirect\Actions;
+namespace DuckDev\Redirect\Front\Actions;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Models\Logs;
-use DuckDev\Redirect\Models\Request;
+use DuckDev\Redirect\Models;
+use DuckDev\Redirect\Front\Request;
 
 /**
  * Class Log
  *
  * @since   4.0.0
  * @extends Action
- * @package DuckDev\Redirect\Actions
+ * @package DuckDev\Redirect\Front\Actions
  */
 class Log extends Action {
 
@@ -60,8 +60,8 @@ class Log extends Action {
 
 		// We should skip because duplicate disabled.
 		if ( ! $this->can_duplicate() ) {
-			// Increment visits and bail.
-			$this->increment_visits();
+			// Make sure to update the visits count and then bail.
+			Models\Logs::instance()->mark_visit( $this->request->get_url() );
 
 			return;
 		}
@@ -92,7 +92,7 @@ class Log extends Action {
 		do_action( 'dd4t3_before_log', $data, $this->request );
 
 		// Log data.
-		$success = Logs::instance()->create( $data );
+		$success = Models\Logs::instance()->create( $data );
 
 		/**
 		 * Action hook to execute after adding a log.
@@ -154,7 +154,7 @@ class Log extends Action {
 
 		// Check if a log already exist for current url if duplicate is disabled.
 		if ( dd4t3_settings()->get( 'logs_skip_duplicates' ) ) {
-			$can = ! $this->request->get_log( 'id' );
+			$can = ! $this->request->get_info( 'log_id' );
 		}
 
 		/**
@@ -166,40 +166,5 @@ class Log extends Action {
 		 * @param Request $request Request object.
 		 */
 		return apply_filters( 'dd4t3_logs_can_duplicate', $can, $this->request );
-	}
-
-	/**
-	 * Increment visits count for a log.
-	 *
-	 * We increment the visits count only when duplicate logs are disabled.
-	 *
-	 * @since 4.0
-	 *
-	 * @return void
-	 */
-	private function increment_visits() {
-		// We need a log id.
-		$id = $this->request->get_log( 'id' );
-
-		if ( ! empty( $id ) ) {
-			// Get existing count.
-			$visits = (int) $this->request->get_log( 'visits', 0 );
-
-			// Increment visits count.
-			$success = Logs::instance()->update_logs(
-				array( 'visits' => $visits + 1 ),
-				array( 'url' => $this->request->get_log( 'url', 0 ) )
-			);
-
-			/**
-			 * Action hook executed after incrementing a log's visits count.
-			 *
-			 * @since 4.0.0
-			 *
-			 * @param bool    $success Is increment success.
-			 * @param Request $request Old visits count.
-			 */
-			do_action( 'dd4t3_logs_after_increment_visits', $success, $visits );
-		}
 	}
 }

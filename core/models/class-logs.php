@@ -47,7 +47,7 @@ class Logs extends Model {
 	}
 
 	/**
-	 * Get a log by url.
+	 * Get a log by URL.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -112,7 +112,25 @@ class Logs extends Model {
 		$logs = new Database\Queries\Log();
 
 		// Create log.
-		return $logs->add_item( $data );
+		if ( $logs->add_item( $data ) ) {
+			// Update the visits count if log already exists..
+			if ( $this->get_by_url( $data['url'] ) ) {
+				$this->mark_visit( $data['url'] );
+			}
+
+			/**
+			 * Action hook fired after a new log is created.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param array $data Data used for log.
+			 */
+			do_action( 'dd4t3_model_after_log_create', $data );
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -135,8 +153,55 @@ class Logs extends Model {
 		// Create a query object.
 		$logs = new Database\Queries\Log();
 
-		// Create log.
-		return $logs->update_item( $log_id, $data );
+		// Update log.
+		if ( $logs->update_item( $log_id, $data ) ) {
+			/**
+			 * Action hook fired after a log is updated.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param int   $log_id Log ID.
+			 * @param array $data   Data used for log.
+			 */
+			do_action( 'dd4t3_model_after_log_update', $log_id, $data );
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Update multiple log entries.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param array $data  Data to update.
+	 * @param array $where Where conditions.
+	 *
+	 * @return bool
+	 */
+	public function update_multiple( array $data, array $where ) {
+		// Create a query object.
+		$logs = new Database\Queries\Log();
+
+		// Update log.
+		if ( $logs->update_multiple( $data, $where ) ) {
+			/**
+			 * Action hook fired after a bulk log update.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param array $data  Data to update.
+			 * @param array $where Where conditions.
+			 */
+			do_action( 'dd4t3_model_after_log_update_multiple', $data, $where );
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -160,25 +225,86 @@ class Logs extends Model {
 		// Create a query object.
 		$logs = new Database\Queries\Log();
 
+		// Get log for action hook.
+		$log = $this->get( $log_id );
+
 		// Delete log.
-		return $logs->delete_item( $log_id );
+		if ( $log && $logs->delete_item( $log_id ) ) {
+			/**
+			 * Action hook fired after a log is deleted.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param int    $log_id Log ID.
+			 * @param object $log    Log data.
+			 */
+			do_action( 'dd4t3_model_after_log_delete', $log_id, $log );
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
-	 * Update multiple logs using where conditions.
+	 * Get the visits count for a 404 URL.
 	 *
 	 * @since  4.0.0
 	 * @access public
 	 *
-	 * @param array $data  Data to update.
-	 * @param array $where Where conditions.
+	 * @param string $url URL.
 	 *
 	 * @return bool
 	 */
-	public function update_logs( array $data, array $where ) {
-		// Create a query object.
-		$logs = new Database\Queries\Log();
+	public function get_visits( $url ) {
+		// Can not continue if url is empty.
+		if ( empty( $url ) ) {
+			return false;
+		}
 
-		return $logs->update_multiple( $data, $where );
+		// Get log by URL.
+		$log = $this->get_by_url( $url );
+
+		// If 0 visits, no log found.
+		return isset( $log->visits ) ? (int) $log->visits : 0;
+	}
+
+	/**
+	 * Increment visits count for a log.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param string $url URL of the request.
+	 *
+	 * @return bool
+	 */
+	public function mark_visit( $url ) {
+		// Can not continue if url is empty.
+		if ( empty( $url ) ) {
+			return false;
+		}
+
+		// Get current visits.
+		$visits = $this->get_visits( $url );
+
+		// Increment the visits count.
+		if ( $this->update_multiple(
+			array( 'visits' => $visits + 1 ),
+			array( 'url' => $url )
+		) ) {
+			/**
+			 * Action hook executed after incrementing a log's visits count.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param bool $success Is visits update success.
+			 */
+			do_action( 'dd4t3_model_after_mark_visit', $visits );
+
+			return true;
+		}
+
+		return false;
 	}
 }

@@ -53,7 +53,7 @@ class Database extends Base {
 			'redirects' => new Tables\Redirects(),
 		);
 
-		// Upgrader.
+		// Upgrade class init.
 		if ( is_admin() ) {
 			Upgrader::instance();
 		}

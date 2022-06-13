@@ -11,7 +11,7 @@
  * @subpackage Endpoint
  */
 
-namespace DuckDev\Redirect\Api;
+namespace DuckDev\Redirect\Api\V1;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;

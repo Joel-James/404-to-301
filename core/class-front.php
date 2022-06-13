@@ -19,7 +19,8 @@ namespace DuckDev\Redirect;
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Utils\Base;
-use DuckDev\Redirect\Models\Request;
+use DuckDev\Redirect\Front\Actions;
+use DuckDev\Redirect\Front\Request;
 
 /**
  * Class Front

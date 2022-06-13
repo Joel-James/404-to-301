@@ -13,20 +13,20 @@
  * @subpackage Redirect
  */
 
-namespace DuckDev\Redirect\Actions;
+namespace DuckDev\Redirect\Front\Actions;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Data;
-use DuckDev\Redirect\Models\Request;
+use DuckDev\Redirect\Front\Request;
 
 /**
  * Class Redirect
  *
  * @extends Action
  * @since   4.0.0
- * @package DuckDev\Redirect
+ * @package DuckDev\Redirect\Front\Actions
  */
 class Redirect extends Action {
 
