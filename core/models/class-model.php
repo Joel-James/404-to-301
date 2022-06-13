@@ -31,6 +31,14 @@ use DuckDev\Redirect\Utils\Base;
 abstract class Model extends Base {
 
 	/**
+	 * Fields that can be updated.
+	 *
+	 * @since 4.0.0
+	 * @var string[] $updatable
+	 */
+	protected $updatable = array();
+
+	/**
 	 * Use object cache for model data.
 	 *
 	 * Get from cache before making complex db cals.
@@ -48,6 +56,38 @@ abstract class Model extends Base {
 		$log = dd4t3_cache()->remember( $key, $callback );
 
 		return empty( $log ) ? false : $log;
+	}
+
+	/**
+	 * Filter out unwanted fields from update.
+	 *
+	 * Only items listed in $updatable property will be allowed.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param array $data Data to update.
+	 */
+	protected function prepare_fields( $data ) {
+		if ( empty( $this->updatable ) || empty( $data ) ) {
+			return $data;
+		}
+
+		// Loop and remove unwanted items.
+		foreach ( $data as $field => $value ) {
+			if ( ! in_array( $field, $this->updatable, true ) ) {
+				unset( $data[ $field ] );
+			}
+		}
+
+		/**
+		 * Filter hook to modify filtered data for update.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $data Filtered data.
+		 */
+		return apply_filters( 'dd4t3_model_prepare_fields', $data );
 	}
 
 	/**

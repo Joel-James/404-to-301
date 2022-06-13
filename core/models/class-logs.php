@@ -30,6 +30,20 @@ use DuckDev\Redirect\Database;
 class Logs extends Model {
 
 	/**
+	 * Fields that can be updated.
+	 *
+	 * @since 4.0.0
+	 * @var string[] $updatable
+	 */
+	protected $updatable = array(
+		'meta',
+		'visits',
+		'log_status',
+		'email_status',
+		'redirect_status',
+	);
+
+	/**
 	 * Get a log by ID.
 	 *
 	 * @since  4.0.0
@@ -40,10 +54,10 @@ class Logs extends Model {
 	 * @return object|false Log object if successful, false otherwise.
 	 */
 	public function get( $log_id ) {
-		$logs = new Database\Queries\Log();
+		$log = new Database\Queries\Log();
 
 		// Return log.
-		return $logs->get_item( $log_id );
+		return $log->get_item( $log_id );
 	}
 
 	/**
@@ -57,9 +71,9 @@ class Logs extends Model {
 	 * @return object|false Log object if successful, false otherwise.
 	 */
 	public function get_by_url( $url ) {
-		$logs = new Database\Queries\Log();
+		$log = new Database\Queries\Log();
 
-		return $logs->get_item_by( 'url', $url );
+		return $log->get_item_by( 'url', $url );
 	}
 
 	/**
@@ -84,10 +98,10 @@ class Logs extends Model {
 		);
 
 		// Create a query object.
-		$logs = new Database\Queries\Log();
+		$log = new Database\Queries\Log();
 
 		// Return logs.
-		return $logs->query( $args );
+		return $log->query( $args );
 	}
 
 	/**
@@ -109,10 +123,10 @@ class Logs extends Model {
 		}
 
 		// Create a query object.
-		$logs = new Database\Queries\Log();
+		$log = new Database\Queries\Log();
 
 		// Create log.
-		if ( $logs->add_item( $data ) ) {
+		if ( $log->add_item( $data ) ) {
 			// Update the visits count if log already exists..
 			if ( $this->get_by_url( $data['url'] ) ) {
 				$this->mark_visit( $data['url'] );
@@ -151,10 +165,13 @@ class Logs extends Model {
 		}
 
 		// Create a query object.
-		$logs = new Database\Queries\Log();
+		$log = new Database\Queries\Log();
+
+		// Prepare data.
+		$data = $this->prepare_fields( $data );
 
 		// Update log.
-		if ( $logs->update_item( $log_id, $data ) ) {
+		if ( ! empty( $data ) && $log->update_item( $log_id, $data ) ) {
 			/**
 			 * Action hook fired after a log is updated.
 			 *
@@ -184,10 +201,13 @@ class Logs extends Model {
 	 */
 	public function update_multiple( array $data, array $where ) {
 		// Create a query object.
-		$logs = new Database\Queries\Log();
+		$log = new Database\Queries\Log();
+
+		// Prepare data.
+		$data = $this->prepare_fields( $data );
 
 		// Update log.
-		if ( $logs->update_multiple( $data, $where ) ) {
+		if ( $log->update_multiple( $data, $where ) ) {
 			/**
 			 * Action hook fired after a bulk log update.
 			 *
@@ -223,22 +243,22 @@ class Logs extends Model {
 		}
 
 		// Create a query object.
-		$logs = new Database\Queries\Log();
+		$log = new Database\Queries\Log();
 
 		// Get log for action hook.
-		$log = $this->get( $log_id );
+		$log_data = $this->get( $log_id );
 
 		// Delete log.
-		if ( $log && $logs->delete_item( $log_id ) ) {
+		if ( $log_data && $log->delete_item( $log_id ) ) {
 			/**
 			 * Action hook fired after a log is deleted.
 			 *
 			 * @since 4.0.0
 			 *
-			 * @param int    $log_id Log ID.
-			 * @param object $log    Log data.
+			 * @param int    $log_id   Log ID.
+			 * @param object $log_data Log data.
 			 */
-			do_action( 'dd4t3_model_after_log_delete', $log_id, $log );
+			do_action( 'dd4t3_model_after_log_delete', $log_id, $log_data );
 
 			return true;
 		}
