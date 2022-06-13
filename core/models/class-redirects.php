@@ -45,6 +45,21 @@ class Redirects extends Model {
 	);
 
 	/**
+	 * Initialize class and register hooks.
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return void
+	 */
+	protected function __construct() {
+		parent::__construct();
+
+		// Make sure to init logs class.
+		Logs::instance();
+	}
+
+	/**
 	 * Get a redirect by ID.
 	 *
 	 * @since  4.0.0
@@ -127,16 +142,19 @@ class Redirects extends Model {
 		// Create a query object.
 		$redirect = new Database\Queries\Redirect();
 
-		// Create redirect.
-		if ( $redirect->add_item( $data ) ) {
+		// Create new redirect.
+		$redirect_id = $redirect->add_item( $data );
+
+		if ( $redirect_id ) {
 			/**
 			 * Action hook fired after a new redirect is created.
 			 *
 			 * @since 4.0.0
 			 *
-			 * @param array $data Data used for redirect.
+			 * @param int   $redirect_id Redirect ID.
+			 * @param array $data        Data used for redirect.
 			 */
-			do_action( 'dd4t3_model_after_redirect_create', $data );
+			do_action( 'dd4t3_model_after_redirect_create', $redirect_id, $data );
 
 			return true;
 		}

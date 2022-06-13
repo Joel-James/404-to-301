@@ -44,6 +44,23 @@ class Logs extends Model {
 	);
 
 	/**
+	 * Initialize class and register hooks.
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return void
+	 */
+	protected function __construct() {
+		parent::__construct();
+
+		// Handle redirect item changes.
+		add_action( 'dd4t3_model_after_redirect_create', array( $this, 'on_redirect_create' ), 10, 2 );
+		add_action( 'dd4t3_model_after_redirect_update', array( $this, 'on_redirect_update' ), 10, 2 );
+		add_action( 'dd4t3_model_after_redirect_delete', array( $this, 'on_redirect_delete' ), 10, 2 );
+	}
+
+	/**
 	 * Get a log by ID.
 	 *
 	 * @since  4.0.0
@@ -63,6 +80,9 @@ class Logs extends Model {
 	/**
 	 * Get a log by URL.
 	 *
+	 * There can be multiple logs with same URL, but we will
+	 * get only one here.
+	 *
 	 * @since  4.0.0
 	 * @access public
 	 *
@@ -74,6 +94,25 @@ class Logs extends Model {
 		$log = new Database\Queries\Log();
 
 		return $log->get_item_by( 'url', $url );
+	}
+
+	/**
+	 * Get a log by redirect ID.
+	 *
+	 * There can be multiple logs with same redirect id, but we will
+	 * get only one here.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param int $redirect_id Redirect ID.
+	 *
+	 * @return object|false Log object if successful, false otherwise.
+	 */
+	public function get_by_redirect( $redirect_id ) {
+		$log = new Database\Queries\Log();
+
+		return $log->get_item_by( 'redirect_id', $redirect_id );
 	}
 
 	/**
@@ -326,5 +365,103 @@ class Logs extends Model {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Link redirect id to log if required.
+	 *
+	 * When a new redirect is created check if the same source
+	 * URL exist as URL in 404 error logs. If so, link the ID.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param int   $redirect_id Redirect ID.
+	 * @param array $data        Created log data.
+	 *
+	 * @return void
+	 */
+	public function on_redirect_create( $redirect_id, $data ) {
+		// Link if redirect ID and URL found.
+		if ( ! empty( $redirect_id ) && ! empty( $data['url'] ) ) {
+			$this->link_redirect( $data['url'], $redirect_id );
+		}
+	}
+
+	/**
+	 * Link/unlink redirect id to log if required.
+	 *
+	 * When a new redirect is updated check if the same source
+	 * URL exist as URL in 404 error logs. If so, link the ID.
+	 * Also unlink old url if the redirect url is changed.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param int   $redirect_id Redirect ID.
+	 * @param array $data        Created log data.
+	 *
+	 * @return void
+	 */
+	public function on_redirect_update( $redirect_id, $data ) {
+		// No need to continue if URL has not changed.
+		if ( empty( $redirect_id ) || empty( $data['url'] ) ) {
+			return;
+		}
+
+		// Get an old log for the redirect.
+		$log = $this->get_by_redirect( $redirect_id );
+
+		// Unlink from old logs.
+		if ( isset( $log->id ) ) {
+			$this->link_redirect( $log->url );
+		}
+
+		// Now link to matching logs.
+		$this->link_redirect( $data['url'], $redirect_id );
+	}
+
+	/**
+	 * Unlink redirect id to log if required.
+	 *
+	 * When a new redirect is deleted, unlink all logs from it.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param int   $redirect_id Redirect ID.
+	 * @param array $data        Created log data.
+	 *
+	 * @return void
+	 */
+	public function on_redirect_delete( $redirect_id, $data ) {
+		// Unlink redirect if URL found.
+		if ( isset( $data['url'] ) ) {
+			$this->link_redirect( $data['url'] );
+		}
+	}
+
+	/**
+	 * Link or unlink a redirect ID to logs with same URL.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param string   $url         URL.
+	 * @param int|null $redirect_id Redirect ID (Unlink if null).
+	 *
+	 * @return void
+	 */
+	public function link_redirect( $url, $redirect_id = null ) {
+		// Can not continue if url is empty.
+		if ( empty( $url ) ) {
+			return;
+		}
+
+		// Unlink from all logs.
+		$this->update_multiple(
+			array( 'redirect_id' => $redirect_id ),
+			array( 'url' => $url )
+		);
 	}
 }
