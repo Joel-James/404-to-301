@@ -241,8 +241,8 @@ class JJ4T3_Admin {
 	 * Show error listing table view.
 	 *
 	 * This method displays the listing table HTML to the page.
-	 * Regitsering action hook - "jj4t3_log_list_above_form".
-	 * Regitsering action hook - "jj4t3_log_list_below_form".
+	 * Registering action hook - "jj4t3_log_list_above_form".
+	 * Registering action hook - "jj4t3_log_list_below_form".
 	 *
 	 * @since  2.1.0
 	 * @access public
@@ -252,7 +252,7 @@ class JJ4T3_Admin {
 	public function error_list() {
 		?>
 		<div class="wrap">
-			<h2><?php _e( '404 Error Logs', '404-to-301' ); ?></h2>
+			<h2><?php esc_html_e( '404 Error Logs', '404-to-301' ); ?></h2>
 			<div id="poststuff">
 				<div id="post-body" class="metabox-holder">
 					<div id="post-body-content">
@@ -465,7 +465,7 @@ class JJ4T3_Admin {
 						<?php
 						printf(
 							__( 'Hey %1$s, I noticed you\'ve been using %2$s404 to 301%3$s for more than 1 week – that’s awesome! Could you please do me a BIG favor and give it a 5-star rating on WordPress? Just to help us spread the word and boost our motivation.', '404-to-301' ),
-							empty( $current_user->display_name ) ? __( 'there', '404-to-301' ) : ucwords( $current_user->display_name ),
+							empty( $current_user->display_name ) ? esc_html__( 'there', '404-to-301' ) : esc_html( ucwords( $current_user->display_name ) ),
 							'<strong>',
 							'</strong>'
 						);
@@ -475,10 +475,10 @@ class JJ4T3_Admin {
 						<a href="https://wordpress.org/support/plugin/404-to-301/reviews/#new-post" target="_blank"><?php esc_html_e( 'Ok, you deserve it', '404-to-301' ); ?></a>
 					</p>
 					<p>
-						<a href="<?php echo add_query_arg( 'jj4t3_rating', 'later' ); // later. ?>"><?php esc_html_e( 'Nope, maybe later', '404-to-301' ); ?></a>
+						<a href="<?php echo esc_url( add_query_arg( 'jj4t3_rating', 'later' ) ); // later. ?>"><?php esc_html_e( 'Nope, maybe later', '404-to-301' ); ?></a>
 					</p>
 					<p>
-						<a href="<?php echo add_query_arg( 'jj4t3_rating', 'dismiss' ); // dismiss link. ?>"><?php esc_html_e( 'I already did', '404-to-301' ); ?></a>
+						<a href="<?php echo esc_url( add_query_arg( 'jj4t3_rating', 'dismiss' ) ); // dismiss link. ?>"><?php esc_html_e( 'I already did', '404-to-301' ); ?></a>
 					</p>
 				</div>
 				<?php

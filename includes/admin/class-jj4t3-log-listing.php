@@ -261,11 +261,6 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		// Get group by value from request.
 		$group_by = jj4t3_from_request( 'group_by_top', '' );
 
-		// Verify if the group by value is allowed.
-		if ( ! in_array( $group_by, $allowed_values, true ) ) {
-			return;
-		}
-
 		/**
 		 * Filter to alter the log listing groupby param.
 		 *
@@ -273,7 +268,14 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		 *
 		 * @since 2.0.0
 		 */
-		$this->group_by = apply_filters( 'jj4t3_log_list_groupby', $group_by );
+		$group_by = apply_filters( 'jj4t3_log_list_groupby', $group_by );
+
+		// Verify if the group by value is allowed.
+		if ( ! in_array( $group_by, $allowed_values, true ) ) {
+			return;
+		}
+
+		$this->group_by = $group_by;
 	}
 
 	/**
@@ -720,7 +722,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 			echo '<select name="group_by_top" class="404_group_by">';
 			echo '<option value="">' . esc_html__( 'Group by', '404-to-301' ) . '</option>';
 			foreach ( $column_names as $column ) {
-				echo '<option value="' . $column . '" ' . selected( $column, $this->group_by ) . '>' . esc_attr( $available_columns[ $column ] ) . '</option>';
+				echo '<option value="' . esc_attr( $column ) . '" ' . selected( $column, $this->group_by ) . '>' . esc_attr( $available_columns[ $column ] ) . '</option>';
 			}
 			echo '</select>';
 			submit_button( __( 'Apply', '404-to-301' ), 'button', 'filter_action', false, array( 'id' => 'post-query' ) );

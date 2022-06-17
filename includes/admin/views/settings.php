@@ -52,7 +52,7 @@ defined( 'ABSPATH' ) || exit;
 		<tr id="custom_url" class="<?php echo esc_attr( $cl_style ); ?>">
 			<th><?php esc_html_e( 'Custom URL', '404-to-301' ); ?></th>
 			<td>
-				<input type="url" size="40" placeholder="<?php echo home_url(); ?>" name="i4t3_gnrl_options[redirect_link]" value="<?php echo esc_url( $options['redirect_link'] ); ?>">
+				<input type="url" size="40" placeholder="<?php echo esc_url( home_url() ); ?>" name="i4t3_gnrl_options[redirect_link]" value="<?php echo esc_url( $options['redirect_link'] ); ?>">
 				<p class="description jj4t3-p-desc"><?php esc_html_e( 'Enter any url (including http://)', '404-to-301' ); ?></p>
 			</td>
 		</tr>
