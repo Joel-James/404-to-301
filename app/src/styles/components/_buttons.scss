@@ -1,24 +1,17 @@
 .#{$prefix}-wrap {
 
-  .#{$prefix}-top-buttons {
-    float: right;
-  }
-
-  .#{$prefix}-bottom-buttons {
-    text-align: right;
-  }
-
-  .#{$prefix}-top-buttons,
-  .#{$prefix}-bottom-buttons {
-    button {
-      margin-left: 10px;
+  .components-button {
+    &.has-icon:not(.is-small) {
+      padding-left: 6px;
+      padding-right: 12px;
     }
   }
 
-  button {
-    &.#{$prefix}-inline-button {
-      display: inline-flex;
-      align-items: center;
+  .#{$prefix}-button-group {
+    display: flex;
+
+    .components-button:not(:last-child) {
+      margin-right: 15px;
     }
   }
 }

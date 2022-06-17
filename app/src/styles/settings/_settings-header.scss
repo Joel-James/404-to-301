@@ -1,0 +1,62 @@
+.#{$prefix}-wrap {
+
+  .#{$prefix}-header {
+    text-align: center;
+    margin: 0 0 1rem;
+    background: #fff;
+    border-bottom: 1px solid #dcdcde;
+
+    .#{$prefix}-title-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      clear: both;
+      padding: 1rem 0;
+
+      h1 {
+        display: inline-block;
+        font-weight: 600;
+        margin: 0 0.8rem;
+        font-size: 23px;
+        padding: 9px 0 4px;
+        line-height: 1.3;
+      }
+
+      .version {
+        background-color: #e5e5e5;
+        border-radius: 3px;
+        font-size: .8em;
+        font-weight: 500;
+        margin-left: 10px;
+        padding: 2px 7px;
+      }
+    }
+
+    // Custom tabs.
+    .#{$prefix}-tabs-wrapper {
+
+      /* IE 11 */
+      display: -ms-inline-grid;
+      -ms-grid-columns: 1fr 1fr;
+      vertical-align: top;
+
+      /* modern browsers */
+      display: inline-grid; /* stylelint-disable-line declaration-block-no-duplicate-properties */
+      grid-template-columns: 1fr 1fr;
+
+      .#{$prefix}-nav-tab {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        padding: 0.5rem 1rem 1rem;
+        margin: 0 1rem;
+        transition: box-shadow 0.2s ease-in-out;
+
+        &.active {
+          box-shadow: inset 0 -3px #3582c4;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

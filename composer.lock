@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5c5e85b52ea6f542527249773e6c89c9",
+    "content-hash": "9c703610fcc937d2ac8b14cc0d838faf",
     "packages": [
         {
             "name": "berlindb/core",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/berlindb/core.git",
-                "reference": "52f07e192b484d201d668daef0ba290df5836ecb"
+                "reference": "7dcddaddcffb69c58800d2fb3f6f169791cab1f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/berlindb/core/zipball/52f07e192b484d201d668daef0ba290df5836ecb",
-                "reference": "52f07e192b484d201d668daef0ba290df5836ecb",
+                "url": "https://api.github.com/repos/berlindb/core/zipball/7dcddaddcffb69c58800d2fb3f6f169791cab1f7",
+                "reference": "7dcddaddcffb69c58800d2fb3f6f169791cab1f7",
                 "shasum": ""
             },
             "type": "library",
@@ -28,14 +28,14 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0-only"
+                "MIT"
             ],
             "description": "A collection of PHP classes and functions that aims to provide an ORM-like experience and interface to WordPress database tables.",
             "support": {
                 "issues": "https://github.com/berlindb/core/issues",
-                "source": "https://github.com/berlindb/core/tree/2.0.0"
+                "source": "https://github.com/berlindb/core/tree/2.0.1"
             },
-            "time": "2021-07-12T14:55:04+00:00"
+            "time": "2022-03-10T21:12:11+00:00"
         },
         {
             "name": "duckdev/wp-cache-helper",
@@ -85,54 +85,6 @@
             "time": "2021-08-08T19:49:49+00:00"
         },
         {
-            "name": "duckdev/wp-query-builder",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/duckdev/wp-query-builder.git",
-                "reference": "15cfabe22492e4ed849a194f6597f42af812e4b1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/duckdev/wp-query-builder/zipball/15cfabe22492e4ed849a194f6597f42af812e4b1",
-                "reference": "15cfabe22492e4ed849a194f6597f42af812e4b1",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "DuckDev\\QueryBuilder\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Joel James",
-                    "email": "me@joelsays.com",
-                    "homepage": "https://duckdev.com"
-                }
-            ],
-            "description": "Lightweight and efficient MySQL Query Builder based on WordPress' wpdb.",
-            "keywords": [
-                "SQL Builder",
-                "database",
-                "query builder",
-                "wordpress",
-                "wpdb"
-            ],
-            "support": {
-                "issues": "https://github.com/duckdev/queries/issues/",
-                "source": "https://github.com/duckdev/wp-query-builder/tree/v1.0.1"
-            },
-            "time": "2021-08-09T08:04:28+00:00"
-        },
-        {
             "name": "duckdev/wp-queue-process",
             "version": "v1.0.2",
             "source": {
@@ -180,16 +132,16 @@
         },
         {
             "name": "duckdev/wp-review-notice",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/duckdev/wp-review-notice.git",
-                "reference": "cb6ba56de8d443ad74f5dbb88723382ac1472ae3"
+                "reference": "569ef315f269abcabf9df2cf1afd60b2a56f3169"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/duckdev/wp-review-notice/zipball/cb6ba56de8d443ad74f5dbb88723382ac1472ae3",
-                "reference": "cb6ba56de8d443ad74f5dbb88723382ac1472ae3",
+                "url": "https://api.github.com/repos/duckdev/wp-review-notice/zipball/569ef315f269abcabf9df2cf1afd60b2a56f3169",
+                "reference": "569ef315f269abcabf9df2cf1afd60b2a56f3169",
                 "shasum": ""
             },
             "require": {
@@ -220,9 +172,9 @@
             ],
             "support": {
                 "issues": "https://github.com/duckdev/wp-review-notice/issues/",
-                "source": "https://github.com/duckdev/wp-review-notice/tree/v1.0.1"
+                "source": "https://github.com/duckdev/wp-review-notice/tree/v1.0.2"
             },
-            "time": "2021-08-11T06:53:32+00:00"
+            "time": "2022-01-29T06:59:27+00:00"
         }
     ],
     "packages-dev": [],
@@ -236,5 +188,5 @@
     "platform-overrides": {
         "php": "5.6.1"
     },
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.2.0"
 }

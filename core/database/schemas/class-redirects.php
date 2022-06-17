@@ -3,10 +3,10 @@
  * The log schema class.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Database\Log
  * @subpackage Schema
  */
@@ -30,22 +30,22 @@ class Redirects extends Schema {
 	/**
 	 * Global prefix used for tables/hooks/cache-groups/etc.
 	 *
+	 * @since  4.0.0
 	 * @var    string
 	 * @access protected
-	 * @since  4.0.0
 	 */
 	protected $prefix = '404_to_301';
 
 	/**
 	 * Columns schema.
 	 *
-	 * @var   array
 	 * @since  4.0.0
 	 * @access public
+	 * @var   array
 	 */
 	public $columns = array(
-		'id'          => array(
-			'name'     => 'id',
+		'redirect_id' => array(
+			'name'     => 'redirect_id',
 			'type'     => 'bigint',
 			'length'   => '20',
 			'unsigned' => true,

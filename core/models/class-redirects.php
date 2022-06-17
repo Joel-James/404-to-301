@@ -5,10 +5,10 @@
  * This class handles the database queries for redirects.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Model
  * @subpackage Redirects
  */
@@ -30,37 +30,67 @@ use DuckDev\Redirect\Database;
 class Redirects extends Model {
 
 	/**
-	 * Get a redirect by ID.
+	 * Fields that can be updated.
 	 *
-	 * @param int $redirect_id Redirect ID.
+	 * @since 4.0.0
+	 * @var string[] $updatable
+	 */
+	protected $updatable = array(
+		'source',
+		'destination',
+		'redirect_status',
+		'type',
+		'status',
+		'meta',
+	);
+
+	/**
+	 * Initialize class and register hooks.
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return void
+	 */
+	protected function __construct() {
+		parent::__construct();
+
+		// Make sure to init logs class.
+		Logs::instance();
+	}
+
+	/**
+	 * Get a redirect by ID.
 	 *
 	 * @since  4.0.0
 	 * @access public
 	 *
+	 * @param int $redirect_id Redirect ID.
+	 *
 	 * @return object|false Redirect object if successful, false otherwise.
 	 */
 	public function get( $redirect_id ) {
-		$logs = new Database\Queries\Redirect();
+		$redirect = new Database\Queries\Redirect();
 
 		// Return redirect.
-		return $logs->get_item( $redirect_id );
+		return $redirect->get_item( $redirect_id );
 	}
 
 	/**
 	 * Get a log by path.
 	 *
-	 * @param string $path Source path.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param string $path Source path.
 	 *
 	 * @return object|false Redirect object if successful, false otherwise.
 	 */
 	public function get_by_source( $path ) {
-		$redirects = new Database\Queries\Redirect();
+		$redirect = new Database\Queries\Redirect();
 
 		// Return redirect.
-		return $redirects->get_item_by( 'source', $path );
+		return $redirect->get_item_by( 'source', $path );
 	}
 
 	/**
@@ -68,10 +98,10 @@ class Redirects extends Model {
 	 *
 	 * Return the redirect data from using the ID.
 	 *
-	 * @param array $args Filter items using fields.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param array $args Filter items using fields.
 	 *
 	 * @return array
 	 */
@@ -85,10 +115,10 @@ class Redirects extends Model {
 		);
 
 		// Create a query object.
-		$logs = new Database\Queries\Redirect();
+		$redirect = new Database\Queries\Redirect();
 
 		// Return redirects.
-		return $logs->query( $args );
+		return $redirect->query( $args );
 	}
 
 	/**
@@ -96,10 +126,10 @@ class Redirects extends Model {
 	 *
 	 * Make sure to validate all fields before adding it.
 	 *
-	 * @param array $data Data.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param array $data Data.
 	 *
 	 * @return bool
 	 */
@@ -110,20 +140,36 @@ class Redirects extends Model {
 		}
 
 		// Create a query object.
-		$logs = new Database\Queries\Redirect();
+		$redirect = new Database\Queries\Redirect();
 
-		// Create redirect.
-		return $logs->add_item( $data );
+		// Create new redirect.
+		$redirect_id = $redirect->add_item( $data );
+
+		if ( $redirect_id ) {
+			/**
+			 * Action hook fired after a new redirect is created.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param int   $redirect_id Redirect ID.
+			 * @param array $data        Data used for redirect.
+			 */
+			do_action( 'dd4t3_model_after_redirect_create', $redirect_id, $data );
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
 	 * Update an existing redirect.
 	 *
-	 * @param int   $redirect_id Redirect ID.
-	 * @param array $data        Data.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param int   $redirect_id Redirect ID.
+	 * @param array $data        Data.
 	 *
 	 * @return bool
 	 */
@@ -134,10 +180,27 @@ class Redirects extends Model {
 		}
 
 		// Create a query object.
-		$logs = new Database\Queries\Redirect();
+		$redirect = new Database\Queries\Redirect();
 
-		// Update redirect.
-		return $logs->update_item( $redirect_id, $data );
+		// Prepare data.
+		$data = $this->prepare_fields( $data );
+
+		// Update log.
+		if ( ! empty( $data ) && $redirect->update_item( $redirect_id, $data ) ) {
+			/**
+			 * Action hook fired after a redirect is updated.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param int   $redirect_id Redirect ID.
+			 * @param array $data        Data used for redirect.
+			 */
+			do_action( 'dd4t3_model_after_redirect_update', $redirect_id, $data );
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -145,10 +208,10 @@ class Redirects extends Model {
 	 *
 	 * Deleting a redirect won't delete it's error log (if any).
 	 *
-	 * @param int $redirect_id Redirect ID.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param int $redirect_id Redirect ID.
 	 *
 	 * @return bool
 	 */
@@ -159,9 +222,26 @@ class Redirects extends Model {
 		}
 
 		// Create a query object.
-		$logs = new Database\Queries\Redirect();
+		$redirect = new Database\Queries\Redirect();
 
-		// Delete redirect.
-		return $logs->delete_item( $redirect_id );
+		// Get redirect data for action hook.
+		$redirect_data = $this->get( $redirect_id );
+
+		// Delete log.
+		if ( $redirect_data && $redirect->delete_item( $redirect_id ) ) {
+			/**
+			 * Action hook fired after a redirect is deleted.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param int    $redirect_id   Redirect ID.
+			 * @param object $redirect_data Redirect data.
+			 */
+			do_action( 'dd4t3_model_after_redirect_delete', $redirect_id, $redirect_data );
+
+			return true;
+		}
+
+		return false;
 	}
 }

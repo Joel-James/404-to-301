@@ -25,10 +25,10 @@
  * You should have received a copy of the GNU General Public License
  * along with 404 to 301. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @link     https://duckdev.com/products/404-to-301/
  * @author   Joel James <me@joelsays.com>
  * @license  http://www.gnu.org/licenses/ GNU General Public License
  * @category Core
- * @link     https://duckdev.com/products/404-to-301/
  * @package  DD4T3
  */
 
@@ -62,33 +62,24 @@ register_activation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'activate'
 // Deactivation actions.
 register_deactivation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'deactivate' ) );
 
-/**
- * The main function for that returns DuckDev\Redirect\Core
- *
- * The main function responsible for returning the one true
- * DuckDev\Redirect\Core instance to function everywhere.
- *
- * Use this function like you would a global variable, except without needing
- * to declare the global.
- *
- * Example: $dd4t3 = duckdev_404_to_301();
- *
- * @since 4.0.0
- *
- * @return DuckDev\Redirect\Core
- */
-function duckdev_404_to_301() {
-	// Get the plugin instance.
-	return DuckDev\Redirect\Core::instance();
-}
-
 // Load plugin.
 if (
 	// Minimum PHP version is 5.6.
 	version_compare( PHP_VERSION, '5.6.0', '>=' ) &&
 	// Minimum WP version is 5.0.
-	version_compare( $GLOBALS['wp_version'], '4.0', '>=' )
+	version_compare( $GLOBALS['wp_version'], '5.0.0', '>=' )
 ) {
-	// Use the plugins_loaded hook to set up the plugin instance.
-	add_action( 'plugins_loaded', 'duckdev_404_to_301' );
+	/**
+	 * The main DuckDev\Redirect\Core instance.
+	 *
+	 * Use this function like you would a global variable, except
+	 * without needing to declare the global.
+	 *
+	 * Example: $dd4t3 = \DuckDev\Redirect\Core::instance();
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return DuckDev\Redirect\Core
+	 */
+	add_action( 'plugins_loaded', array( 'DuckDev\Redirect\Core', 'instance' ) );
 }

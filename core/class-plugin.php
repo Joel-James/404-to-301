@@ -5,10 +5,10 @@
  * This class contains the properties of the plugin and the basic
  * information you need about the plugin.
  *
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
  * @subpackage Plugin
  */
@@ -31,9 +31,9 @@ class Plugin {
 	 *
 	 * To access this property, you should use Plugin::slug().
 	 *
-	 * @var    string
 	 * @since  4.0.0
 	 * @access private
+	 * @var    string
 	 */
 	private static $slug = '404-to-301';
 
@@ -43,18 +43,18 @@ class Plugin {
 	 * To access this property, you should use Plugin::name().
 	 * This can not be translated.
 	 *
-	 * @var    string
 	 * @since  4.0.0
 	 * @access private
+	 * @var    string
 	 */
 	private static $name = '404 to 301';
 
 	/**
 	 * Holds the screen IDs of our plugin pages.
 	 *
-	 * @var string[]
 	 * @since  4.0.0
 	 * @access private
+	 * @var string[]
 	 */
 	private static $pages = array(
 		'logs'      => 'toplevel_page_404-to-301-logs',
@@ -142,10 +142,10 @@ class Plugin {
 	/**
 	 * Get URL of one of our plugin pages.
 	 *
-	 * @param string $page Page key.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param string $page Page key.
 	 *
 	 * @return string
 	 */

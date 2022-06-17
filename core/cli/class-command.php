@@ -21,16 +21,14 @@ defined( 'WPINC' ) || die;
 
 use WP_CLI;
 use WP_CLI\Utils;
-use DuckDev\Redirect\Utils\Base;
 
 /**
  * Class Command
  *
  * @since   4.0.0
- * @extends Base
  * @package DuckDev\Redirect\CLI
  */
-abstract class Command extends Base {
+abstract class Command {
 
 	/**
 	 * Display data as table if array.

@@ -6,10 +6,10 @@
  * inside the plugin.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
  * @subpackage Settings
  */
@@ -53,11 +53,11 @@ class Settings extends Base {
 	/**
 	 * Get single setting value.
 	 *
+	 * @since  4.0.0
+	 *
 	 * @param string $key     Setting key.
 	 * @param array  $default Default values.
 	 * @param bool   $valid   Is the setting key and module valid.
-	 *
-	 * @since  4.0.0
 	 *
 	 * @return string
 	 */
@@ -78,12 +78,13 @@ class Settings extends Base {
 		/**
 		 * Filter hook to change the settings value of single item.
 		 *
-		 * @param mixed  $value   Setting value.
+		 * @since 4.0.0
+		 *
 		 * @param string $key     Setting key.
 		 * @param array  $default Default values.
 		 * @param bool   $valid   Is the setting key and module valid.
 		 *
-		 * @since 4.0.0
+		 * @param mixed  $value   Setting value.
 		 */
 		return apply_filters( 'dd4t3_settings_get', $value, $key, $default, $valid );
 	}
@@ -95,9 +96,9 @@ class Settings extends Base {
 	 * If there are extra fields which is not registered
 	 * into default settings, we won't return it.
 	 *
-	 * @param bool $use_default Should use default values as fallback.
-	 *
 	 * @since 4.0.0
+	 *
+	 * @param bool $use_default Should use default values as fallback.
 	 *
 	 * @return array
 	 */
@@ -113,10 +114,11 @@ class Settings extends Base {
 		/**
 		 * Filter hook to change the whole settings data.
 		 *
-		 * @param array $settings    Settings.
+		 * @since 4.0.0
+		 *
 		 * @param bool  $use_default Should use default values as fallback.
 		 *
-		 * @since 4.0.0
+		 * @param array $settings    Settings.
 		 */
 		return apply_filters( 'dd4t3_settings_all', $settings, $use_default );
 	}
@@ -126,10 +128,10 @@ class Settings extends Base {
 	 *
 	 * It will only allow registered setting items.
 	 *
+	 * @since  4.0.0
+	 *
 	 * @param string $key   Setting key.
 	 * @param mixed  $value Setting value.
-	 *
-	 * @since  4.0.0
 	 *
 	 * @return bool
 	 */
@@ -150,9 +152,9 @@ class Settings extends Base {
 	 * Be careful when you use this. If you don't pass
 	 * all items, the missing items will be removed.
 	 *
-	 * @param array $values Values.
-	 *
 	 * @since 4.0.0
+	 *
+	 * @param array $values Values.
 	 *
 	 * @return bool
 	 */
@@ -162,14 +164,25 @@ class Settings extends Base {
 		 *
 		 * This filter values will be formatted later.
 		 *
-		 * @param array $values Values to update.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param array $values Values to update.
 		 */
 		$values = apply_filters( 'dd4t3_settings_pre_update', $values );
 
+		// Get old settings.
+		$old_values = $this->all();
+
+		// Now format it.
+		$values = $this->format_values( $values );
+
+		// No need to update if values are same, but tell WP it's updated.
+		if ( $values === $old_values ) {
+			return true;
+		}
+
 		// Update the options.
-		return update_option( self::KEY, $this->format_values( $values ) );
+		return update_option( self::KEY, $values );
 	}
 
 	/**
@@ -188,7 +201,7 @@ class Settings extends Base {
 			'disable_guessing'     => true,
 			'monitor_changes'      => false,
 			'exclude_paths'        => array(),
-			'ip_logging'           => true,
+			'disable_ip'           => true,
 			// Redirects.
 			'redirect_enabled'     => true,
 			'redirect_type'        => '301',
@@ -211,9 +224,9 @@ class Settings extends Base {
 		 * Extensions can hook to this filter for adding new
 		 * group of settings.
 		 *
-		 * @param array $settings Settings.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param array $settings Settings.
 		 */
 		return apply_filters( 'dd4t3_settings_defaults', $settings );
 	}
@@ -249,10 +262,10 @@ class Settings extends Base {
 	 * This function is used to register all settings options to the db using
 	 * WordPress settings API.
 	 *
-	 * @param array $values Settings data.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param array $values Settings data.
 	 *
 	 * @return array
 	 */
@@ -265,9 +278,9 @@ class Settings extends Base {
 		 *
 		 * This filter values will be formatted later.
 		 *
-		 * @param array $values Values to update.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param array $values Values to update.
 		 */
 		$values = apply_filters( 'dd4t3_settings_pre_update', $values );
 
@@ -281,9 +294,9 @@ class Settings extends Base {
 	 * Should use this to ensure the plugin settings
 	 * data is in correct format.
 	 *
-	 * @param array $values Values to format.
-	 *
 	 * @since  4.0.0
+	 *
+	 * @param array $values Values to format.
 	 *
 	 * @return array
 	 */
@@ -296,7 +309,7 @@ class Settings extends Base {
 		// Format the settings.
 		foreach ( $defaults as $key => $value ) {
 			if ( isset( $values[ $key ] ) ) {
-				$processed[ $key ] = $values[ $key ];
+				$processed[ $key ] = $this->sanitize_field( $key, $values[ $key ] );
 			} else {
 				// If the field is missing, set empty value.
 				$processed[ $key ] = $this->get_empty_value( $key );
@@ -306,10 +319,11 @@ class Settings extends Base {
 		/**
 		 * Filter to modify plugin settings formatted result.
 		 *
-		 * @param array $old Processed to be updated.
+		 * @since 4.0.0
+		 *
 		 * @param array $new Values passed to update.
 		 *
-		 * @since 4.0.0
+		 * @param array $old Processed to be updated.
 		 */
 		return apply_filters( 'dd4t3_settings_format_values', $processed, $values );
 	}
@@ -320,10 +334,10 @@ class Settings extends Base {
 	 * This is useful to format the settings if trying to update
 	 * settings without all fields.
 	 *
-	 * @param string $key Key.
-	 *
 	 * @since  4.0.0
 	 * @access private
+	 *
+	 * @param string $key Key.
 	 *
 	 * @return array|false|string
 	 */
@@ -340,6 +354,41 @@ class Settings extends Base {
 			} elseif ( is_string( $default[ $key ] ) ) {
 				$value = '';
 			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Format specially attention required fields.
+	 *
+	 * Some fields should only accept properly formatted
+	 * values. For example an email field.
+	 *
+	 * @since  4.0.0
+	 *
+	 * @param string $field Field name.
+	 * @param mixed  $value Field value.
+	 *
+	 * @return array
+	 */
+	private function sanitize_field( $field, $value ) {
+		switch ( $field ) {
+			case 'exclude_paths':
+				$value = array_filter(
+					(array) $value,
+					function ( $index, $path ) {
+						return '' !== $path;
+					},
+					ARRAY_FILTER_USE_BOTH
+				);
+				break;
+			case 'redirect_link':
+				$value = esc_url_raw( $value );
+				break;
+			case 'email_recipient':
+				$value = is_email( $value ) ? $value : '';
+				break;
 		}
 
 		return $value;

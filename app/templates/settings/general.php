@@ -13,6 +13,7 @@
 
 ?>
 
+<!-- URL guessing -->
 <h4><?php esc_html_e( 'URL Guessing', '404-to-301' ); ?></h4>
 <p><?php esc_html_e( 'WordPress will automatically correct a 404 URL if it is misspelled and very close to an existing link, before marking it as a 404 error.', '404-to-301' ); ?></p>
 <p>
@@ -37,6 +38,7 @@
 
 <hr/>
 
+<!-- Permalink changes -->
 <h4><?php esc_html_e( 'Permalink Changes', '404-to-301' ); ?></h4>
 <p><?php esc_html_e( 'New 404 errors can be created when you change an existing page/post permalink to a new one. Instead of waiting for someone to visit and create a 404 error, ww can create a redirect ourself to the new permalink.', '404-to-301' ); ?></p>
 <div class="duckdev-fields">
@@ -53,6 +55,7 @@
 
 <hr/>
 
+<!-- GDPR settings -->
 <h4><?php esc_html_e( 'GDPR & Privacy', '404-to-301' ); ?></h4>
 <p><?php esc_html_e( 'To respect visitor\'s privacy and comply with GDPR policies, you may disable a few functionalities of the plugin.', '404-to-301' ); ?></p>
 <div class="duckdev-fields">
@@ -69,14 +72,14 @@
 
 <hr/>
 
+<!-- URL exclusions -->
 <h4><?php esc_html_e( 'Exclusions', '404-to-301' ); ?></h4>
 <p>
 	<?php
 	printf(
-	// translators: %s link to PHP doc for strpos.
+		// translators: %s link to PHP doc for strpos.
 		__( 'Use this option to exclude a URL from being detected as 404 by the plugin. It will be wildcard checked using <code><a href="%s" target="_blank">strpos</a></code> for a match.', '404-to-301' ),
 		'https://www.php.net/manual/en/function.strpos.php'
 	);
 	?>
 </p>
-<repeat-table></repeat-table>

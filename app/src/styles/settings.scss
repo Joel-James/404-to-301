@@ -1,13 +1,20 @@
 // Prefix for the classes.
-$prefix: 'duckdev';
+$prefix: 'dd4t3-settings';
 
-/**
- * Import custom components.
- */
-@import "components/content";
-@import "components/typography";
-@import "components/form";
+// Fix for padding in wrap class.
+#wpcontent {
+  padding-left: 0 !important;
+}
+
+// Custom components for settings page.
+@import "settings/settings-form";
+@import "settings/settings-tables";
+@import "settings/settings-footer";
+@import "settings/settings-loader";
+@import "settings/settings-header";
+@import "settings/settings-content";
+
+// Common components.
+@import "components/utils";
 @import "components/buttons";
-@import "components/tabs";
-@import "components/notices";
-@import "components/rtl";
+@import "components/notifications";

@@ -5,10 +5,10 @@
  * This class contains the data objects for the plugin.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
  * @subpackage Data
  */
@@ -49,10 +49,47 @@ class Data {
 		/**
 		 * Filter to add or remove redirect types.
 		 *
+		 * @since 4.0.0
+		 *
 		 * @param array $types Redirect types.
 		 *
-		 * @since 4.0.0
 		 */
 		return apply_filters( 'dd4t3_redirect_types', $types );
+	}
+
+	/**
+	 * Get available addons list.
+	 *
+	 * To add or remove an addon, use dd4t3_addons_list filter.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return array
+	 */
+	public static function addons() {
+		static $addons = array();
+
+		if ( empty( $addons ) ) {
+			$handler = new Addon();
+
+			// Add additional info.
+			foreach ( $handler->get_addons() as $id => $addon ) {
+				$addon['slug']         = $id;
+				$addon['is_active']    = $handler->is_active( $id );
+				$addon['is_installed'] = $handler->is_installed( $id );
+				$addons[]              = $addon;
+			}
+		}
+
+		/**
+		 * Filter to add or remove addons.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $addons Addon list.
+		 *
+		 */
+		return apply_filters( 'dd4t3_addons', $addons );
 	}
 }

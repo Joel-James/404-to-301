@@ -1,0 +1,14 @@
+.#{$prefix}-wrap {
+
+  .#{$prefix}-hidden {
+    display: none !important;
+  }
+
+  .#{$prefix}-green {
+    color: #008000;
+  }
+
+  .#{$prefix}-grey {
+    color: #BEBEBE;
+  }
+}

@@ -5,10 +5,10 @@
  * From v4 we have different structure for settings.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Database
  * @subpackage Upgrades\V4_Settings
  */
@@ -31,10 +31,10 @@ class Settings {
 	 *
 	 * Handle different version upgrades.
 	 *
-	 * @param string $version Existing plugin version.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param string $version Existing plugin version.
 	 *
 	 * @return void
 	 */

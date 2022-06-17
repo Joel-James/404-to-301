@@ -268,17 +268,17 @@ class Assets extends Base {
 			// Logs scripts.
 			'dd4t3-logs'      => array(
 				'src'  => 'logs.min.js',
-				'deps' => array( 'wp-i18n' ),
+				'deps' => array( 'jquery', 'wp-i18n' ),
 			),
 			// Setting scripts.
 			'dd4t3-settings'  => array(
 				'src'  => 'settings.min.js',
-				'deps' => array( 'wp-i18n' ),
+				'deps' => array( 'jquery', 'wp-i18n' ),
 			),
 			// Redirects scripts.
 			'dd4t3-redirects' => array(
 				'src'  => 'redirects.min.js',
-				'deps' => array( 'wp-i18n' ),
+				'deps' => array( 'jquery', 'wp-i18n' ),
 			),
 		);
 
@@ -315,6 +315,7 @@ class Assets extends Base {
 			// Settings styles.
 			'dd4t3-settings'  => array(
 				'src' => 'settings.min.css',
+				'deps' => array( 'wp-components' ),
 			),
 			// Settings styles.
 			'dd4t3-redirects' => array(

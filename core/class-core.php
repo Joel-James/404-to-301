@@ -6,10 +6,10 @@
  * Only one instance of this class be created.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
  * @subpackage Core
  */
@@ -53,11 +53,11 @@ final class Core extends Base {
 		 * so the addons/extensions will be loaded only if the required
 		 * parent plugin is active.
 		 *
-		 * @param Core $this Plugin core instance.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param Core $this Plugin core instance.
 		 */
-		do_action( '404_to_301_init', $this );
+		do_action( 'dd4t3_init', $this );
 	}
 
 	/**
@@ -125,9 +125,10 @@ final class Core extends Base {
 	 * @return void
 	 */
 	private function api() {
-		new Api\Logs();
-		new Api\Redirects();
-		new Api\Settings();
+		new Api\V1\Logs();
+		new Api\V1\Data();
+		new Api\V1\Redirects();
+		new Api\V1\Settings();
 	}
 
 	/**
@@ -142,12 +143,15 @@ final class Core extends Base {
 	 * @return void
 	 */
 	private function cli() {
-		// Only if CLI available.
-		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			// Add the command.
-			if ( class_exists( '\WP_CLI' ) ) {
-				\WP_CLI::add_command( '404-to-301', '\DuckDev\Redirect\CLI\CLI' );
-			}
+		// Add commands only if CLI available.
+		if ( defined( 'WP_CLI' ) && WP_CLI && class_exists( '\WP_CLI' ) ) {
+			\WP_CLI::add_command(
+				'404-to-301',
+				'\DuckDev\Redirect\CLI\CLI',
+				array(
+					'shortdesc' => __( 'Manage settings, error logs and redirects from 404 to 301.', '404-to-301' ),
+				)
+			);
 		}
 	}
 }

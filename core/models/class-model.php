@@ -6,10 +6,10 @@
  * methods.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
  * @subpackage Model
  */
@@ -31,15 +31,23 @@ use DuckDev\Redirect\Utils\Base;
 abstract class Model extends Base {
 
 	/**
+	 * Fields that can be updated.
+	 *
+	 * @since 4.0.0
+	 * @var string[] $updatable
+	 */
+	protected $updatable = array();
+
+	/**
 	 * Use object cache for model data.
 	 *
 	 * Get from cache before making complex db cals.
 	 *
-	 * @param string   $key      Cache key.
-	 * @param callable $callback Callback.
-	 *
 	 * @since  4.0.0
 	 * @access protected
+	 *
+	 * @param string   $key      Cache key.
+	 * @param callable $callback Callback.
 	 *
 	 * @return false|mixed
 	 */
@@ -51,18 +59,48 @@ abstract class Model extends Base {
 	}
 
 	/**
-	 * Set query arguments in supported format.
+	 * Filter out unwanted fields from update.
 	 *
-	 * @param array $raw_args Arguments.
+	 * Only items listed in $updatable property will be allowed.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param array $data Data to update.
+	 */
+	protected function prepare_fields( $data ) {
+		if ( empty( $this->updatable ) || empty( $data ) ) {
+			return $data;
+		}
+
+		// Loop and remove unwanted items.
+		foreach ( $data as $field => $value ) {
+			if ( ! in_array( $field, $this->updatable, true ) ) {
+				unset( $data[ $field ] );
+			}
+		}
+
+		/**
+		 * Filter hook to modify filtered data for update.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $data Filtered data.
+		 */
+		return apply_filters( 'dd4t3_model_prepare_fields', $data );
+	}
+
+	/**
+	 * Set query arguments in supported format.
 	 *
 	 * @since  4.0.0
 	 * @access protected
 	 *
+	 * @param array $raw_args Arguments.
+	 *
 	 * @return array
 	 */
 	protected function format_args( array $raw_args ) {
-		$args = array();
-
-		return $args;
+		return $raw_args;
 	}
 }

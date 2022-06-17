@@ -5,10 +5,10 @@
  * All background process should extend this class.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Abstracts
  * @subpackage Process
  */
@@ -32,9 +32,8 @@ abstract class Process extends Task {
 	/**
 	 * Our custom process prefix.
 	 *
-	 * @var    string $prefix
-	 *
 	 * @since  4.0.0
+	 * @var    string $prefix
 	 * @access protected
 	 */
 	protected $prefix = '404_to_301';
@@ -45,10 +44,9 @@ abstract class Process extends Task {
 	 * All extending classes should use a unique name to
 	 * avoid conflicts with multiple processes.
 	 *
+	 * @since  4.0.0
 	 * @var string $action
-	 *
 	 * @access protected
-	 * @since  1.0.0
 	 */
 	protected $action = 'queue_process';
 

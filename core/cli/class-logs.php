@@ -44,7 +44,7 @@ class Logs extends Command {
 		$action = $args[0];
 		// Options.
 		$limit    = $this->get_arg( $extra, 'limit', 100 );
-		$order_by = $this->get_arg( $extra, 'orderby', 'id' );
+		$order_by = $this->get_arg( $extra, 'orderby', 'log_id' );
 		$order    = $this->get_arg( $extra, 'order', 'desc' );
 
 		if ( 'get' === $action ) {

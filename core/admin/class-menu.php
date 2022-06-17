@@ -74,6 +74,9 @@ class Menu extends Base {
 		// Settings page.
 		$this->settings();
 
+		// Settings page.
+		$this->addons();
+
 		/**
 		 * Action hook to run after setup all admin menus for plugin.
 		 *
@@ -172,6 +175,28 @@ class Menu extends Base {
 			__( 'Settings', '404-to-301' ),
 			Permission::get_cap(),
 			'404-to-301-settings',
+			array( Views\Settings::instance(), 'base_content' )
+		);
+	}
+
+	/**
+	 * Register the sub menu for the admin settings.
+	 *
+	 * This is where the plugin settings are handled.
+	 *
+	 * @since  4.0.0
+	 * @access private
+	 *
+	 * @return void
+	 */
+	private function addons() {
+		// Settings sub page.
+		add_submenu_page(
+			self::SLUG,
+			__( 'Addons - 404 to 301', '404-to-301' ),
+			__( 'Addons', '404-to-301' ),
+			Permission::get_cap(),
+			'404-to-301-addons',
 			array( Views\Settings::instance(), 'base_content' )
 		);
 	}

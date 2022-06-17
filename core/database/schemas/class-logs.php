@@ -3,10 +3,10 @@
  * The log schema class.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Database\Schemas
  * @subpackage Logs
  */
@@ -30,22 +30,22 @@ class Logs extends Schema {
 	/**
 	 * Global prefix used for tables/hooks/cache-groups/etc.
 	 *
+	 * @since  4.0.0
 	 * @var    string
 	 * @access protected
-	 * @since  4.0.0
 	 */
 	protected $prefix = '404_to_301';
 
 	/**
 	 * Columns schema.
 	 *
-	 * @var   array
 	 * @since  4.0.0
 	 * @access public
+	 * @var   array
 	 */
 	public $columns = array(
-		'id'              => array(
-			'name'     => 'id',
+		'log_id'          => array(
+			'name'     => 'log_id',
 			'type'     => 'bigint',
 			'length'   => '20',
 			'unsigned' => true,
@@ -87,7 +87,7 @@ class Logs extends Schema {
 			'allow_null' => true,
 		),
 		'request_method'  => array(
-			'name'       => 'method',
+			'name'       => 'request_method',
 			'type'       => 'varchar',
 			'length'     => '10',
 			'sortable'   => true,
@@ -95,7 +95,14 @@ class Logs extends Schema {
 			'allow_null' => true,
 		),
 		'request_data'    => array(
-			'name'       => 'request',
+			'name'       => 'request_data',
+			'type'       => 'mediumtext',
+			'default'    => null,
+			'allow_null' => true,
+			'validate'   => 'maybe_serialize',
+		),
+		'meta'            => array(
+			'name'       => 'meta',
 			'type'       => 'mediumtext',
 			'default'    => null,
 			'allow_null' => true,
@@ -127,12 +134,13 @@ class Logs extends Schema {
 			'default'    => 'global',
 			'allow_null' => true,
 		),
-		'meta'            => array(
-			'name'       => 'meta',
-			'type'       => 'mediumtext',
+		'redirect_id'     => array(
+			'name'       => 'redirect_id',
+			'type'       => 'bigint',
+			'length'     => '20',
+			'unsigned'   => true,
 			'default'    => null,
 			'allow_null' => true,
-			'validate'   => 'maybe_serialize',
 		),
 		'created_at'      => array(
 			'name'       => 'created_at',

@@ -5,10 +5,10 @@
  * This class will help to make database queries.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Database\Queries
  * @subpackage Log
  */
@@ -30,18 +30,18 @@ class Log extends Query {
 	/**
 	 * Name of the database table to query.
 	 *
-	 * @var    string
 	 * @since  4.0.0
 	 * @access protected
+	 * @var    string
 	 */
 	protected $table_name = 'logs';
 
 	/**
 	 * Global prefix used for tables/hooks/cache-groups/etc.
 	 *
+	 * @since  4.0.0
 	 * @var    string
 	 * @access protected
-	 * @since  4.0.0
 	 */
 	protected $prefix = '404_to_301';
 
@@ -50,18 +50,18 @@ class Log extends Query {
 	 *
 	 * This is used to avoid collisions with JOINs.
 	 *
-	 * @var    string
 	 * @since  4.0.0
 	 * @access protected
+	 * @var    string
 	 */
 	protected $table_alias = 'logs';
 
 	/**
 	 * Name of class used to setup the database schema.
 	 *
-	 * @var    string
 	 * @since  4.0.0
 	 * @access protected
+	 * @var    string
 	 */
 	protected $table_schema = '\\DuckDev\\Redirect\\Database\\Schemas\\Logs';
 
@@ -70,9 +70,9 @@ class Log extends Query {
 	 *
 	 * This is used to automatically generate action hooks.
 	 *
-	 * @var    string
 	 * @since  4.0.0
 	 * @access protected
+	 * @var    string
 	 */
 	protected $item_name = 'log';
 
@@ -81,9 +81,9 @@ class Log extends Query {
 	 *
 	 * This is used to automatically generate action hooks.
 	 *
-	 * @var    string
 	 * @since  4.0.0
 	 * @access protected
+	 * @var    string
 	 */
 	protected $item_name_plural = 'logs';
 
@@ -92,9 +92,9 @@ class Log extends Query {
 	 *
 	 * This is used when looping through return values to guarantee their shape.
 	 *
-	 * @var    mixed
 	 * @since  4.0.0
 	 * @access protected
+	 * @var    mixed
 	 */
 	protected $item_shape = '\\DuckDev\\Redirect\\Database\\Rows\\Log';
 }

@@ -7,10 +7,10 @@
  * Currently, we use only one capability to manage everything.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Core
  * @subpackage Permission
  */
@@ -31,8 +31,8 @@ class Permission {
 	/**
 	 * Capability used to access plugin.
 	 *
-	 * @var string
 	 * @since 4.0.0
+	 * @var string
 	 */
 	const CAPABILITY = 'manage_options';
 
@@ -53,9 +53,9 @@ class Permission {
 		/**
 		 * Filter hook to modify capability check.
 		 *
-		 * @param bool $has Has access.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param bool $has Has access.
 		 */
 		return apply_filters( 'dd4t3_permission_has_access', $has );
 	}
@@ -72,9 +72,9 @@ class Permission {
 		/**
 		 * Filter hook to change the plugin capability.
 		 *
-		 * @param string $cap Capability.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param string $cap Capability.
 		 */
 		return apply_filters( 'dd4t3_permission_get_cap', self::CAPABILITY );
 	}
