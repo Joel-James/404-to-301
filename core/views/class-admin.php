@@ -5,10 +5,10 @@
  * This class handles the admin pages views for the plugin.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    View
  * @subpackage Pages
  */
@@ -155,17 +155,18 @@ class Admin extends View {
 	 * Add quick links to plugin settings page, error listing page
 	 * from the plugins listing page.
 	 *
-	 * @param array $links Links array.
-	 *
 	 * @since  3.0.0
 	 * @access public
+	 *
+	 * @param array $links Links array.
 	 *
 	 * @return array
 	 */
 	public function action_links( $links ) {
-		// Add settings and log links.
-		array_unshift( $links, '<a href="' . esc_url( Plugin::get_url( 'logs' ) ) . '">' . __( 'Logs', '404-to-301' ) . '</a>' );
+		// Add our links.
 		array_unshift( $links, '<a href="' . esc_url( Plugin::get_url( 'settings' ) ) . '">' . __( 'Settings', '404-to-301' ) . '</a>' );
+		array_unshift( $links, '<a href="' . esc_url( Plugin::get_url( 'logs' ) ) . '">' . __( 'Logs', '404-to-301' ) . '</a>' );
+		array_unshift( $links, '<a href="' . esc_url( Plugin::get_url( 'redirects' ) ) . '">' . __( 'Redirects', '404-to-301' ) . '</a>' );
 
 		return $links;
 	}
@@ -186,8 +187,8 @@ class Admin extends View {
 	public function row_meta( $meta, $file ) {
 		// Add only for our plugin.
 		if ( plugin_basename( DD4T3_FILE ) === $file ) {
-			$meta['docs'] = '<a href="https://duckdev.com/docs/404-to-301/?utm_source=dd4t3&utm_medium=plugin&utm_campaign=plugins_row_meta" target="_blank">' . __( 'Documentation', '404-to-301' ) . '</a>';
-			$meta['home'] = '<a href="https://wordpress.org/support/plugin/404-to-301/" target="_blank">' . __( 'Support', '404-to-301' ) . '</a>';
+			$meta['docs'] = '<a href="https://duckdev.com/docs/404-to-301/?utm_source=dd4t3&utm_medium=plugin&utm_campaign=plugins_row_meta" target="_blank"><span class="dashicons dashicons-book" style="font-size:14px;line-height:1.3;"></span>' . __( 'Documentation', '404-to-301' ) . '</a>';
+			$meta['home'] = '<a href="https://wordpress.org/support/plugin/404-to-301/" target="_blank"><span class="dashicons dashicons-sos" style="font-size:14px;line-height:1.3;"></span>' . __( 'Support', '404-to-301' ) . '</a>';
 		}
 
 		return $meta;
