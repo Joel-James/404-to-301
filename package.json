@@ -1,69 +1,70 @@
 {
-  "name": "404-to-301",
-  "version": "4.0.0-beta",
-  "private": true,
-  "description": "Automatically redirect all 404 errors to any page using 301 redirect for SEO. You can redirect and log every 404 errors. No more 404 errors in Webmaster tool.",
-  "author": {
-    "name": "Joel James",
-    "url": "https://duckdev.com"
-  },
-  "scripts": {
-    "watch": "clear && webpack --watch --mode development",
-    "compile": "clear && webpack --progress",
-    "serve": "vue-cli-service serve --no-clean",
-    "translate": "clear && grunt translate",
-    "build": "clear && npm run compile && grunt prepare && grunt build"
-  },
-  "main": "404-to-301.php",
-  "dependencies": {
-    "@wordpress/components": "^19.6.1",
-    "axios": "^0.25.0",
-    "classnames": "^2.3.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-notifications-component": "^3.3.11",
-    "react-router-dom": "^6.2.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.14.3",
-    "@babel/preset-env": "^7.14.2",
-    "@babel/preset-react": "^7.13.13",
-    "@wordpress/eslint-plugin": "^9.0.5",
-    "acorn": "^8.6.0",
-    "autoprefixer": "^10.2.5",
-    "babel-loader": "^8.2.2",
-    "browser-sync": "^2.26.14",
-    "browser-sync-webpack-plugin": "^2.3.0",
-    "clean-webpack-plugin": "^3.0.0",
-    "css-loader": "^5.2.4",
-    "eslint": "^7.26.0",
-    "file-loader": "^6.2.0",
-    "grunt": "^1.4.0",
-    "grunt-checktextdomain": "^1.0.1",
-    "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-compress": "^2.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-wp-i18n": "^1.0.3",
-    "load-grunt-tasks": "^5.1.0",
-    "lodash": "^4.17.21",
-    "mini-css-extract-plugin": "^1.6.0",
-    "postcss-loader": "^5.3.0",
-    "prettier": "^2.3.0",
-    "sass": "^1.45.1",
-    "sass-loader": "^12.4.0",
-    "style-loader": "^2.0.0",
-    "url-loader": "^4.1.1",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ]
-  },
-  "browserslist": [
-    "ie > 9",
-    "> 1%"
-  ]
+	"name": "404-to-301",
+	"version": "4.0.0-beta",
+	"private": true,
+	"description": "Automatically redirect all 404 errors to any page using 301 redirect for SEO. You can redirect and log every 404 errors. No more 404 errors in Webmaster tool.",
+	"author": {
+		"name": "Joel James",
+		"url": "https://duckdev.com"
+	},
+	"scripts": {
+		"watch": "clear && webpack --watch --mode development",
+		"compile": "clear && webpack --progress",
+		"serve": "vue-cli-service serve --no-clean",
+		"translate": "clear && grunt translate",
+		"build": "clear && npm run compile && grunt prepare && grunt build"
+	},
+	"main": "404-to-301.php",
+	"dependencies": {
+		"@wordpress/components": "^19.13.0",
+		"@wordpress/compose": "^5.9.0",
+		"axios": "^0.27.2",
+		"classnames": "^2.3.1",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
+		"react-notifications-component": "^3.3.11",
+		"react-router-dom": "^6.2.1"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.14.3",
+		"@babel/preset-env": "^7.14.2",
+		"@babel/preset-react": "^7.13.13",
+		"@wordpress/eslint-plugin": "^9.0.5",
+		"acorn": "^8.6.0",
+		"autoprefixer": "^10.2.5",
+		"babel-loader": "^8.2.2",
+		"browser-sync": "^2.26.14",
+		"browser-sync-webpack-plugin": "^2.3.0",
+		"clean-webpack-plugin": "^3.0.0",
+		"css-loader": "^5.2.4",
+		"eslint": "^7.26.0",
+		"file-loader": "^6.2.0",
+		"grunt": "^1.4.0",
+		"grunt-checktextdomain": "^1.0.1",
+		"grunt-contrib-clean": "^2.0.0",
+		"grunt-contrib-compress": "^2.0.0",
+		"grunt-contrib-copy": "^1.0.0",
+		"grunt-wp-i18n": "^1.0.3",
+		"load-grunt-tasks": "^5.1.0",
+		"lodash": "^4.17.21",
+		"mini-css-extract-plugin": "^1.6.0",
+		"postcss-loader": "^5.3.0",
+		"prettier": "^2.3.0",
+		"sass": "^1.45.1",
+		"sass-loader": "^12.4.0",
+		"style-loader": "^2.0.0",
+		"url-loader": "^4.1.1",
+		"webpack": "^5.65.0",
+		"webpack-cli": "^4.9.1"
+	},
+	"babel": {
+		"presets": [
+			"@babel/preset-env",
+			"@babel/preset-react"
+		]
+	},
+	"browserslist": [
+		"ie > 9",
+		"> 1%"
+	]
 }

@@ -7,9 +7,17 @@ const HeaderColumn = (props) => {
 	classes.push('manage-column')
 	classes.push('column-' + props.id)
 
+	if (props.sortable) {
+		classes.push('sortable')
+		classes.push('desc')
+	}
+
 	return (
 		<th scope="col" id={props.id} className={classNames(classes)}>
-			{props.label}
+			<a href="#">
+				<span>{props.label}</span>
+				{props.sortable && <span className="sorting-indicator"></span>}
+			</a>
 		</th>
 	)
 }

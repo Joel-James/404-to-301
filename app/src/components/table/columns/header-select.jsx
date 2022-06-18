@@ -1,9 +1,11 @@
 /* global wp */
-import React, { useId } from 'react'
+import React from 'react'
+import { useInstanceId } from '@wordpress/compose'
+
 const { __ } = wp.i18n
 
 const HeaderSelectColumn = () => {
-	const id = useId()
+	const id = useInstanceId(HeaderSelectColumn)
 
 	return (
 		<td id="cb" className="manage-column column-cb check-column">

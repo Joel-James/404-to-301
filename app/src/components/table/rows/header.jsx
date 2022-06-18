@@ -19,7 +19,8 @@ export default class HeaderRow extends React.Component {
 				<HeaderColumn
 					label={__('Title', '404-to-301')}
 					id="title"
-					classes={['column-primary', 'sortable', 'desc']}
+					classes={['column-primary']}
+					sortable={true}
 				/>
 				<HeaderColumn label={__('Author', '404-to-301')} id="author" />
 				<HeaderColumn
@@ -30,12 +31,13 @@ export default class HeaderRow extends React.Component {
 				<HeaderColumn
 					label={__('Comments', '404-to-301')}
 					id="comments"
-					classes={['num', 'sortable', 'desc']}
+					classes={['num']}
+					sortable={true}
 				/>
 				<HeaderColumn
 					label={__('Date', '404-to-301')}
 					id="date"
-					classes={['sortable', 'desc']}
+					sortable={true}
 				/>
 			</tr>
 		)
