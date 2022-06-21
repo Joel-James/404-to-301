@@ -16,29 +16,19 @@ export default class HeaderRow extends React.Component {
 		return (
 			<tr>
 				<HeaderSelectColumn />
-				<HeaderColumn
-					label={__('Title', '404-to-301')}
-					id="title"
-					classes={['column-primary']}
-					sortable={true}
-				/>
-				<HeaderColumn label={__('Author', '404-to-301')} id="author" />
-				<HeaderColumn
-					label={__('Categories', '404-to-301')}
-					id="categories"
-				/>
-				<HeaderColumn label={__('Tags', '404-to-301')} id="tags" />
-				<HeaderColumn
-					label={__('Comments', '404-to-301')}
-					id="comments"
-					classes={['num']}
-					sortable={true}
-				/>
-				<HeaderColumn
-					label={__('Date', '404-to-301')}
-					id="date"
-					sortable={true}
-				/>
+				{this.props.columns.map((column) => (
+					<HeaderColumn
+						key={column.id}
+						column={column}
+						sorting={{
+							order: this.props.order,
+							orderBy: this.props.orderBy,
+						}}
+						orderChange={(orderBy, order) =>
+							this.props.orderChange(orderBy, order)
+						}
+					/>
+				))}
 			</tr>
 		)
 	}

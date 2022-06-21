@@ -6,10 +6,10 @@
  * inside the plugin admin screens.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Admin
  * @subpackage Assets
  */
@@ -54,10 +54,10 @@ class Assets extends Base {
 	 *
 	 * Assets will be enqueued only when required on the page.
 	 *
-	 * @param string $hook_suffix The current admin page.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param string $hook_suffix The current admin page.
 	 *
 	 * @return void
 	 */
@@ -76,10 +76,10 @@ class Assets extends Base {
 	 * We will register new action hook only if the current
 	 * page is one of plugin's admin page.
 	 *
-	 * @param string $hook_suffix The current admin page.
-	 *
 	 * @since  4.0.0
 	 * @access private
+	 *
+	 * @param string $hook_suffix The current admin page.
 	 *
 	 * @return void
 	 */
@@ -96,10 +96,10 @@ class Assets extends Base {
 			 * only loaded on our plugins pages. This hook will be
 			 * fired only on specified page.
 			 *
+			 * @since 4.0.0
+			 *
 			 * @param string $page        Current page key.
 			 * @param string $hook_suffix The current admin page.
-			 *
-			 * @since 4.0.0
 			 */
 			do_action( "dd4t3_enqueue_assets_{$page}", $page, $hook_suffix );
 
@@ -108,10 +108,10 @@ class Assets extends Base {
 			 *
 			 * This hook will be fired for all plugin pages.
 			 *
+			 * @since 4.0.0
+			 *
 			 * @param string $page        Current page key.
 			 * @param string $hook_suffix The current admin page.
-			 *
-			 * @since 4.0.0
 			 */
 			do_action( 'dd4t3_enqueue_assets', $page, $hook_suffix );
 		}
@@ -189,14 +189,14 @@ class Assets extends Base {
 	 * Always use this method to enqueue scripts. Then only
 	 * we will get the required localized vars added by plugin.
 	 *
-	 * @param string $script Script handle name.
-	 *
 	 * @since  4.0.0
 	 * @access public
 	 * @uses   wp_script_is()
 	 * @uses   wp_localize_script()
 	 * @uses   wp_enqueue_script()
 	 * @uses   wp_set_script_translations()
+	 *
+	 * @param string $script Script handle name.
 	 *
 	 * @return void
 	 */
@@ -210,9 +210,9 @@ class Assets extends Base {
 				/**
 				 * Filter to add/remove vars in script.
 				 *
-				 * @param array $vars Localize vars.
-				 *
 				 * @since 4.0.0
+				 *
+				 * @param array $vars Localize vars.
 				 */
 				apply_filters( "dd4t3_assets_vars_{$script}", array() )
 			);
@@ -236,12 +236,12 @@ class Assets extends Base {
 	 *
 	 * This is just an alias for wp_enqueue_style().
 	 *
-	 * @param string $style Style handle name.
-	 *
 	 * @since  4.0.0
 	 * @access public
 	 * @uses   wp_enqueue_style()
 	 * @uses   wp_style_is()
+	 *
+	 * @param string $style Style handle name.
 	 *
 	 * @return void
 	 */
@@ -288,9 +288,9 @@ class Assets extends Base {
 		 * Modules should use this filter so that common
 		 * localized vars will be available.
 		 *
-		 * @param array $scripts Scripts list.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param array $scripts Scripts list.
 		 */
 		return apply_filters( 'dd4t3_assets_get_scripts', $scripts );
 	}
@@ -310,11 +310,12 @@ class Assets extends Base {
 		$styles = array(
 			// Logs styles.
 			'dd4t3-logs'      => array(
-				'src' => 'logs.min.css',
+				'src'  => 'logs.min.css',
+				'deps' => array( 'wp-components' ),
 			),
 			// Settings styles.
 			'dd4t3-settings'  => array(
-				'src' => 'settings.min.css',
+				'src'  => 'settings.min.css',
 				'deps' => array( 'wp-components' ),
 			),
 			// Settings styles.
@@ -328,9 +329,9 @@ class Assets extends Base {
 		 *
 		 * Modules should use this filter to include styles.
 		 *
-		 * @param array $styles Styles list.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param array $styles Styles list.
 		 */
 		return apply_filters( 'dd4t3_assets_get_styles', $styles );
 	}

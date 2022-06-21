@@ -13,7 +13,7 @@
  * @subpackage Data
  */
 
-namespace DuckDev\Redirect\Api\V1;
+namespace DuckDev\Redirect\Api;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;

@@ -5,10 +5,14 @@
   }
 
   .#{$prefix}-green {
-    color: #008000;
+    color: #46B450 !important;
   }
 
   .#{$prefix}-grey {
-    color: #BEBEBE;
+    color: #BEBEBE !important;
+  }
+
+  .#{$prefix}-red {
+    color: #DC3232 !important;
   }
 }

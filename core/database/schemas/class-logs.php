@@ -101,13 +101,6 @@ class Logs extends Schema {
 			'allow_null' => true,
 			'validate'   => 'maybe_serialize',
 		),
-		'meta'            => array(
-			'name'       => 'meta',
-			'type'       => 'mediumtext',
-			'default'    => null,
-			'allow_null' => true,
-			'validate'   => 'maybe_serialize',
-		),
 		'visits'          => array(
 			'name'     => 'visits',
 			'type'     => 'bigint',
