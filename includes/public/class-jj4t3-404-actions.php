@@ -211,7 +211,7 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 			 */
 			do_action( 'jj4t3_before_redirect', $this->redirect_url );
 
-			// Perform redirect using WordPres.
+			// Perform redirect using WordPress.
 			wp_redirect( $this->redirect_url, $this->redirect_type );
 			// Exit, because WordPress will not exit automatically.
 			exit;
@@ -225,14 +225,13 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 	 * set that link.
 	 * Registering filter "jj4t3_custom_redirect_url".
 	 *
-	 * @global object $wpdb WP DB object
 	 * @since  2.2.0
 	 * @access private
 	 *
+	 * @global object $wpdb WP DB object
 	 * @return void
 	 */
 	private function set_options() {
-
 		if ( empty( $this->url ) ) {
 			return;
 		}
@@ -242,7 +241,12 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 		$wpdb->hide_errors();
 
 		// Get custom redirect if set.
-		$result = $result = $wpdb->get_row( "SELECT redirect, options FROM " . JJ4T3_TABLE . " WHERE url = '" . $this->url . "' AND redirect IS NOT NULL LIMIT 0,1", "OBJECT" );
+		$result = $wpdb->get_row(
+			$wpdb->prepare(
+				'SELECT redirect, options FROM ' . JJ4T3_TABLE . ' WHERE url = %s AND redirect IS NOT NULL LIMIT 0,1',
+				$this->url
+			)
+		);
 
 		$options = empty( $result->options ) ? array() : maybe_unserialize( $result->options );
 

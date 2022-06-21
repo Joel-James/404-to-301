@@ -111,13 +111,14 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 	 * Apply all filtering, sorting and paginations.
 	 * Registering filter - "jj4t3_logs_list_result".
 	 *
-	 * @param int     $per_page    Logs per page.
-	 * @param int     $page_number Current page number.
-	 *
 	 * @since  3.0.0
 	 * @access public
 	 *
 	 * @global object $wpdb        WP DB object
+	 *
+	 * @param int $per_page    Logs per page.
+	 * @param int $page_number Current page number.
+	 *
 	 * @return array
 	 */
 	private function get_error_logs( $per_page = 20, $page_number = 1 ) {
@@ -126,21 +127,18 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		// Current offset.
 		$offset = ( $page_number - 1 ) * $per_page;
 
-		// Sort by column.
-		$orderby = $this->get_order_by();
-
 		// Set group b query, if set.
-		$groupby_query = empty( $this->group_by ) ? '' : ' GROUP BY ' . $this->group_by;
+		$groupby_query = empty( $this->group_by ) ? '' : 'GROUP BY ' . $this->group_by;
 		// Get count of grouped items.
 		$count = empty( $this->group_by ) ? '' : ', COUNT(id) as count ';
 
-		// Sort order.
-		$order = $this->get_order();
+		// Sanitize order by.
+		$orderby_query = sanitize_sql_orderby( $this->get_order_by() . ' ' . $this->get_order() );
 
 		// Get error logs.
 		$result = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT *{$count} FROM " . JJ4T3_TABLE . " WHERE status != 0 $groupby_query ORDER BY $orderby $order LIMIT %d OFFSET %d",
+				"SELECT *{$count} FROM " . JJ4T3_TABLE . " WHERE status != 0 {$groupby_query} ORDER BY {$orderby_query} LIMIT %d OFFSET %d",
 				array( $per_page, $offset ) ),
 			'ARRAY_A'
 		);

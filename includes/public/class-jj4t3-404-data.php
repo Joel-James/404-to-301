@@ -1,7 +1,7 @@
 <?php
 
 // If this file is called directly, abort.
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * The 404 error data class.
@@ -82,27 +82,25 @@ class JJ4T3_404_Data {
 	 * @since  2.2.6
 	 * @access private
 	 *
-	 * @param string $ip Default value for IP Address.
-	 *
 	 * @return void
 	 */
-	private function set_ip( $ip = '' ) {
+	private function set_ip() {
 		// IP variables in priority oder.
 		$headers = array( 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR' );
 		foreach ( $headers as $header ) {
-			if ( isset( $_SERVER[ $header ] ) ) {
-				$ip = $_SERVER[ $header ]; // phpcs:ignore
+			if ( ! empty( $_SERVER[ $header ] ) ) {
+				/**
+				 * Filter to alter visitors IP address.
+				 *
+				 * @since 3.0.0
+				 *
+				 * @param string $ip Value for IP Address.
+				 */
+				$this->ip = sanitize_text_field( apply_filters( 'jj4t3_404_ip', $_SERVER[ $header ] ) ); // phpcs:ignore
+
+				break;
 			}
 		}
-
-		/**
-		 * Filter to alter visitors IP address.
-		 *
-		 * @since 3.0.0
-		 */
-		$ip = apply_filters( 'jj4t3_404_ip', $ip );
-
-		$this->ip = sanitize_text_field( $ip );
 	}
 
 	/**
@@ -111,23 +109,19 @@ class JJ4T3_404_Data {
 	 * @since  3.0.0
 	 * @access private
 	 *
-	 * @param string $ua Default value for User Agent.
-	 *
 	 * @return void
 	 */
-	private function set_ua( $ua = '' ) {
+	private function set_ua() {
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-			$ua = $_SERVER['HTTP_USER_AGENT']; // phpcs:ignore
+			/**
+			 * Filter to alter User Agent.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param string $ua Value for User Agent.
+			 */
+			$this->ua = sanitize_text_field( apply_filters( 'jj4t3_404_ua', $_SERVER['HTTP_USER_AGENT'] ) ); // phpcs:ignore
 		}
-
-		/**
-		 * Filter to alter User Agent.
-		 *
-		 * @since 3.0.0
-		 */
-		$ua = apply_filters( 'jj4t3_404_ua', $ua );
-
-		$this->ua = sanitize_text_field( $ua );
 	}
 
 	/**
@@ -136,25 +130,21 @@ class JJ4T3_404_Data {
 	 * @since  3.0.0
 	 * @access private
 	 *
-	 * @param string $ref Default value for Ref.
-	 *
 	 * @return void
 	 */
-	private function set_ref( $ref = '' ) {
+	private function set_ref() {
 		if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-			$ref = $_SERVER['HTTP_REFERER']; // phpcs:ignore
+			/**
+			 * Filter to alter referrer url.
+			 *
+			 * To alter the url where the visitor comes from.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param string $ref Value for referral.
+			 */
+			$this->ref = esc_url_raw( apply_filters( 'jj4t3_404_ref', $_SERVER['HTTP_REFERER'] ) ); // phpcs:ignore
 		}
-
-		/**
-		 * Filter to alter referrer url.
-		 *
-		 * To alter the url where the visitor comes from.
-		 *
-		 * @since 3.0.0
-		 */
-		$ref = apply_filters( 'jj4t3_404_ref', $ref );
-
-		$this->ref = esc_url_raw( $ref );
 	}
 
 	/**
@@ -163,25 +153,21 @@ class JJ4T3_404_Data {
 	 * @since  3.0.0
 	 * @access private
 	 *
-	 * @param string $url Default value for 404 URL.
-	 *
 	 * @return void
 	 */
-	private function set_url( $url = '' ) {
+	private function set_url() {
 		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-			$url = $_SERVER['REQUEST_URI']; // phpcs:ignore
+			/**
+			 * Filter to alter current 404 path.
+			 *
+			 * It is not recommended to change this value.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param string $url Value for 404 URL.
+			 */
+			$this->url = untrailingslashit( esc_url_raw( apply_filters( 'jj4t3_404_url', $_SERVER['REQUEST_URI'] ) ) ); // phpcs:ignore
 		}
-
-		/**
-		 * Filter to alter current 404 path.
-		 *
-		 * It is not recommended to change this value.
-		 *
-		 * @since 3.0.0
-		 */
-		$url = apply_filters( 'jj4t3_404_url', $url );
-
-		$this->url = untrailingslashit( esc_url_raw( $url ) );
 	}
 
 	/**
