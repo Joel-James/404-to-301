@@ -243,7 +243,8 @@ class JJ4T3_404_Actions extends JJ4T3_404_Data {
 		// Get custom redirect if set.
 		$result = $wpdb->get_row(
 			$wpdb->prepare(
-				'SELECT redirect, options FROM ' . JJ4T3_TABLE . ' WHERE url = %s AND redirect IS NOT NULL LIMIT 0,1',
+				'SELECT redirect, options FROM %1$s WHERE url = \'%2$s\' AND redirect IS NOT NULL LIMIT 0,1',
+				JJ4T3_TABLE,
 				$this->url
 			)
 		);

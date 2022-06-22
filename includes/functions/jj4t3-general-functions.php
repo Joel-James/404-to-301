@@ -354,22 +354,21 @@ function jj4t3_log_columns() {
  * @return array|string
  */
 function jj4t3_from_request( $key = '', $default = '' ) {
-
 	// Return default value if key is not given.
 	if ( empty( $key ) || ! is_string( $key ) ) {
 		return $default;
 	}
 
 	// Return default value if key not set.
-	if ( ! isset( $_REQUEST[ $key ] ) ) { // phpcs:ignore
+	if ( ! isset( $_REQUEST[ $key ] ) ) {
 		return $default;
 	}
 
 	// Trim output.
-	if ( is_string( $_REQUEST[ $key ] ) ) { // phpcs:ignore
-		return sanitize_text_field( $_REQUEST[ $key ] ); // phpcs:ignore
-	} elseif ( is_array( $_REQUEST[ $key ] ) ) { // phpcs:ignore
-		return array_map( 'sanitize_text_field', $_REQUEST[ $key ] ); // phpcs:ignore
+	if ( is_string( $_REQUEST[ $key ] ) ) {
+		return sanitize_text_field( $_REQUEST[ $key ] );
+	} elseif ( is_array( $_REQUEST[ $key ] ) ) {
+		return array_map( 'sanitize_text_field', $_REQUEST[ $key ] );
 	}
 
 	return $default;

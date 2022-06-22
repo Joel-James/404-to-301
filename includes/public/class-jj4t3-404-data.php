@@ -96,7 +96,7 @@ class JJ4T3_404_Data {
 				 *
 				 * @param string $ip Value for IP Address.
 				 */
-				$this->ip = sanitize_text_field( apply_filters( 'jj4t3_404_ip', $_SERVER[ $header ] ) ); // phpcs:ignore
+				$this->ip = sanitize_text_field( apply_filters( 'jj4t3_404_ip', $_SERVER[ $header ] ) );
 
 				break;
 			}
@@ -120,7 +120,7 @@ class JJ4T3_404_Data {
 			 *
 			 * @param string $ua Value for User Agent.
 			 */
-			$this->ua = sanitize_text_field( apply_filters( 'jj4t3_404_ua', $_SERVER['HTTP_USER_AGENT'] ) ); // phpcs:ignore
+			$this->ua = sanitize_text_field( apply_filters( 'jj4t3_404_ua', $_SERVER['HTTP_USER_AGENT'] ) );
 		}
 	}
 
@@ -143,7 +143,7 @@ class JJ4T3_404_Data {
 			 *
 			 * @param string $ref Value for referral.
 			 */
-			$this->ref = esc_url_raw( apply_filters( 'jj4t3_404_ref', $_SERVER['HTTP_REFERER'] ) ); // phpcs:ignore
+			$this->ref = esc_url_raw( apply_filters( 'jj4t3_404_ref', $_SERVER['HTTP_REFERER'] ) );
 		}
 	}
 
@@ -166,7 +166,7 @@ class JJ4T3_404_Data {
 			 *
 			 * @param string $url Value for 404 URL.
 			 */
-			$this->url = untrailingslashit( esc_url_raw( apply_filters( 'jj4t3_404_url', $_SERVER['REQUEST_URI'] ) ) ); // phpcs:ignore
+			$this->url = untrailingslashit( esc_url_raw( apply_filters( 'jj4t3_404_url', $_SERVER['REQUEST_URI'] ) ) );
 		}
 	}
 
