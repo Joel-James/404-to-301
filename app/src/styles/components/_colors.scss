@@ -1,0 +1,39 @@
+// Colors
+$palettes: (
+	mono: (
+		default: #000000,
+		black: #000000,
+		white: #ffffff,
+	),
+	gray: (
+		default: #666666,
+		lighter: #dddddd,
+		light: #888888,
+		dark: #333333,
+	),
+	blue: (
+		default: #17a8e3,
+		light: #e1f6ff,
+		ghost: #e1f6ff,
+	),
+	red: (
+		default: #ff6d6d,
+		light: #ffe5e9,
+		ghost: #ffe5e9,
+	),
+	yellow: (
+		default: #fecf2f,
+		light: #fff5d5,
+		ghost: #fff5d5,
+	),
+	green: (
+		default: #1abc9c,
+		light: #d1f1ea,
+		ghost: #d1f1ea,
+	),
+) !default;
+
+$white: palette(mono, white) !default;
+
+// Tooltips (_tooltips.scss)
+$tooltips-color: palette(gray, dark) !default;

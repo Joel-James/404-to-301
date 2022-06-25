@@ -37,6 +37,14 @@ class Request {
 	private $url = '';
 
 	/**
+	 * Current request host.
+	 *
+	 * @since 4.0
+	 * @var string $host
+	 */
+	private $host = '';
+
+	/**
 	 * Current request method.
 	 *
 	 * @since 4.0
@@ -114,6 +122,7 @@ class Request {
 	public function __construct() {
 		$this->set_ip();
 		$this->set_url();
+		$this->set_host();
 		$this->set_agent();
 		$this->set_method();
 		$this->set_referer();
@@ -180,6 +189,30 @@ class Request {
 	 */
 	public function get_url() {
 		return $this->url;
+	}
+
+	/**
+	 * Get current request host.
+	 *
+	 * This will be the domain name of request.
+	 *
+	 * @since 4.0
+	 *
+	 * @return string
+	 */
+	public function get_host() {
+		return $this->host;
+	}
+
+	/**
+	 * Get current request protocol.
+	 *
+	 * @since 4.0
+	 *
+	 * @return string
+	 */
+	public function get_protocol() {
+		return is_ssl() ? 'https' : 'http';
 	}
 
 	/**
@@ -255,18 +288,19 @@ class Request {
 	 * @return void
 	 */
 	private function set_method() {
-		// phpcs:ignore
-		$method = isset( $_SERVER['REQUEST_METHOD'] ) ? $_SERVER['REQUEST_METHOD'] : 'GET';
-
-		/**
-		 * Filter hook to modify current request method.
-		 *
-		 * @since 4.0
-		 *
-		 * @param string  $method Request method.
-		 * @param Request $this   Request instance.
-		 */
-		$this->method = apply_filters( 'dd4t3_request_method', $method, $this );
+		if ( isset( $_SERVER['REQUEST_METHOD'] ) ) {
+			$this->method = sanitize_text_field(
+			/**
+			 * Filter hook to modify current request method.
+			 *
+			 * @since 4.0
+			 *
+			 * @param string  $method Request method.
+			 * @param Request $this   Request instance.
+			 */
+				apply_filters( 'dd4t3_request_method', $_SERVER['REQUEST_METHOD'], $this )
+			);
+		}
 	}
 
 	/**
@@ -280,18 +314,19 @@ class Request {
 	 * @return void
 	 */
 	private function set_referer() {
-		// phpcs:ignore
-		$referrer = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '';
-
-		/**
-		 * Filter hook to modify current request referer.
-		 *
-		 * @since 4.0
-		 *
-		 * @param string  $referrer Request referer.
-		 * @param Request $this     Request instance.
-		 */
-		$this->referrer = apply_filters( 'dd4t3_request_referer', $referrer, $this );
+		if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
+			$this->referrer = esc_url_raw(
+			/**
+			 * Filter hook to modify current request referer.
+			 *
+			 * @since 4.0
+			 *
+			 * @param string  $referrer Request referer.
+			 * @param Request $this     Request instance.
+			 */
+				apply_filters( 'dd4t3_request_referer', $_SERVER['HTTP_REFERER'], $this )
+			);
+		}
 	}
 
 	/**
@@ -305,18 +340,19 @@ class Request {
 	 * @return void
 	 */
 	private function set_agent() {
-		// phpcs:ignore
-		$agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '';
-
-		/**
-		 * Filter hook to modify current request user agent.
-		 *
-		 * @since 4.0
-		 *
-		 * @param string  $agent Request user agent.
-		 * @param Request $this  Request instance.
-		 */
-		$this->agent = apply_filters( 'dd4t3_request_agent', $agent, $this );
+		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
+			$this->agent = sanitize_text_field(
+			/**
+			 * Filter hook to modify current request user agent.
+			 *
+			 * @since 4.0
+			 *
+			 * @param string  $agent Request user agent.
+			 * @param Request $this  Request instance.
+			 */
+				apply_filters( 'dd4t3_request_agent', $_SERVER['HTTP_USER_AGENT'], $this )
+			);
+		}
 	}
 
 	/**
@@ -330,18 +366,54 @@ class Request {
 	 * @return void
 	 */
 	private function set_url() {
-		// phpcs:ignore
-		$url = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+			$this->url = sanitize_text_field(
+			/**
+			 * Filter hook to modify current url for request object.
+			 *
+			 * @since 4.0
+			 *
+			 * @param string  $url  Current URL.
+			 * @param Request $this Request instance.
+			 */
+				apply_filters( 'dd4t3_request_url', $_SERVER['REQUEST_URI'], $this )
+			);
+		}
+	}
 
-		/**
-		 * Filter hook to modify current url for request object.
-		 *
-		 * @since 4.0
-		 *
-		 * @param string  $url  Current URL.
-		 * @param Request $this Request instance.
-		 */
-		$this->url = apply_filters( 'dd4t3_request_url', $url, $this );
+	/**
+	 * Set current host from the request.
+	 *
+	 * We will use SERVER_NAME value from the server. If it's not available
+	 * we will try HTTP_HOST as fallback.
+	 * This should be called by constructor method only.
+	 *
+	 * @since 4.0
+	 *
+	 * @return void
+	 */
+	private function set_host() {
+		foreach ( array( 'SERVER_NAME', 'HTTP_HOST' ) as $header ) {
+			if ( isset( $_SERVER[ $header ] ) ) {
+				/**
+				 * Filter hook to modify current host for request object.
+				 *
+				 * @since 4.0
+				 *
+				 * @param string  $url  Current host.
+				 * @param Request $this Request instance.
+				 */
+				$this->host = esc_url_raw(
+					apply_filters(
+						'dd4t3_request_host',
+						$_SERVER[ $header ],
+						$this
+					)
+				);
+
+				break;
+			}
+		}
 	}
 
 	/**
@@ -372,7 +444,7 @@ class Request {
 		if ( $ip ) {
 			foreach ( $this->ip_headers() as $header ) {
 				if ( ! empty( $_SERVER[ $header ] ) ) {
-					$ip = $_SERVER[ $header ]; // phpcs:ignore
+					$ip = sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) );
 					$ip = explode( ',', $ip );
 					$ip = array_shift( $ip );
 					break;
@@ -399,7 +471,7 @@ class Request {
 		 * @param string  $ip   Current IP address.
 		 * @param Request $this Request instance.
 		 */
-		$this->ip = apply_filters( 'dd4t3_request_ip', $ip, $this );
+		$this->ip = sanitize_text_field( apply_filters( 'dd4t3_request_ip', $ip, $this ) );
 	}
 
 	/**
@@ -407,6 +479,7 @@ class Request {
 	 *
 	 * We will ignore a few of the sensitive items.
 	 * This should be called by constructor method only.
+	 * Currently this is not stored in db for performance reasons.
 	 *
 	 * @since 4.0
 	 *
@@ -427,7 +500,7 @@ class Request {
 
 				// Skip ignored items.
 				if ( ! in_array( strtolower( $name ), $ignored, true ) ) {
-					$headers[ $name ] = $value;
+					$headers[ $name ] = sanitize_text_field( $value );
 				}
 			}
 		}
@@ -455,7 +528,8 @@ class Request {
 	 */
 	private function set_others() {
 		$others = array(
-			'protocol' => is_ssl() ? 'https' : 'http',
+			'host'     => $this->get_host(),
+			'protocol' => $this->get_protocol(),
 		);
 
 		/**

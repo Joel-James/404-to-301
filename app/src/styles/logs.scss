@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 // Prefix for the classes.
 $prefix: 'dd4t3-logs';
 
@@ -5,4 +7,10 @@ $prefix: 'dd4t3-logs';
 @import "logs/logs-actions";
 
 // Common components.
+@import "components/functions";
+@import "components/colors";
+@import "components/mixins";
 @import "components/utils";
+@import "components/buttons";
+@import "components/tooltip";
+@import "components/notifications";

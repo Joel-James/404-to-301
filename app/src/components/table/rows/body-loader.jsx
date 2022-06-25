@@ -1,5 +1,5 @@
 import React from 'react'
-import { Spinner } from '@wordpress/components'
+import { Spinner, __experimentalHStack as HStack } from '@wordpress/components'
 import BodySelectColumn from './../columns/body-select'
 
 export default class BodyLoaderRow extends React.Component {
@@ -17,7 +17,9 @@ export default class BodyLoaderRow extends React.Component {
 					className="column-loading"
 					colSpan={this.props.columns.length}
 				>
-					<Spinner/>
+					<HStack alignment="center">
+						<Spinner />
+					</HStack>
 				</td>
 			</tr>
 		)

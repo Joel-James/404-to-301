@@ -1,0 +1,5 @@
+// Function for color palettes using Sass maps
+// Usage: color: palette(green,base);
+@function palette($palette, $tone: 'default') {
+	@return map-get( map-get($palettes, $palette), $tone );
+}

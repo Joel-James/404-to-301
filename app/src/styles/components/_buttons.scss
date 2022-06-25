@@ -1,4 +1,5 @@
-.#{$prefix}-wrap {
+.#{$prefix}-wrap,
+.#{$prefix}-modal {
 
   .components-button {
     &.has-icon:not(.is-small) {
