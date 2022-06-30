@@ -35,6 +35,23 @@
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) || exit;
 
+// Minimum PHP version is 5.6.
+if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
+	add_action(
+		'admin_notices',
+		function () {
+			?>
+			<div class="notice notice-error">
+				<?php /* translators: 1: plugin name. 2: minimum PHP version. 3: current PHP version */ ?>
+				<p><?php printf( esc_attr__( 'The %1$s plugin cannot run on PHP versions older than %2$s. Your current version is %3$s. Please upgrade.', '404-to-301' ), '<strong>404 to 301</strong>', '5.6', PHP_VERSION ); ?></p>
+			</div>
+			<?php
+		}
+	);
+
+	return;
+}
+
 // Plugin version.
 define( 'DD4T3_VERSION', '4.0.0-beta' );
 
@@ -62,24 +79,17 @@ register_activation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'activate'
 // Deactivation actions.
 register_deactivation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'deactivate' ) );
 
-// Load plugin.
-if (
-	// Minimum PHP version is 5.6.
-	version_compare( PHP_VERSION, '5.6.0', '>=' ) &&
-	// Minimum WP version is 5.0.
-	version_compare( $GLOBALS['wp_version'], '5.0.0', '>=' )
-) {
-	/**
-	 * The main DuckDev\Redirect\Core instance.
-	 *
-	 * Use this function like you would a global variable, except
-	 * without needing to declare the global.
-	 *
-	 * Example: $dd4t3 = \DuckDev\Redirect\Core::instance();
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return DuckDev\Redirect\Core
-	 */
-	add_action( 'plugins_loaded', array( 'DuckDev\Redirect\Core', 'instance' ) );
-}
+/**
+ * The main DuckDev\Redirect\Core instance.
+ *
+ * Use this function like you would a global variable, except
+ * without needing to declare the global.
+ * We will initialize only if required WP and PHP versions match.
+ *
+ * Example: $dd4t3 = \DuckDev\Redirect\Core::instance();
+ *
+ * @since 4.0.0
+ *
+ * @return DuckDev\Redirect\Core
+ */
+add_action( 'plugins_loaded', array( 'DuckDev\Redirect\Core', 'instance' ) );
