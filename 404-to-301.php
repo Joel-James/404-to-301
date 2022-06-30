@@ -37,10 +37,17 @@ defined( 'ABSPATH' ) || exit;
 
 // Minimum PHP version is 5.6.
 if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
+	/**
+	 * Show a notice if plugin can not be run.
+	 *
+	 * This plugin requires minimum PHP version of 5.6. If the current
+	 * server does not meet the requirement, show an admin notice and bail.
+	 *
+	 * @since 4.0.0
+	 */
 	add_action(
 		'admin_notices',
-		function () {
-			?>
+		function () { ?>
 			<div class="notice notice-error">
 				<?php /* translators: 1: plugin name. 2: minimum PHP version. 3: current PHP version */ ?>
 				<p><?php printf( esc_attr__( 'The %1$s plugin cannot run on PHP versions older than %2$s. Your current version is %3$s. Please upgrade.', '404-to-301' ), '<strong>404 to 301</strong>', '5.6', PHP_VERSION ); ?></p>
@@ -49,7 +56,7 @@ if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
 		}
 	);
 
-	return;
+	return; // Exit plugin.
 }
 
 // Plugin version.
