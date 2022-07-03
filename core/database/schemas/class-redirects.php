@@ -67,8 +67,8 @@ class Redirects extends Schema {
 			'sortable'   => true,
 			'default'    => '',
 		),
-		'code'        => array(
-			'name'       => 'code',
+		'type'        => array(
+			'name'       => 'type',
 			'type'       => 'int',
 			'length'     => '20',
 			'unsigned'   => true,
@@ -76,11 +76,11 @@ class Redirects extends Schema {
 			'default'    => '301',
 			'allow_null' => true,
 		),
-		'type'        => array(
-			'name'       => 'type',
+		'group'       => array(
+			'name'       => 'group',
 			'type'       => 'enum',
 			'sortable'   => true,
-			'default'    => 'url',
+			'default'    => 'custom',
 			'allow_null' => true,
 		),
 		'meta'        => array(

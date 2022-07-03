@@ -4,11 +4,11 @@ import DeleteModal from './actions/delete-modal'
 import RedirectModal from './actions/redirect-modal'
 import ConfigureModal from './actions/configure-modal'
 import { Button, Dashicon } from '@wordpress/components'
-import BodyColumn from '@/components/table/columns/body-column'
+import { BodyColumn } from '@/components/table/table'
 
 const { __ } = wp.i18n
 
-const ActionsColumn = ({ log }) => {
+const ActionsColumn = ({ log, onUpdate, onDelete }) => {
 	const [showConfig, setShowConfig] = useState(false)
 	const [showDelete, setShowDelete] = useState(false)
 	const [showRedirect, setShowRedirect] = useState(false)
@@ -44,21 +44,30 @@ const ActionsColumn = ({ log }) => {
 				<ConfigureModal
 					log={log}
 					onClose={() => setShowConfig(false)}
-					onSave={() => setShowConfig(false)}
+					onSave={(log) => {
+						onUpdate(log)
+						setShowConfig(false)
+					}}
 				/>
 			)}
 			{showDelete && (
 				<DeleteModal
 					log={log}
 					onClose={() => setShowDelete(false)}
-					onDelete={() => setShowDelete(false)}
+					onDelete={(log) => {
+						onDelete(log)
+						setShowDelete(false)
+					}}
 				/>
 			)}
 			{showRedirect && (
 				<RedirectModal
 					log={log}
 					onClose={() => setShowRedirect(false)}
-					onSave={() => setShowRedirect(false)}
+					onSave={(log) => {
+						onUpdate(log)
+						setShowRedirect(false)
+					}}
 				/>
 			)}
 		</BodyColumn>

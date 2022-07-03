@@ -3,8 +3,9 @@
 // Prefix for the classes.
 $prefix: 'dd4t3-logs';
 
-// Custom components for settings page.
+// Custom components for logs page.
 @import "logs/logs-actions";
+@import "logs/logs-form";
 
 // Common components.
 @import "components/functions";

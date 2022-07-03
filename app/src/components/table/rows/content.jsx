@@ -1,9 +1,9 @@
 import React from 'react'
 
-import BodyColumn from './../columns/body-column'
+import BodyColumn from './../columns/body'
 import BodySelectColumn from './../columns/body-select'
 
-export default class BodyContentRow extends React.Component {
+export default class ContentRow extends React.Component {
 	constructor(props) {
 		super(props)
 

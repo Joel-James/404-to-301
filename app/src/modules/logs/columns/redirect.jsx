@@ -2,7 +2,7 @@
 import React from 'react'
 import Tooltip from '@/components/tooltip'
 import { Dashicon } from '@wordpress/components'
-import BodyColumn from '@/components/table/columns/body-column'
+import { BodyColumn } from '@/components/table/table'
 
 const { __ } = wp.i18n
 

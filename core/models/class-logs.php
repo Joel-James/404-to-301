@@ -39,6 +39,7 @@ class Logs extends Model {
 		'meta',
 		'visits',
 		'log_status',
+		'redirect_id',
 		'email_status',
 		'redirect_status',
 	);
@@ -372,19 +373,28 @@ class Logs extends Model {
 	 *
 	 * When a new redirect is created check if the same source
 	 * URL exist as URL in 404 error logs. If so, link the ID.
+	 * NOTE: We are not using singe query to make all updates because
+	 * for linking redirect_id, we need a separate query. This is because
+	 * we can update multiple logs at a time.
 	 *
 	 * @since  4.0.0
 	 * @access public
 	 *
-	 * @param int   $redirect_id Redirect ID.
-	 * @param array $data        Created log data.
+	 * @param int    $redirect_id Redirect ID.
+	 * @param object $item        Created redirect item.
 	 *
 	 * @return void
 	 */
-	public function on_redirect_create( $redirect_id, $data ) {
+	public function on_redirect_create( $redirect_id, $item ) {
 		// Link if redirect ID and URL found.
-		if ( ! empty( $redirect_id ) && ! empty( $data['url'] ) ) {
-			$this->link_redirect( $data['url'], $redirect_id );
+		if ( ! empty( $redirect_id ) && isset( $item->source ) ) {
+			$this->sync_redirect(
+				$item->source,
+				array(
+					'redirect_id'     => $redirect_id,
+					'redirect_status' => $item->status,
+				)
+			);
 		}
 	}
 
@@ -398,27 +408,34 @@ class Logs extends Model {
 	 * @since  4.0.0
 	 * @access public
 	 *
-	 * @param int   $redirect_id Redirect ID.
-	 * @param array $data        Created log data.
+	 * @param int    $redirect_id Redirect ID.
+	 * @param object $item        Updated redirect item.
 	 *
 	 * @return void
 	 */
-	public function on_redirect_update( $redirect_id, $data ) {
+	public function on_redirect_update( $redirect_id, $item ) {
 		// No need to continue if URL has not changed.
-		if ( empty( $redirect_id ) || empty( $data['url'] ) ) {
+		if ( empty( $redirect_id ) || ! isset( $item->source ) ) {
 			return;
 		}
 
 		// Get an old log for the redirect.
 		$log = $this->get_by_redirect( $redirect_id );
 
-		// Unlink from old logs.
-		if ( isset( $log->id ) ) {
-			$this->link_redirect( $log->url );
+		// Unlink from old logs if URL changed.
+		if ( isset( $log->id ) && $log->url !== $item->source ) {
+			// Unlink logs.
+			$this->sync_redirect( $log->url, array( 'redirect_id' => null ) );
 		}
 
 		// Now link to matching logs.
-		$this->link_redirect( $data['url'], $redirect_id );
+		$this->sync_redirect(
+			$item->source,
+			array(
+				'redirect_id'     => $redirect_id,
+				'redirect_status' => $item->status,
+			)
+		);
 	}
 
 	/**
@@ -429,15 +446,15 @@ class Logs extends Model {
 	 * @since  4.0.0
 	 * @access public
 	 *
-	 * @param int   $redirect_id Redirect ID.
-	 * @param array $data        Created log data.
+	 * @param int    $redirect_id Redirect ID.
+	 * @param object $item        Deleted redirect item.
 	 *
 	 * @return void
 	 */
-	public function on_redirect_delete( $redirect_id, $data ) {
+	public function on_redirect_delete( $redirect_id, $item ) {
 		// Unlink redirect if URL found.
-		if ( isset( $data['url'] ) ) {
-			$this->link_redirect( $data['url'] );
+		if ( isset( $item->source ) ) {
+			$this->sync_redirect( $item->source, array( 'redirect_id' => null ) );
 		}
 	}
 
@@ -447,21 +464,18 @@ class Logs extends Model {
 	 * @since  4.0.0
 	 * @access public
 	 *
-	 * @param string   $url         URL.
-	 * @param int|null $redirect_id Redirect ID (Unlink if null).
+	 * @param string $url  URL.
+	 * @param array  $data Data to update.
 	 *
 	 * @return void
 	 */
-	public function link_redirect( $url, $redirect_id = null ) {
+	public function sync_redirect( $url, array $data = array() ) {
 		// Can not continue if url is empty.
 		if ( empty( $url ) ) {
 			return;
 		}
 
-		// Unlink from all logs.
-		$this->update_multiple(
-			array( 'redirect_id' => $redirect_id ),
-			array( 'url' => $url )
-		);
+		// Update the logs.
+		$this->update_multiple( $data, array( 'url' => $url ) );
 	}
 }

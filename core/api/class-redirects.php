@@ -111,28 +111,28 @@ class Redirects extends Endpoint {
 					'args'                => array(
 						'source'      => array(
 							'type'        => 'string',
-							'required'    => false,
+							'required'    => true,
 							'description' => __( 'Redirect source.', '404-to-301' ),
 						),
 						'destination' => array(
 							'type'              => 'string',
-							'required'          => false,
+							'required'          => true,
 							'validate_callback' => function ( $param ) {
 								return esc_url_raw( $param ) === $param;
 							},
 							'description'       => __( 'Redirect destination. Should be a full URL.', '404-to-301' ),
 						),
-						'code'        => array(
+						'type'        => array(
 							'type'        => 'integer',
-							'required'    => false,
+							'required'    => true,
 							'enum'        => array_keys( Data::redirect_types() ),
 							'description' => __( 'Redirect type code.', '404-to-301' ),
 						),
-						'type'        => array(
-							'type'        => 'integer',
+						'group'       => array(
+							'type'        => 'string',
 							'required'    => false,
-							'enum'        => array( 'url', '404' ),
-							'description' => __( 'Redirect type (url or 404).', '404-to-301' ),
+							'enum'        => array( 'custom', '404' ),
+							'description' => __( 'Redirect group.', '404-to-301' ),
 						),
 						'status'      => array(
 							'type'        => 'string',
@@ -174,11 +174,6 @@ class Redirects extends Endpoint {
 							'required'    => true,
 							'description' => __( 'Redirect ID to update.', '404-to-301' ),
 						),
-						'source'      => array(
-							'type'        => 'string',
-							'required'    => false,
-							'description' => __( 'Redirect source.', '404-to-301' ),
-						),
 						'destination' => array(
 							'type'              => 'string',
 							'required'          => false,
@@ -187,16 +182,22 @@ class Redirects extends Endpoint {
 							},
 							'description'       => __( 'Redirect destination. Should be a full URL.', '404-to-301' ),
 						),
-						'code'        => array(
+						'type'        => array(
 							'type'        => 'integer',
 							'required'    => false,
 							'enum'        => array_keys( Data::redirect_types() ),
 							'description' => __( 'Redirect type code.', '404-to-301' ),
 						),
+						'group'       => array(
+							'type'        => 'string',
+							'required'    => false,
+							'enum'        => array( 'custom', '404' ),
+							'description' => __( 'Redirect group.', '404-to-301' ),
+						),
 						'status'      => array(
 							'type'        => 'string',
 							'required'    => false,
-							'enum'        => array( 'enabled', 'disabled', 'ignored' ),
+							'enum'        => array( 'enabled', 'disabled' ),
 							'description' => __( 'Email status.', '404-to-301' ),
 						),
 					),
@@ -258,7 +259,7 @@ class Redirects extends Endpoint {
 		$order     = $request->get_param( 'order' );
 
 		// Allowed column names to filter.
-		$allowed_cols = array( 'source', 'destination', 'code', 'type', 'status' );
+		$allowed_cols = array( 'source', 'destination', 'type', 'group', 'status' );
 
 		// Query arguments.
 		$args = array(
@@ -332,6 +333,49 @@ class Redirects extends Endpoint {
 	}
 
 	/**
+	 * Create a new redirect item.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function create_redirect( $request ) {
+		// Fields to update.
+		$source      = $request->get_param( 'source' );
+		$destination = $request->get_param( 'destination' );
+		$type        = $request->get_param( 'type' );
+		$group       = $this->get_param( $request, 'group', 'custom' );
+		$status      = $this->get_param( $request, 'status', 'enabled' );
+
+		// Do not continue if required fields are missing.
+		if ( empty( $source ) || empty( $destination ) || empty( $type ) ) {
+			return $this->get_response( array(), false );
+		}
+
+		// Create redirect.
+		$redirect_id = Models\Redirects::instance()->create(
+			array(
+				'source'      => $source,
+				'destination' => $destination,
+				'type'        => $type,
+				'group'       => $group,
+				'status'      => $status,
+			)
+		);
+
+		// Return redirect data if success.
+		if ( ! empty( $redirect_id ) ) {
+			return $this->get_response( Models\Redirects::instance()->get( $redirect_id ) );
+		}
+
+		// Error response.
+		return $this->get_response( array(), false );
+	}
+
+	/**
 	 * Delete a single redirect item.
 	 *
 	 * @since  4.0.0
@@ -348,18 +392,22 @@ class Redirects extends Endpoint {
 		$redirect_id = $request->get_param( 'redirect_id' );
 
 		// Fields to update.
-		$fields = array( 'visits', 'redirect', 'log', 'email' );
+		$fields = array( 'destination', 'type', 'group', 'status' );
 
 		// Set values.
 		foreach ( $fields as $field ) {
 			if ( $request->offsetExists( $field ) ) {
-				$data[ $field ] = (int) $request->get_param( $field );
+				$data[ $field ] = $request->get_param( $field );
 			}
 		}
 
 		// Update if data is not empty.
 		if ( ! empty( $redirect_id ) && ! empty( $data ) ) {
-			return $this->get_response( Models\Redirects::instance()->update( $redirect_id, $data ) );
+			$updated = Models\Redirects::instance()->update( $redirect_id, $data );
+			// Return updated redirect.
+			if ( $updated ) {
+				return $this->get_response( Models\Redirects::instance()->get( $redirect_id ) );
+			}
 		}
 
 		// Error response.

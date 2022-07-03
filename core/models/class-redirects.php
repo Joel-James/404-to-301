@@ -38,8 +38,8 @@ class Redirects extends Model {
 	protected $updatable = array(
 		'source',
 		'destination',
-		'redirect_status',
 		'type',
+		'group',
 		'status',
 		'meta',
 	);
@@ -131,7 +131,7 @@ class Redirects extends Model {
 	 *
 	 * @param array $data Data.
 	 *
-	 * @return bool
+	 * @return int|false
 	 */
 	public function create( array $data ) {
 		// Can not continue if url is empty.
@@ -145,18 +145,21 @@ class Redirects extends Model {
 		// Create new redirect.
 		$redirect_id = $redirect->add_item( $data );
 
-		if ( $redirect_id ) {
+		if ( ! empty( $redirect_id ) ) {
+			// Get the created object.
+			$item = $this->get( $redirect_id );
+
 			/**
 			 * Action hook fired after a new redirect is created.
 			 *
 			 * @since 4.0.0
 			 *
-			 * @param int   $redirect_id Redirect ID.
-			 * @param array $data        Data used for redirect.
+			 * @param int    $redirect_id Redirect ID.
+			 * @param object $item        Redirect object.
 			 */
-			do_action( 'dd4t3_model_after_redirect_create', $redirect_id, $data );
+			do_action( 'dd4t3_model_after_redirect_create', $redirect_id, $item );
 
-			return true;
+			return $redirect_id;
 		}
 
 		return false;
@@ -187,15 +190,18 @@ class Redirects extends Model {
 
 		// Update log.
 		if ( ! empty( $data ) && $redirect->update_item( $redirect_id, $data ) ) {
+			// Get the updated object.
+			$item = $this->get( $redirect_id );
+
 			/**
 			 * Action hook fired after a redirect is updated.
 			 *
 			 * @since 4.0.0
 			 *
-			 * @param int   $redirect_id Redirect ID.
-			 * @param array $data        Data used for redirect.
+			 * @param int    $redirect_id Redirect ID.
+			 * @param object $item        Redirect object.
 			 */
-			do_action( 'dd4t3_model_after_redirect_update', $redirect_id, $data );
+			do_action( 'dd4t3_model_after_redirect_update', $redirect_id, $item );
 
 			return true;
 		}
@@ -225,19 +231,19 @@ class Redirects extends Model {
 		$redirect = new Database\Queries\Redirect();
 
 		// Get redirect data for action hook.
-		$redirect_data = $this->get( $redirect_id );
+		$item = $this->get( $redirect_id );
 
 		// Delete log.
-		if ( $redirect_data && $redirect->delete_item( $redirect_id ) ) {
+		if ( $item && $redirect->delete_item( $redirect_id ) ) {
 			/**
 			 * Action hook fired after a redirect is deleted.
 			 *
 			 * @since 4.0.0
 			 *
-			 * @param int    $redirect_id   Redirect ID.
-			 * @param object $redirect_data Redirect data.
+			 * @param int    $redirect_id Redirect ID.
+			 * @param object $item        Redirect object.
 			 */
-			do_action( 'dd4t3_model_after_redirect_delete', $redirect_id, $redirect_data );
+			do_action( 'dd4t3_model_after_redirect_delete', $redirect_id, $item );
 
 			return true;
 		}

@@ -1,5 +1,5 @@
 import React from 'react'
-import BodyColumn from '@/components/table/columns/body-column'
+import { BodyColumn } from '@/components/table/table'
 
 const UrlColumn = ({ log }) => {
 	return <BodyColumn id="url">{log.url}</BodyColumn>

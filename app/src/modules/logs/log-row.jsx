@@ -7,7 +7,7 @@ import AgentColumn from './columns/agent'
 import ActionsColumn from './columns/actions'
 import RedirectColumn from './columns/redirect'
 import ReferrerColumn from './columns/referrer'
-import BodySelectColumn from '@/components/table/columns/body-select'
+import { BodySelectColumn } from '@/components/table/table'
 
 export default class LogRow extends React.Component {
 	constructor(props) {
@@ -28,7 +28,11 @@ export default class LogRow extends React.Component {
 				<IpColumn log={log} />
 				<AgentColumn log={log} />
 				<RedirectColumn log={log} />
-				<ActionsColumn log={log} />
+				<ActionsColumn
+					log={log}
+					onDelete={(data) => this.props.onDelete(data)}
+					onUpdate={(data) => this.props.onUpdate(data)}
+				/>
 			</tr>
 		)
 	}

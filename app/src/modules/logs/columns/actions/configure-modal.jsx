@@ -71,6 +71,7 @@ export default class ConfigureModal extends React.Component {
 	 * @since 4.0.0
 	 */
 	async saveActions() {
+		let log = this.props.log
 		const self = this
 
 		// Make progress button.
@@ -83,7 +84,8 @@ export default class ConfigureModal extends React.Component {
 				email_status: self.state.emailStatus,
 				redirect_status: self.state.redirectStatus,
 			})
-			.then(function () {
+			.then(function (response) {
+				log = response.data.data
 				// Show notification.
 				notify(__('Changes have been updated.', '404-to-301'))
 			})
@@ -99,7 +101,7 @@ export default class ConfigureModal extends React.Component {
 		this.setState({ saving: false })
 
 		// Trigger save event.
-		this.props.onSave()
+		this.props.onSave(log)
 	}
 
 	render() {
@@ -114,7 +116,7 @@ export default class ConfigureModal extends React.Component {
 					<Spacer>
 						<Text>
 							<strong>
-								{__('Customize for:', '404-to-301')}
+								{__('URL:', '404-to-301')}
 							</strong>
 						</Text>
 					</Spacer>

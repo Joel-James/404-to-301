@@ -5,6 +5,7 @@ import {
 	Modal,
 	Button,
 	Spinner,
+	Notice,
 	TextControl,
 	ToggleControl,
 	SelectControl,
@@ -29,6 +30,8 @@ export default class RedirectModal extends React.Component {
 			type: 301,
 			redirect: {},
 		}
+
+		this.saveActions = this.saveActions.bind(this)
 	}
 
 	async componentDidMount() {
@@ -48,16 +51,29 @@ export default class RedirectModal extends React.Component {
 		// Make progress button.
 		this.setState({ saving: true })
 
+		let apiUrl = '/redirects/'
+		if (this.props.log.redirect_id) {
+			apiUrl + this.props.log.redirect_id
+		}
+
+		let log = this.props.log
+
 		// Get the list of addons.
 		await request
-			.post('/redirects/' + self.props.log.log_id, {
-				log_status: self.state.logStatus,
-				email_status: self.state.emailStatus,
-				redirect_status: self.state.redirectStatus,
+			.post(apiUrl, {
+				source: this.state.source,
+				destination: this.state.destination,
+				type: this.state.type,
+				status: this.state.status,
 			})
-			.then(function () {
+			.then(function (response) {
 				// Show notification.
 				notify(__('Changes have been updated.', '404-to-301'))
+				if (response.data.data.redirect_id) {
+					log.redirect_id = response.data.data.redirect_id
+				}
+				// Close modal.
+				self.props.onSave(log)
 			})
 			.catch(function () {
 				// Show notification.
@@ -69,9 +85,6 @@ export default class RedirectModal extends React.Component {
 
 		// Remove progress button.
 		this.setState({ saving: false })
-
-		// Trigger save event.
-		this.props.onSave()
 	}
 
 	/**
@@ -113,6 +126,9 @@ export default class RedirectModal extends React.Component {
 					</HStack>
 				) : (
 					<VStack spacing={3}>
+						<Notice status="error">
+							An unknown error occurred.
+						</Notice>
 						<TextControl
 							label={__('Redirect from:', '404-to-301')}
 							value={this.state.source}
@@ -127,7 +143,7 @@ export default class RedirectModal extends React.Component {
 							)}
 							type="url"
 							value={this.state.destination}
-							onChange={(value) => this.setState({ url: value })}
+							onChange={(value) => this.setState({ destination: value })}
 						/>
 
 						<SelectControl
@@ -175,7 +191,7 @@ export default class RedirectModal extends React.Component {
 								icon={this.state.saving ? null : 'yes'}
 								disabled={this.state.saving}
 								isBusy={this.state.saving}
-								onClick={this.props.onClose}
+								onClick={this.saveActions}
 							>
 								{__('Save Changes', '404-to-301')}
 							</Button>

@@ -20,6 +20,7 @@
 		"@wordpress/compose": "^5.9.0",
 		"axios": "^0.27.2",
 		"classnames": "^2.3.1",
+		"moment": "^2.29.3",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
 		"react-notifications-component": "^3.3.11",

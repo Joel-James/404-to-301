@@ -322,7 +322,11 @@ class Logs extends Endpoint {
 
 		// Update if data is not empty.
 		if ( ! empty( $log_id ) && ! empty( $data ) ) {
-			return $this->get_response( Models\Logs::instance()->update( $log_id, $data ) );
+			$updated = Models\Logs::instance()->update( $log_id, $data );
+			// If updated, get updated log.
+			if ( $updated ) {
+				return $this->get_response( Models\Logs::instance()->get( $log_id ) );
+			}
 		}
 
 		// Error response.
