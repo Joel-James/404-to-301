@@ -9,7 +9,7 @@ const DateColumn = ({ log }) => {
 	return (
 		<BodyColumn id="date">
 			<span title={log.created_at}>
-				{date.format('MMM d, YYYY [at] h:mm a')}
+				{date.format('MMM d, YYYY [at] h:mm A')}
 			</span>
 		</BodyColumn>
 	)

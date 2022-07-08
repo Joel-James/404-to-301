@@ -2,27 +2,26 @@
 /**
  * Admin notice template.
  *
+ * @link       https://duckdev.com/products/404-to-301/
+ * @author     Joel James <me@joelsays.com>
+ * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @var string  $type    Notice type.
  * @var string  $content Notice content.
  * @var array   $options {
  *     Array of notice options.
- *
- * @type string $id      Unique ID for the notice.
- * @type bool   $icon    Should show icon.
- * @type bool   $dismiss Is notice dismissible.
+ *      @type string $id      Unique ID for the notice.
+ *      @type bool   $icon    Should show icon.
+ *      @type bool   $dismiss Is notice dismissible.
  * }
  *
- * @author     Joel James <me@joelsays.com>
- * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    View
  * @subpackage Notice
  */
 
 // Default type id 'updated'.
-$type = empty( $type ) ? 'success' : $type; // phpcs:ignore
-$options = empty( $options ) ? array() : (array) $options; // phpcs:ignore
+$type    = empty( $type ) ? 'success' : $type;
+$options = empty( $options ) ? array() : (array) $options;
 // Default options.
 $default = array(
 	'id'      => uniqid(),
@@ -58,5 +57,5 @@ switch ( $type ) {
 ?>
 
 <div id="dd4t3-notice-<?php echo esc_attr( $options['id'] ); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
-	<p><?php echo $content; // phpcs:ignore ?></p>
+	<p><?php echo $content; ?></p>
 </div>

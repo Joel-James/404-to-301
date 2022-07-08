@@ -90,7 +90,6 @@ final class Redirects extends Table {
 	 * @return void
 	 */
 	protected function set_schema() {
-		// phpcs:ignore
 		$this->schema = "
 			redirect_id bigint(20) unsigned NOT NULL auto_increment,
 			source mediumtext NOT NULL UNIQUE,

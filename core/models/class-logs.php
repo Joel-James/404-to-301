@@ -18,8 +18,6 @@ namespace DuckDev\Redirect\Models;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Database;
-
 /**
  * Class Logs.
  *
@@ -45,6 +43,21 @@ class Logs extends Model {
 	);
 
 	/**
+	 * Query class for the model.
+	 *
+	 * @since 4.0.0
+	 * @var string $query
+	 */
+	protected $query = '\\DuckDev\\Redirect\\Database\Queries\Log';
+
+	/**
+	 * Flag to check if hooks should be skipped.
+	 *
+	 * @var bool $skip_hooks
+	 */
+	private $skip_hooks = false;
+
+	/**
 	 * Initialize class and register hooks.
 	 *
 	 * @since  4.0.0
@@ -59,6 +72,10 @@ class Logs extends Model {
 		add_action( 'dd4t3_model_after_redirect_create', array( $this, 'on_redirect_create' ), 10, 2 );
 		add_action( 'dd4t3_model_after_redirect_update', array( $this, 'on_redirect_update' ), 10, 2 );
 		add_action( 'dd4t3_model_after_redirect_delete', array( $this, 'on_redirect_delete' ), 10, 2 );
+
+		// Handle log updates.
+		add_action( 'model_after_log_update', array( $this, 'on_log_update' ), 10, 3 );
+		add_filter( 'dd4t3_model_log_create_data', array( $this, 'filter_log_data' ) );
 	}
 
 	/**
@@ -72,10 +89,7 @@ class Logs extends Model {
 	 * @return object|false Log object if successful, false otherwise.
 	 */
 	public function get( $log_id ) {
-		$log = new Database\Queries\Log();
-
-		// Return log.
-		return $log->get_item( $log_id );
+		return $this->query()->get_item( $log_id );
 	}
 
 	/**
@@ -92,9 +106,7 @@ class Logs extends Model {
 	 * @return object|false Log object if successful, false otherwise.
 	 */
 	public function get_by_url( $url ) {
-		$log = new Database\Queries\Log();
-
-		return $log->get_item_by( 'url', $url );
+		return $this->query()->get_item_by( 'url', $url );
 	}
 
 	/**
@@ -111,9 +123,7 @@ class Logs extends Model {
 	 * @return object|false Log object if successful, false otherwise.
 	 */
 	public function get_by_redirect( $redirect_id ) {
-		$log = new Database\Queries\Log();
-
-		return $log->get_item_by( 'redirect_id', $redirect_id );
+		return $this->query()->get_item_by( 'redirect_id', $redirect_id );
 	}
 
 	/**
@@ -137,11 +147,8 @@ class Logs extends Model {
 			)
 		);
 
-		// Create a query object.
-		$log = new Database\Queries\Log();
-
 		// Return logs.
-		return $log->query( $args );
+		return $this->query()->query( $args );
 	}
 
 	/**
@@ -162,24 +169,31 @@ class Logs extends Model {
 			return false;
 		}
 
-		// Create a query object.
-		$log = new Database\Queries\Log();
+		/**
+		 * Filter to modify final data before log creation.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $data Data for log creation.
+		 */
+		$data = apply_filters( 'dd4t3_model_log_create_data', $data );
 
-		// Create log.
-		if ( $log->add_item( $data ) ) {
-			// Update the visits count if log already exists..
-			if ( $this->get_by_url( $data['url'] ) ) {
-				$this->mark_visit( $data['url'] );
-			}
+		// Create new log.
+		$log_id = $this->query()->add_item( $data );
+
+		if ( ! empty( $log_id ) ) {
+			// Get the created object.
+			$item = $this->get( $log_id );
 
 			/**
 			 * Action hook fired after a new log is created.
 			 *
 			 * @since 4.0.0
 			 *
-			 * @param array $data Data used for log.
+			 * @param int   $log_id Log ID.
+			 * @param array $item   New log.
 			 */
-			do_action( 'dd4t3_model_after_log_create', $data );
+			do_action( 'dd4t3_model_after_log_create', $log_id, $item );
 
 			return true;
 		}
@@ -204,23 +218,24 @@ class Logs extends Model {
 			return false;
 		}
 
-		// Create a query object.
-		$log = new Database\Queries\Log();
-
 		// Prepare data.
 		$data = $this->prepare_fields( $data );
 
 		// Update log.
-		if ( ! empty( $data ) && $log->update_item( $log_id, $data ) ) {
+		if ( ! empty( $data ) && $this->query()->update_item( $log_id, $data ) ) {
+			// Get the updated object.
+			$item = $this->get( $log_id );
+
 			/**
 			 * Action hook fired after a log is updated.
 			 *
 			 * @since 4.0.0
 			 *
-			 * @param int   $log_id Log ID.
-			 * @param array $data   Data used for log.
+			 * @param int    $log_id Log ID.
+			 * @param object $item   Updated log.
+			 * @param array  $data   Data used for update.
 			 */
-			do_action( 'dd4t3_model_after_log_update', $log_id, $data );
+			do_action( 'dd4t3_model_after_log_update', $log_id, $item, $data );
 
 			return true;
 		}
@@ -240,14 +255,11 @@ class Logs extends Model {
 	 * @return bool
 	 */
 	public function update_multiple( array $data, array $where ) {
-		// Create a query object.
-		$log = new Database\Queries\Log();
-
 		// Prepare data.
 		$data = $this->prepare_fields( $data );
 
 		// Update log.
-		if ( $log->update_multiple( $data, $where ) ) {
+		if ( $this->query()->update_multiple( $data, $where ) ) {
 			/**
 			 * Action hook fired after a bulk log update.
 			 *
@@ -282,14 +294,11 @@ class Logs extends Model {
 			return false;
 		}
 
-		// Create a query object.
-		$log = new Database\Queries\Log();
-
 		// Get log for action hook.
 		$log_data = $this->get( $log_id );
 
 		// Delete log.
-		if ( $log_data && $log->delete_item( $log_id ) ) {
+		if ( $log_data && $this->query()->delete_item( $log_id ) ) {
 			/**
 			 * Action hook fired after a log is deleted.
 			 *
@@ -415,7 +424,7 @@ class Logs extends Model {
 	 */
 	public function on_redirect_update( $redirect_id, $item ) {
 		// No need to continue if URL has not changed.
-		if ( empty( $redirect_id ) || ! isset( $item->source ) ) {
+		if ( $this->skip_hooks || empty( $redirect_id ) || ! isset( $item->source ) ) {
 			return;
 		}
 
@@ -477,5 +486,87 @@ class Logs extends Model {
 
 		// Update the logs.
 		$this->update_multiple( $data, array( 'url' => $url ) );
+	}
+
+	/**
+	 * Actions after a log is updated.
+	 *
+	 * If any of the statuses has been updated, we need to sync
+	 * it to all other logs with same url.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param int    $log_id Log ID.
+	 * @param object $item   Updated log item.
+	 * @param array  $data   Data used for update.
+	 *
+	 * @return void
+	 */
+	public function on_log_update( $log_id, $item, $data ) {
+		// If any of the status values changed.
+		if (
+			(
+				isset( $data['log_status'] ) ||
+				isset( $data['email_status'] ) ||
+				isset( $data['redirect_status'] )
+			) && isset( $item->url )
+		) {
+			// Sync to all logs.
+			$this->update_multiple(
+				array(
+					'log_status'      => $item->log_status,
+					'email_status'    => $item->email_status,
+					'redirect_status' => $item->redirect_status,
+				),
+				array( 'url' => $item->url )
+			);
+		}
+
+		// If redirect status has been updated, sync to redirect.
+		if ( isset( $data['redirect_status'], $item->redirect_id ) ) {
+			$redirect = Redirects::instance()->get( $item->redirect_id );
+			// Only when status really changed.
+			if ( isset( $redirect->status ) && $redirect->status !== $data['redirect_status'] ) {
+				// Make sure we don't end up in loop.
+				$this->skip_hooks = true;
+
+				Redirects::instance()->update(
+					$item->redirect_id,
+					array( 'status' => $item->redirect_status )
+				);
+
+				$this->skip_hooks = false;
+			}
+		}
+	}
+
+	/**
+	 * Modify log data before creation.
+	 *
+	 * If an existing log found for same URL, use the statuses from
+	 * existing log instead of default statuses.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param array $data Data for log creation.
+	 *
+	 * @return array
+	 */
+	public function filter_log_data( array $data ) {
+		if ( ! empty( $data['url'] ) ) {
+			// Get existing log.
+			$log = $this->get_by_url( $data['url'] );
+			// If status flags found.
+			if ( isset( $log->visits, $log->log_status, $log->email_status, $log->redirect_status ) ) {
+				$data['visits']          = $log->visits;
+				$data['log_status']      = $log->log_status;
+				$data['email_status']    = $log->email_status;
+				$data['redirect_status'] = $log->redirect_status;
+			}
+		}
+
+		return $data;
 	}
 }

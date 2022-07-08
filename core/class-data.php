@@ -52,7 +52,6 @@ class Data {
 		 * @since 4.0.0
 		 *
 		 * @param array $types Redirect types.
-		 *
 		 */
 		return apply_filters( 'dd4t3_redirect_types', $types );
 	}
@@ -88,7 +87,6 @@ class Data {
 		 * @since 4.0.0
 		 *
 		 * @param array $addons Addon list.
-		 *
 		 */
 		return apply_filters( 'dd4t3_addons', $addons );
 	}

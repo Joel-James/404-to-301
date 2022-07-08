@@ -49,6 +49,11 @@ class Addon {
 			$active = is_plugin_active( $addons[ $id ]['plugin'] ) || is_plugin_active_for_network( $addons[ $id ]['plugin'] );
 		}
 
+		// @todo Remove this debug code.
+		if ( 'logs-exporter' === $id ) {
+			$active = true;
+		}
+
 		/**
 		 * Filter to modify addon active status check.
 		 *
@@ -76,6 +81,11 @@ class Addon {
 
 		// Check if the addon plugin is installed.
 		if ( isset( $addons[ $id ]['plugin'], $plugins[ $addons[ $id ]['plugin'] ] ) ) {
+			$installed = true;
+		}
+
+		// @todo Remove this debug code.
+		if ( 'logs-exporter' === $id || 'notification-manager' === $id ) {
 			$installed = true;
 		}
 
@@ -111,7 +121,7 @@ class Addon {
 				'description' => __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', '404-to-301' ),
 				'link'        => 'https://duckdev.com/products/logs-exporter/',
 				'is_paid'     => false,
-				'plugin'      => '404-to-301-logs-exporter/logs-exporter.php',
+				'plugin'      => '404-to-301-log-exporter/log-exporter.php',
 			),
 			'notification-manager' => array(
 				'title'       => __( 'Notification Manager', '404-to-301' ),

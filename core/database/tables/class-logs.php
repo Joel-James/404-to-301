@@ -93,7 +93,6 @@ final class Logs extends Table {
 	 * @return void
 	 */
 	protected function set_schema() {
-		// phpcs:ignore
 		$this->schema = "
 			log_id bigint(20) unsigned NOT NULL auto_increment,
 			url mediumtext NOT NULL,

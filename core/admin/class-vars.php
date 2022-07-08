@@ -5,10 +5,10 @@
  * This class managed the localized script vars for different
  * scripts used by the plugin.
  *
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Admin
  * @subpackage Vars
  */
@@ -48,10 +48,10 @@ class Vars extends Base {
 	/**
 	 * Add the vars only required in settings script.
 	 *
-	 * @param array $vars Script vars.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param array $vars Script vars.
 	 *
 	 * @return array $vars
 	 */
@@ -67,10 +67,10 @@ class Vars extends Base {
 	/**
 	 * Add the vars only required in logs script.
 	 *
-	 * @param array $vars Script vars.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param array $vars Script vars.
 	 *
 	 * @return array $vars
 	 */
@@ -78,18 +78,16 @@ class Vars extends Base {
 		// Include common vars.
 		$vars = $this->common( $vars );
 
-		$vars['test'] = '';
-
 		return $vars;
 	}
 
 	/**
 	 * Add the vars only required in redirects script.
 	 *
-	 * @param array $vars Script vars.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param array $vars Script vars.
 	 *
 	 * @return array $vars
 	 */
@@ -108,10 +106,10 @@ class Vars extends Base {
 	 * Make sure to limit the items which are only needed in all
 	 * our scripts. Use separate method for individual scripts.
 	 *
-	 * @param array $vars Script vars.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param array $vars Script vars.
 	 *
 	 * @return array $vars
 	 */

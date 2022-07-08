@@ -45,6 +45,14 @@ class Redirects extends Model {
 	);
 
 	/**
+	 * Query class for the model.
+	 *
+	 * @since 4.0.0
+	 * @var string $query
+	 */
+	protected $query = '\\DuckDev\\Redirect\\Database\Queries\Redirect';
+
+	/**
 	 * Initialize class and register hooks.
 	 *
 	 * @since  4.0.0
@@ -70,10 +78,7 @@ class Redirects extends Model {
 	 * @return object|false Redirect object if successful, false otherwise.
 	 */
 	public function get( $redirect_id ) {
-		$redirect = new Database\Queries\Redirect();
-
-		// Return redirect.
-		return $redirect->get_item( $redirect_id );
+		return $this->query()->get_item( $redirect_id );
 	}
 
 	/**
@@ -87,10 +92,7 @@ class Redirects extends Model {
 	 * @return object|false Redirect object if successful, false otherwise.
 	 */
 	public function get_by_source( $path ) {
-		$redirect = new Database\Queries\Redirect();
-
-		// Return redirect.
-		return $redirect->get_item_by( 'source', $path );
+		return $this->query()->get_item_by( 'source', $path );
 	}
 
 	/**
@@ -114,11 +116,8 @@ class Redirects extends Model {
 			)
 		);
 
-		// Create a query object.
-		$redirect = new Database\Queries\Redirect();
-
 		// Return redirects.
-		return $redirect->query( $args );
+		return $this->query()->query( $args );
 	}
 
 	/**
@@ -139,11 +138,17 @@ class Redirects extends Model {
 			return false;
 		}
 
-		// Create a query object.
-		$redirect = new Database\Queries\Redirect();
+		/**
+		 * Filter to modify final data before redirect creation.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $data Data for redirect creation.
+		 */
+		$data = apply_filters( 'dd4t3_model_redirect_create_data', $data );
 
 		// Create new redirect.
-		$redirect_id = $redirect->add_item( $data );
+		$redirect_id = $this->query()->add_item( $data );
 
 		if ( ! empty( $redirect_id ) ) {
 			// Get the created object.
@@ -182,14 +187,11 @@ class Redirects extends Model {
 			return false;
 		}
 
-		// Create a query object.
-		$redirect = new Database\Queries\Redirect();
-
 		// Prepare data.
 		$data = $this->prepare_fields( $data );
 
 		// Update log.
-		if ( ! empty( $data ) && $redirect->update_item( $redirect_id, $data ) ) {
+		if ( ! empty( $data ) && $this->query()->update_item( $redirect_id, $data ) ) {
 			// Get the updated object.
 			$item = $this->get( $redirect_id );
 
@@ -200,8 +202,9 @@ class Redirects extends Model {
 			 *
 			 * @param int    $redirect_id Redirect ID.
 			 * @param object $item        Redirect object.
+			 * @param array  $data        Data used for update.
 			 */
-			do_action( 'dd4t3_model_after_redirect_update', $redirect_id, $item );
+			do_action( 'dd4t3_model_after_redirect_update', $redirect_id, $item, $data );
 
 			return true;
 		}
@@ -227,14 +230,11 @@ class Redirects extends Model {
 			return false;
 		}
 
-		// Create a query object.
-		$redirect = new Database\Queries\Redirect();
-
 		// Get redirect data for action hook.
 		$item = $this->get( $redirect_id );
 
 		// Delete log.
-		if ( $item && $redirect->delete_item( $redirect_id ) ) {
+		if ( $item && $this->query()->delete_item( $redirect_id ) ) {
 			/**
 			 * Action hook fired after a redirect is deleted.
 			 *

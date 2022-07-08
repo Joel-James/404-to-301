@@ -4,10 +4,10 @@
  *
  * This class handles the admin menu functionality for the plugin.
  *
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    Admin
  * @subpackage Menu
  */
@@ -34,9 +34,8 @@ class Menu extends Base {
 	/**
 	 * Holds the slug of the plugin admin main menu.
 	 *
-	 * @var string
-	 *
 	 * @since  4.0.0
+	 * @var string
 	 */
 	const SLUG = '404-to-301-logs';
 
@@ -106,7 +105,6 @@ class Menu extends Base {
 			// Only when it's our menu.
 			if ( isset( $data[2] ) && self::SLUG === $data[2] ) {
 				// Rename the plugin main menu title.
-				// phpcs:ignore
 				$menu[ $position ][0] = Plugin::name();
 			}
 		}

@@ -50,14 +50,11 @@ class View extends Base {
 		$path = DD4T3_DIR . "/app/templates/{$file}.php";
 
 		if ( file_exists( $path ) ) {
-			// phpcs:ignore
 			extract( $args );
 
 			if ( $once ) {
-				/* @noinspection */
 				include_once $path;
 			} else {
-				/* @noinspection */
 				include $path;
 			}
 		}

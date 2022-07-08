@@ -22,9 +22,9 @@
 		<p>
 			<?php
 			printf(
-			// translators: %s Plugin name.
-				__( '<strong>%s</strong> is upgrading old error logs. This notice will disappear when the upgrade process is complete.', '404-to-301' ), // phpcs:ignore
-				esc_html( $plugin )
+				// translators: %s Plugin name.
+				esc_attr__( '%s is upgrading old error logs. This notice will disappear when the upgrade process is complete.', '404-to-301' ),
+				'<strong>' . esc_html( $plugin ) . '</strong>'
 			);
 			?>
 		</p>
@@ -32,9 +32,9 @@
 		<p>
 			<?php
 			printf(
-			// translators: %s Plugin name.
-				__( '<strong>%s</strong> needs to upgrade old error logs to new tables. Please note, in order to keep your database clean, we will upgrade only the logs with custom redirects or options set up. Other logs will be deleted.', '404-to-301' ), // phpcs:ignore
-				esc_html( $plugin )
+				// translators: %s Plugin name.
+				esc_attr__( '%s needs to upgrade old error logs to new tables. Please note, in order to keep your database clean, we will upgrade only the logs with custom redirects or options set up. Other logs will be deleted.', '404-to-301' ),
+				'<strong>' . esc_html( $plugin ) . '</strong>'
 			);
 			?>
 		</p>

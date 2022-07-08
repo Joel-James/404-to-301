@@ -20,6 +20,7 @@ defined( 'WPINC' ) || die;
 
 use DuckDev\Reviews\Notice;
 use DuckDev\Redirect\Plugin;
+use DuckDev\Redirect\Models\Logs;
 use DuckDev\Redirect\Database\Upgrader;
 
 /**
@@ -50,6 +51,9 @@ class Admin extends View {
 		// Admin notices.
 		add_action( 'dd4t3_admin_notices', array( $this, 'show_review_notice' ) );
 		add_action( 'dd4t3_admin_notices', array( $this, 'upgrade_notice' ) );
+
+		// Add site health info.
+		add_filter( 'site_status_tests', array( $this, 'site_health_tests' ) );
 	}
 
 	/**
@@ -192,5 +196,66 @@ class Admin extends View {
 		}
 
 		return $meta;
+	}
+
+	/**
+	 * Add error status to the site health test.
+	 *
+	 * If no 404 errors found, site should be considered as clean.
+	 * NOTE: Logs will be empty if logging is disabled.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param array $tests Test items.
+	 *
+	 * @return array
+	 */
+	public function site_health_tests( array $tests ) {
+		// Add our custom info.
+		$tests['direct']['404_to_301'] = array(
+			'label' => __( '404 Errors' ),
+			'test'  => array( $this, 'site_health_info' ),
+		);
+
+		return $tests;
+	}
+
+	/**
+	 * Site health info section data.
+	 *
+	 * Show information about 404 errors on the site health test
+	 * section.
+	 * Having 404 error logs means they have broken links.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public function site_health_info() {
+		// If there are error logs found.
+		$has_logs = Logs::instance()->has_items();
+
+		return array(
+			'label'       => $has_logs ? __( 'One or more 404 errors are found' ) : __( 'No 404 errors' ),
+			'status'      => $has_logs ? 'recommended' : 'good',
+			'badge'       => array(
+				'label' => __( 'Optimization' ),
+				'color' => $has_logs ? 'orange' : 'green',
+			),
+			'description' => sprintf(
+				'<p>%s</p>',
+				$has_logs ? __( 'There are 404 errors on your website. You should fix them by redirecting it.' ) : __( 'There are no 404 errors on your website yet.' )
+			),
+			'actions'     => $has_logs ? sprintf(
+				'<p><a href="%s">%s</a></p>',
+				esc_url( Plugin::get_url( 'logs' ) ),
+				__( 'Manage Logs' )
+			) : sprintf(
+				'<p><a href="%s">%s</a></p>',
+				esc_url( Plugin::get_url( 'redirects' ) ),
+				__( 'Manage Redirects' )
+			),
+			'test'        => '404_to_301',
+		);
 	}
 }

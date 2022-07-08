@@ -40,4 +40,42 @@ class Helpers {
 
 		return in_array( $string, $values, true );
 	}
+
+	/**
+	 * Get a value from the $_GET global variable.
+	 *
+	 * Use this to sanitize and get the input values.
+	 *
+	 * @see    https://www.php.net/manual/en/function.filter-input.php
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param string $name   Name of the input item.
+	 * @param mixed  $filter Sanitization to use (String sanitization by default).
+	 *                       See https://www.php.net/manual/en/filter.filters.php.
+	 *
+	 * @return mixed
+	 */
+	public static function input_get( $name, $filter = FILTER_SANITIZE_STRING ) {
+		return filter_input( INPUT_GET, $name, $filter );
+	}
+
+	/**
+	 * Get a value from the $_POST global variable.
+	 *
+	 * Use this to sanitize and get the post data.
+	 *
+	 * @see    https://www.php.net/manual/en/function.filter-input.php
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param string $name   Name of the input item.
+	 * @param mixed  $filter Sanitization to use (String sanitization by default).
+	 *                       See https://www.php.net/manual/en/filter.filters.php.
+	 *
+	 * @return mixed
+	 */
+	public static function input_post( $name, $filter = FILTER_SANITIZE_STRING ) {
+		return filter_input( INPUT_POST, $name, $filter );
+	}
 }

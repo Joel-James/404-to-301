@@ -19,6 +19,7 @@ namespace DuckDev\Redirect;
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Utils\Base;
+use DuckDev\Redirect\Utils\Helpers;
 use DuckDev\Redirect\Front\Actions;
 use DuckDev\Redirect\Front\Request;
 
@@ -121,7 +122,7 @@ class Front extends Base {
 		// Check if guessing is disabled.
 		$disabled = dd4t3_settings()->get( 'disable_guessing' );
 
-		if ( $disabled && ! isset( $_GET['p'] ) ) { // phpcs:ignore
+		if ( $disabled && ! isset( $_GET['p'] ) ) {
 			$guess = false;
 		}
 

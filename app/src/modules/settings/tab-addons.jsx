@@ -118,6 +118,7 @@ export default function TabAddons(props) {
 										icon="external"
 										iconPosition="right"
 										href={addon.link}
+										target="_blank"
 									>
 										{__('View Details', '404-to-301')}
 									</Button>

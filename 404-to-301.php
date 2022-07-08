@@ -49,8 +49,19 @@ if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
 		'admin_notices',
 		function () { ?>
 			<div class="notice notice-error">
-				<?php /* translators: 1: plugin name. 2: minimum PHP version. 3: current PHP version */ ?>
-				<p><?php printf( esc_attr__( 'The %1$s plugin cannot run on PHP versions older than %2$s. Your current version is %3$s. Please upgrade.', '404-to-301' ), '<strong>404 to 301</strong>', '5.6', PHP_VERSION ); ?></p>
+				<p>
+					<?php
+					printf(
+						// translators: 1: plugin name. 2: minimum PHP version. 3: current PHP version.
+						esc_attr__( 'The %1$s plugin cannot run on PHP versions older than %2$s. Your current version is %3$s. %4$sPlease upgrade%5$s.', '404-to-301' ),
+						'<strong>404 to 301</strong>',
+						'<strong>5.6</strong>',
+						'<strong>' . PHP_VERSION . '</strong>',
+						'<a href="https://wordpress.org/support/update-php/" target="_blank">',
+						'</a>'
+					);
+					?>
+				</p>
 			</div>
 			<?php
 		}

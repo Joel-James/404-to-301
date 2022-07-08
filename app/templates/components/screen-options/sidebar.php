@@ -2,10 +2,10 @@
 /**
  * Screen options sidebar template.
  *
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    View
  * @subpackage ScreenOptions
  */
@@ -15,7 +15,13 @@
 <p><strong><?php esc_html_e( 'Information', '404-to-301' ); ?></strong></p>
 <p>
 	<span class="dashicons dashicons-admin-plugins"></span>
-	<?php printf( esc_html__( 'Version %s', '404-to-301' ), DD4T3_VERSION ); // phpcs:ignore ?>
+	<?php
+	printf(
+		// translators: %s plugin version.
+		esc_html__( 'Version %s', '404-to-301' ),
+		esc_attr( DD4T3_VERSION )
+	);
+	?>
 </p>
 <p>
 	<span class="dashicons dashicons-wordpress"></span>

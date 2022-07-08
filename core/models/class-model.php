@@ -20,6 +20,7 @@ namespace DuckDev\Redirect\Models;
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Utils\Base;
+use DuckDev\Redirect\Database\Queries;
 
 /**
  * Class Model
@@ -37,6 +38,50 @@ abstract class Model extends Base {
 	 * @var string[] $updatable
 	 */
 	protected $updatable = array();
+
+	/**
+	 * Query class for the model.
+	 *
+	 * @since 4.0.0
+	 * @var string $query
+	 */
+	protected $query;
+
+	/**
+	 * Get a new instance of query class.
+	 *
+	 * @since  4.0.0
+	 * @access protected
+	 *
+	 * @return Queries\Query
+	 */
+	protected function query() {
+		return new $this->query();
+	}
+
+	/**
+	 * Get the no. of items found on the table.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return int
+	 */
+	public function count() {
+		return $this->query()->query( array( 'count' => true ) );
+	}
+
+	/**
+	 * Check if at least one log is found.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return bool
+	 */
+	public function has_items() {
+		return $this->count() > 0;
+	}
 
 	/**
 	 * Use object cache for model data.

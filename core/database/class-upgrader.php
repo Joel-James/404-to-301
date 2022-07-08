@@ -95,7 +95,7 @@ class Upgrader extends Base {
 	public function logs_upgrade() {
 		if (
 			isset( $_GET['dd4t3_db_upgrade'], $_GET['dd4t3_nonce'] ) &&
-			wp_verify_nonce( $_GET['dd4t3_nonce'], 'dd4t3_db_upgrade' ) // phpcs:ignore
+			wp_verify_nonce( $_GET['dd4t3_nonce'], 'dd4t3_db_upgrade' )
 		) {
 			// Perform logs upgrade.
 			if ( Permission::has_access() ) {
