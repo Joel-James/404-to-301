@@ -35,7 +35,7 @@ class Logs extends Model {
 	 */
 	protected $updatable = array(
 		'meta',
-		'visits',
+		'hits',
 		'log_status',
 		'redirect_id',
 		'email_status',
@@ -74,6 +74,7 @@ class Logs extends Model {
 		add_action( 'dd4t3_model_after_redirect_delete', array( $this, 'on_redirect_delete' ), 10, 2 );
 
 		// Handle log updates.
+		add_action( 'model_after_log_create', array( $this, 'on_log_create' ), 10, 3 );
 		add_action( 'model_after_log_update', array( $this, 'on_log_update' ), 10, 3 );
 		add_filter( 'dd4t3_model_log_create_data', array( $this, 'filter_log_data' ) );
 	}
@@ -183,7 +184,7 @@ class Logs extends Model {
 
 		if ( ! empty( $log_id ) ) {
 			// Get the created object.
-			$item = $this->get( $log_id );
+			$log = $this->get( $log_id );
 
 			/**
 			 * Action hook fired after a new log is created.
@@ -191,9 +192,10 @@ class Logs extends Model {
 			 * @since 4.0.0
 			 *
 			 * @param int   $log_id Log ID.
-			 * @param array $item   New log.
+			 * @param array $log    New log.
+			 * @param array $data   Data used for creation.
 			 */
-			do_action( 'dd4t3_model_after_log_create', $log_id, $item );
+			do_action( 'dd4t3_model_after_log_create', $log_id, $log, $data );
 
 			return true;
 		}
@@ -224,7 +226,7 @@ class Logs extends Model {
 		// Update log.
 		if ( ! empty( $data ) && $this->query()->update_item( $log_id, $data ) ) {
 			// Get the updated object.
-			$item = $this->get( $log_id );
+			$log = $this->get( $log_id );
 
 			/**
 			 * Action hook fired after a log is updated.
@@ -232,10 +234,10 @@ class Logs extends Model {
 			 * @since 4.0.0
 			 *
 			 * @param int    $log_id Log ID.
-			 * @param object $item   Updated log.
+			 * @param object $log    Updated log.
 			 * @param array  $data   Data used for update.
 			 */
-			do_action( 'dd4t3_model_after_log_update', $log_id, $item, $data );
+			do_action( 'dd4t3_model_after_log_update', $log_id, $log, $data );
 
 			return true;
 		}
@@ -316,7 +318,7 @@ class Logs extends Model {
 	}
 
 	/**
-	 * Get the visits count for a 404 URL.
+	 * Get the hit count for a 404 URL.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -325,7 +327,7 @@ class Logs extends Model {
 	 *
 	 * @return bool
 	 */
-	public function get_visits( $url ) {
+	public function get_hits( $url ) {
 		// Can not continue if url is empty.
 		if ( empty( $url ) ) {
 			return false;
@@ -334,12 +336,12 @@ class Logs extends Model {
 		// Get log by URL.
 		$log = $this->get_by_url( $url );
 
-		// If 0 visits, no log found.
-		return isset( $log->visits ) ? (int) $log->visits : 0;
+		// If 0 hits, no log found.
+		return isset( $log->hits ) ? (int) $log->hits : 0;
 	}
 
 	/**
-	 * Increment visits count for a log.
+	 * Increment hits count for a log.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -348,28 +350,28 @@ class Logs extends Model {
 	 *
 	 * @return bool
 	 */
-	public function mark_visit( $url ) {
+	public function mark_hit( $url ) {
 		// Can not continue if url is empty.
 		if ( empty( $url ) ) {
 			return false;
 		}
 
-		// Get current visits.
-		$visits = $this->get_visits( $url );
+		// Get current hits.
+		$hits = (int) $this->get_hits( $url );
 
-		// Increment the visits count.
+		// Increment the hits count.
 		if ( $this->update_multiple(
-			array( 'visits' => $visits + 1 ),
+			array( 'hits' => $hits + 1 ),
 			array( 'url' => $url )
 		) ) {
 			/**
-			 * Action hook executed after incrementing a log's visits count.
+			 * Action hook executed after incrementing a log's hits count.
 			 *
 			 * @since 4.0.0
 			 *
-			 * @param bool $success Is visits update success.
+			 * @param bool $success Is hits update success.
 			 */
-			do_action( 'dd4t3_model_after_mark_visit', $visits );
+			do_action( 'dd4t3_model_after_mark_hit', $hits );
 
 			return true;
 		}
@@ -489,6 +491,31 @@ class Logs extends Model {
 	}
 
 	/**
+	 * Actions after a log is created.
+	 *
+	 * Newly created logs will have latest no. of hits.
+	 * Sync this hit count to all other logs with same URL.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param int    $log_id Log ID.
+	 * @param object $log    Updated log item.
+	 * @param array  $data   Data used for update.
+	 *
+	 * @return void
+	 */
+	public function on_log_create( $log_id, $log, $data ) {
+		if ( isset( $log->url, $log->hits ) ) {
+			// Update hits for all other logs.
+			$this->update_multiple(
+				array( 'hits' => $log->hits ),
+				array( 'url' => $log->url )
+			);
+		}
+	}
+
+	/**
 	 * Actions after a log is updated.
 	 *
 	 * If any of the statuses has been updated, we need to sync
@@ -498,42 +525,42 @@ class Logs extends Model {
 	 * @access public
 	 *
 	 * @param int    $log_id Log ID.
-	 * @param object $item   Updated log item.
+	 * @param object $log    Updated log item.
 	 * @param array  $data   Data used for update.
 	 *
 	 * @return void
 	 */
-	public function on_log_update( $log_id, $item, $data ) {
+	public function on_log_update( $log_id, $log, $data ) {
 		// If any of the status values changed.
 		if (
 			(
 				isset( $data['log_status'] ) ||
 				isset( $data['email_status'] ) ||
 				isset( $data['redirect_status'] )
-			) && isset( $item->url )
+			) && isset( $log->url )
 		) {
 			// Sync to all logs.
 			$this->update_multiple(
 				array(
-					'log_status'      => $item->log_status,
-					'email_status'    => $item->email_status,
-					'redirect_status' => $item->redirect_status,
+					'log_status'      => $log->log_status,
+					'email_status'    => $log->email_status,
+					'redirect_status' => $log->redirect_status,
 				),
-				array( 'url' => $item->url )
+				array( 'url' => $log->url )
 			);
 		}
 
 		// If redirect status has been updated, sync to redirect.
-		if ( isset( $data['redirect_status'], $item->redirect_id ) ) {
-			$redirect = Redirects::instance()->get( $item->redirect_id );
+		if ( isset( $data['redirect_status'], $log->redirect_id ) ) {
+			$redirect = Redirects::instance()->get( $log->redirect_id );
 			// Only when status really changed.
 			if ( isset( $redirect->status ) && $redirect->status !== $data['redirect_status'] ) {
 				// Make sure we don't end up in loop.
 				$this->skip_hooks = true;
 
 				Redirects::instance()->update(
-					$item->redirect_id,
-					array( 'status' => $item->redirect_status )
+					$log->redirect_id,
+					array( 'status' => $log->redirect_status )
 				);
 
 				$this->skip_hooks = false;
@@ -559,8 +586,8 @@ class Logs extends Model {
 			// Get existing log.
 			$log = $this->get_by_url( $data['url'] );
 			// If status flags found.
-			if ( isset( $log->visits, $log->log_status, $log->email_status, $log->redirect_status ) ) {
-				$data['visits']          = $log->visits;
+			if ( isset( $log->hits, $log->log_status, $log->email_status, $log->redirect_status ) ) {
+				$data['hits']            = intval( $log->hits ) + 1;
 				$data['log_status']      = $log->log_status;
 				$data['email_status']    = $log->email_status;
 				$data['redirect_status'] = $log->redirect_status;

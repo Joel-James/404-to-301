@@ -34,7 +34,7 @@ use BerlinDB\Database\Row;
  * @property string     $request_method              Request method.
  * @property array|null $request_data                Request data.
  * @property array|null $meta                        Meta data.
- * @property int        $visits                      No. of visits.
+ * @property int        $hits                        No. of hits.
  * @property string     $redirect_status             Redirect status.
  * @property string     $log_status                  Log status.
  * @property string     $email_status                Email status.
@@ -71,7 +71,7 @@ class Log extends Row {
 		$this->log_id       = intval( $this->log_id );
 		$this->referrer     = esc_url( $this->referrer );
 		$this->request_data = maybe_unserialize( $this->request_data );
-		$this->visits       = intval( $this->visits );
+		$this->hits         = intval( $this->hits );
 		$this->redirect_id  = is_null( $this->redirect_id ) ? null : (int) $this->redirect_id;
 		$this->updated_by   = is_null( $this->updated_by ) ? null : (int) $this->updated_by;
 	}

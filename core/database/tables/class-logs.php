@@ -101,7 +101,7 @@ final class Logs extends Table {
 			agent varchar(255) DEFAULT NULL,
 			request_method varchar(10) DEFAULT 'GET',
 			request_data mediumtext DEFAULT NULL,
-			visits bigint(20) unsigned DEFAULT '1',
+			hits bigint(20) unsigned DEFAULT '1',
 			redirect_status enum('global', 'enabled', 'disabled') DEFAULT 'global',
 			log_status enum('global', 'enabled', 'disabled') DEFAULT 'global',
 			email_status enum('global', 'enabled', 'disabled') DEFAULT 'global',

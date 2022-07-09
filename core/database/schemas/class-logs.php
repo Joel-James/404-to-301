@@ -101,8 +101,8 @@ class Logs extends Schema {
 			'allow_null' => true,
 			'validate'   => 'maybe_serialize',
 		),
-		'visits'          => array(
-			'name'     => 'visits',
+		'hits'            => array(
+			'name'     => 'hits',
 			'type'     => 'bigint',
 			'length'   => '20',
 			'unsigned' => true,

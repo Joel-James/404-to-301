@@ -152,7 +152,7 @@ class Redirects extends Model {
 
 		if ( ! empty( $redirect_id ) ) {
 			// Get the created object.
-			$item = $this->get( $redirect_id );
+			$redirect = $this->get( $redirect_id );
 
 			/**
 			 * Action hook fired after a new redirect is created.
@@ -160,9 +160,10 @@ class Redirects extends Model {
 			 * @since 4.0.0
 			 *
 			 * @param int    $redirect_id Redirect ID.
-			 * @param object $item        Redirect object.
+			 * @param object $redirect    Redirect object.
+			 * @param array  $data        Data used for creation.
 			 */
-			do_action( 'dd4t3_model_after_redirect_create', $redirect_id, $item );
+			do_action( 'dd4t3_model_after_redirect_create', $redirect_id, $redirect, $data );
 
 			return $redirect_id;
 		}
@@ -193,7 +194,7 @@ class Redirects extends Model {
 		// Update log.
 		if ( ! empty( $data ) && $this->query()->update_item( $redirect_id, $data ) ) {
 			// Get the updated object.
-			$item = $this->get( $redirect_id );
+			$redirect = $this->get( $redirect_id );
 
 			/**
 			 * Action hook fired after a redirect is updated.
@@ -201,10 +202,10 @@ class Redirects extends Model {
 			 * @since 4.0.0
 			 *
 			 * @param int    $redirect_id Redirect ID.
-			 * @param object $item        Redirect object.
+			 * @param object $redirect    Redirect object.
 			 * @param array  $data        Data used for update.
 			 */
-			do_action( 'dd4t3_model_after_redirect_update', $redirect_id, $item, $data );
+			do_action( 'dd4t3_model_after_redirect_update', $redirect_id, $redirect, $data );
 
 			return true;
 		}

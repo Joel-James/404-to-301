@@ -60,8 +60,8 @@ class Log extends Action {
 
 		// We should skip because duplicate disabled.
 		if ( ! $this->can_duplicate() ) {
-			// Make sure to update the visits count and then bail.
-			Models\Logs::instance()->mark_visit( $this->request->get_url() );
+			// Make sure to update the hits count and then bail.
+			Models\Logs::instance()->mark_hit( $this->request->get_url() );
 
 			return;
 		}
