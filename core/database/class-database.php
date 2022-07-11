@@ -54,9 +54,7 @@ class Database extends Base {
 		);
 
 		// Upgrade class init.
-		if ( is_admin() ) {
-			Upgrader::instance();
-		}
+		Upgrader::instance();
 	}
 
 	/**

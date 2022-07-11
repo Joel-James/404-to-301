@@ -38,13 +38,21 @@ class Logs {
 	private $upgrading = false;
 
 	/**
+	 * Upgrade action name.
+	 *
+	 * @since 4.0.0
+	 * @var string $action
+	 */
+	private $action = 'dd4t3_logs_upgrade';
+
+	/**
 	 * Initialize the upgrade class.
 	 *
 	 * @since 4.0.0
 	 */
 	public function __construct() {
 		// Process the upgrade action.
-		add_action( 'dd4t3_logs_upgrade', array( $this, 'upgrade' ) );
+		add_action( $this->action, array( $this, 'upgrade' ) );
 
 		// Show admin notice for upgrade.
 		add_action( 'dd4t3_admin_notices', array( $this, 'upgrade_notice' ) );
@@ -112,12 +120,14 @@ class Logs {
 	 *
 	 * @param string $action Action name.
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	public function upgrade( $action ) {
 		// Old table doesn't exist.
 		if ( ! $this->old_table_exists() ) {
-			return $this->complete();
+			$this->complete();
+
+			return;
 		}
 
 		// Get next log for upgrade.
@@ -127,8 +137,9 @@ class Logs {
 		if ( empty( $log['id'] ) ) {
 			// Make sure to drop table.
 			$this->drop_old_table();
+			$this->complete();
 
-			return $this->complete();
+			return;
 		}
 
 		// Get options.
@@ -136,7 +147,7 @@ class Logs {
 		$options = empty( $options ) ? array() : maybe_unserialize( $options );
 
 		// Get redirect status.
-		$redirect_status = $this->get_status( $this->get_value( 'redirect', $options, 2 ) );
+		$redirect_status = $this->get_redirect_status( $this->get_value( 'redirect', $options, 2 ) );
 
 		// Create redirect if required.
 		$redirect_id = $this->create_redirect( $log, $options, $redirect_status );
@@ -146,6 +157,11 @@ class Logs {
 
 		// Delete log.
 		$this->delete_old_log( $log['id'] );
+
+		// Cleanup scheduler history if upgrading all.
+		if ( 'upgrade_all' === $action ) {
+			$this->clean_previous_scheduler_data();
+		}
 
 		// Immediately start upgrade.
 		$this->schedule_next( $action );
@@ -170,7 +186,7 @@ class Logs {
 		global $wpdb;
 
 		// Get the url.
-		$url = $this->get_value( 'url', $log, '' );
+		$url = sanitize_text_field( $this->get_value( 'url', $log ) );
 
 		// URL is required.
 		if ( ! empty( $url ) ) {
@@ -180,17 +196,18 @@ class Logs {
 				$urls = array();
 			}
 
-			$table = $this->table_name( '404_to_301_logs' );
-			$url   = esc_url_raw( $url );
-
 			if ( isset( $urls[ $url ] ) ) {
 				// Update the count.
 				$urls[ $url ] = $urls[ $url ] + 1;
 				// Update the count in db.
-				$wpdb->query( $wpdb->prepare( 'UPDATE %1$s SET hits = "%2$d" WHERE url = "%3$s"', $table, intval( $urls[ $url ] ), $url ) );
+				$wpdb->update(
+					$this->table_name( '404_to_301_logs' ),
+					array( 'hits' => $urls[ $url ] ),
+					array( 'url' => $url )
+				);
 			} else {
 				$success = $wpdb->insert(
-					$table,
+					$this->table_name( '404_to_301_logs' ),
 					array(
 						'url'             => $url,
 						'referrer'        => esc_url_raw( $this->get_value( 'ref', $log ) ),
@@ -300,9 +317,13 @@ class Logs {
 	private function get_next_log() {
 		global $wpdb;
 
-		$table = $this->table_name( '404_to_301' );
-
-		$log = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table ORDER BY id DESC LIMIT 1" ), ARRAY_A );
+		$log = $wpdb->get_row(
+			$wpdb->prepare(
+				'SELECT * FROM %1$s ORDER BY id DESC LIMIT 1',
+				$this->table_name( '404_to_301' )
+			),
+			ARRAY_A
+		);
 
 		return empty( $log ) ? false : $log;
 	}
@@ -320,9 +341,13 @@ class Logs {
 	private function clean_normal_logs() {
 		global $wpdb;
 
-		$table = $this->table_name( '404_to_301' );
-
-		$wpdb->query( "DELETE FROM $table WHERE options IS NULL AND redirect = ''" );
+		$wpdb->delete(
+			$this->table_name( '404_to_301' ),
+			array(
+				'options'  => null,
+				'redirect' => '',
+			)
+		);
 	}
 
 	/**
@@ -338,30 +363,55 @@ class Logs {
 	private function delete_old_log( $id ) {
 		global $wpdb;
 
-		$table = $this->table_name( '404_to_301' );
-
-		$wpdb->query( $wpdb->prepare( "DELETE FROM $table WHERE id = %d", intval( $id ) ) );
+		$wpdb->delete(
+			$this->table_name( '404_to_301' ),
+			array( 'id' => $id ),
+			array( 'id' => '%d' )
+		);
 	}
 
 	/**
-	 * Clean up the action scheduler log and other entries to not
-	 * flood the db with a lot of data.
+	 * Cleanup action scheduler history during the process.
+	 *
+	 * Keep only one item in the action scheduler tables to minimize the
+	 * db size during heavy upgrades.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return void
 	 */
-	private function clean_data() {
+	private function clean_previous_scheduler_data() {
 		global $wpdb;
-		$id = $wpdb->get_var( 'SELECT action_id FROM wp_actionscheduler_actions WHERE hook = \'dd4t3_logs_upgrade\' ORDER BY action_id DESC LIMIT 1' );
+
+		// Get one id to keep.
+		$id = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT action_id FROM %1$s WHERE hook = \'%2$s\' ORDER BY action_id ASC LIMIT 1',
+				$this->table_name( 'actionscheduler_actions' ),
+				$this->action
+			)
+		);
+
+		// If at least one id found.
 		if ( ! empty( $id ) ) {
-			$wpdb->query( 'DELETE as_actions, as_logs FROM wp_actionscheduler_actions as_actions JOIN wp_actionscheduler_logs as_logs ON as_logs.action_id = as_actions.action_id WHERE as_actions.hook = \'dd4t3_logs_upgrade\' AND as_actions.action_id != ' . $id );
+			// Delete all logs except one.
+			$wpdb->query(
+				$wpdb->prepare(
+					'DELETE as_actions, as_logs FROM %1$s as_actions JOIN %2$s as_logs ON as_logs.action_id = as_actions.action_id WHERE as_actions.hook = \'%3$s\' AND as_actions.action_id != %4$d',
+					$this->table_name( 'actionscheduler_actions' ),
+					$this->table_name( 'actionscheduler_logs' ),
+					$this->action,
+					$id
+				)
+			);
 		}
 	}
 
 	/**
-	 * Clean up the action scheduler log and other entries to not
-	 * flood the db with a lot of data.
+	 * Clean up the action scheduler log and other entries.
+	 *
+	 * After completing migration we need to cleanup action scheduler history
+	 * to not flood the db with a lot of data.
 	 *
 	 * @since 4.0.0
 	 *
@@ -370,7 +420,14 @@ class Logs {
 	private function clean_scheduler_data() {
 		global $wpdb;
 
-		$wpdb->query( 'DELETE as_actions, as_logs FROM wp_actionscheduler_actions as_actions JOIN wp_actionscheduler_logs as_logs ON as_logs.action_id = as_actions.action_id WHERE as_actions.hook = \'dd4t3_logs_upgrade\'' );
+		$wpdb->query(
+			$wpdb->prepare(
+				'DELETE as_actions, as_logs FROM %1$s as_actions JOIN %2$s as_logs ON as_logs.action_id = as_actions.action_id WHERE as_actions.hook = %s',
+				$this->table_name( 'actionscheduler_actions' ),
+				$this->table_name( 'actionscheduler_logs' ),
+				$this->action
+			)
+		);
 	}
 
 	/**
@@ -387,7 +444,7 @@ class Logs {
 	private function schedule_next( $action ) {
 		// Immediately start upgrade.
 		as_enqueue_async_action(
-			'dd4t3_logs_upgrade',
+			$this->action,
 			array( 'action' => $action ),
 			'404-to-301'
 		);
@@ -396,21 +453,19 @@ class Logs {
 	/**
 	 * Mark the upgrade process as completed.
 	 *
-	 * Unschedule all actions (just in case).
-	 * Delete the logs table if exist.
+	 * Un-schedule all actions (just in case).
+	 * Delete the action scheduler history data.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	private function complete() {
 		// Make sure to cleanup.
-		as_unschedule_all_actions( 'dd4t3_logs_upgrade' );
+		as_unschedule_all_actions( $this->action );
 
 		// Clean all action scheduler logs.
 		$this->clean_scheduler_data();
-
-		return true;
 	}
 
 	/**
@@ -440,7 +495,7 @@ class Logs {
 	private function is_upgrading() {
 		// Check if upgrade action is scheduled.
 		if ( function_exists( 'as_has_scheduled_action' ) ) {
-			return as_has_scheduled_action( 'dd4t3_logs_upgrade' );
+			return as_has_scheduled_action( $this->action );
 		}
 
 		// Or check if upgrading flag is set.
@@ -470,25 +525,6 @@ class Logs {
 
 		// We need action scheduler v3.0 or above.
 		return version_compare( \ActionScheduler_Versions::instance()->latest_version(), '3.0', '>=' );
-	}
-
-	/**
-	 * Get the plugin install URL for action scheduler.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return string
-	 */
-	private function scheduler_install_url() {
-		return wp_nonce_url(
-			add_query_arg(
-				array(
-					'action' => 'install-plugin',
-					'plugin' => 'action-scheduler',
-				),
-				admin_url( 'update.php' )
-			)
-		);
 	}
 
 	/**
@@ -530,9 +566,7 @@ class Logs {
 	private function drop_old_table() {
 		global $wpdb;
 
-		$table = $this->table_name( '404_to_301' );
-
-		$wpdb->query( "DROP TABLE IF EXISTS $table" );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %1$s', $this->table_name( '404_to_301' ) ) );
 	}
 
 	/**
@@ -567,6 +601,30 @@ class Logs {
 	 */
 	private function get_value( $key, $data, $default = '' ) {
 		return isset( $data[ $key ] ) ? $data[ $key ] : $default;
+	}
+
+	/**
+	 * Get the redirect status from the normal status.
+	 *
+	 * If global status is set, we need to assign enabled or disabled
+	 * status based on the plugin setting for redirect.
+	 *
+	 * @since  4.0.0
+	 * @access private
+	 *
+	 * @param mixed $value Value to check.
+	 *
+	 * @return string
+	 */
+	private function get_redirect_status( $value ) {
+		$status = $this->get_status( $value );
+
+		// If global, get enabled status.
+		if ( 'global' === $status ) {
+			$status = dd4t3_settings()->get( 'redirect_enabled', true ) ? 'enabled' : 'disabled';
+		}
+
+		return $status;
 	}
 
 	/**

@@ -68,7 +68,13 @@ $scheduler_install = wp_nonce_url(
 		</p>
 		<p>
 			<a class="button button-primary" href="<?php echo esc_url( $upgrade_redirects ); ?>"><?php esc_html_e( 'Upgrade custom redirects', '404-to-301' ); ?></a>
-			<a class="button" href="<?php echo esc_url( $upgrade_all ); ?>"><?php esc_html_e( 'Upgrade everything', '404-to-301' ); ?></a>
+			<a
+				class="button"
+				onclick="return confirm('<?php esc_html_e( 'Are you sure? This may take very long if you have a lot of logs to upgrade. But do not worry. It will run in background.', '404-to-301' ); ?>')"
+				href="<?php echo esc_url( $upgrade_all ); ?>"
+			>
+				<?php esc_html_e( 'Upgrade everything', '404-to-301' ); ?>
+			</a>
 		</p>
 		<p>
 			<a

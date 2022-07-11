@@ -40,8 +40,8 @@ class Upgrader extends Base {
 	 * @return void
 	 */
 	protected function init() {
-		// Everything should be after admin init.
-		add_action( 'admin_init', array( $this, 'logs_upgrade' ) );
+		// Initialize upgrades.
+		add_action( 'init', array( $this, 'logs_upgrade' ) );
 		add_action( 'admin_init', array( $this, 'settings_upgrade' ) );
 	}
 
@@ -86,6 +86,7 @@ class Upgrader extends Base {
 		$logs = new Upgrades\Logs();
 
 		if (
+			is_admin() &&
 			isset( $_GET['dd4t3_db_upgrade'], $_GET['dd4t3_nonce'] ) &&
 			wp_verify_nonce( Helpers::input_get( 'dd4t3_nonce' ), 'dd4t3_db_upgrade' )
 		) {
