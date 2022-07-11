@@ -220,6 +220,15 @@ class Logs extends Model {
 			return false;
 		}
 
+		/**
+		 * Filter to modify final data before log update.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $data Data for log update.
+		 */
+		$data = apply_filters( 'dd4t3_model_log_update_data', $data );
+
 		// Prepare data.
 		$data = $this->prepare_fields( $data );
 

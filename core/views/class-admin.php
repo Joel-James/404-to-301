@@ -50,7 +50,6 @@ class Admin extends View {
 
 		// Admin notices.
 		add_action( 'dd4t3_admin_notices', array( $this, 'show_review_notice' ) );
-		add_action( 'dd4t3_admin_notices', array( $this, 'upgrade_notice' ) );
 
 		// Add site health info.
 		add_filter( 'site_status_tests', array( $this, 'site_health_tests' ) );
@@ -74,40 +73,6 @@ class Admin extends View {
 			'404 to 301',
 			array( 'classes' => array( 'duckdev-notice' ) )
 		)->render(); // Render notice.
-	}
-
-	/**
-	 * Show upgrade in progress notice on our plugin pages.
-	 *
-	 * Let the admins know that we are upgrading database in background.
-	 * This won't affect our plugin functionality.
-	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
-	 * @return void
-	 */
-	public function upgrade_notice() {
-		if ( Upgrader::instance()->logs()->table_exists() ) {
-			$this->render(
-				'components/notices/upgrade-notice',
-				array(
-					'plugin'       => Plugin::name(),
-					'upgrading'    => Upgrader::instance()->logs()->is_upgrading(),
-					'upgrade_link' => wp_nonce_url(
-						add_query_arg( 'dd4t3_db_upgrade', 'upgrade' ),
-						'dd4t3_db_upgrade',
-						'dd4t3_nonce'
-					),
-					'skip_link'    => wp_nonce_url(
-						add_query_arg( 'dd4t3_db_upgrade', 'skip' ),
-						'dd4t3_db_upgrade',
-						'dd4t3_nonce'
-					),
-				),
-				false
-			);
-		}
 	}
 
 	/**
@@ -213,7 +178,7 @@ class Admin extends View {
 	public function site_health_tests( array $tests ) {
 		// Add our custom info.
 		$tests['direct']['404_to_301'] = array(
-			'label' => __( '404 Errors' ),
+			'label' => __( '404 Errors', '404-to-301' ),
 			'test'  => array( $this, 'site_health_info' ),
 		);
 
@@ -236,24 +201,24 @@ class Admin extends View {
 		$has_logs = Logs::instance()->has_items();
 
 		return array(
-			'label'       => $has_logs ? __( 'One or more 404 errors are found' ) : __( 'No 404 errors' ),
+			'label'       => $has_logs ? __( 'One or more 404 errors are found', '404-to-301' ) : __( 'No 404 errors', '404-to-301' ),
 			'status'      => $has_logs ? 'recommended' : 'good',
 			'badge'       => array(
-				'label' => __( 'Optimization' ),
+				'label' => __( 'Optimization', '404-to-301' ),
 				'color' => $has_logs ? 'orange' : 'green',
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
-				$has_logs ? __( 'There are 404 errors on your website. You should fix them by redirecting it.' ) : __( 'There are no 404 errors on your website yet.' )
+				$has_logs ? __( 'There are 404 errors on your website. You should fix them by redirecting it.', '404-to-301' ) : __( 'There are no 404 errors on your website yet.', '404-to-301' )
 			),
 			'actions'     => $has_logs ? sprintf(
 				'<p><a href="%s">%s</a></p>',
 				esc_url( Plugin::get_url( 'logs' ) ),
-				__( 'Manage Logs' )
+				__( 'Manage Logs', '404-to-301' )
 			) : sprintf(
 				'<p><a href="%s">%s</a></p>',
 				esc_url( Plugin::get_url( 'redirects' ) ),
-				__( 'Manage Redirects' )
+				__( 'Manage Redirects', '404-to-301' )
 			),
 			'test'        => '404_to_301',
 		);

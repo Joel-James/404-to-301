@@ -147,7 +147,7 @@ class Email extends Action {
 	 */
 	private function get_subject() {
 		// Get the email subject.
-		$subject = __( 'New 404 Error', '404-to=301' );
+		$subject = __( 'New 404 Error', '404-to-301' );
 
 		/**
 		 * Filter hook to modify email subject.

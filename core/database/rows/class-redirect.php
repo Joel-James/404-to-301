@@ -32,6 +32,7 @@ use BerlinDB\Database\Row;
  * @property int    $group                 Redirect group.
  * @property string $type                  Redirect type.
  * @property string $status                Redirect status.
+ * @property string $hash                  Unique hash.
  * @property array  $meta                  Meta data.
  * @property string $created_at            Created time.
  * @property string $updated_at            Updated time.
@@ -70,6 +71,7 @@ class Redirect extends Row {
 		$this->group       = (string) $this->group;
 		$this->meta        = is_null( $this->meta ) ? null : maybe_unserialize( $this->meta );
 		$this->status      = (string) $this->status;
+		$this->hash        = (string) $this->hash;
 		$this->created_at  = strtotime( $this->created_at );
 		$this->updated_at  = strtotime( $this->updated_at );
 		$this->created_by  = (int) $this->created_by;

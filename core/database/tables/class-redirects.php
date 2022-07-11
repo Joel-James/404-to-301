@@ -92,12 +92,13 @@ final class Redirects extends Table {
 	protected function set_schema() {
 		$this->schema = "
 			redirect_id bigint(20) unsigned NOT NULL auto_increment,
-			source mediumtext NOT NULL UNIQUE,
+			source mediumtext NOT NULL,
 			destination mediumtext NOT NULL,
 			type int(11) unsigned DEFAULT '301',
-			group enum('custom', '404') DEFAULT 'custom',
-			status enum('enabled', 'disabled') DEFAULT 'enabled',
+			`group` enum('custom', '404') DEFAULT 'custom',
+			`status` enum('enabled', 'disabled') DEFAULT 'enabled',
 			meta mediumtext DEFAULT NULL,
+			hash varchar(50) NOT NULL UNIQUE,
 			created_at datetime NOT NULL default CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT NULL,
 			created_by bigint(20) unsigned DEFAULT NULL,

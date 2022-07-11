@@ -20,24 +20,16 @@ defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Permission;
 use DuckDev\Redirect\Utils\Base;
+use DuckDev\Redirect\Utils\Helpers;
 
 /**
  * Class Upgrader.
  *
- * @since   1.0.0
+ * @since   4.0.0
  * @extends Base
  * @package DuckDev\Redirect\Database
  */
 class Upgrader extends Base {
-
-	/**
-	 * Logs upgrader class.
-	 *
-	 * @since  4.0.0
-	 * @access private
-	 * @var Upgrades\Logs
-	 */
-	private $logs;
 
 	/**
 	 * Initialize the upgrader.
@@ -48,9 +40,6 @@ class Upgrader extends Base {
 	 * @return void
 	 */
 	protected function init() {
-		// This is a batch process, so it should always be initiated.
-		$this->logs = new Upgrades\Logs();
-
 		// Everything should be after admin init.
 		add_action( 'admin_init', array( $this, 'logs_upgrade' ) );
 		add_action( 'admin_init', array( $this, 'settings_upgrade' ) );
@@ -82,7 +71,7 @@ class Upgrader extends Base {
 	}
 
 	/**
-	 * Start the logs upgrade.
+	 * Init the logs upgrade class.
 	 *
 	 * Post v4 error logs should be upgraded only if user manually
 	 * confirm. If skipped, delete logs and table.
@@ -93,30 +82,25 @@ class Upgrader extends Base {
 	 * @return void
 	 */
 	public function logs_upgrade() {
+		// Always init.
+		$logs = new Upgrades\Logs();
+
 		if (
 			isset( $_GET['dd4t3_db_upgrade'], $_GET['dd4t3_nonce'] ) &&
-			wp_verify_nonce( $_GET['dd4t3_nonce'], 'dd4t3_db_upgrade' )
+			wp_verify_nonce( Helpers::input_get( 'dd4t3_nonce' ), 'dd4t3_db_upgrade' )
 		) {
 			// Perform logs upgrade.
 			if ( Permission::has_access() ) {
+				// Allowed actions.
+				$actions = array( 'skip', 'upgrade_all', 'upgrade_redirects' );
 				// Get the action.
-				$action = 'upgrade' === $_GET['dd4t3_db_upgrade'] ? 'upgrade' : 'skip';
+				$action = Helpers::input_get( 'dd4t3_db_upgrade' );
+
 				// Start upgrade.
-				$this->logs()->start( $action );
+				if ( in_array( $action, $actions, true ) ) {
+					$logs->start( $action );
+				}
 			}
 		}
-	}
-
-	/**
-	 * Get the logs upgrader instance.
-	 *
-	 * Useful to check the upgrade progress.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return Upgrades\Logs
-	 */
-	public function logs() {
-		return $this->logs;
 	}
 }

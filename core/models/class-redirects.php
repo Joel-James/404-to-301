@@ -65,6 +65,10 @@ class Redirects extends Model {
 
 		// Make sure to init logs class.
 		Logs::instance();
+
+		// Modify redirect data.
+		add_filter( 'dd4t3_model_redirect_create_data', array( $this, 'filter_log_data' ) );
+		add_filter( 'dd4t3_model_redirect_update_data', array( $this, 'filter_log_data' ) );
 	}
 
 	/**
@@ -188,6 +192,15 @@ class Redirects extends Model {
 			return false;
 		}
 
+		/**
+		 * Filter to modify final data before redirect update.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $data Data for redirect update.
+		 */
+		$data = apply_filters( 'dd4t3_model_redirect_update_data', $data );
+
 		// Prepare data.
 		$data = $this->prepare_fields( $data );
 
@@ -250,5 +263,25 @@ class Redirects extends Model {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Modify log data before creation.
+	 *
+	 * Make sure to set a unique hash from URL value.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @param array $data Data for log creation.
+	 *
+	 * @return array
+	 */
+	public function filter_log_data( array $data ) {
+		if ( ! empty( $data['source'] ) ) {
+			$data['hash'] = md5( $data['source'] );
+		}
+
+		return $data;
 	}
 }

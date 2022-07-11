@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9c703610fcc937d2ac8b14cc0d838faf",
+    "content-hash": "dbf5d246e269059066c7fd646126d1f7",
     "packages": [
         {
             "name": "berlindb/core",
@@ -83,52 +83,6 @@
                 "source": "https://github.com/duckdev/wp-cache-helper/tree/v1.0.0"
             },
             "time": "2021-08-08T19:49:49+00:00"
-        },
-        {
-            "name": "duckdev/wp-queue-process",
-            "version": "v1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/duckdev/wp-queue-process.git",
-                "reference": "50bcac0a54fd3a60cdd27bf8fe38d7e20074650c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/duckdev/wp-queue-process/zipball/50bcac0a54fd3a60cdd27bf8fe38d7e20074650c",
-                "reference": "50bcac0a54fd3a60cdd27bf8fe38d7e20074650c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "DuckDev\\Queue\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Joel James",
-                    "email": "me@joelsays.com",
-                    "homepage": "https://duckdev.com"
-                }
-            ],
-            "description": "WordPress background queue processing library.",
-            "keywords": [
-                "notices",
-                "reviews",
-                "wordpress"
-            ],
-            "support": {
-                "issues": "https://github.com/duckdev/wp-queue-process/issues/",
-                "source": "https://github.com/duckdev/wp-queue-process/tree/v1.0.2"
-            },
-            "time": "2021-08-02T07:33:23+00:00"
         },
         {
             "name": "duckdev/wp-review-notice",

@@ -10,7 +10,7 @@
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2020, Joel James
  * @package    Database
- * @subpackage Upgrades\V4_Settings
+ * @subpackage Upgrades\Settings
  */
 
 namespace DuckDev\Redirect\Database\Upgrades;
@@ -19,7 +19,7 @@ namespace DuckDev\Redirect\Database\Upgrades;
 defined( 'WPINC' ) || die;
 
 /**
- * Class V4_Settings.
+ * Class Settings.
  *
  * @since   4.0.0
  * @package DuckDev\Redirect\Database\Upgrades
@@ -72,6 +72,7 @@ class Settings {
 		foreach ( $keys as $key ) {
 			if ( get_option( $key ) ) {
 				$upgrade = true;
+				break;
 			}
 		}
 
@@ -88,7 +89,7 @@ class Settings {
 					'redirect_type'        => $old['redirect_type'],
 					'redirect_target'      => 'page' === $old['redirect_to'] ? 'page' : 'link',
 					'redirect_link'        => empty( $old['redirect_link'] ) ? home_url() : esc_url_raw( $old['redirect_link'] ),
-					'redirect_page'        => empty( $old['redirect_page'] ) ? '' : esc_url_raw( $old['redirect_page'] ),
+					'redirect_page'        => empty( $old['redirect_page'] ) ? '' : $old['redirect_page'],
 					'logs_enabled'         => ! empty( $old['redirect_log'] ),
 					'logs_skip_duplicates' => true,
 					'email_enabled'        => ! empty( $old['email_notify'] ),

@@ -74,6 +74,7 @@ final class Core extends Base {
 	private function common() {
 		Database::instance();
 		Settings::instance();
+		new \DuckDev\Redirect\Database\Upgrades\Logs1();
 	}
 
 	/**

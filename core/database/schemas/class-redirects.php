@@ -96,6 +96,11 @@ class Redirects extends Schema {
 			'default'    => 'enabled',
 			'allow_null' => true,
 		),
+		'hash'        => array(
+			'name'       => 'hash',
+			'type'       => 'varchar',
+			'allow_null' => false,
+		),
 		'created_at'  => array(
 			'name'       => 'created_at',
 			'type'       => 'datetime',
