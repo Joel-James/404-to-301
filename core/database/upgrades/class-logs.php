@@ -70,7 +70,7 @@ class Logs {
 	 * @return void
 	 */
 	public function upgrade_notice() {
-		if ( $this->old_table_exists() ) {
+		if ( ! dd4t3_settings()->get( 'logs_upgraded' ) && $this->old_table_exists() ) {
 			View::instance()->render(
 				'components/notices/upgrade-notice',
 				array(
@@ -463,6 +463,9 @@ class Logs {
 	private function complete() {
 		// Make sure to cleanup.
 		as_unschedule_all_actions( $this->action );
+
+		// Mark as done.
+		dd4t3_settings()->set( 'logs_upgraded', true );
 
 		// Clean all action scheduler logs.
 		$this->clean_scheduler_data();

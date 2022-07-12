@@ -94,6 +94,7 @@ class Settings {
 					'logs_skip_duplicates' => true,
 					'email_enabled'        => ! empty( $old['email_notify'] ),
 					'email_recipient'      => empty( $old['email_notify_address'] ) ? get_option( 'admin_email' ) : $old['email_notify_address'],
+					'logs_upgraded'        => false,
 				);
 
 				// Update the settings.

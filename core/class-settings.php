@@ -216,6 +216,7 @@ class Settings extends Base {
 			'email_recipient'      => get_option( 'admin_email' ),
 			// Others.
 			'plugin_version'       => 0,
+			'logs_upgraded'        => true,
 		);
 
 		/**
