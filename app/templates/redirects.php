@@ -16,7 +16,7 @@
 
 ?>
 
-<div class="wrap">
+<div class="wrap dd4t3-redirects-wrap">
 	<h1 class="wp-heading-inline">Redirects</h1>
 	<a href="" class="page-title-action">Add New</a>
 	<hr class="wp-header-end">

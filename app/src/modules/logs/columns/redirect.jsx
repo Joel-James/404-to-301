@@ -1,49 +1,67 @@
 /* global wp, dd4t3 */
 import React from 'react'
+import classNames from 'classnames'
 import Tooltip from '@/components/tooltip'
-import { Dashicon } from '@wordpress/components'
 import { BodyColumn } from '@/components/table/table'
 
 const { __ } = wp.i18n
 
 const RedirectColumn = ({ log }) => {
-	let status = log.redirect_status
 	let global = dd4t3.settings.redirect_enabled
 	let hasRedirect = !!log.redirect_id
+	let isEnabled = log.redirect_status === 'enabled'
+	// Consider global status.
+	if ('global' === log.redirect_status) {
+		isEnabled = global
+	}
+
+	let classes = classNames({
+		'dd4t3-logs-tag': true,
+		'tag-green': isEnabled,
+	})
 
 	return (
 		<BodyColumn id="redirect">
-			{status === 'global' ? (
+			{log.redirect_status === 'global' ? (
 				<Tooltip
 					text={
-						global
+						isEnabled
 							? __('Global redirect active', '404-to-301')
 							: __('Global redirect inactive', '404-to-301')
 					}
 				>
-					<Dashicon
-						icon={global ? 'yes-alt' : 'dismiss'}
-						className="dd4t3-logs-grey"
-					/>
+					<span className={classes}>
+						{__('Global', '404-to-301')}
+					</span>
 				</Tooltip>
-			) : status === 'enabled' ? (
+			) : hasRedirect ? (
 				<Tooltip
 					text={
-						hasRedirect
+						isEnabled
 							? __('Custom redirect active', '404-to-301')
-							: __('Redirect is enabled', '404-to-301')
+							: __(
+								'Custom redirect setup but disabled',
+								'404-to-301'
+							)
 					}
 				>
-					<Dashicon
-						icon="yes-alt"
-						className={
-							hasRedirect ? 'dd4t3-logs-green' : 'dd4t3-logs-grey'
-						}
-					/>
+					<span className={classes}>
+						{__('Custom', '404-to-301')}
+					</span>
 				</Tooltip>
 			) : (
-				<Tooltip text={__('Redirect is disabled', '404-to-301')}>
-					<Dashicon icon="dismiss" className="dd4t3-logs-red" />
+				<Tooltip
+					text={
+						isEnabled
+							? __('Redirect is enabled', '404-to-301')
+							: __('Redirect is disabled', '404-to-301')
+					}
+				>
+					<span className={classes}>
+						{isEnabled
+							? __('Enabled', '404-to-301')
+							: __('Disabled', '404-to-301')}
+					</span>
 				</Tooltip>
 			)}
 		</BodyColumn>

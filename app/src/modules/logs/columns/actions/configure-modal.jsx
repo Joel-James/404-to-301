@@ -105,23 +105,24 @@ export default class ConfigureModal extends React.Component {
 	}
 
 	render() {
+		const { onClose, log } = this.props
+		const { logStatus, emailStatus, redirectStatus, saving } = this.state
+
 		return (
 			<Modal
 				title={__('Configure actions', '404-to-301')}
-				onRequestClose={this.props.onClose}
+				onRequestClose={onClose}
 				style={{ maxWidth: '550px' }}
 				className="dd4t3-logs-modal"
 			>
 				<VStack spacing={3}>
 					<Spacer>
 						<Text>
-							<strong>
-								{__('URL:', '404-to-301')}
-							</strong>
+							<strong>{__('URL:', '404-to-301')}</strong>
 						</Text>
 					</Spacer>
 					<Text>
-						<a href="javascript:void(0)">{this.props.log.url}</a>
+						<a href="javascript:void(0)">{log.url}</a>
 					</Text>
 
 					<hr />
@@ -129,7 +130,7 @@ export default class ConfigureModal extends React.Component {
 					<StatusSelection
 						label={__('Error logging:', '404-to-301')}
 						help={__('Do you want to enable logging', '404-to-301')}
-						current={this.state.logStatus}
+						current={logStatus}
 						onChange={(status) =>
 							this.setState({ logStatus: status })
 						}
@@ -138,7 +139,7 @@ export default class ConfigureModal extends React.Component {
 					<StatusSelection
 						label={__('Email notification:', '404-to-301')}
 						help={__('Do you want to enable email', '404-to-301')}
-						current={this.state.emailStatus}
+						current={emailStatus}
 						onChange={(status) =>
 							this.setState({ emailStatus: status })
 						}
@@ -150,27 +151,24 @@ export default class ConfigureModal extends React.Component {
 							'Do you want to enable redirect',
 							'404-to-301'
 						)}
-						current={this.state.redirectStatus}
+						current={redirectStatus}
 						onChange={(status) =>
 							this.setState({ redirectStatus: status })
 						}
 					/>
 
 					<Flex direction="row" justify="flex-end">
-						<Button
-							variant="tertiary"
-							onClick={this.props.onClose}
-						>
+						<Button variant="tertiary" onClick={onClose}>
 							{__('Cancel', '404-to-301')}
 						</Button>
 						<Button
 							variant="primary"
-							icon={this.state.saving ? null : 'yes'}
-							disabled={this.state.saving}
-							isBusy={this.state.saving}
+							icon={saving ? null : 'yes'}
+							disabled={saving}
+							isBusy={saving}
 							onClick={() => this.saveActions()}
 						>
-							{this.state.saving
+							{saving
 								? __('Saving..', '404-to-301')
 								: __('Save Changes', '404-to-301')}
 						</Button>

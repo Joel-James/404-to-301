@@ -45,7 +45,7 @@ $scheduler_install = wp_nonce_url(
 
 ?>
 
-<div id="dd4t3-notice-upgrade-notice" class="notice duckdev-notice notice-info <?php echo $upgrading ? 'duckdev-show-icon' : ''; ?>">
+<div id="dd4t3-notice-upgrade-notice" class="notice dd4t3-redirects-notice notice-info <?php echo $upgrading ? 'dd4t3-redirects-show-icon' : ''; ?>">
 	<?php if ( $upgrading ) : ?>
 		<p>
 			<?php

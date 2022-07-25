@@ -1,0 +1,24 @@
+.#{$prefix}-wrap,
+.#{$prefix}-modal {
+
+  .#{$prefix}-tag {
+    display: inline-block;
+    margin: 0 3px;
+    border: 2px solid transparent;
+    border-radius: 13px;
+    background-color: #a0a5aa;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 10px;
+    line-height: 12px;
+    font-weight: 600;
+
+    &.tag-red {
+      background-color: #d84445;
+    }
+
+    &.tag-green {
+      background-color: #46B450;
+    }
+  }
+}

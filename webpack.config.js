@@ -19,6 +19,7 @@ module.exports = {
 	entry: {
 		logs: './app/src/logs.js',
 		settings: './app/src/settings.js',
+		redirects: './app/src/redirects.js',
 	},
 
 	output: {
