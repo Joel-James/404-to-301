@@ -60,6 +60,14 @@ class JJ4T3_404_Data {
 	public $time = '';
 
 	/**
+	 * Visitor's Country (available through a CDN, which must send the info in the X-Geo-Country header)
+	 *
+	 * @var    string
+	 * @access public
+	 */
+	public $geo_country = '';
+
+	/**
 	 * Initialize the class.
 	 *
 	 * @since  3.0.0
@@ -71,6 +79,7 @@ class JJ4T3_404_Data {
 		$this->set_ua();
 		$this->set_url();
 		$this->set_time();
+		$this->set_geo_country(); // if available through the X-Geo-Country header
 	}
 
 	/**
@@ -204,6 +213,29 @@ class JJ4T3_404_Data {
 		$this->time = apply_filters( 'jj4t3_404_time', current_time( 'mysql' ) );
 	}
 
+	/**
+	 * Set the visitor's country if available through the X-Geo-Country HTTP header.
+	 *
+	 * @since  3.0.0
+	 * @access private
+	 *
+	 * @return void
+	 */
+
+	 private function set_geo_country() {
+
+		if ( isset( $_SERVER['HTTP_X_GEO_COUNTRY'] ) ) {
+			$geo_country = esc_geo_country( $_SERVER['HTTP_X_GEO_COUNTRY'] );
+		} else {
+			$geo_country = 'N/A';
+		}
+		 
+           	$this->geo_country = apply_filters( 'jj4t3_404_geo_country', $geo_country);  
+	
+	}
+	
+	
+	
 	/**
 	 * Exclude specified paths from 404.
 	 *

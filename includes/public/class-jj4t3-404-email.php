@@ -198,6 +198,11 @@ class JJ4T3_404_Email {
 		$message .= '<th align="left">' . __( 'IP Address', '404-to-301' ) . '</th>';
 		$message .= '<td align="left">' . $this->error_data->ip . '</td>';
 		$message .= '</tr>';
+		// Visitor's country if available through X-Geo-Country HTTP header.
+		$message .= '<tr>';
+	        $message .= '<th align="left">' . __('Visitor Country', JJ4T3_DOMAIN ) . '</th>';
+        	$message .= '<td align="left">' . $this->error_data->geo_country . '</td>';
+	        $message .= '</tr>';
 		// Date and time.
 		$message .= '<tr>';
 		$message .= '<th align="left">' . __( 'Time', '404-to-301' ) . '</th>';
