@@ -17,6 +17,7 @@ const RedirectColumn = ({ log }) => {
 
 	let classes = classNames({
 		'dd4t3-logs-tag': true,
+		'tag-red': 'disabled' === log.redirect_status,
 		'tag-green': isEnabled,
 	})
 

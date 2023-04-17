@@ -143,6 +143,7 @@ abstract class Endpoint {
 	 *
 	 * @since  4.0.0
 	 * @access public
+	 * @todo Change the check once ready for production.
 	 *
 	 * @return bool
 	 */
@@ -151,7 +152,7 @@ abstract class Endpoint {
 		$capable = Permission::has_access();
 
 		/**
-		 * Filter to modify the has access check for rest endpoint.
+		 * Filter to modify the access check for rest endpoint.
 		 *
 		 * @param bool            $capable Is capable.
 		 * @param WP_REST_Request $request Request.

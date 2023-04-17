@@ -2,6 +2,7 @@
 import React from 'react'
 import request from '@/helpers/request'
 import TabInfo from './settings/tab-info'
+import TabGeneral from './settings/tab-general'
 import TabAddons from './settings/tab-addons'
 import TabSettings from './settings/tab-settings'
 import NavTabs from './settings/components/nav-tabs'
@@ -46,7 +47,7 @@ export default class Settings extends React.Component {
 				<ReactNotifications />
 				<div className="dd4t3-settings-header">
 					<div className="dd4t3-settings-title-section">
-						<h1>404 to 301</h1>
+						<h1>404 to 301 - Settings</h1>
 						<abbr
 							title={'Version: ' + dd4t3.version}
 							className="version"
@@ -59,9 +60,10 @@ export default class Settings extends React.Component {
 						<NavTabs
 							current={this.state.currentTab}
 							navs={{
-								settings: __('Settings', '404-to-301'),
-								addons: __('Add-ons', '404-to-301'),
-								info: __('Info', '404-to-301'),
+								settings: __('Redirects', '404-to-301'),
+								addons: __('Logs', '404-to-301'),
+								info: __('Email', '404-to-301'),
+								general: __('General', '404-to-301'),
 							}}
 							onChange={(tab) => {
 								this.setState({ currentTab: tab })
@@ -79,6 +81,7 @@ export default class Settings extends React.Component {
 							<TabAddons addons={this.state.addons} />
 						)}
 						{this.state.currentTab === 'info' && <TabInfo />}
+						{this.state.currentTab === 'general' && <TabGeneral />}
 					</div>
 				) : (
 					<div className="dd4t3-settings-main">

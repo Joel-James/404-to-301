@@ -2,7 +2,7 @@
 .#{$prefix}-modal {
 
   .components-button {
-    &.has-icon:not(.is-small) {
+    &.has-icon:not(.is-small, .components-combobox-control__reset) {
       padding-left: 6px;
       padding-right: 12px;
     }

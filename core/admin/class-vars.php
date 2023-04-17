@@ -60,6 +60,7 @@ class Vars extends Base {
 		$vars = $this->common( $vars );
 
 		$vars['types'] = Data::redirect_types();
+		$vars['pages'] = Data::pages();
 
 		return $vars;
 	}

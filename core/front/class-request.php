@@ -19,6 +19,7 @@ namespace DuckDev\Redirect\Front;
 defined( 'WPINC' ) || die;
 
 use DuckDev\Redirect\Models;
+use Symfony\Component\HttpFoundation;
 
 /**
  * Class Request
@@ -27,70 +28,6 @@ use DuckDev\Redirect\Models;
  * @package DuckDev\Redirect\Front
  */
 class Request {
-
-	/**
-	 * Current request URL.
-	 *
-	 * @since 4.0
-	 * @var string $url
-	 */
-	private $url = '';
-
-	/**
-	 * Current request host.
-	 *
-	 * @since 4.0
-	 * @var string $host
-	 */
-	private $host = '';
-
-	/**
-	 * Current request method.
-	 *
-	 * @since 4.0
-	 * @var string $method
-	 */
-	private $method = 'GET';
-
-	/**
-	 * Current request referer.
-	 *
-	 * @since 4.0
-	 * @var string $referrer
-	 */
-	private $referrer = '';
-
-	/**
-	 * Current request IP address.
-	 *
-	 * @since 4.0
-	 * @var string $ip
-	 */
-	private $ip = '';
-
-	/**
-	 * Current request user agent.
-	 *
-	 * @since 4.0
-	 * @var string $agent
-	 */
-	private $agent = '';
-
-	/**
-	 * Get current request headers.
-	 *
-	 * @since 4.0
-	 * @var array $headers
-	 */
-	private $headers = array();
-
-	/**
-	 * Get current request extra data.
-	 *
-	 * @since 4.0
-	 * @var array $request
-	 */
-	private $others = array();
 
 	/**
 	 * Get current request's matching error log.
@@ -109,6 +46,13 @@ class Request {
 	private $redirect = false;
 
 	/**
+	 * Get the symfony request instance.
+	 *
+	 * @var HttpFoundation\Request
+	 */
+	private $request;
+
+	/**
 	 * Create new request object.
 	 *
 	 * Please use DuckDev\Redirect\Front::get_request() method to
@@ -120,14 +64,9 @@ class Request {
 	 * @return void
 	 */
 	public function __construct() {
-		$this->set_ip();
-		$this->set_url();
-		$this->set_host();
-		$this->set_agent();
-		$this->set_method();
-		$this->set_referer();
-		$this->set_headers();
-		$this->set_others();
+		// Setup request.
+		$this->request = HttpFoundation\Request::createFromGlobals();
+
 		$this->set_redirect();
 		$this->set_log();
 	}
@@ -139,8 +78,18 @@ class Request {
 	 *
 	 * @return string
 	 */
-	public function get_method() {
-		return $this->method;
+	public function method() {
+		$method = $this->request->getMethod();
+
+		/**
+		 * Filter hook to modify current request method.
+		 *
+		 * @since 4.0
+		 *
+		 * @param string  $method Request method.
+		 * @param Request $this   Request instance.
+		 */
+		return apply_filters( 'dd4t3_request_get_method', $method, $this );
 	}
 
 	/**
@@ -150,8 +99,18 @@ class Request {
 	 *
 	 * @return string
 	 */
-	public function get_referer() {
-		return $this->referrer;
+	public function referer() {
+		$referer = $this->request->headers->get( 'referer' );
+
+		/**
+		 * Filter hook to modify current request referer.
+		 *
+		 * @since 4.0
+		 *
+		 * @param string  $referrer Request referer.
+		 * @param Request $this     Request instance.
+		 */
+		return apply_filters( 'dd4t3_request_get_referer', $referer, $this );
 	}
 
 	/**
@@ -161,8 +120,18 @@ class Request {
 	 *
 	 * @return string
 	 */
-	public function get_agent() {
-		return $this->agent;
+	public function agent() {
+		$agent = $this->request->headers->get( 'User-Agent' );
+
+		/**
+		 * Filter hook to modify current request user agent.
+		 *
+		 * @since 4.0
+		 *
+		 * @param string  $agent Request user agent.
+		 * @param Request $this  Request instance.
+		 */
+		return apply_filters( 'dd4t3_request_get_agent', $agent, $this );
 	}
 
 	/**
@@ -174,8 +143,33 @@ class Request {
 	 *
 	 * @return string
 	 */
-	public function get_ip() {
-		return $this->ip;
+	public function ip() {
+		/**
+		 * Filter hook to mask IP address.
+		 *
+		 * If you return true here, we will skip IP address finding.
+		 *
+		 * @since 4.0
+		 *
+		 * @param bool $mask Should mask.
+		 */
+		$mask = apply_filters( 'dd4t3_request_mask_ip', false );
+
+		if ( false === $mask ) {
+			$ip = $this->request->getClientIp();
+		} else {
+			$ip = '';
+		}
+
+		/**
+		 * Filter hook to modify current request IP address.
+		 *
+		 * @since 4.0
+		 *
+		 * @param string  $ip   Current IP address.
+		 * @param Request $this Request instance.
+		 */
+		return apply_filters( 'dd4t3_request_ip', $ip, $this );
 	}
 
 	/**
@@ -187,8 +181,18 @@ class Request {
 	 *
 	 * @return string
 	 */
-	public function get_url() {
-		return $this->url;
+	public function url() {
+		$url = $this->request->getRequestUri();
+
+		/**
+		 * Filter hook to modify current url.
+		 *
+		 * @since 4.0
+		 *
+		 * @param string  $url  Current URL.
+		 * @param Request $this Request instance.
+		 */
+		return apply_filters( 'dd4t3_request_get_url', $url, $this );
 	}
 
 	/**
@@ -200,33 +204,86 @@ class Request {
 	 *
 	 * @return string
 	 */
-	public function get_host() {
-		return $this->host;
+	public function host() {
+		$host = esc_url_raw( $this->request->getHost() );
+
+		/**
+		 * Filter hook to modify current host.
+		 *
+		 * @since 4.0
+		 *
+		 * @param string  $url  Current host.
+		 * @param Request $this Request instance.
+		 */
+		return apply_filters( 'dd4t3_request_get_host', $host, $this );
 	}
 
 	/**
-	 * Get current request protocol.
+	 * Get current request scheme.
 	 *
 	 * @since 4.0
 	 *
 	 * @return string
 	 */
-	public function get_protocol() {
-		return is_ssl() ? 'https' : 'http';
+	public function scheme() {
+		$protocol = is_ssl() ? 'https' : 'http';
+
+		/**
+		 * Filter hook to modify current request scheme.
+		 *
+		 * @since 4.0
+		 *
+		 * @param array   $header Request scheme (http or https).
+		 * @param Request $this   Request instance.
+		 */
+		return apply_filters( 'dd4t3_request_get_scheme', $protocol, $this );
+	}
+
+	/**
+	 * Get current request header item value by name.
+	 *
+	 * @since 4.0
+	 *
+	 * @param string      $key     The header name.
+	 * @param string|null $default The default value.
+	 *
+	 * @return string|null
+	 */
+	public function header( $key, $default = null ) {
+		$header = $this->request->headers->get( $key, $default );
+
+		/**
+		 * Filter hook to modify current request header value.
+		 *
+		 * @since 4.0
+		 *
+		 * @param array   $header Request header value.
+		 * @param Request $this   Request instance.
+		 */
+		return apply_filters( 'dd4t3_request_get_header', $header, $this );
 	}
 
 	/**
 	 * Get current request header items.
 	 *
-	 * Few of the sensitive header items are ignored.
-	 * See set_headers method for more.
+	 * Please note these may contain sensitive items.
 	 *
 	 * @since 4.0
 	 *
 	 * @return array
 	 */
-	public function get_headers() {
-		return $this->headers;
+	public function headers() {
+		$headers = $this->request->headers->all();
+
+		/**
+		 * Filter hook to modify current request headers.
+		 *
+		 * @since 4.0
+		 *
+		 * @param array   $headers Request headers.
+		 * @param Request $this    Request instance.
+		 */
+		return apply_filters( 'dd4t3_request_get_headers', $headers, $this );
 	}
 
 	/**
@@ -236,8 +293,23 @@ class Request {
 	 *
 	 * @return array
 	 */
-	public function get_others() {
-		return $this->others;
+	public function others() {
+		$others = array(
+			'host'   => $this->host(),
+			'scheme' => $this->scheme(),
+		);
+
+		/**
+		 * Filter hook to modify current request extra data.
+		 *
+		 * Use this filter to add or remove data.
+		 *
+		 * @since 4.0
+		 *
+		 * @param array   $others Redirect extra data.
+		 * @param Request $this   Request instance.
+		 */
+		return apply_filters( 'dd4t3_request_get_others', $others, $this );
 	}
 
 	/**
@@ -277,275 +349,6 @@ class Request {
 	}
 
 	/**
-	 * Set current request method.
-	 *
-	 * We will use REQUEST_METHOD value from the server.
-	 * Default method wille be "GET".
-	 * This should be called by constructor method only.
-	 *
-	 * @since 4.0
-	 *
-	 * @return void
-	 */
-	private function set_method() {
-		if ( isset( $_SERVER['REQUEST_METHOD'] ) ) {
-			$this->method = sanitize_text_field(
-			/**
-			 * Filter hook to modify current request method.
-			 *
-			 * @since 4.0
-			 *
-			 * @param string  $method Request method.
-			 * @param Request $this   Request instance.
-			 */
-				apply_filters( 'dd4t3_request_method', $_SERVER['REQUEST_METHOD'], $this )
-			);
-		}
-	}
-
-	/**
-	 * Set current request referer.
-	 *
-	 * We will use HTTP_REFERER value from the server.
-	 * This should be called by constructor method only.
-	 *
-	 * @since 4.0
-	 *
-	 * @return void
-	 */
-	private function set_referer() {
-		if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-			$this->referrer = esc_url_raw(
-			/**
-			 * Filter hook to modify current request referer.
-			 *
-			 * @since 4.0
-			 *
-			 * @param string  $referrer Request referer.
-			 * @param Request $this     Request instance.
-			 */
-				apply_filters( 'dd4t3_request_referer', $_SERVER['HTTP_REFERER'], $this )
-			);
-		}
-	}
-
-	/**
-	 * Set current request user agent.
-	 *
-	 * We will use HTTP_USER_AGENT value from the server.
-	 * This should be called by constructor method only.
-	 *
-	 * @since 4.0
-	 *
-	 * @return void
-	 */
-	private function set_agent() {
-		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-			$this->agent = sanitize_text_field(
-			/**
-			 * Filter hook to modify current request user agent.
-			 *
-			 * @since 4.0
-			 *
-			 * @param string  $agent Request user agent.
-			 * @param Request $this  Request instance.
-			 */
-				apply_filters( 'dd4t3_request_agent', $_SERVER['HTTP_USER_AGENT'], $this )
-			);
-		}
-	}
-
-	/**
-	 * Set current URL from the request.
-	 *
-	 * We will use REQUEST_URI value from the server.
-	 * This should be called by constructor method only.
-	 *
-	 * @since  4.0
-	 *
-	 * @return void
-	 */
-	private function set_url() {
-		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-			$this->url = sanitize_text_field(
-			/**
-			 * Filter hook to modify current url for request object.
-			 *
-			 * @since 4.0
-			 *
-			 * @param string  $url  Current URL.
-			 * @param Request $this Request instance.
-			 */
-				apply_filters( 'dd4t3_request_url', $_SERVER['REQUEST_URI'], $this )
-			);
-		}
-	}
-
-	/**
-	 * Set current host from the request.
-	 *
-	 * We will use SERVER_NAME value from the server. If it's not available
-	 * we will try HTTP_HOST as fallback.
-	 * This should be called by constructor method only.
-	 *
-	 * @since 4.0
-	 *
-	 * @return void
-	 */
-	private function set_host() {
-		foreach ( array( 'SERVER_NAME', 'HTTP_HOST' ) as $header ) {
-			if ( isset( $_SERVER[ $header ] ) ) {
-				/**
-				 * Filter hook to modify current host for request object.
-				 *
-				 * @since 4.0
-				 *
-				 * @param string  $url  Current host.
-				 * @param Request $this Request instance.
-				 */
-				$this->host = esc_url_raw(
-					apply_filters(
-						'dd4t3_request_host',
-						$_SERVER[ $header ],
-						$this
-					)
-				);
-
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Set current request IP address.
-	 *
-	 * Even if the IP masking is enabled we will try to get
-	 * the IP address. But we won't store or show it anywhere.
-	 * This should be called by constructor method only.
-	 *
-	 * @since 4.0
-	 *
-	 * @return void
-	 */
-	private function set_ip() {
-		/**
-		 * Filter hook to short circuit IP checking.
-		 *
-		 * If you return false here, we will skip IP address finding.
-		 * Use this filter instead of `dd4t3_request_ip` filter to avoid
-		 * unnecessary IP findings.
-		 *
-		 * @since 4.0
-		 *
-		 * @param bool $check Should check for IP.
-		 */
-		$ip = apply_filters( 'dd4t3_request_set_ip', true );
-
-		if ( $ip ) {
-			foreach ( $this->ip_headers() as $header ) {
-				if ( ! empty( $_SERVER[ $header ] ) ) {
-					$ip = sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) );
-					$ip = explode( ',', $ip );
-					$ip = array_shift( $ip );
-					break;
-				}
-			}
-
-			// Convert to binary.
-			$ip = @inet_pton( trim( $ip ) ); // phpcs:ignore
-			if ( false !== $ip ) {
-				// Convert back to string.
-				$ip = @inet_ntop( $ip );  // phpcs:ignore
-			}
-		}
-
-		if ( empty( $ip ) ) {
-			$ip = '';
-		}
-
-		/**
-		 * Filter hook to modify current request IP address.
-		 *
-		 * @since 4.0
-		 *
-		 * @param string  $ip   Current IP address.
-		 * @param Request $this Request instance.
-		 */
-		$this->ip = sanitize_text_field( apply_filters( 'dd4t3_request_ip', $ip, $this ) );
-	}
-
-	/**
-	 * Set current request header values.
-	 *
-	 * We will ignore a few of the sensitive items.
-	 * This should be called by constructor method only.
-	 * Currently this is not stored in db for performance reasons.
-	 *
-	 * @since 4.0
-	 *
-	 * @return void
-	 */
-	private function set_headers() {
-		// Ignored headers list.
-		$ignored = $this->ignored_headers();
-
-		$headers = array();
-
-		foreach ( $_SERVER as $name => $value ) {
-			if ( substr( $name, 0, 5 ) === 'HTTP_' ) {
-				$name = strtolower( substr( $name, 5 ) );
-				$name = str_replace( '_', ' ', $name );
-				$name = ucwords( $name );
-				$name = str_replace( ' ', '-', $name );
-
-				// Skip ignored items.
-				if ( ! in_array( strtolower( $name ), $ignored, true ) ) {
-					$headers[ $name ] = sanitize_text_field( $value );
-				}
-			}
-		}
-
-		/**
-		 * Filter hook to modify current request headers.
-		 *
-		 * @since 4.0
-		 *
-		 * @param array   $headers Redirect headers.
-		 * @param Request $this    Request instance.
-		 */
-		$this->headers = apply_filters( 'dd4t3_request_headers', $headers, $this );
-	}
-
-	/**
-	 * Set current request extra data.
-	 *
-	 * Use the filter to add additional data if needed.
-	 * This should be called by constructor method only.
-	 *
-	 * @since 4.0
-	 *
-	 * @return void
-	 */
-	private function set_others() {
-		$others = array(
-			'host'     => $this->get_host(),
-			'protocol' => $this->get_protocol(),
-		);
-
-		/**
-		 * Filter hook to modify current request extra data.
-		 *
-		 * Use this filter to add or remove data.
-		 *
-		 * @since 4.0
-		 *
-		 * @param array   $others Redirect extra data.
-		 * @param Request $this   Request instance.
-		 */
-		$this->others = apply_filters( 'dd4t3_request_others', $others, $this );
-	}
-
-	/**
 	 * Set custom redirect data for the request.
 	 *
 	 * This should be called after setting up all request details.
@@ -559,7 +362,7 @@ class Request {
 	private function set_redirect() {
 		// Get matching redirect.
 		$redirect = Models\Redirects::instance()->get_by_source(
-			$this->get_url()
+			$this->url()
 		);
 
 		/**
@@ -590,7 +393,7 @@ class Request {
 		if ( $this->is_404() ) {
 			// Get log.
 			$log = Models\Logs::instance()->get_by_url(
-				$this->get_url()
+				$this->url()
 			);
 
 			/**
@@ -603,63 +406,6 @@ class Request {
 			 */
 			$this->log = apply_filters( 'dd4t3_request_log', $log, $this );
 		}
-	}
-
-	/**
-	 * Get the list of ignored header items.
-	 *
-	 * Use filter to ignore more items.
-	 *
-	 * @since 4.0
-	 *
-	 * @return array
-	 */
-	private function ignored_headers() {
-		$ignored = array( 'cookie', 'host' );
-
-		/**
-		 * Filter to ignore header items from the list.
-		 *
-		 * @since 4.0
-		 *
-		 * @param array   $ignored Ignored list.
-		 * @param Request $this    Request instance.
-		 */
-		return apply_filters( 'dd4t3_request_ignored_headers', $ignored, $this );
-	}
-
-	/**
-	 * Get the list of request header names for IP.
-	 *
-	 * These are the header items we use to get IP address.
-	 * If any of these values are available, we will stop checking.
-	 *
-	 * @since 4.0
-	 *
-	 * @return array
-	 */
-	private function ip_headers() {
-		$headers = array(
-			'HTTP_CF_CONNECTING_IP',
-			'HTTP_CLIENT_IP',
-			'HTTP_X_FORWARDED_FOR',
-			'HTTP_X_FORWARDED',
-			'HTTP_X_CLUSTER_CLIENT_IP',
-			'HTTP_FORWARDED_FOR',
-			'HTTP_FORWARDED',
-			'HTTP_VIA',
-			'REMOTE_ADDR',
-		);
-
-		/**
-		 * Filter hook to add or remove header items for IP address.
-		 *
-		 * @since 4.0
-		 *
-		 * @param array   $headers Header item names.
-		 * @param Request $this    Request instance.
-		 */
-		return apply_filters( 'dd4t3_request_ip_headers', $headers, $this );
 	}
 
 	/**
@@ -686,7 +432,7 @@ class Request {
 	/**
 	 * Get a single item from the data object.
 	 *
-	 * If name is not given, entire data will be retuned back.
+	 * If name is not given, entire data will be returned back.
 	 *
 	 * @since 4.0
 	 *

@@ -20,21 +20,8 @@ export default class General extends React.Component {
 		}
 	}
 
-	/**
-	 * Update a field value in state.
-	 *
-	 * @param {string} field Field name.
-	 * @param {mixed} value Field value.
-	 *
-	 * @since 4.0.0
-	 */
-	updateValue(field, value) {
-		// Update field value.
-		this.props.onUpdate(field, value)
-	}
-
 	render() {
-		const settings = this.props.settings
+		const { settings, onUpdate } = this.props;
 
 		return (
 			<PanelBody title={__('General', '404-to-301')}>
@@ -50,7 +37,7 @@ export default class General extends React.Component {
 							'404-to-301'
 						)}
 						onChange={(checked) =>
-							this.updateValue('disable_guessing', checked)
+							onUpdate('disable_guessing', checked)
 						}
 					/>
 				</PanelRow>
@@ -67,7 +54,7 @@ export default class General extends React.Component {
 							'404-to-301'
 						)}
 						onChange={(checked) =>
-							this.updateValue('monitor_changes', checked)
+							onUpdate('monitor_changes', checked)
 						}
 					/>
 				</PanelRow>
@@ -84,7 +71,7 @@ export default class General extends React.Component {
 							'404-to-301'
 						)}
 						onChange={(checked) =>
-							this.updateValue('disable_ip', checked)
+							onUpdate('disable_ip', checked)
 						}
 					/>
 				</PanelRow>
@@ -100,7 +87,7 @@ export default class General extends React.Component {
 						<RepeatTable
 							items={settings.exclude_paths}
 							onChange={(paths) =>
-								this.updateValue('exclude_paths', paths)
+								onUpdate('exclude_paths', paths)
 							}
 						/>
 					</BaseControl>

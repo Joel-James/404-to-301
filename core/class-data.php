@@ -90,4 +90,46 @@ class Data {
 		 */
 		return apply_filters( 'dd4t3_addons', $addons );
 	}
+
+	/**
+	 * Get the list of pages.
+	 *
+	 * Only 100 pages will be returned.
+	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
+	 * @return array
+	 */
+	public static function pages() {
+		static $pages = array();
+
+		if ( empty( $pages ) ) {
+			$args = array( 'number' => 100 );
+
+			/**
+			 * Filter to modify arguments for get_pages query.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param array $args Arguments.
+			 */
+			$args = apply_filters( 'dd4t3_wp_pages_args', $args );
+
+			// Get WP pages.
+			$wp_pages = get_pages( $args );
+
+			// Get only titles.
+			$pages = wp_list_pluck( $wp_pages, 'post_title', 'ID' );
+		}
+
+		/**
+		 * Filter to add or remove pages.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $pages Page list.
+		 */
+		return apply_filters( 'dd4t3_wp_pages', $pages );
+	}
 }

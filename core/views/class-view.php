@@ -50,7 +50,7 @@ class View extends Base {
 		$path = DD4T3_DIR . "/app/templates/{$file}.php";
 
 		if ( file_exists( $path ) ) {
-			extract( $args );
+			extract( $args ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 
 			if ( $once ) {
 				include_once $path;

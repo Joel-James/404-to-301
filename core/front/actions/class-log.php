@@ -61,7 +61,7 @@ class Log extends Action {
 		// We should skip because duplicate disabled.
 		if ( ! $this->can_duplicate() ) {
 			// Make sure to update the hits count and then bail.
-			Models\Logs::instance()->mark_hit( $this->request->get_url() );
+			Models\Logs::instance()->mark_hit( $this->request->url() );
 
 			return;
 		}
@@ -120,12 +120,12 @@ class Log extends Action {
 	 */
 	private function get_data() {
 		$data = array(
-			'url'            => $this->request->get_url(),
-			'referrer'       => $this->request->get_referer(),
-			'ip'             => $this->request->get_ip(),
-			'agent'          => $this->request->get_agent(),
-			'request_method' => $this->request->get_method(),
-			'request_data'   => $this->request->get_others(),
+			'url'            => $this->request->url(),
+			'referrer'       => $this->request->referer(),
+			'ip'             => $this->request->ip(),
+			'agent'          => $this->request->agent(),
+			'request_method' => $this->request->method(),
+			'request_data'   => $this->request->others(),
 		);
 
 		/**

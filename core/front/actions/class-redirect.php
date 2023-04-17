@@ -219,7 +219,10 @@ class Redirect extends Action {
 		do_action( 'dd4t3_before_redirect', $target, $status, $this->request );
 
 		// Perform redirect using WordPress.
-		wp_redirect( $target, $status );
+		wp_redirect(
+			wp_sanitize_redirect( $target ),
+			$status
+		);
 
 		/**
 		 * Action hook to execute after performing a redirect.

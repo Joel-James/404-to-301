@@ -32,6 +32,14 @@
           }
         }
 
+        label.components-toggle-control__label {
+          margin-left: 10px;
+        }
+
+        .components-combobox-control__input {
+          padding: 5px;
+        }
+
         &.#{$prefix}-full-width {
           // Make input inside full width.
           input:not([type=radio]) {

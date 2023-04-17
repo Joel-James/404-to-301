@@ -1,4 +1,4 @@
-/* global wp */
+/* global wp, dd4t3 */
 import React from 'react'
 import {
 	PanelBody,
@@ -7,15 +7,28 @@ import {
 	TextControl,
 	RadioControl,
 	ToggleControl,
-	SelectControl,
+	ComboboxControl,
 } from '@wordpress/components'
 
 const { __ } = wp.i18n
 
+let pages = []
+// Setup page list.
+if (dd4t3.pages) {
+	Object.keys(dd4t3.pages).forEach((id) => {
+		pages.push({
+			label: dd4t3.pages[id],
+			value: id,
+		})
+	})
+}
+
 export default class RedirectsPanel extends React.Component {
 	constructor(props) {
 		super(props)
-		this.state = {}
+		this.state = {
+			redirectPages: pages,
+		}
 
 		// Bind updates.
 		this.updateValue = this.updateValue.bind(this)
@@ -60,6 +73,7 @@ export default class RedirectsPanel extends React.Component {
 						onChange={(checked) =>
 							this.updateValue('redirect_enabled', checked)
 						}
+						value="ddd"
 					/>
 				</PanelRow>
 
@@ -98,20 +112,27 @@ export default class RedirectsPanel extends React.Component {
 
 				{settings.redirect_target === 'page' ? (
 					<PanelRow>
-						<SelectControl
+						<ComboboxControl
 							label={__('Select page', '404-to-301')}
 							help={__(
 								'Enter the email address where you want to get the email notification.',
 								'404-to-301'
 							)}
-							options={[
-								{ label: 'Big', value: '100%' },
-								{ label: 'Medium', value: '50%' },
-								{ label: 'Small', value: '25%' },
-							]}
 							value={settings.redirect_page}
 							onChange={(selected) =>
 								this.updateValue('redirect_page', selected)
+							}
+							options={this.state.redirectPages}
+							onFilterValueChange={(inputValue) =>
+								this.setState({
+									redirectPages: pages.filter((option) =>
+										option.label
+											.toLowerCase()
+											.startsWith(
+												inputValue.toLowerCase()
+											)
+									),
+								})
 							}
 						/>
 					</PanelRow>

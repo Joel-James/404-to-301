@@ -22,6 +22,7 @@
   "require": {
     "duckdev/wp-review-notice": "^1.0.2",
     "duckdev/wp-cache-helper": "^1.0",
-    "berlindb/core": "^2.0"
+    "berlindb/core": "^2.0",
+    "symfony/http-foundation": "^3.4"
   }
 }
