@@ -118,7 +118,7 @@ export default class RedirectModal extends React.Component {
 			<Modal
 				title={__('Custom Redirect', '404-to-301')}
 				style={{ maxWidth: '550px' }}
-				className="dd4t3-logs-modal"
+				className="redirectpress-logs-modal"
 				onRequestClose={this.props.onClose}
 			>
 				{this.state.loading ? (

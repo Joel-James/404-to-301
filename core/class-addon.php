@@ -13,7 +13,7 @@
  * @subpackage Addons
  */
 
-namespace DuckDev\Redirect;
+namespace RedirectPress;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -22,7 +22,7 @@ defined( 'WPINC' ) || die;
  * Class Addon
  *
  * @since   4.0.0
- * @package DuckDev\Redirect
+ * @package RedirectPress
  */
 class Addon {
 
@@ -61,7 +61,7 @@ class Addon {
 		 *
 		 * @param array $active Active status.
 		 */
-		return apply_filters( 'dd4t3_addon_is_active', $active );
+		return apply_filters( 'redirectpress_addon_is_active', $active );
 	}
 
 	/**
@@ -96,7 +96,7 @@ class Addon {
 		 *
 		 * @param array $active Installation status.
 		 */
-		return apply_filters( 'dd4t3_addon_is_installed', $installed );
+		return apply_filters( 'redirectpress_addon_is_installed', $installed );
 	}
 
 	/**
@@ -139,6 +139,6 @@ class Addon {
 		 *
 		 * @param array $types Addon list.
 		 */
-		return apply_filters( 'dd4t3_get_addons', $addons );
+		return apply_filters( 'redirectpress_get_addons', $addons );
 	}
 }

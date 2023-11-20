@@ -14,19 +14,19 @@
  * @subpackage Core
  */
 
-namespace DuckDev\Redirect\Views;
+namespace RedirectPress\Views;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Base;
+use RedirectPress\Utils\Base;
 
 /**
  * Class View
  *
  * @since   4.0.0
  * @extends Base
- * @package DuckDev\Redirect\Views
+ * @package RedirectPress\Views
  */
 class View extends Base {
 
@@ -47,7 +47,7 @@ class View extends Base {
 	 */
 	public function render( $file, array $args = array(), $once = false ) {
 		// Full path to the file.
-		$path = DD4T3_DIR . "/app/templates/{$file}.php";
+		$path = REDIRECTPRESS_DIR . "/app/templates/{$file}.php";
 
 		if ( file_exists( $path ) ) {
 			extract( $args ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
@@ -113,6 +113,6 @@ class View extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd4t3_view_get_param', $value );
+		return apply_filters( 'redirectpress_view_get_param', $value );
 	}
 }

@@ -3,7 +3,7 @@
  * Admin settings redirect tab template.
  *
  * @var array                     $types    Redirect types.
- * @var DuckDev\Redirect\Settings $settings Settings class.
+ * @var RedirectPress\Settings $settings Settings class.
  *
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -23,7 +23,7 @@
 	printf(
 	// translators: %s link to logs page.
 		__( 'These options can be customized for each individual 404 errors from <a href="%s">the logs page</a>.', '404-to-301' ),
-		esc_url( DuckDev\Redirect\Plugin::get_url( 'logs' ) )
+		esc_url( RedirectPress\Plugin::get_url( 'logs' ) )
 	);
 	?>
 </p>
@@ -35,7 +35,7 @@
 			name="404_to_301_settings[redirect_enabled]"
 			value="1"
 			@change="toggleRedirect"
-			<?php checked( dd4t3_settings()->get( 'redirect_enabled' ) ); ?>
+			<?php checked( redirectpress_settings()->get( 'redirect_enabled' ) ); ?>
 		> <?php esc_html_e( 'Enable redirects for 404 errors', '404-to-301' ); ?>
 	</label>
 </div>
@@ -55,7 +55,7 @@
 </p>
 
 <div class="duckdev-fields">
-	<?php $selected = dd4t3_settings()->get( 'redirect_type', 301 ); ?>
+	<?php $selected = redirectpress_settings()->get( 'redirect_type', 301 ); ?>
 	<?php foreach ( $types as $redirect_type => $label ) : ?>
 		<p>
 			<label for="redirect-type-<?php echo esc_attr( $redirect_type ); ?>">
@@ -105,7 +105,7 @@
 <!-- Redirect page -->
 <div
 	id="redirect-target-page-container"
-	class="duckdev-fields <?php echo 'page' !== dd4t3_settings()->get( 'redirect_target', 'link' ) ? 'duckdev-hidden' : ''; ?>"
+	class="duckdev-fields <?php echo 'page' !== redirectpress_settings()->get( 'redirect_target', 'link' ) ? 'duckdev-hidden' : ''; ?>"
 >
 	<p>
 		<label for="redirect-target-page-value">
@@ -118,7 +118,7 @@
 			array(
 				'id'       => 'redirect-target-page-value',
 				'name'     => '404_to_301_settings[redirect_page]',
-				'selected' => esc_attr( dd4t3_settings()->get( 'redirect_page' ) ),
+				'selected' => esc_attr( redirectpress_settings()->get( 'redirect_page' ) ),
 			)
 		);
 		?>
@@ -128,7 +128,7 @@
 <!-- Redirect link -->
 <div
 	id="redirect-target-link-container"
-	class="duckdev-fields <?php echo 'page' === dd4t3_settings()->get( 'redirect_target', 'link' ) ? 'duckdev-hidden' : ''; ?>"
+	class="duckdev-fields <?php echo 'page' === redirectpress_settings()->get( 'redirect_target', 'link' ) ? 'duckdev-hidden' : ''; ?>"
 >
 	<p>
 		<label for="redirect-target-link-value">
@@ -142,7 +142,7 @@
 			id="redirect-target-link-value"
 			class="large-text"
 			placeholder="https://example.com"
-			value="<?php echo esc_url( dd4t3_settings()->get( 'redirect_link', '' ) ); ?>"
+			value="<?php echo esc_url( redirectpress_settings()->get( 'redirect_link', '' ) ); ?>"
 		>
 	</p>
 </div>

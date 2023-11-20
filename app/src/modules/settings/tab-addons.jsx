@@ -84,9 +84,9 @@ export default function TabAddons(props) {
 												: __('Installed', '404-to-301')
 										}
 										className={classNames({
-											'dd4t3-settings-green':
+											'redirectpress-settings-green':
 												addon.is_active,
-											'dd4t3-settings-grey':
+											'redirectpress-settings-grey':
 												!addon.is_active,
 										})}
 									/>

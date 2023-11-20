@@ -14,7 +14,7 @@
  * @subpackage Base
  */
 
-namespace DuckDev\Redirect\Utils;
+namespace RedirectPress\Utils;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -23,7 +23,7 @@ defined( 'WPINC' ) || die;
  * Class Base
  *
  * @since   4.0.0
- * @package DuckDev\Redirect\Utils
+ * @package RedirectPress\Utils
  */
 abstract class Base {
 

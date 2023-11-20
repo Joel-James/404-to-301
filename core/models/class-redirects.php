@@ -13,18 +13,18 @@
  * @subpackage Redirects
  */
 
-namespace DuckDev\Redirect\Models;
+namespace RedirectPress\Models;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Database;
+use RedirectPress\Database;
 
 /**
  * Class Redirects.
  *
  * @since   4.0.0
- * @package DuckDev\Redirect\Models
+ * @package RedirectPress\Models
  * @extends Model
  */
 class Redirects extends Model {
@@ -50,7 +50,7 @@ class Redirects extends Model {
 	 * @since 4.0.0
 	 * @var string $query
 	 */
-	protected $query = '\\DuckDev\\Redirect\\Database\Queries\Redirect';
+	protected $query = '\\RedirectPress\\Database\Queries\Redirect';
 
 	/**
 	 * Initialize class and register hooks.
@@ -67,8 +67,8 @@ class Redirects extends Model {
 		Logs::instance();
 
 		// Modify redirect data.
-		add_filter( 'dd4t3_model_redirect_create_data', array( $this, 'filter_log_data' ) );
-		add_filter( 'dd4t3_model_redirect_update_data', array( $this, 'filter_log_data' ) );
+		add_filter( 'redirectpress_model_redirect_create_data', array( $this, 'filter_log_data' ) );
+		add_filter( 'redirectpress_model_redirect_update_data', array( $this, 'filter_log_data' ) );
 	}
 
 	/**
@@ -149,7 +149,7 @@ class Redirects extends Model {
 		 *
 		 * @param array $data Data for redirect creation.
 		 */
-		$data = apply_filters( 'dd4t3_model_redirect_create_data', $data );
+		$data = apply_filters( 'redirectpress_model_redirect_create_data', $data );
 
 		// Create new redirect.
 		$redirect_id = $this->query()->add_item( $data );
@@ -167,7 +167,7 @@ class Redirects extends Model {
 			 * @param object $redirect    Redirect object.
 			 * @param array  $data        Data used for creation.
 			 */
-			do_action( 'dd4t3_model_after_redirect_create', $redirect_id, $redirect, $data );
+			do_action( 'redirectpress_model_after_redirect_create', $redirect_id, $redirect, $data );
 
 			return $redirect_id;
 		}
@@ -199,7 +199,7 @@ class Redirects extends Model {
 		 *
 		 * @param array $data Data for redirect update.
 		 */
-		$data = apply_filters( 'dd4t3_model_redirect_update_data', $data );
+		$data = apply_filters( 'redirectpress_model_redirect_update_data', $data );
 
 		// Prepare data.
 		$data = $this->prepare_fields( $data );
@@ -218,7 +218,7 @@ class Redirects extends Model {
 			 * @param object $redirect    Redirect object.
 			 * @param array  $data        Data used for update.
 			 */
-			do_action( 'dd4t3_model_after_redirect_update', $redirect_id, $redirect, $data );
+			do_action( 'redirectpress_model_after_redirect_update', $redirect_id, $redirect, $data );
 
 			return true;
 		}
@@ -257,7 +257,7 @@ class Redirects extends Model {
 			 * @param int    $redirect_id Redirect ID.
 			 * @param object $item        Redirect object.
 			 */
-			do_action( 'dd4t3_model_after_redirect_delete', $redirect_id, $item );
+			do_action( 'redirectpress_model_after_redirect_delete', $redirect_id, $item );
 
 			return true;
 		}

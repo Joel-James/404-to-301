@@ -10,7 +10,7 @@ export default function NavTabs(props) {
 
 	return (
 		<nav
-			className="dd4t3-settings-tabs-wrapper"
+			className="redirectpress-settings-tabs-wrapper"
 			style={{
 				gridTemplateColumns: grids.join(' '),
 			}}
@@ -20,7 +20,7 @@ export default function NavTabs(props) {
 					key={key}
 					href="#"
 					className={classNames({
-						'dd4t3-settings-nav-tab': true,
+						'redirectpress-settings-nav-tab': true,
 						active: key === props.current,
 					})}
 					onClick={() => props.onChange(key)}

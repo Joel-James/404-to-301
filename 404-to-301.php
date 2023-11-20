@@ -71,43 +71,43 @@ if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
 }
 
 // Plugin version.
-define( 'DD4T3_VERSION', '4.0.0-beta' );
+define( 'REDIRECTPRESS_VERSION', '4.0.0-beta' );
 
 // Plugin database version.
-define( 'DD4T3_DB_VERSION', '4.0.0' );
+define( 'REDIRECTPRESS_DB_VERSION', '4.0.0' );
 
 // Plugin url.
-define( 'DD4T3_URL', plugin_dir_url( __FILE__ ) );
+define( 'REDIRECTPRESS_URL', plugin_dir_url( __FILE__ ) );
 
 // Plugin directory path.
-define( 'DD4T3_DIR', plugin_dir_path( __FILE__ ) );
+define( 'REDIRECTPRESS_DIR', plugin_dir_path( __FILE__ ) );
 
 // Plugin file.
-define( 'DD4T3_FILE', __FILE__ );
+define( 'REDIRECTPRESS_FILE', __FILE__ );
 
 // Plugin base name.
-define( 'DD4T3_BASE_NAME', plugin_basename( __FILE__ ) );
+define( 'REDIRECTPRESS_BASE_NAME', plugin_basename( __FILE__ ) );
 
 // Auto load classes.
-require_once DD4T3_DIR . '/vendor/autoload.php';
+require_once REDIRECTPRESS_DIR . '/vendor/autoload.php';
 
 // Activation actions.
-register_activation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'activate' ) );
+register_activation_hook( __FILE__, array( 'RedirectPress\Plugin', 'activate' ) );
 
 // Deactivation actions.
-register_deactivation_hook( __FILE__, array( 'DuckDev\Redirect\Plugin', 'deactivate' ) );
+register_deactivation_hook( __FILE__, array( 'RedirectPress\Plugin', 'deactivate' ) );
 
 /**
- * The main DuckDev\Redirect\Core instance.
+ * The main RedirectPress\Core instance.
  *
  * Use this function like you would a global variable, except
  * without needing to declare the global.
  * We will initialize only if required WP and PHP versions match.
  *
- * Example: $dd4t3 = \DuckDev\Redirect\Core::instance();
+ * Example: $redirectpress = \RedirectPress\Core::instance();
  *
  * @since 4.0.0
  *
- * @return DuckDev\Redirect\Core
+ * @return RedirectPress\Core
  */
-add_action( 'plugins_loaded', array( 'DuckDev\Redirect\Core', 'instance' ) );
+add_action( 'plugins_loaded', array( 'RedirectPress\Core', 'instance' ) );

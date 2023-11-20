@@ -10,12 +10,12 @@
  * @subpackage Info
  */
 
-namespace DuckDev\Redirect\CLI;
+namespace RedirectPress\CLI;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Plugin;
+use RedirectPress\Plugin;
 
 /**
  * Class Info
@@ -24,7 +24,7 @@ use DuckDev\Redirect\Plugin;
  *
  * @since   4.0.0
  * @extends Command
- * @package DuckDev\Redirect\CLI
+ * @package RedirectPress\CLI
  */
 class Info extends Command {
 
@@ -61,7 +61,7 @@ class Info extends Command {
 	/**
 	 * Get the plugin info data.
 	 *
-	 * Use dd4t3_cli_get_info filter to add more data
+	 * Use redirectpress_cli_get_info filter to add more data
 	 * to the information list.
 	 *
 	 * @since  4.0.0
@@ -84,6 +84,6 @@ class Info extends Command {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'dd4t3_cli_get_info', $info );
+		return apply_filters( 'redirectpress_cli_get_info', $info );
 	}
 }

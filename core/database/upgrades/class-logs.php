@@ -13,19 +13,19 @@
  * @subpackage Upgrades\Logs
  */
 
-namespace DuckDev\Redirect\Database\Upgrades;
+namespace RedirectPress\Database\Upgrades;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Plugin;
-use DuckDev\Redirect\Views\View;
+use RedirectPress\Plugin;
+use RedirectPress\Views\View;
 
 /**
  * Class Logs.
  *
  * @since   4.0.0
- * @package DuckDev\Redirect\Database\Upgrades
+ * @package RedirectPress\Database\Upgrades
  */
 class Logs {
 
@@ -43,7 +43,7 @@ class Logs {
 	 * @since 4.0.0
 	 * @var string $action
 	 */
-	private $action = 'dd4t3_logs_upgrade';
+	private $action = 'redirectpress_logs_upgrade';
 
 	/**
 	 * Initialize the upgrade class.
@@ -55,7 +55,7 @@ class Logs {
 		add_action( $this->action, array( $this, 'upgrade' ) );
 
 		// Show admin notice for upgrade.
-		add_action( 'dd4t3_admin_notices', array( $this, 'upgrade_notice' ) );
+		add_action( 'redirectpress_admin_notices', array( $this, 'upgrade_notice' ) );
 	}
 
 	/**
@@ -70,7 +70,7 @@ class Logs {
 	 * @return void
 	 */
 	public function upgrade_notice() {
-		if ( ! dd4t3_settings()->get( 'logs_upgraded' ) && $this->old_table_exists() ) {
+		if ( ! redirectpress_settings()->get( 'logs_upgraded' ) && $this->old_table_exists() ) {
 			View::instance()->render(
 				'components/notices/upgrade-notice',
 				array(
@@ -191,7 +191,7 @@ class Logs {
 		// URL is required.
 		if ( ! empty( $url ) ) {
 			// Get already added URLs.
-			$urls = dd4t3_cache()->get_transient( 'upgraded_log_urls' );
+			$urls = redirectpress_cache()->get_transient( 'upgraded_log_urls' );
 			if ( empty( $urls ) ) {
 				$urls = array();
 			}
@@ -232,7 +232,7 @@ class Logs {
 			}
 
 			// Set the updated list to transient.
-			dd4t3_cache()->set_transient( 'upgraded_log_urls', $urls );
+			redirectpress_cache()->set_transient( 'upgraded_log_urls', $urls );
 		}
 	}
 
@@ -262,13 +262,13 @@ class Logs {
 		// Only if source and destination can be set.
 		if ( ! empty( $source ) && ! empty( $destination ) ) {
 			// Get already added URLs.
-			$urls = dd4t3_cache()->get_transient( 'upgraded_redirect_urls' );
+			$urls = redirectpress_cache()->get_transient( 'upgraded_redirect_urls' );
 			if ( empty( $urls ) ) {
 				$urls = array();
 			}
 
 			if ( empty( $options['type'] ) ) {
-				$code = dd4t3_settings()->get( 'redirect_type', 301 );
+				$code = redirectpress_settings()->get( 'redirect_type', 301 );
 			} else {
 				$code = $options['type'];
 			}
@@ -293,7 +293,7 @@ class Logs {
 					$urls[ $source ] = $wpdb->insert_id;
 
 					// Set the updated list to transient.
-					dd4t3_cache()->set_transient( 'upgraded_redirect_urls', $urls );
+					redirectpress_cache()->set_transient( 'upgraded_redirect_urls', $urls );
 				}
 			}
 
@@ -465,7 +465,7 @@ class Logs {
 		as_unschedule_all_actions( $this->action );
 
 		// Mark as done.
-		dd4t3_settings()->set( 'logs_upgraded', true );
+		redirectpress_settings()->set( 'logs_upgraded', true );
 
 		// Clean all action scheduler logs.
 		$this->clean_scheduler_data();
@@ -624,7 +624,7 @@ class Logs {
 
 		// If global, get enabled status.
 		if ( 'global' === $status ) {
-			$status = dd4t3_settings()->get( 'redirect_enabled', true ) ? 'enabled' : 'disabled';
+			$status = redirectpress_settings()->get( 'redirect_enabled', true ) ? 'enabled' : 'disabled';
 		}
 
 		return $status;

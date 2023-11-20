@@ -10,7 +10,7 @@
  * @subpackage Settings
  */
 
-namespace DuckDev\Redirect\CLI;
+namespace RedirectPress\CLI;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -22,7 +22,7 @@ defined( 'WPINC' ) || die;
  *
  * @since   4.0.0
  * @extends Command
- * @package DuckDev\Redirect\CLI
+ * @package RedirectPress\CLI
  */
 class Settings extends Command {
 
@@ -70,12 +70,12 @@ class Settings extends Command {
 	 *
 	 * @since  4.0.0
 	 * @access private
-	 * @uses   dd4t3_settings()
+	 * @uses   redirectpress_settings()
 	 *
 	 * @return void
 	 */
 	private function set_setting( $key, $value ) {
-		if ( dd4t3_settings()->set( $key, $value ) ) {
+		if ( redirectpress_settings()->set( $key, $value ) ) {
 			$this->success( __( 'Setting updated successfully!', '404-to-301' ) );
 		} else {
 			$this->error( __( 'Setting update failed.', '404-to-301' ) );
@@ -89,13 +89,13 @@ class Settings extends Command {
 	 *
 	 * @since  4.0.0
 	 * @access private
-	 * @uses   dd4t3_settings()
+	 * @uses   redirectpress_settings()
 	 *
 	 * @return void
 	 */
 	private function get_setting( $key ) {
 		// Get the setting value.
-		$value = dd4t3_settings()->get( $key, false, $valid );
+		$value = redirectpress_settings()->get( $key, false, $valid );
 		// Display result.
 		$valid ? $this->show( $value ) : $this->error( __( 'Invalid settings.', '404-to-301' ) );
 	}
@@ -105,13 +105,13 @@ class Settings extends Command {
 	 *
 	 * @since  4.0.0
 	 * @access private
-	 * @uses   dd4t3_settings()
+	 * @uses   redirectpress_settings()
 	 *
 	 * @return void
 	 */
 	private function get_all_settings() {
 		$this->maybe_as_table(
-			dd4t3_settings()->all(),
+			redirectpress_settings()->all(),
 			array( 'module', 'values' )
 		);
 	}

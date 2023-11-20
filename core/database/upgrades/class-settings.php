@@ -13,7 +13,7 @@
  * @subpackage Upgrades\Settings
  */
 
-namespace DuckDev\Redirect\Database\Upgrades;
+namespace RedirectPress\Database\Upgrades;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -22,7 +22,7 @@ defined( 'WPINC' ) || die;
  * Class Settings.
  *
  * @since   4.0.0
- * @package DuckDev\Redirect\Database\Upgrades
+ * @package RedirectPress\Database\Upgrades
  */
 class Settings {
 
@@ -98,7 +98,7 @@ class Settings {
 				);
 
 				// Update the settings.
-				dd4t3_settings()->update( $settings );
+				redirectpress_settings()->update( $settings );
 			}
 
 			// Upgrade review notice time.

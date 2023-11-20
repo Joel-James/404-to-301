@@ -4,7 +4,7 @@ import '@/styles/redirects.scss'
 import Redirects from './modules/redirects'
 
 // Get redirects app container.
-const container = document.getElementById('dd4t3-redirects-app')
+const container = document.getElementById('redirectpress-redirects-app')
 
 // Only if the app container found.
 if (container !== null) {

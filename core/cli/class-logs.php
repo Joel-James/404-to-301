@@ -12,7 +12,7 @@
  * @subpackage Logs
  */
 
-namespace DuckDev\Redirect\CLI;
+namespace RedirectPress\CLI;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -24,7 +24,7 @@ defined( 'WPINC' ) || die;
  *
  * @since   4.0.0
  * @extends Command
- * @package DuckDev\Redirect\CLI
+ * @package RedirectPress\CLI
  */
 class Logs extends Command {
 

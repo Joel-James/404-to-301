@@ -14,7 +14,7 @@
  * @subpackage Command
  */
 
-namespace DuckDev\Redirect\CLI;
+namespace RedirectPress\CLI;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -26,7 +26,7 @@ use WP_CLI\Utils;
  * Class Command
  *
  * @since   4.0.0
- * @package DuckDev\Redirect\CLI
+ * @package RedirectPress\CLI
  */
 abstract class Command {
 

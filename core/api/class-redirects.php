@@ -13,7 +13,7 @@
  * @subpackage Redirects
  */
 
-namespace DuckDev\Redirect\Api;
+namespace RedirectPress\Api;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -21,15 +21,15 @@ defined( 'WPINC' ) || die;
 use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
-use DuckDev\Redirect\Data;
-use DuckDev\Redirect\Models;
+use RedirectPress\Data;
+use RedirectPress\Models;
 
 /**
  * Class Redirects
  *
  * @since   4.0.0
  * @extends Endpoint
- * @package DuckDev\Redirect\Api
+ * @package RedirectPress\Api
  */
 class Redirects extends Endpoint {
 

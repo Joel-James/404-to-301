@@ -22,10 +22,10 @@
  * @since  4.0.0
  * @access public
  *
- * @return DuckDev\Redirect\Settings
+ * @return RedirectPress\Settings
  */
-function dd4t3_settings() {
-	return DuckDev\Redirect\Settings::instance();
+function redirectpress_settings() {
+	return RedirectPress\Settings::instance();
 }
 
 /**
@@ -37,14 +37,14 @@ function dd4t3_settings() {
  * @since  4.0.0
  * @access public
  *
- * @return DuckDev\Redirect\Cache
+ * @return RedirectPress\Cache
  */
-function dd4t3_cache() {
+function redirectpress_cache() {
 	static $cache = null;
 
 	// Make sure only one instance is available.
 	if ( null === $cache ) {
-		$cache = new DuckDev\Redirect\Cache();
+		$cache = new RedirectPress\Cache();
 	}
 
 	return $cache;

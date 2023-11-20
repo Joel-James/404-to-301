@@ -15,21 +15,21 @@
  */
 
 $skip = wp_nonce_url(
-	add_query_arg( 'dd4t3_db_upgrade', 'skip' ),
-	'dd4t3_db_upgrade',
-	'dd4t3_nonce'
+	add_query_arg( 'redirectpress_db_upgrade', 'skip' ),
+	'redirectpress_db_upgrade',
+	'redirectpress_nonce'
 );
 
 $upgrade_all = wp_nonce_url(
-	add_query_arg( 'dd4t3_db_upgrade', 'upgrade_all' ),
-	'dd4t3_db_upgrade',
-	'dd4t3_nonce'
+	add_query_arg( 'redirectpress_db_upgrade', 'upgrade_all' ),
+	'redirectpress_db_upgrade',
+	'redirectpress_nonce'
 );
 
 $upgrade_redirects = wp_nonce_url(
-	add_query_arg( 'dd4t3_db_upgrade', 'upgrade_redirects' ),
-	'dd4t3_db_upgrade',
-	'dd4t3_nonce'
+	add_query_arg( 'redirectpress_db_upgrade', 'upgrade_redirects' ),
+	'redirectpress_db_upgrade',
+	'redirectpress_nonce'
 );
 
 $scheduler_install = wp_nonce_url(
@@ -45,7 +45,7 @@ $scheduler_install = wp_nonce_url(
 
 ?>
 
-<div id="dd4t3-notice-upgrade-notice" class="notice dd4t3-redirects-notice notice-info <?php echo $upgrading ? 'dd4t3-redirects-show-icon' : ''; ?>">
+<div id="redirectpress-notice-upgrade-notice" class="notice redirectpress-redirects-notice notice-info <?php echo $upgrading ? 'redirectpress-redirects-show-icon' : ''; ?>">
 	<?php if ( $upgrading ) : ?>
 		<p>
 			<?php

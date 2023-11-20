@@ -15,7 +15,7 @@
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit();
 
 // Delete settings.
-delete_option( DuckDev\Redirect\Settings::KEY );
+delete_option( RedirectPress\Settings::KEY );
 // DB versions.
 delete_option( '404_to_301_logs_version' );
 delete_option( '404_to_301_redirects_version' );

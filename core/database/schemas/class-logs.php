@@ -11,7 +11,7 @@
  * @subpackage Logs
  */
 
-namespace DuckDev\Redirect\Database\Schemas;
+namespace RedirectPress\Database\Schemas;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -23,7 +23,7 @@ use BerlinDB\Database\Schema;
  *
  * @since   4.0.0
  * @extends Schema
- * @package DuckDev\Redirect\Database\Schemas
+ * @package RedirectPress\Database\Schemas
  */
 class Logs extends Schema {
 

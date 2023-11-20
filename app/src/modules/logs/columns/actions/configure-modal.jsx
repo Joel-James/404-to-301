@@ -113,7 +113,7 @@ export default class ConfigureModal extends React.Component {
 				title={__('Configure actions', '404-to-301')}
 				onRequestClose={onClose}
 				style={{ maxWidth: '550px' }}
-				className="dd4t3-logs-modal"
+				className="redirectpress-logs-modal"
 			>
 				<VStack spacing={3}>
 					<Spacer>

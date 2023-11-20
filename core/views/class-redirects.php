@@ -11,7 +11,7 @@
  * @subpackage Redirects
  */
 
-namespace DuckDev\Redirect\Views;
+namespace RedirectPress\Views;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -21,7 +21,7 @@ defined( 'WPINC' ) || die;
  *
  * @extends View
  * @since   4.0.0
- * @package DuckDev\Redirect\Views
+ * @package RedirectPress\Views
  */
 class Redirects extends View {
 

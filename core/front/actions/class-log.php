@@ -13,20 +13,20 @@
  * @subpackage Log
  */
 
-namespace DuckDev\Redirect\Front\Actions;
+namespace RedirectPress\Front\Actions;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Models;
-use DuckDev\Redirect\Front\Request;
+use RedirectPress\Models;
+use RedirectPress\Front\Request;
 
 /**
  * Class Log
  *
  * @since   4.0.0
  * @extends Action
- * @package DuckDev\Redirect\Front\Actions
+ * @package RedirectPress\Front\Actions
  */
 class Log extends Action {
 
@@ -89,7 +89,7 @@ class Log extends Action {
 		 * @param array   $data    Final log data.
 		 * @param Request $request Request object.
 		 */
-		do_action( 'dd4t3_before_log', $data, $this->request );
+		do_action( 'redirectpress_before_log', $data, $this->request );
 
 		// Log data.
 		$success = Models\Logs::instance()->create( $data );
@@ -106,7 +106,7 @@ class Log extends Action {
 		 * @param int     $data    Added log data.
 		 * @param Request $request Request object.
 		 */
-		do_action( 'dd4t3_after_log', $success, $data, $this->request );
+		do_action( 'redirectpress_after_log', $success, $data, $this->request );
 	}
 
 	/**
@@ -136,7 +136,7 @@ class Log extends Action {
 		 * @param array   $data    Log data.
 		 * @param Request $request Request object.
 		 */
-		return apply_filters( 'dd4t3_log_get_data', $data, $this->request );
+		return apply_filters( 'redirectpress_log_get_data', $data, $this->request );
 	}
 
 	/**
@@ -153,7 +153,7 @@ class Log extends Action {
 		$can = true;
 
 		// Check if a log already exist for current url if duplicate is disabled.
-		if ( dd4t3_settings()->get( 'logs_skip_duplicates' ) ) {
+		if ( redirectpress_settings()->get( 'logs_skip_duplicates' ) ) {
 			$can = ! $this->request->get_info( 'log_id' );
 		}
 
@@ -165,6 +165,6 @@ class Log extends Action {
 		 * @param bool    $skip    Should skip.
 		 * @param Request $request Request object.
 		 */
-		return apply_filters( 'dd4t3_logs_can_duplicate', $can, $this->request );
+		return apply_filters( 'redirectpress_logs_can_duplicate', $can, $this->request );
 	}
 }

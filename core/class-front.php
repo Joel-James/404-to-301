@@ -13,22 +13,22 @@
  * @subpackage Front
  */
 
-namespace DuckDev\Redirect;
+namespace RedirectPress;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Base;
-use DuckDev\Redirect\Utils\Helpers;
-use DuckDev\Redirect\Front\Actions;
-use DuckDev\Redirect\Front\Request;
+use RedirectPress\Utils\Base;
+use RedirectPress\Utils\Helpers;
+use RedirectPress\Front\Actions;
+use RedirectPress\Front\Request;
 
 /**
  * Class Front
  *
  * @since   4.0.0
  * @extends Base
- * @package DuckDev\Redirect
+ * @package RedirectPress
  */
 class Front extends Base {
 
@@ -43,7 +43,7 @@ class Front extends Base {
 		add_filter( 'redirect_canonical', array( $this, 'url_guessing' ) );
 
 		// Disable IP if required.
-		add_filter( 'dd4t3_request_set_ip', array( $this, 'hide_ip' ) );
+		add_filter( 'redirectpress_request_set_ip', array( $this, 'hide_ip' ) );
 
 		// Handle request actions.
 		add_action( 'template_redirect', array( $this, 'process_request' ) );
@@ -56,8 +56,8 @@ class Front extends Base {
 	 * This method doesn't do anything. We will trigger actions which is used
 	 * by the actions.
 	 *
-	 * - dd4t3_request : This is fired on all requests.
-	 * - dd4t3_404_request : This action is fired if the current request is 404.
+	 * - redirectpress_request : This is fired on all requests.
+	 * - redirectpress_404_request : This action is fired if the current request is 404.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -88,7 +88,7 @@ class Front extends Base {
 			 *
 			 * @param Request $request Request object.
 			 */
-			do_action( 'dd4t3_404_request', $request );
+			do_action( 'redirectpress_404_request', $request );
 		}
 
 		/**
@@ -101,7 +101,7 @@ class Front extends Base {
 		 *
 		 * @param Request $request Request object.
 		 */
-		do_action( 'dd4t3_request', $request );
+		do_action( 'redirectpress_request', $request );
 	}
 
 	/**
@@ -120,7 +120,7 @@ class Front extends Base {
 	 */
 	public function url_guessing( $guess ) {
 		// Check if guessing is disabled.
-		$disabled = dd4t3_settings()->get( 'disable_guessing' );
+		$disabled = redirectpress_settings()->get( 'disable_guessing' );
 
 		if ( $disabled && ! isset( $_GET['p'] ) ) {
 			$guess = false;
@@ -145,7 +145,7 @@ class Front extends Base {
 	 */
 	public function hide_ip( $check ) {
 		// Disable only if asked.
-		if ( dd4t3_settings()->get( 'disable_ip' ) ) {
+		if ( redirectpress_settings()->get( 'disable_ip' ) ) {
 			return false;
 		}
 
@@ -181,7 +181,7 @@ class Front extends Base {
 		 *
 		 * @param array $request Current request.
 		 */
-		return apply_filters( 'dd4t3_get_request', $request );
+		return apply_filters( 'redirectpress_get_request', $request );
 	}
 
 	/**
@@ -205,6 +205,6 @@ class Front extends Base {
 		 *
 		 * @param bool $valid Is current request valid.
 		 */
-		return apply_filters( 'dd4t3_is_valid_request', $valid );
+		return apply_filters( 'redirectpress_is_valid_request', $valid );
 	}
 }

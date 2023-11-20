@@ -12,19 +12,19 @@
  * @subpackage Action
  */
 
-namespace DuckDev\Redirect\Front\Actions;
+namespace RedirectPress\Front\Actions;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Helpers;
-use DuckDev\Redirect\Front\Request;
+use RedirectPress\Utils\Helpers;
+use RedirectPress\Front\Request;
 
 /**
  * Class Action
  *
  * @since   4.0.0
- * @package DuckDev\Redirect\Front\Actions
+ * @package RedirectPress\Front\Actions
  */
 abstract class Action {
 
@@ -72,9 +72,9 @@ abstract class Action {
 		$this->request = $request;
 
 		// Process normal request.
-		add_action( 'dd4t3_request', array( $this, 'process_request' ), $this->priority );
+		add_action( 'redirectpress_request', array( $this, 'process_request' ), $this->priority );
 		// Process 404 error request.
-		add_action( 'dd4t3_404_request', array( $this, 'process_error' ), $this->priority );
+		add_action( 'redirectpress_404_request', array( $this, 'process_error' ), $this->priority );
 	}
 
 	/**
@@ -129,7 +129,7 @@ abstract class Action {
 		 * @param string  $action  Action name.
 		 * @param Request $request Request object.
 		 */
-		return apply_filters( 'dd4t3_action_can_proceed', true, $this->action, $this->request );
+		return apply_filters( 'redirectpress_action_can_proceed', true, $this->action, $this->request );
 	}
 
 	/**
@@ -152,7 +152,7 @@ abstract class Action {
 
 		if ( 'global' === $status ) {
 			// Get global option.
-			$status = dd4t3_settings()->get( $settings_key );
+			$status = redirectpress_settings()->get( $settings_key );
 		}
 
 		// Get boolean value.
@@ -167,6 +167,6 @@ abstract class Action {
 		 * @param string  $action  Action name.
 		 * @param Request $request Request object.
 		 */
-		return apply_filters( 'dd4t3_action_is_enabled', $enabled, $this->action, $this->request );
+		return apply_filters( 'redirectpress_action_is_enabled', $enabled, $this->action, $this->request );
 	}
 }

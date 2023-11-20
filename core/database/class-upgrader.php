@@ -13,21 +13,21 @@
  * @subpackage Upgrader
  */
 
-namespace DuckDev\Redirect\Database;
+namespace RedirectPress\Database;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Permission;
-use DuckDev\Redirect\Utils\Base;
-use DuckDev\Redirect\Utils\Helpers;
+use RedirectPress\Permission;
+use RedirectPress\Utils\Base;
+use RedirectPress\Utils\Helpers;
 
 /**
  * Class Upgrader.
  *
  * @since   4.0.0
  * @extends Base
- * @package DuckDev\Redirect\Database
+ * @package RedirectPress\Database
  */
 class Upgrader extends Base {
 
@@ -58,15 +58,15 @@ class Upgrader extends Base {
 	 */
 	public function settings_upgrade() {
 		// Get current plugin version.
-		$version = dd4t3_settings()->get( 'plugin_version', 0 );
+		$version = redirectpress_settings()->get( 'plugin_version', 0 );
 
 		// Only if the current version is higher than existing.
-		if ( version_compare( DD4T3_VERSION, $version, '>' ) ) {
+		if ( version_compare( REDIRECTPRESS_VERSION, $version, '>' ) ) {
 			$settings = new Upgrades\Settings();
 			$settings->upgrade( $version );
 
 			// Update the plugin version.
-			dd4t3_settings()->set( 'plugin_version', DD4T3_VERSION );
+			redirectpress_settings()->set( 'plugin_version', REDIRECTPRESS_VERSION );
 		}
 	}
 
@@ -87,15 +87,15 @@ class Upgrader extends Base {
 
 		if (
 			is_admin() &&
-			isset( $_GET['dd4t3_db_upgrade'], $_GET['dd4t3_nonce'] ) &&
-			wp_verify_nonce( Helpers::input_get( 'dd4t3_nonce' ), 'dd4t3_db_upgrade' )
+			isset( $_GET['redirectpress_db_upgrade'], $_GET['redirectpress_nonce'] ) &&
+			wp_verify_nonce( Helpers::input_get( 'redirectpress_nonce' ), 'redirectpress_db_upgrade' )
 		) {
 			// Perform logs upgrade.
 			if ( Permission::has_access() ) {
 				// Allowed actions.
 				$actions = array( 'skip', 'upgrade_all', 'upgrade_redirects' );
 				// Get the action.
-				$action = Helpers::input_get( 'dd4t3_db_upgrade' );
+				$action = Helpers::input_get( 'redirectpress_db_upgrade' );
 
 				// Start upgrade.
 				if ( in_array( $action, $actions, true ) ) {

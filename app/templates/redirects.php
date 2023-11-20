@@ -16,7 +16,7 @@
 
 ?>
 
-<div class="wrap dd4t3-redirects-wrap">
+<div class="wrap redirectpress-redirects-wrap">
 	<h1 class="wp-heading-inline">Redirects</h1>
 	<a href="" class="page-title-action">Add New</a>
 	<hr class="wp-header-end">
@@ -30,7 +30,7 @@
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_admin_notices', 'logs' );
+		do_action( 'redirectpress_admin_notices', 'logs' );
 		?>
 	</div>
 

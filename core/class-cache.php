@@ -15,7 +15,7 @@
  * @subpackage Cache
  */
 
-namespace DuckDev\Redirect;
+namespace RedirectPress;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -25,7 +25,7 @@ defined( 'WPINC' ) || die;
  *
  * @since   4.0.0
  * @extends \DuckDev\Cache\Cache
- * @package DuckDev\Redirect
+ * @package RedirectPress
  */
 class Cache extends \DuckDev\Cache\Cache {
 

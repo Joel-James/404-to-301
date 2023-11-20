@@ -16,7 +16,7 @@ const ActionsColumn = ({ log, onUpdate, onDelete }) => {
 	return (
 		<BodyColumn id="actions">
 			<Button
-				className="dd4t3-logs-tooltip"
+				className="redirectpress-logs-tooltip"
 				data-tooltip={__('Setup custom redirect', '404-to-301')}
 				variant="tertiary"
 				onClick={() => setShowRedirect(true)}
@@ -25,7 +25,7 @@ const ActionsColumn = ({ log, onUpdate, onDelete }) => {
 			</Button>
 			<Button
 				variant="tertiary"
-				className="dd4t3-logs-tooltip"
+				className="redirectpress-logs-tooltip"
 				data-tooltip={__('Configure actions', '404-to-301')}
 				onClick={() => setShowConfig(true)}
 			>
@@ -33,7 +33,7 @@ const ActionsColumn = ({ log, onUpdate, onDelete }) => {
 			</Button>
 			<Button
 				variant="tertiary"
-				className="dd4t3-logs-tooltip"
+				className="redirectpress-logs-tooltip"
 				data-tooltip={__('Delete log', '404-to-301')}
 				isDestructive={true}
 				onClick={() => setShowDelete(true)}

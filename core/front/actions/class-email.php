@@ -13,19 +13,19 @@
  * @subpackage Email
  */
 
-namespace DuckDev\Redirect\Front\Actions;
+namespace RedirectPress\Front\Actions;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Front\Request;
+use RedirectPress\Front\Request;
 
 /**
  * Class Email
  *
  * @since   4.0.0
  * @extends Action
- * @package DuckDev\Redirect\Front\Actions
+ * @package RedirectPress\Front\Actions
  */
 class Email extends Action {
 
@@ -86,7 +86,7 @@ class Email extends Action {
 		 * @param array           $headers   Email headers.
 		 * @param Request         $request   Request object.
 		 */
-		do_action( 'dd4t3_before_email', $recipient, $subject, $body, $headers, $this->request );
+		do_action( 'redirectpress_before_email', $recipient, $subject, $body, $headers, $this->request );
 
 		// Send email using wp_mail().
 		$success = wp_mail( $recipient, $subject, $body, $headers );
@@ -106,13 +106,13 @@ class Email extends Action {
 		 * @param array           $headers   Email headers.
 		 * @param Request         $request   Request object.
 		 */
-		do_action( 'dd4t3_after_email', $success, $recipient, $subject, $body, $headers, $this->request );
+		do_action( 'redirectpress_after_email', $success, $recipient, $subject, $body, $headers, $this->request );
 	}
 
 	/**
 	 * Get email recipient address.
 	 *
-	 * Use `dd4t3_email_get_recipient` filter to modify the email recipient.
+	 * Use `redirectpress_email_get_recipient` filter to modify the email recipient.
 	 *
 	 * @since  4.0.0
 	 * @access private
@@ -120,7 +120,7 @@ class Email extends Action {
 	 */
 	private function get_recipient() {
 		// Get the email address.
-		$recipient = dd4t3_settings()->get(
+		$recipient = redirectpress_settings()->get(
 			'email_recipient',
 			get_option( 'admin_email' ) // Site admin email as default.
 		);
@@ -133,13 +133,13 @@ class Email extends Action {
 		 * @param string|string[] $recipient Email recipient.
 		 * @param Request         $request   Request object.
 		 */
-		return apply_filters( 'dd4t3_email_get_recipient', $recipient, $this->request );
+		return apply_filters( 'redirectpress_email_get_recipient', $recipient, $this->request );
 	}
 
 	/**
 	 * Get the email subject.
 	 *
-	 * Use `dd4t3_email_get_subject` filter to modify the email subject.
+	 * Use `redirectpress_email_get_subject` filter to modify the email subject.
 	 *
 	 * @since  4.0.0
 	 * @access private
@@ -157,13 +157,13 @@ class Email extends Action {
 		 * @param string  $subject Subject.
 		 * @param Request $request Request object.
 		 */
-		return apply_filters( 'dd4t3_email_get_subject', $subject, $this->request );
+		return apply_filters( 'redirectpress_email_get_subject', $subject, $this->request );
 	}
 
 	/**
 	 * Get the email headers.
 	 *
-	 * Use `dd4t3_email_get_headers` filter to modify the email headers.
+	 * Use `redirectpress_email_get_headers` filter to modify the email headers.
 	 *
 	 * @since  4.0.0
 	 * @access private
@@ -177,7 +177,7 @@ class Email extends Action {
 		 *
 		 * @param string $name From name (Default: Site name).
 		 */
-		$name = apply_filters( 'dd4t3_email_get_headers_name', get_bloginfo( 'name' ) );
+		$name = apply_filters( 'redirectpress_email_get_headers_name', get_bloginfo( 'name' ) );
 
 		/**
 		 * Filter to alter From email address of email alert.
@@ -186,7 +186,7 @@ class Email extends Action {
 		 *
 		 * @param string $from From email (Default: admin_email option).
 		 */
-		$from = apply_filters( 'dd4t3_email_get_headers_from', get_option( 'admin_email' ) );
+		$from = apply_filters( 'redirectpress_email_get_headers_from', get_option( 'admin_email' ) );
 
 		// Get the email headers.
 		$headers = array(
@@ -202,13 +202,13 @@ class Email extends Action {
 		 * @param array   $headers Email headers.
 		 * @param Request $request Request object.
 		 */
-		return apply_filters( 'dd4t3_email_get_headers', $headers, $this->request );
+		return apply_filters( 'redirectpress_email_get_headers', $headers, $this->request );
 	}
 
 	/**
 	 * Get the email body.
 	 *
-	 * Use `dd4t3_email_get_body` filter to modify the email body.
+	 * Use `redirectpress_email_get_body` filter to modify the email body.
 	 *
 	 * @since  4.0.0
 	 * @access private
@@ -226,6 +226,6 @@ class Email extends Action {
 		 * @param string  $subject Email body.
 		 * @param Request $request Request object.
 		 */
-		return apply_filters( 'dd4t3_email_get_body', $body, $this->request );
+		return apply_filters( 'redirectpress_email_get_body', $body, $this->request );
 	}
 }

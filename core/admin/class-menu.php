@@ -12,22 +12,22 @@
  * @subpackage Menu
  */
 
-namespace DuckDev\Redirect\Admin;
+namespace RedirectPress\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Views;
-use DuckDev\Redirect\Plugin;
-use DuckDev\Redirect\Permission;
-use DuckDev\Redirect\Utils\Base;
+use RedirectPress\Views;
+use RedirectPress\Plugin;
+use RedirectPress\Permission;
+use RedirectPress\Utils\Base;
 
 /**
  * Class Menu
  *
  * @since   4.0.0
  * @extends Base
- * @package DuckDev\Redirect\Admin
+ * @package RedirectPress\Admin
  */
 class Menu extends Base {
 
@@ -84,7 +84,7 @@ class Menu extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_admin_menu' );
+		do_action( 'redirectpress_admin_menu' );
 	}
 
 	/**

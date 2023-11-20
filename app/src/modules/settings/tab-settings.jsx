@@ -99,7 +99,7 @@ export default class TabSettings extends React.Component {
 					onUpdate={this.updateSetting}
 				/>
 
-				<div className="dd4t3-settings-footer">
+				<div className="redirectpress-settings-footer">
 					<Button
 						disabled={this.state.saving}
 						isBusy={this.state.saving}

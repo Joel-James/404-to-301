@@ -13,7 +13,7 @@
  * @subpackage Data
  */
 
-namespace DuckDev\Redirect\Api;
+namespace RedirectPress\Api;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -21,14 +21,14 @@ defined( 'WPINC' ) || die;
 use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
-use DuckDev\Redirect;
+use RedirectPress;
 
 /**
  * Class Remote
  *
  * @since   4.0.0
  * @extends Endpoint
- * @package DuckDev\Redirect\Api
+ * @package RedirectPress\Api
  */
 class Data extends Endpoint {
 
@@ -81,6 +81,6 @@ class Data extends Endpoint {
 	 * @return WP_REST_Response
 	 */
 	public function get_addons( $request ) {
-		return $this->get_response( Redirect\Data::addons() );
+		return $this->get_response( RedirectPress\Data::addons() );
 	}
 }

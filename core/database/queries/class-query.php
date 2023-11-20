@@ -13,7 +13,7 @@
  * @subpackage Query
  */
 
-namespace DuckDev\Redirect\Database\Queries;
+namespace RedirectPress\Database\Queries;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -23,7 +23,7 @@ defined( 'WPINC' ) || die;
  *
  * @since   4.0.0
  * @extends \BerlinDB\Database\Query
- * @package DuckDev\Redirect\Database\Queries
+ * @package RedirectPress\Database\Queries
  */
 class Query extends \BerlinDB\Database\Query {
 

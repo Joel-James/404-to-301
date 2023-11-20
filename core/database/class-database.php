@@ -13,19 +13,19 @@
  * @subpackage Database
  */
 
-namespace DuckDev\Redirect\Database;
+namespace RedirectPress\Database;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Base;
+use RedirectPress\Utils\Base;
 
 /**
  * Class Database.
  *
  * @since   4.0.0
  * @extends Base
- * @package DuckDev\Redirect\Database
+ * @package RedirectPress\Database
  */
 class Database extends Base {
 
@@ -118,7 +118,7 @@ class Database extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_db_after_install' );
+		do_action( 'redirectpress_db_after_install' );
 	}
 
 	/**
@@ -142,7 +142,7 @@ class Database extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_db_after_upgrade' );
+		do_action( 'redirectpress_db_after_upgrade' );
 	}
 
 	/**
@@ -165,6 +165,6 @@ class Database extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'dd4t3_db_after_uninstall' );
+		do_action( 'redirectpress_db_after_uninstall' );
 	}
 }

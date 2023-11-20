@@ -17,4 +17,4 @@
  */
 
 ?>
-<div id="dd4t3-settings-app" class="dd4t3-settings-wrap"></div>
+<div id="redirectpress-settings-app" class="redirectpress-settings-wrap"></div>

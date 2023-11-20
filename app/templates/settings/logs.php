@@ -25,7 +25,7 @@
 			id="logs-enabled"
 			value="1"
 			@change="toggleLogs"
-			<?php checked( dd4t3_settings()->get( 'logs_enabled' ) ); ?>
+			<?php checked( redirectpress_settings()->get( 'logs_enabled' ) ); ?>
 		> <?php esc_html_e( 'Enable logs for 404 errors', '404-to-301' ); ?>
 	</label>
 </div>
@@ -43,7 +43,7 @@
 			name="404_to_301_settings[logs_skip_duplicates]"
 			id="logs-skip-duplicates"
 			value="1"
-			<?php checked( dd4t3_settings()->get( 'logs_skip_duplicates' ) ); ?>
+			<?php checked( redirectpress_settings()->get( 'logs_skip_duplicates' ) ); ?>
 		> <?php esc_html_e( 'Skip duplicate entries from the logs', '404-to-301' ); ?>
 	</label>
 </div>

@@ -13,20 +13,20 @@
  * @subpackage Vars
  */
 
-namespace DuckDev\Redirect\Admin;
+namespace RedirectPress\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Data;
-use DuckDev\Redirect\Utils\Base;
+use RedirectPress\Data;
+use RedirectPress\Utils\Base;
 
 /**
  * Class Vars
  *
  * @since   4.0.0
  * @extends Base
- * @package DuckDev\Redirect\Admin
+ * @package RedirectPress\Admin
  */
 class Vars extends Base {
 
@@ -40,9 +40,9 @@ class Vars extends Base {
 	 */
 	public function init() {
 		// Add required vars for javascript.
-		add_action( 'dd4t3_assets_vars_dd4t3-logs', array( $this, 'logs' ) );
-		add_action( 'dd4t3_assets_vars_dd4t3-settings', array( $this, 'settings' ) );
-		add_action( 'dd4t3_assets_vars_dd4t3-redirects', array( $this, 'redirects' ) );
+		add_action( 'redirectpress_assets_vars_redirectpress-logs', array( $this, 'logs' ) );
+		add_action( 'redirectpress_assets_vars_redirectpress-settings', array( $this, 'settings' ) );
+		add_action( 'redirectpress_assets_vars_redirectpress-redirects', array( $this, 'redirects' ) );
 	}
 
 	/**
@@ -122,10 +122,10 @@ class Vars extends Base {
 		);
 
 		// Settings data.
-		$vars['settings'] = dd4t3_settings()->all();
+		$vars['settings'] = redirectpress_settings()->all();
 
 		// Common items.
-		$vars['version'] = DD4T3_VERSION;
+		$vars['version'] = REDIRECTPRESS_VERSION;
 
 		return $vars;
 	}

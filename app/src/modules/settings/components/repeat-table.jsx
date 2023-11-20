@@ -86,7 +86,7 @@ export default class RepeatTable extends React.Component {
 
 	render() {
 		return (
-			<table className="dd4t3-settings-repeat-table">
+			<table className="redirectpress-settings-repeat-table">
 				<tbody>
 				{this.state.items.map((item, index) => (
 					<tr key={index}>
@@ -99,10 +99,10 @@ export default class RepeatTable extends React.Component {
 								}
 							/>
 						</td>
-						<td className="dd4t3-settings-repeat-table-delete">
+						<td className="redirectpress-settings-repeat-table-delete">
 							<Button
 								variant="tertiary"
-								className="dd4t3-settings-repeat-table-delete-button"
+								className="redirectpress-settings-repeat-table-delete-button"
 								isSmall={true}
 								isDestructive={true}
 								showTooltip={true}

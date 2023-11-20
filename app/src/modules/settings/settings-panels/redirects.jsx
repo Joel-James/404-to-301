@@ -1,4 +1,4 @@
-/* global wp, dd4t3 */
+/* global wp, redirectpress */
 import React from 'react'
 import {
 	PanelBody,
@@ -14,10 +14,10 @@ const { __ } = wp.i18n
 
 let pages = []
 // Setup page list.
-if (dd4t3.pages) {
-	Object.keys(dd4t3.pages).forEach((id) => {
+if (redirectpress.pages) {
+	Object.keys(redirectpress.pages).forEach((id) => {
 		pages.push({
-			label: dd4t3.pages[id],
+			label: redirectpress.pages[id],
 			value: id,
 		})
 	})
@@ -50,10 +50,10 @@ export default class RedirectsPanel extends React.Component {
 	render() {
 		const settings = this.props.settings
 		let types = []
-		Object.keys(window.dd4t3.types).forEach((type) => {
+		Object.keys(window.redirectpress.types).forEach((type) => {
 			types.push({
 				value: type,
-				label: window.dd4t3.types[type],
+				label: window.redirectpress.types[type],
 			})
 		})
 
@@ -144,12 +144,12 @@ export default class RedirectsPanel extends React.Component {
 								'Enter the email address where you want to get the email notification.',
 								'404-to-301'
 							)}
-							id="dd4t3-custom-url"
-							className="dd4t3-full-width"
+							id="redirectpress-custom-url"
+							className="redirectpress-full-width"
 						>
 							<TextControl
 								value={settings.redirect_link}
-								id="dd4t3-custom-url"
+								id="redirectpress-custom-url"
 								type="url"
 								placeholder={__('https://google.com')}
 								onChange={(value) =>

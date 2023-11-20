@@ -20,7 +20,7 @@ export default class TabInfo extends React.Component {
 							'404-to-301'
 						)}
 					</p>
-					<div className="dd4t3-settings-button-group">
+					<div className="redirectpress-settings-button-group">
 						<Button
 							variant="secondary"
 							target="_blank"
@@ -48,7 +48,7 @@ export default class TabInfo extends React.Component {
 							'404-to-301'
 						)}
 					</p>
-					<div className="dd4t3-settings-button-group">
+					<div className="redirectpress-settings-button-group">
 						<Button
 							variant="secondary"
 							target="_blank"

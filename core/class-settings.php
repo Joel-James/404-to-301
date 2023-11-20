@@ -14,19 +14,19 @@
  * @subpackage Settings
  */
 
-namespace DuckDev\Redirect;
+namespace RedirectPress;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Base;
+use RedirectPress\Utils\Base;
 
 /**
  * Class Settings
  *
  * @since   4.0.0
  * @extends Base
- * @package DuckDev\Redirect\Controllers
+ * @package RedirectPress\Controllers
  */
 class Settings extends Base {
 
@@ -86,7 +86,7 @@ class Settings extends Base {
 		 *
 		 * @param mixed  $value   Setting value.
 		 */
-		return apply_filters( 'dd4t3_settings_get', $value, $key, $default, $valid );
+		return apply_filters( 'redirectpress_settings_get', $value, $key, $default, $valid );
 	}
 
 	/**
@@ -120,7 +120,7 @@ class Settings extends Base {
 		 *
 		 * @param array $settings    Settings.
 		 */
-		return apply_filters( 'dd4t3_settings_all', $settings, $use_default );
+		return apply_filters( 'redirectpress_settings_all', $settings, $use_default );
 	}
 
 	/**
@@ -168,7 +168,7 @@ class Settings extends Base {
 		 *
 		 * @param array $values Values to update.
 		 */
-		$values = apply_filters( 'dd4t3_settings_pre_update', $values );
+		$values = apply_filters( 'redirectpress_settings_pre_update', $values );
 
 		// Get old settings.
 		$old_values = $this->all();
@@ -229,7 +229,7 @@ class Settings extends Base {
 		 *
 		 * @param array $settings Settings.
 		 */
-		return apply_filters( 'dd4t3_settings_defaults', $settings );
+		return apply_filters( 'redirectpress_settings_defaults', $settings );
 	}
 
 	/**
@@ -283,7 +283,7 @@ class Settings extends Base {
 		 *
 		 * @param array $values Values to update.
 		 */
-		$values = apply_filters( 'dd4t3_settings_pre_update', $values );
+		$values = apply_filters( 'redirectpress_settings_pre_update', $values );
 
 		// Format the settings.
 		return $this->format_values( $values );
@@ -326,7 +326,7 @@ class Settings extends Base {
 		 *
 		 * @param array $old Processed to be updated.
 		 */
-		return apply_filters( 'dd4t3_settings_format_values', $processed, $values );
+		return apply_filters( 'redirectpress_settings_format_values', $processed, $values );
 	}
 
 	/**

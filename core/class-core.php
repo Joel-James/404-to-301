@@ -14,19 +14,19 @@
  * @subpackage Core
  */
 
-namespace DuckDev\Redirect;
+namespace RedirectPress;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\Redirect\Utils\Base;
-use DuckDev\Redirect\Database\Database;
+use RedirectPress\Utils\Base;
+use RedirectPress\Database\Database;
 
 /**
  * Class Core
  *
  * @since   4.0.0
- * @package DuckDev\Redirect
+ * @package RedirectPress
  * @extends Base
  */
 final class Core extends Base {
@@ -57,7 +57,7 @@ final class Core extends Base {
 		 *
 		 * @param Core $this Plugin core instance.
 		 */
-		do_action( 'dd4t3_init', $this );
+		do_action( 'redirectpress_init', $this );
 	}
 
 	/**
@@ -147,7 +147,7 @@ final class Core extends Base {
 		if ( defined( 'WP_CLI' ) && WP_CLI && class_exists( '\WP_CLI' ) ) {
 			\WP_CLI::add_command(
 				'404-to-301',
-				'\DuckDev\Redirect\CLI\CLI',
+				'\RedirectPress\CLI\CLI',
 				array(
 					'shortdesc' => __( 'Manage settings, error logs and redirects from 404 to 301.', '404-to-301' ),
 				)

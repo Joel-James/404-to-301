@@ -1,4 +1,4 @@
-/* global wp, dd4t3 */
+/* global wp, redirectpress */
 import React from 'react'
 import classNames from 'classnames'
 import Tooltip from '@/components/tooltip'
@@ -7,7 +7,7 @@ import { BodyColumn } from '@/components/table/table'
 const { __ } = wp.i18n
 
 const RedirectColumn = ({ log }) => {
-	let global = dd4t3.settings.redirect_enabled
+	let global = redirectpress.settings.redirect_enabled
 	let hasRedirect = !!log.redirect_id
 	let isEnabled = log.redirect_status === 'enabled'
 	// Consider global status.
@@ -16,7 +16,7 @@ const RedirectColumn = ({ log }) => {
 	}
 
 	let classes = classNames({
-		'dd4t3-logs-tag': true,
+		'redirectpress-logs-tag': true,
 		'tag-red': 'disabled' === log.redirect_status,
 		'tag-green': isEnabled,
 	})
