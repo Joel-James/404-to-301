@@ -1,12 +1,18 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import '@/styles/redirects.scss'
-import Redirects from './modules/redirects'
+import domReady from '@wordpress/dom-ready';
+import { createRoot } from "@wordpress/element";
 
-// Get redirects app container.
-const container = document.getElementById('redirectpress-redirects-app')
-
-// Only if the app container found.
-if (container !== null) {
-	ReactDOM.render(<Redirects />, container)
+const SettingsPage = () => {
+	return (
+		<>
+			<div>Hello</div>
+		</>
+	);
 }
+
+domReady( () => {
+	const root = createRoot(
+		document.getElementById( 'redirectpress-redirects-app' )
+	);
+
+	root.render( <SettingsPage /> );
+} );

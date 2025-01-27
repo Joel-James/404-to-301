@@ -171,7 +171,7 @@ class Assets extends Base {
 		// Register all available scripts.
 		foreach ( $scripts as $handle => $data ) {
 			// If external treat the source as full URL.
-			$src = empty( $data['external'] ) ? REDIRECTPRESS_URL . 'app/assets/js/' . $data['src'] : $data['src'];
+			$src = empty( $data['external'] ) ? REDIRECTPRESS_URL . 'app/assets/' . $data['src'] : $data['src'];
 
 			wp_register_script(
 				$handle, // Script name.
@@ -267,8 +267,8 @@ class Assets extends Base {
 		$scripts = array(
 			// Logs scripts.
 			'redirectpress-logs'      => array(
-				'src'  => 'logs.min.js',
-				'deps' => array( 'jquery', 'wp-i18n' ),
+				'src'  => 'logs.js',
+				'deps' => array( 'react', 'react-dom', 'react-jsx-runtime', 'wp-api-fetch', 'wp-components', 'wp-data', 'wp-date', 'wp-dom-ready', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-url' ),
 			),
 			// Setting scripts.
 			'redirectpress-settings'  => array(

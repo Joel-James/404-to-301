@@ -1,18 +1,15 @@
-@charset "UTF-8";
+@import "@wordpress/dataviews/build-style/style.css";
 
-// Prefix for the classes.
-$prefix: 'redirectpress-logs';
-
-// Custom components for logs page.
-@import "logs/logs-actions";
-@import "logs/logs-form";
-
-// Common components.
-@import "components/functions";
-@import "components/colors";
-@import "components/mixins";
-@import "components/utils";
-@import "components/buttons";
-@import "components/tooltip";
-@import "components/notifications";
-@import "components/tags";
+#redirectpress-logs-app {
+  background: white;
+  .topic_photos {
+    display: flex;
+    flex-wrap: wrap;
+    span {
+      background-color: rgb(166, 165, 165);
+      color: white;
+      padding: 2px 4px;
+      margin: 2px;
+    }
+  }
+}
