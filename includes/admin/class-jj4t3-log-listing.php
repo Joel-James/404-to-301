@@ -765,7 +765,7 @@ class JJ4T3_Log_Listing extends WP_List_Table {
 		$nonce = jj4t3_from_request( '_wpnonce' );
 
 		// Nonce verification.
-		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'bulk-404errorlogs' ) ) {
+		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'bulk-' . $this->_args['plural'] ) ) {
 			return false;
 		}
 
