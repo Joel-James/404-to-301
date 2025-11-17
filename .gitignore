@@ -26,3 +26,4 @@ pnpm-debug.log*
 
 # Unwanted config files
 package-lock.json
+composer.lock
