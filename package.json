@@ -1,21 +1,25 @@
 {
-	"name": "404-to-301",
-	"version": "4.0.0-beta",
-	"private": true,
-	"description": "Automatically redirect all 404 errors to any page using 301 redirect for SEO. You can redirect and log every 404 errors. No more 404 errors in Webmaster tool.",
-	"author": {
-		"name": "Joel James",
-		"url": "https://duckdev.com"
-	},
-	"main": "404-to-301.php",
-	"scripts": {
-		"build": "wp-scripts build app/src/logs.js --output-path=app/assets",
-		"start": "wp-scripts start app/src/logs.js --output-path=app/assets"
-	},
-	"dependencies": {
-		"@wordpress/dataviews": "^4.12.0"
-	},
-	"devDependencies": {
-		"@wordpress/scripts": "^30.9.0"
-	}
+  "name": "404-to-301",
+  "version": "4.0.0-beta",
+  "private": true,
+  "description": "Automatically redirect all 404 errors to any page using 301 redirect for SEO. You can redirect and log every 404 errors. No more 404 errors in Webmaster tool.",
+  "author": {
+    "name": "Joel James",
+    "url": "https://duckdev.com"
+  },
+  "main": "404-to-301.php",
+  "scripts": {
+    "build": "wp-scripts build app/src/logs.js --output-path=app/assets",
+    "start": "wp-scripts start app/src/logs.js --output-path=app/assets"
+  },
+  "dependencies": {
+    "@wordpress/dataviews": "^10.3.0",
+    "@wordpress/components": "^30.8.0",
+    "@wordpress/core-data": "^7.35.0",
+    "@wordpress/data": "^10.35.0",
+    "@wordpress/element": "^6.35.0"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^31.0.0"
+  }
 }
