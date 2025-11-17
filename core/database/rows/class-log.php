@@ -13,7 +13,7 @@
  * @subpackage Log
  */
 
-namespace RedirectPress\Database\Rows;
+namespace DuckDev\FourNotFour\Database\Rows;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -43,7 +43,7 @@ use BerlinDB\Database\Row;
  * @property string     $updated_at                  Updated time.
  * @property int|null   $updated_by                  Updated user id.
  *
- * @package RedirectPress\Database\Rows
+ * @package DuckDev\FourNotFour\Database\Rows
  */
 class Log extends Row {
 

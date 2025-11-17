@@ -13,7 +13,7 @@
  * @subpackage Redirect
  */
 
-namespace RedirectPress\Database\Rows;
+namespace DuckDev\FourNotFour\Database\Rows;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -39,7 +39,7 @@ use BerlinDB\Database\Row;
  * @property int    $created_by            Created user id.
  * @property int    $updated_by            Updated user id.
  *
- * @package RedirectPress\Database\Rows
+ * @package DuckDev\FourNotFour\Database\Rows
  */
 class Redirect extends Row {
 

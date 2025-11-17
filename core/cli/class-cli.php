@@ -12,7 +12,7 @@
  * @subpackage CLI
  */
 
-namespace RedirectPress\CLI;
+namespace DuckDev\FourNotFour\CLI;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -24,7 +24,7 @@ use WP_CLI_Command;
  *
  * @since   4.0.0
  * @extends WP_CLI_Command
- * @package RedirectPress\CLI
+ * @package DuckDev\FourNotFour\CLI
  */
 final class CLI extends WP_CLI_Command {
 

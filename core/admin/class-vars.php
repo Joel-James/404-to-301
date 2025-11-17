@@ -13,20 +13,20 @@
  * @subpackage Vars
  */
 
-namespace RedirectPress\Admin;
+namespace DuckDev\FourNotFour\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use RedirectPress\Data;
-use RedirectPress\Utils\Base;
+use DuckDev\FourNotFour\Data;
+use DuckDev\FourNotFour\Utils\Base;
 
 /**
  * Class Vars
  *
  * @since   4.0.0
  * @extends Base
- * @package RedirectPress\Admin
+ * @package DuckDev\FourNotFour\Admin
  */
 class Vars extends Base {
 
@@ -40,9 +40,9 @@ class Vars extends Base {
 	 */
 	public function init() {
 		// Add required vars for javascript.
-		add_action( 'redirectpress_assets_vars_redirectpress-logs', array( $this, 'logs' ) );
-		add_action( 'redirectpress_assets_vars_redirectpress-settings', array( $this, 'settings' ) );
-		add_action( 'redirectpress_assets_vars_redirectpress-redirects', array( $this, 'redirects' ) );
+		add_action( '404_to_301_assets_vars_404-to-301-logs', array( $this, 'logs' ) );
+		add_action( '404_to_301_assets_vars_404-to-301-settings', array( $this, 'settings' ) );
+		add_action( '404_to_301_assets_vars_404-to-301-redirects', array( $this, 'redirects' ) );
 	}
 
 	/**
@@ -122,10 +122,10 @@ class Vars extends Base {
 		);
 
 		// Settings data.
-		$vars['settings'] = redirectpress_settings()->all();
+		$vars['settings'] = duckdev_404_to_301_settings()->all();
 
 		// Common items.
-		$vars['version'] = REDIRECTPRESS_VERSION;
+		$vars['version'] = DUCKDEV_404_VERSION;
 
 		return $vars;
 	}

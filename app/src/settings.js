@@ -11,7 +11,7 @@ const SettingsPage = () => {
 
 domReady( () => {
 	const root = createRoot(
-		document.getElementById( 'redirectpress-redirects-app' )
+		document.getElementById( '404-to-301-redirects-app' )
 	);
 
 	root.render( <SettingsPage /> );

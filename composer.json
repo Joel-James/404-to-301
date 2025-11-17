@@ -8,7 +8,10 @@
   "optimize-autoloader": true,
   "config": {
     "platform": {
-      "php": "5.6.1"
+      "php": "7.4"
+    },
+    "allow-plugins": {
+      "composer/installers": true
     }
   },
   "autoload": {
@@ -23,6 +26,6 @@
     "duckdev/wp-review-notice": "^1.0.2",
     "duckdev/wp-cache-helper": "^1.0",
     "berlindb/core": "^2.0",
-    "symfony/http-foundation": "^3.4"
+    "symfony/http-foundation": "^5.4"
   }
 }

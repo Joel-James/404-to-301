@@ -1,4 +1,4 @@
-/* global wp, redirectpress */
+/* global wp, duckdevFourNotFour */
 import React from 'react'
 import request from '@/helpers/request'
 import TabInfo from './settings/tab-info'
@@ -45,14 +45,14 @@ export default class Settings extends React.Component {
 		return (
 			<>
 				<ReactNotifications />
-				<div className="redirectpress-settings-header">
-					<div className="redirectpress-settings-title-section">
+				<div className="404-to-301-settings-header">
+					<div className="404-to-301-settings-title-section">
 						<h1>404 to 301 - Settings</h1>
 						<abbr
-							title={'Version: ' + redirectpress.version}
+							title={'Version: ' + duckdevFourNotFour.version}
 							className="version"
 						>
-							v{redirectpress.version}
+							v{duckdevFourNotFour.version}
 						</abbr>
 					</div>
 
@@ -73,7 +73,7 @@ export default class Settings extends React.Component {
 				</div>
 
 				{this.state.loaded ? (
-					<div className="redirectpress-settings-main">
+					<div className="404-to-301-settings-main">
 						{this.state.currentTab === 'settings' && (
 							<TabSettings settings={this.state.settings} />
 						)}
@@ -84,7 +84,7 @@ export default class Settings extends React.Component {
 						{this.state.currentTab === 'general' && <TabGeneral />}
 					</div>
 				) : (
-					<div className="redirectpress-settings-main">
+					<div className="404-to-301-settings-main">
 						<Placeholder>
 							<Spinner />
 						</Placeholder>

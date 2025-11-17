@@ -14,20 +14,20 @@
  * @subpackage Assets
  */
 
-namespace RedirectPress\Admin;
+namespace DuckDev\FourNotFour\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use RedirectPress\Plugin;
-use RedirectPress\Utils\Base;
+use DuckDev\FourNotFour\Plugin;
+use DuckDev\FourNotFour\Utils\Base;
 
 /**
  * Class Assets
  *
  * @since   4.0.0
  * @extends Base
- * @package RedirectPress\Admin
+ * @package DuckDev\FourNotFour\Admin
  */
 class Assets extends Base {
 
@@ -44,9 +44,9 @@ class Assets extends Base {
 		add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
 
 		// Enqueue assets only on plugin pages.
-		add_action( 'redirectpress_enqueue_assets_logs', array( $this, 'logs_assets' ) );
-		add_action( 'redirectpress_enqueue_assets_settings', array( $this, 'settings_assets' ) );
-		add_action( 'redirectpress_enqueue_assets_redirects', array( $this, 'redirects_assets' ) );
+		add_action( '404_to_301_enqueue_assets_logs', array( $this, 'logs_assets' ) );
+		add_action( '404_to_301_enqueue_assets_settings', array( $this, 'settings_assets' ) );
+		add_action( '404_to_301_enqueue_assets_redirects', array( $this, 'redirects_assets' ) );
 	}
 
 	/**
@@ -101,7 +101,7 @@ class Assets extends Base {
 			 * @param string $page        Current page key.
 			 * @param string $hook_suffix The current admin page.
 			 */
-			do_action( "redirectpress_enqueue_assets_{$page}", $page, $hook_suffix );
+			do_action( "404_to_301_enqueue_assets_{$page}", $page, $hook_suffix );
 
 			/**
 			 * Action hook to enqueue assets for our pages.
@@ -113,7 +113,7 @@ class Assets extends Base {
 			 * @param string $page        Current page key.
 			 * @param string $hook_suffix The current admin page.
 			 */
-			do_action( 'redirectpress_enqueue_assets', $page, $hook_suffix );
+			do_action( '404_to_301_enqueue_assets', $page, $hook_suffix );
 		}
 	}
 
@@ -138,13 +138,13 @@ class Assets extends Base {
 		// Register all styles.
 		foreach ( $styles as $handle => $data ) {
 			// If external treat the source as full URL.
-			$src = empty( $data['external'] ) ? REDIRECTPRESS_URL . 'app/assets/css/' . $data['src'] : $data['src'];
+			$src = empty( $data['external'] ) ? DUCKDEV_404_URL . 'app/assets/css/' . $data['src'] : $data['src'];
 
 			wp_register_style(
 				$handle, // Style name.
 				$src, // Source url.
 				empty( $data['deps'] ) ? array() : $data['deps'], // Dependencies.
-				empty( $data['version'] ) ? REDIRECTPRESS_VERSION : $data['version'], // Version number.
+				empty( $data['version'] ) ? DUCKDEV_404_VERSION : $data['version'], // Version number.
 				empty( $data['media'] ) ? 'all' : $data['media'] // The media for which this stylesheet has been defined.
 			);
 		}
@@ -171,13 +171,13 @@ class Assets extends Base {
 		// Register all available scripts.
 		foreach ( $scripts as $handle => $data ) {
 			// If external treat the source as full URL.
-			$src = empty( $data['external'] ) ? REDIRECTPRESS_URL . 'app/assets/' . $data['src'] : $data['src'];
+			$src = empty( $data['external'] ) ? DUCKDEV_404_URL . 'app/assets/' . $data['src'] : $data['src'];
 
 			wp_register_script(
 				$handle, // Script name.
 				$src, // Source URL.
 				empty( $data['deps'] ) ? array() : $data['deps'], // Dependencies.
-				empty( $data['version'] ) ? REDIRECTPRESS_VERSION : $data['version'], // Version number.
+				empty( $data['version'] ) ? DUCKDEV_404_VERSION : $data['version'], // Version number.
 				isset( $data['footer'] ) ? $data['footer'] : true // Should enqueue in footer.
 			);
 		}
@@ -206,7 +206,7 @@ class Assets extends Base {
 			// Script vars.
 			wp_localize_script(
 				$script,
-				'redirectpress',
+				'duckdevFourNotFour',
 				/**
 				 * Filter to add/remove vars in script.
 				 *
@@ -214,7 +214,7 @@ class Assets extends Base {
 				 *
 				 * @param array $vars Localize vars.
 				 */
-				apply_filters( "redirectpress_assets_vars_{$script}", array() )
+				apply_filters( "404_to_301_assets_vars_{$script}", array() )
 			);
 
 			// Enqueue script now.
@@ -225,7 +225,7 @@ class Assets extends Base {
 				wp_set_script_translations(
 					$script,
 					'404-to-301',
-					REDIRECTPRESS_DIR . '/languages/'
+					DUCKDEV_404_DIR . '/languages/'
 				);
 			}
 		}
@@ -256,7 +256,7 @@ class Assets extends Base {
 	 * Get the scripts list to register.
 	 *
 	 * This function will include all scripts
-	 * added using redirectpress_assets_get_scripts filter.
+	 * added using 404_to_301_assets_get_scripts filter.
 	 *
 	 * @since  4.0.0
 	 * @access private
@@ -266,17 +266,17 @@ class Assets extends Base {
 	private function get_scripts() {
 		$scripts = array(
 			// Logs scripts.
-			'redirectpress-logs'      => array(
+			'404-to-301-logs'      => array(
 				'src'  => 'logs.js',
 				'deps' => array( 'react', 'react-dom', 'react-jsx-runtime', 'wp-api-fetch', 'wp-components', 'wp-data', 'wp-date', 'wp-dom-ready', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-url' ),
 			),
 			// Setting scripts.
-			'redirectpress-settings'  => array(
+			'404-to-301-settings'  => array(
 				'src'  => 'settings.min.js',
 				'deps' => array( 'jquery', 'wp-i18n' ),
 			),
 			// Redirects scripts.
-			'redirectpress-redirects' => array(
+			'404-to-301-redirects' => array(
 				'src'  => 'redirects.min.js',
 				'deps' => array( 'jquery', 'wp-i18n' ),
 			),
@@ -292,14 +292,14 @@ class Assets extends Base {
 		 *
 		 * @param array $scripts Scripts list.
 		 */
-		return apply_filters( 'redirectpress_assets_get_scripts', $scripts );
+		return apply_filters( '404_to_301_assets_get_scripts', $scripts );
 	}
 
 	/**
 	 * Get the styles list to register.
 	 *
 	 * This function will include all scripts
-	 * added using redirectpress_assets_get_scripts filter.
+	 * added using 404_to_301_assets_get_scripts filter.
 	 *
 	 * @since  4.0.0
 	 * @access private
@@ -309,17 +309,17 @@ class Assets extends Base {
 	private function get_styles() {
 		$styles = array(
 			// Logs styles.
-			'redirectpress-logs'      => array(
+			'404-to-301-logs'      => array(
 				'src'  => 'logs.min.css',
 				'deps' => array( 'wp-components' ),
 			),
 			// Settings styles.
-			'redirectpress-settings'  => array(
+			'404-to-301-settings'  => array(
 				'src'  => 'settings.min.css',
 				'deps' => array( 'wp-components' ),
 			),
 			// Settings styles.
-			'redirectpress-redirects' => array(
+			'404-to-301-redirects' => array(
 				'src' => 'redirects.min.css',
 			),
 		);
@@ -333,7 +333,7 @@ class Assets extends Base {
 		 *
 		 * @param array $styles Styles list.
 		 */
-		return apply_filters( 'redirectpress_assets_get_styles', $styles );
+		return apply_filters( '404_to_301_assets_get_styles', $styles );
 	}
 
 	/**
@@ -345,8 +345,8 @@ class Assets extends Base {
 	 * @return void
 	 */
 	public function logs_assets() {
-		$this->enqueue_script( 'redirectpress-logs' );
-		$this->enqueue_style( 'redirectpress-logs' );
+		$this->enqueue_script( '404-to-301-logs' );
+		$this->enqueue_style( '404-to-301-logs' );
 	}
 
 	/**
@@ -358,8 +358,8 @@ class Assets extends Base {
 	 * @return void
 	 */
 	public function settings_assets() {
-		$this->enqueue_script( 'redirectpress-settings' );
-		$this->enqueue_style( 'redirectpress-settings' );
+		$this->enqueue_script( '404-to-301-settings' );
+		$this->enqueue_style( '404-to-301-settings' );
 	}
 
 	/**
@@ -371,7 +371,7 @@ class Assets extends Base {
 	 * @return void
 	 */
 	public function redirects_assets() {
-		$this->enqueue_script( 'redirectpress-redirects' );
-		$this->enqueue_style( 'redirectpress-redirects' );
+		$this->enqueue_script( '404-to-301-redirects' );
+		$this->enqueue_style( '404-to-301-redirects' );
 	}
 }

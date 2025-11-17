@@ -13,7 +13,7 @@
  * @subpackage Plugin
  */
 
-namespace RedirectPress;
+namespace DuckDev\FourNotFour;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -22,7 +22,7 @@ defined( 'WPINC' ) || die;
  * Class Plugin.
  *
  * @since    4.0.0
- * @package  RedirectPress
+ * @package  DuckDev\FourNotFour
  */
 class Plugin {
 
@@ -93,7 +93,7 @@ class Plugin {
 	/**
 	 * Get the plugin version number.
 	 *
-	 * You can also use REDIRECTPRESS_VERSION constant value directly.
+	 * You can also use DUCKDEV_404_VERSION constant value directly.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -101,7 +101,7 @@ class Plugin {
 	 * @return string
 	 */
 	public static function version() {
-		return REDIRECTPRESS_VERSION;
+		return DUCKDEV_404_VERSION;
 	}
 
 	/**
@@ -178,7 +178,7 @@ class Plugin {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'redirectpress_activated' );
+		do_action( '404_to_301_activated' );
 	}
 
 	/**
@@ -201,6 +201,6 @@ class Plugin {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'redirectpress_deactivated' );
+		do_action( '404_to_301_deactivated' );
 	}
 }

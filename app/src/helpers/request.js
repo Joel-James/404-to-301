@@ -1,9 +1,9 @@
-/* global redirectpress */
+/* global duckdevFourNotFour */
 const axios = require('axios')
 const request = axios.create({
-	baseURL: redirectpress.rest.base,
+	baseURL: duckdevFourNotFour.rest.base,
 	headers: {
-		'X-WP-Nonce': redirectpress.rest.nonce,
+		'X-WP-Nonce': duckdevFourNotFour.rest.nonce,
 	},
 })
 

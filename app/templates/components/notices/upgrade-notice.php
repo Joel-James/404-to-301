@@ -15,21 +15,21 @@
  */
 
 $skip = wp_nonce_url(
-	add_query_arg( 'redirectpress_db_upgrade', 'skip' ),
-	'redirectpress_db_upgrade',
-	'redirectpress_nonce'
+	add_query_arg( '404_to_301_db_upgrade', 'skip' ),
+	'404_to_301_db_upgrade',
+	'404_to_301_nonce'
 );
 
 $upgrade_all = wp_nonce_url(
-	add_query_arg( 'redirectpress_db_upgrade', 'upgrade_all' ),
-	'redirectpress_db_upgrade',
-	'redirectpress_nonce'
+	add_query_arg( '404_to_301_db_upgrade', 'upgrade_all' ),
+	'404_to_301_db_upgrade',
+	'404_to_301_nonce'
 );
 
 $upgrade_redirects = wp_nonce_url(
-	add_query_arg( 'redirectpress_db_upgrade', 'upgrade_redirects' ),
-	'redirectpress_db_upgrade',
-	'redirectpress_nonce'
+	add_query_arg( '404_to_301_db_upgrade', 'upgrade_redirects' ),
+	'404_to_301_db_upgrade',
+	'404_to_301_nonce'
 );
 
 $scheduler_install = wp_nonce_url(
@@ -45,7 +45,7 @@ $scheduler_install = wp_nonce_url(
 
 ?>
 
-<div id="redirectpress-notice-upgrade-notice" class="notice redirectpress-redirects-notice notice-info <?php echo $upgrading ? 'redirectpress-redirects-show-icon' : ''; ?>">
+<div id="404-to-301-notice-upgrade-notice" class="notice 404-to-301-redirects-notice notice-info <?php echo $upgrading ? '404-to-301-redirects-show-icon' : ''; ?>">
 	<?php if ( $upgrading ) : ?>
 		<p>
 			<?php

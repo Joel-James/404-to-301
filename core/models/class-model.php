@@ -14,20 +14,20 @@
  * @subpackage Model
  */
 
-namespace RedirectPress\Models;
+namespace DuckDev\FourNotFour\Models;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use RedirectPress\Utils\Base;
-use RedirectPress\Database\Queries;
+use DuckDev\FourNotFour\Utils\Base;
+use DuckDev\FourNotFour\Database\Queries;
 
 /**
  * Class Model
  *
  * @since   4.0.0
  * @extends Base
- * @package RedirectPress\Models\Model
+ * @package DuckDev\FourNotFour\Models\Model
  */
 abstract class Model extends Base {
 
@@ -98,7 +98,7 @@ abstract class Model extends Base {
 	 */
 	protected function remember( $key, $callback ) {
 		// Use cache.
-		$log = redirectpress_cache()->remember( $key, $callback );
+		$log = duckdev_404_to_301_cache()->remember( $key, $callback );
 
 		return empty( $log ) ? false : $log;
 	}
@@ -132,7 +132,7 @@ abstract class Model extends Base {
 		 *
 		 * @param array $data Filtered data.
 		 */
-		return apply_filters( 'redirectpress_model_prepare_fields', $data );
+		return apply_filters( '404_to_301_model_prepare_fields', $data );
 	}
 
 	/**

@@ -150,7 +150,7 @@ const LogsPage = async () => {
 
 domReady(() => {
 	const root = createRoot(
-		document.getElementById('redirectpress-logs-app')
+		document.getElementById('404-to-301-logs-app')
 	);
 
 	root.render(<LogsPage/>);

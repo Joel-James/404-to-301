@@ -13,19 +13,19 @@
  * @subpackage Request
  */
 
-namespace RedirectPress\Front;
+namespace DuckDev\FourNotFour\Front;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use RedirectPress\Models;
+use DuckDev\FourNotFour\Models;
 use Symfony\Component\HttpFoundation;
 
 /**
  * Class Request
  *
  * @since   4.0.0
- * @package RedirectPress\Front
+ * @package DuckDev\FourNotFour\Front
  */
 class Request {
 
@@ -55,7 +55,7 @@ class Request {
 	/**
 	 * Create new request object.
 	 *
-	 * Please use RedirectPress\Front::get_request() method to
+	 * Please use DuckDev\FourNotFour\Front::get_request() method to
 	 * get the current request object. Creating new instances every time
 	 * is a bad idea. Do only if required.
 	 *
@@ -89,7 +89,7 @@ class Request {
 		 * @param string  $method Request method.
 		 * @param Request $this   Request instance.
 		 */
-		return apply_filters( 'redirectpress_request_get_method', $method, $this );
+		return apply_filters( '404_to_301_request_get_method', $method, $this );
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Request {
 		 * @param string  $referrer Request referer.
 		 * @param Request $this     Request instance.
 		 */
-		return apply_filters( 'redirectpress_request_get_referer', $referer, $this );
+		return apply_filters( '404_to_301_request_get_referer', $referer, $this );
 	}
 
 	/**
@@ -131,7 +131,7 @@ class Request {
 		 * @param string  $agent Request user agent.
 		 * @param Request $this  Request instance.
 		 */
-		return apply_filters( 'redirectpress_request_get_agent', $agent, $this );
+		return apply_filters( '404_to_301_request_get_agent', $agent, $this );
 	}
 
 	/**
@@ -153,7 +153,7 @@ class Request {
 		 *
 		 * @param bool $mask Should mask.
 		 */
-		$mask = apply_filters( 'redirectpress_request_mask_ip', false );
+		$mask = apply_filters( '404_to_301_request_mask_ip', false );
 
 		if ( false === $mask ) {
 			$ip = $this->request->getClientIp();
@@ -169,7 +169,7 @@ class Request {
 		 * @param string  $ip   Current IP address.
 		 * @param Request $this Request instance.
 		 */
-		return apply_filters( 'redirectpress_request_ip', $ip, $this );
+		return apply_filters( '404_to_301_request_ip', $ip, $this );
 	}
 
 	/**
@@ -192,7 +192,7 @@ class Request {
 		 * @param string  $url  Current URL.
 		 * @param Request $this Request instance.
 		 */
-		return apply_filters( 'redirectpress_request_get_url', $url, $this );
+		return apply_filters( '404_to_301_request_get_url', $url, $this );
 	}
 
 	/**
@@ -215,7 +215,7 @@ class Request {
 		 * @param string  $url  Current host.
 		 * @param Request $this Request instance.
 		 */
-		return apply_filters( 'redirectpress_request_get_host', $host, $this );
+		return apply_filters( '404_to_301_request_get_host', $host, $this );
 	}
 
 	/**
@@ -236,7 +236,7 @@ class Request {
 		 * @param array   $header Request scheme (http or https).
 		 * @param Request $this   Request instance.
 		 */
-		return apply_filters( 'redirectpress_request_get_scheme', $protocol, $this );
+		return apply_filters( '404_to_301_request_get_scheme', $protocol, $this );
 	}
 
 	/**
@@ -260,7 +260,7 @@ class Request {
 		 * @param array   $header Request header value.
 		 * @param Request $this   Request instance.
 		 */
-		return apply_filters( 'redirectpress_request_get_header', $header, $this );
+		return apply_filters( '404_to_301_request_get_header', $header, $this );
 	}
 
 	/**
@@ -283,7 +283,7 @@ class Request {
 		 * @param array   $headers Request headers.
 		 * @param Request $this    Request instance.
 		 */
-		return apply_filters( 'redirectpress_request_get_headers', $headers, $this );
+		return apply_filters( '404_to_301_request_get_headers', $headers, $this );
 	}
 
 	/**
@@ -309,7 +309,7 @@ class Request {
 		 * @param array   $others Redirect extra data.
 		 * @param Request $this   Request instance.
 		 */
-		return apply_filters( 'redirectpress_request_get_others', $others, $this );
+		return apply_filters( '404_to_301_request_get_others', $others, $this );
 	}
 
 	/**
@@ -373,7 +373,7 @@ class Request {
 		 * @param object|false $redirect Redirect data.
 		 * @param Request      $this     Request instance.
 		 */
-		$this->redirect = apply_filters( 'redirectpress_request_redirect', $redirect, $this );
+		$this->redirect = apply_filters( '404_to_301_request_redirect', $redirect, $this );
 	}
 
 	/**
@@ -404,7 +404,7 @@ class Request {
 			 * @param object|false $log  Log data.
 			 * @param Request      $this Request instance.
 			 */
-			$this->log = apply_filters( 'redirectpress_request_log', $log, $this );
+			$this->log = apply_filters( '404_to_301_request_log', $log, $this );
 		}
 	}
 
@@ -426,7 +426,7 @@ class Request {
 		 *
 		 * @param bool $is_404 Is current request a 404.
 		 */
-		return apply_filters( 'redirectpress_request_is_404', is_404() );
+		return apply_filters( '404_to_301_request_is_404', is_404() );
 	}
 
 	/**

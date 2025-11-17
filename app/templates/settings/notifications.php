@@ -25,7 +25,7 @@
 			id="email-enabled"
 			value="1"
 			@change="toggleEmail"
-			<?php checked( redirectpress_settings()->get( 'email_enabled' ) ); ?>
+			<?php checked( duckdev_404_to_301_settings()->get( 'email_enabled' ) ); ?>
 		> <?php esc_html_e( 'Enable email notifications for 404 errors?', '404-to-301' ); ?>
 	</label>
 </div>
@@ -46,6 +46,6 @@
 		id="email-recipient"
 		class="regular-text"
 		placeholder="admin@duckdev.com"
-		value="<?php echo esc_html( redirectpress_settings()->get( 'email_recipient', '' ) ); ?>"
+		value="<?php echo esc_html( duckdev_404_to_301_settings()->get( 'email_recipient', '' ) ); ?>"
 	>
 </p>

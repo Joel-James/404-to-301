@@ -13,21 +13,21 @@
  * @subpackage Upgrader
  */
 
-namespace RedirectPress\Database;
+namespace DuckDev\FourNotFour\Database;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use RedirectPress\Permission;
-use RedirectPress\Utils\Base;
-use RedirectPress\Utils\Helpers;
+use DuckDev\FourNotFour\Permission;
+use DuckDev\FourNotFour\Utils\Base;
+use DuckDev\FourNotFour\Utils\Helpers;
 
 /**
  * Class Upgrader.
  *
  * @since   4.0.0
  * @extends Base
- * @package RedirectPress\Database
+ * @package DuckDev\FourNotFour\Database
  */
 class Upgrader extends Base {
 
@@ -58,15 +58,15 @@ class Upgrader extends Base {
 	 */
 	public function settings_upgrade() {
 		// Get current plugin version.
-		$version = redirectpress_settings()->get( 'plugin_version', 0 );
+		$version = duckdev_404_to_301_settings()->get( 'plugin_version', 0 );
 
 		// Only if the current version is higher than existing.
-		if ( version_compare( REDIRECTPRESS_VERSION, $version, '>' ) ) {
+		if ( version_compare( DUCKDEV_404_VERSION, $version, '>' ) ) {
 			$settings = new Upgrades\Settings();
 			$settings->upgrade( $version );
 
 			// Update the plugin version.
-			redirectpress_settings()->set( 'plugin_version', REDIRECTPRESS_VERSION );
+			duckdev_404_to_301_settings()->set( 'plugin_version', DUCKDEV_404_VERSION );
 		}
 	}
 
@@ -87,15 +87,15 @@ class Upgrader extends Base {
 
 		if (
 			is_admin() &&
-			isset( $_GET['redirectpress_db_upgrade'], $_GET['redirectpress_nonce'] ) &&
-			wp_verify_nonce( Helpers::input_get( 'redirectpress_nonce' ), 'redirectpress_db_upgrade' )
+			isset( $_GET['404_to_301_db_upgrade'], $_GET['404_to_301_nonce'] ) &&
+			wp_verify_nonce( Helpers::input_get( '404_to_301_nonce' ), '404_to_301_db_upgrade' )
 		) {
 			// Perform logs upgrade.
 			if ( Permission::has_access() ) {
 				// Allowed actions.
 				$actions = array( 'skip', 'upgrade_all', 'upgrade_redirects' );
 				// Get the action.
-				$action = Helpers::input_get( 'redirectpress_db_upgrade' );
+				$action = Helpers::input_get( '404_to_301_db_upgrade' );
 
 				// Start upgrade.
 				if ( in_array( $action, $actions, true ) ) {

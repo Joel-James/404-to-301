@@ -13,7 +13,7 @@
  * @subpackage Data
  */
 
-namespace RedirectPress;
+namespace DuckDev\FourNotFour;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -22,14 +22,14 @@ defined( 'WPINC' ) || die;
  * Class Data
  *
  * @since   4.0.0
- * @package RedirectPress
+ * @package DuckDev\FourNotFour
  */
 class Data {
 
 	/**
 	 * Get available redirect types.
 	 *
-	 * To add or remove redirect types, use redirectpress_redirect_types filter.
+	 * To add or remove redirect types, use 404_to_301_redirect_types filter.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -53,13 +53,13 @@ class Data {
 		 *
 		 * @param array $types Redirect types.
 		 */
-		return apply_filters( 'redirectpress_redirect_types', $types );
+		return apply_filters( '404_to_301_redirect_types', $types );
 	}
 
 	/**
 	 * Get available addons list.
 	 *
-	 * To add or remove an addon, use redirectpress_addons_list filter.
+	 * To add or remove an addon, use 404_to_301_addons_list filter.
 	 *
 	 * @since  4.0.0
 	 * @access public
@@ -88,7 +88,7 @@ class Data {
 		 *
 		 * @param array $addons Addon list.
 		 */
-		return apply_filters( 'redirectpress_addons', $addons );
+		return apply_filters( '404_to_301_addons', $addons );
 	}
 
 	/**
@@ -114,7 +114,7 @@ class Data {
 			 *
 			 * @param array $args Arguments.
 			 */
-			$args = apply_filters( 'redirectpress_wp_pages_args', $args );
+			$args = apply_filters( '404_to_301_wp_pages_args', $args );
 
 			// Get WP pages.
 			$wp_pages = get_pages( $args );
@@ -130,6 +130,6 @@ class Data {
 		 *
 		 * @param array $pages Page list.
 		 */
-		return apply_filters( 'redirectpress_wp_pages', $pages );
+		return apply_filters( '404_to_301_wp_pages', $pages );
 	}
 }

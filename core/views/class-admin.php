@@ -13,22 +13,22 @@
  * @subpackage Pages
  */
 
-namespace RedirectPress\Views;
+namespace DuckDev\FourNotFour\Views;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
 use DuckDev\Reviews\Notice;
-use RedirectPress\Plugin;
-use RedirectPress\Models\Logs;
-use RedirectPress\Database\Upgrader;
+use DuckDev\FourNotFour\Plugin;
+use DuckDev\FourNotFour\Models\Logs;
+use DuckDev\FourNotFour\Database\Upgrader;
 
 /**
  * Class Admin
  *
  * @since   4.0.0
  * @extends View
- * @package RedirectPress\Views
+ * @package DuckDev\FourNotFour\Views
  */
 class Admin extends View {
 
@@ -46,10 +46,10 @@ class Admin extends View {
 
 		// Setup action links.
 		add_filter( 'plugin_row_meta', array( $this, 'row_meta' ), 10, 2 );
-		add_filter( 'plugin_action_links_' . plugin_basename( REDIRECTPRESS_FILE ), array( $this, 'action_links' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( DUCKDEV_404_FILE ), array( $this, 'action_links' ) );
 
 		// Admin notices.
-		add_action( 'redirectpress_admin_notices', array( $this, 'show_review_notice' ) );
+		add_action( '404_to_301_admin_notices', array( $this, 'show_review_notice' ) );
 
 		// Add site health info.
 		add_filter( 'site_status_tests', array( $this, 'site_health_tests' ) );
@@ -155,8 +155,8 @@ class Admin extends View {
 	 */
 	public function row_meta( $meta, $file ) {
 		// Add only for our plugin.
-		if ( plugin_basename( REDIRECTPRESS_FILE ) === $file ) {
-			$meta['docs'] = '<a href="https://duckdev.com/docs/404-to-301/?utm_source=redirectpress&utm_medium=plugin&utm_campaign=plugins_row_meta" target="_blank"><span class="dashicons dashicons-book" style="font-size:14px;line-height:1.3;"></span>' . __( 'Documentation', '404-to-301' ) . '</a>';
+		if ( plugin_basename( DUCKDEV_404_FILE ) === $file ) {
+			$meta['docs'] = '<a href="https://duckdev.com/docs/404-to-301/?utm_source=404-to-301&utm_medium=plugin&utm_campaign=plugins_row_meta" target="_blank"><span class="dashicons dashicons-book" style="font-size:14px;line-height:1.3;"></span>' . __( 'Documentation', '404-to-301' ) . '</a>';
 			$meta['home'] = '<a href="https://wordpress.org/support/plugin/404-to-301/" target="_blank"><span class="dashicons dashicons-sos" style="font-size:14px;line-height:1.3;"></span>' . __( 'Support', '404-to-301' ) . '</a>';
 		}
 

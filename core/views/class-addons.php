@@ -11,19 +11,19 @@
  * @subpackage Addons
  */
 
-namespace RedirectPress\Views;
+namespace DuckDev\FourNotFour\Views;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use RedirectPress\Data;
+use DuckDev\FourNotFour\Data;
 
 /**
  * Class Addons
  *
  * @extends View
  * @since   4.0.0
- * @package RedirectPress\Views
+ * @package DuckDev\FourNotFour\Views
  */
 class Addons extends View {
 
@@ -37,11 +37,11 @@ class Addons extends View {
 	 */
 	public function init() {
 		// Render settings page templates.
-		add_action( 'redirectpress_admin_settings_info_form_content', array( $this, 'info_content' ) );
-		add_action( 'redirectpress_admin_settings_logs_form_content', array( $this, 'logs_content' ) );
-		add_action( 'redirectpress_admin_settings_general_form_content', array( $this, 'general_content' ) );
-		add_action( 'redirectpress_admin_settings_redirects_form_content', array( $this, 'redirects_content' ) );
-		add_action( 'redirectpress_admin_settings_notifications_form_content', array( $this, 'notifications_content' ) );
+		add_action( '404_to_301_admin_settings_info_form_content', array( $this, 'info_content' ) );
+		add_action( '404_to_301_admin_settings_logs_form_content', array( $this, 'logs_content' ) );
+		add_action( '404_to_301_admin_settings_general_form_content', array( $this, 'general_content' ) );
+		add_action( '404_to_301_admin_settings_redirects_form_content', array( $this, 'redirects_content' ) );
+		add_action( '404_to_301_admin_settings_notifications_form_content', array( $this, 'notifications_content' ) );
 	}
 
 	/**
@@ -92,7 +92,7 @@ class Addons extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'redirectpress_after_general_settings_render' );
+		do_action( '404_to_301_after_general_settings_render' );
 	}
 
 	/**
@@ -117,7 +117,7 @@ class Addons extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'redirectpress_after_redirect_settings_render' );
+		do_action( '404_to_301_after_redirect_settings_render' );
 	}
 
 	/**
@@ -140,7 +140,7 @@ class Addons extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'redirectpress_after_logs_settings_render' );
+		do_action( '404_to_301_after_logs_settings_render' );
 	}
 
 	/**
@@ -163,7 +163,7 @@ class Addons extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'redirectpress_after_notifications_settings_render' );
+		do_action( '404_to_301_after_notifications_settings_render' );
 	}
 
 	/**
@@ -189,13 +189,13 @@ class Addons extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'redirectpress_after_info_settings_render' );
+		do_action( '404_to_301_after_info_settings_render' );
 	}
 
 	/**
 	 * Get plugin settings tabs configuration.
 	 *
-	 * Other plugins should hook into redirectpress_settings_page_get_tabs filter
+	 * Other plugins should hook into 404_to_301_settings_page_get_tabs filter
 	 * to add new tab item.
 	 *
 	 * @since  4.0.0
@@ -234,7 +234,7 @@ class Addons extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'redirectpress_settings_page_get_tabs', $tabs );
+		return apply_filters( '404_to_301_settings_page_get_tabs', $tabs );
 	}
 
 	/**
@@ -260,7 +260,7 @@ class Addons extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'redirectpress_admin_settings_show_submit', $show, $hidden );
+		return apply_filters( '404_to_301_admin_settings_show_submit', $show, $hidden );
 	}
 
 	/**
@@ -332,6 +332,6 @@ class Addons extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'redirectpress_admin_settings_page_get_current_tab', $tab );
+		return apply_filters( '404_to_301_admin_settings_page_get_current_tab', $tab );
 	}
 }

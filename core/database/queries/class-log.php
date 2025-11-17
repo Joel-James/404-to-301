@@ -13,7 +13,7 @@
  * @subpackage Log
  */
 
-namespace RedirectPress\Database\Queries;
+namespace DuckDev\FourNotFour\Database\Queries;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -23,7 +23,7 @@ defined( 'WPINC' ) || die;
  *
  * @since   4.0.0
  * @extends Query
- * @package RedirectPress\Database\Queries
+ * @package DuckDev\FourNotFour\Database\Queries
  */
 class Log extends Query {
 
@@ -63,7 +63,7 @@ class Log extends Query {
 	 * @access protected
 	 * @var    string
 	 */
-	protected $table_schema = '\\RedirectPress\\Database\\Schemas\\Logs';
+	protected $table_schema = '\\DuckDev\\FourNotFour\\Database\\Schemas\\Logs';
 
 	/**
 	 * Name for a single item.
@@ -96,5 +96,5 @@ class Log extends Query {
 	 * @access protected
 	 * @var    mixed
 	 */
-	protected $item_shape = '\\RedirectPress\\Database\\Rows\\Log';
+	protected $item_shape = '\\DuckDev\\FourNotFour\\Database\\Rows\\Log';
 }

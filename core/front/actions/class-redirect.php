@@ -13,20 +13,20 @@
  * @subpackage Redirect
  */
 
-namespace RedirectPress\Front\Actions;
+namespace DuckDev\FourNotFour\Front\Actions;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use RedirectPress\Data;
-use RedirectPress\Front\Request;
+use DuckDev\FourNotFour\Data;
+use DuckDev\FourNotFour\Front\Request;
 
 /**
  * Class Redirect
  *
  * @extends Action
  * @since   4.0.0
- * @package RedirectPress\Front\Actions
+ * @package DuckDev\FourNotFour\Front\Actions
  */
 class Redirect extends Action {
 
@@ -127,16 +127,16 @@ class Redirect extends Action {
 		$destination = home_url();
 
 		// If target is a page.
-		if ( 'page' === redirectpress_settings()->get( 'redirect_target' ) ) {
+		if ( 'page' === duckdev_404_to_301_settings()->get( 'redirect_target' ) ) {
 			// Target page ID.
-			$page = redirectpress_settings()->get( 'redirect_page' );
+			$page = duckdev_404_to_301_settings()->get( 'redirect_page' );
 			// Only consider if it's published page/post.
 			if ( ! empty( $page ) && 'publish' === get_post_status( $page ) ) {
 				$destination = get_permalink( $page );
 			}
 		} else {
 			// Get link target.
-			$destination = redirectpress_settings()->get( 'redirect_link', $destination );
+			$destination = duckdev_404_to_301_settings()->get( 'redirect_link', $destination );
 		}
 
 		/**
@@ -147,7 +147,7 @@ class Redirect extends Action {
 		 * @param string  $destination Destination URL.
 		 * @param Request $request     Request object.
 		 */
-		return apply_filters( 'redirectpress_redirect_get_destination', $destination, $this->request );
+		return apply_filters( '404_to_301_redirect_get_destination', $destination, $this->request );
 	}
 
 	/**
@@ -161,7 +161,7 @@ class Redirect extends Action {
 	 */
 	private function get_code() {
 		// Get redirect status code.
-		$code = redirectpress_settings()->get( 'redirect_type', 301 );
+		$code = duckdev_404_to_301_settings()->get( 'redirect_type', 301 );
 
 		/**
 		 * Filter hook to modify 404 redirect status code.
@@ -171,7 +171,7 @@ class Redirect extends Action {
 		 * @param int     $code    Redirect status code.
 		 * @param Request $request Request object.
 		 */
-		$code = apply_filters( 'redirectpress_redirect_get_code', $code, $this->request );
+		$code = apply_filters( '404_to_301_redirect_get_code', $code, $this->request );
 
 		return in_array( $code, array_keys( Data::redirect_types() ), true ) ? $code : 301;
 	}
@@ -196,7 +196,7 @@ class Redirect extends Action {
 		 *
 		 * @param string $target Redirect target.
 		 */
-		$target = apply_filters( 'redirectpress_redirect_target', $target );
+		$target = apply_filters( '404_to_301_redirect_target', $target );
 
 		/**
 		 * Filter hook to modify redirect status right before performing redirect.
@@ -205,7 +205,7 @@ class Redirect extends Action {
 		 *
 		 * @param int $status Redirect status code.
 		 */
-		$status = apply_filters( 'redirectpress_redirect_status_code', $status );
+		$status = apply_filters( '404_to_301_redirect_status_code', $status );
 
 		/**
 		 * Action hook to execute before performing a redirect.
@@ -216,7 +216,7 @@ class Redirect extends Action {
 		 * @param int     $status  Redirect status code.
 		 * @param Request $request Request object.
 		 */
-		do_action( 'redirectpress_before_redirect', $target, $status, $this->request );
+		do_action( '404_to_301_before_redirect', $target, $status, $this->request );
 
 		// Perform redirect using WordPress.
 		wp_redirect(
@@ -233,7 +233,7 @@ class Redirect extends Action {
 		 * @param int     $status  Redirect status code.
 		 * @param Request $request Request object.
 		 */
-		do_action( 'redirectpress_after_redirect', $target, $status, $this->request );
+		do_action( '404_to_301_after_redirect', $target, $status, $this->request );
 
 		// Exit, because WordPress will not exit automatically.
 		exit;

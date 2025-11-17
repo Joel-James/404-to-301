@@ -19,7 +19,7 @@
 	printf(
 		// translators: %s plugin version.
 		esc_html__( 'Version %s', '404-to-301' ),
-		esc_attr( REDIRECTPRESS_VERSION )
+		esc_attr( DUCKDEV_404_VERSION )
 	);
 	?>
 </p>

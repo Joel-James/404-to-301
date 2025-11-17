@@ -13,7 +13,7 @@
  * @subpackage Settings
  */
 
-namespace RedirectPress\Api;
+namespace DuckDev\FourNotFour\Api;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -27,7 +27,7 @@ use WP_REST_Response;
  *
  * @since   4.0.0
  * @extends Endpoint
- * @package RedirectPress\Api
+ * @package DuckDev\FourNotFour\Api
  */
 class Settings extends Endpoint {
 
@@ -65,7 +65,7 @@ class Settings extends Endpoint {
 						'key' => array(
 							'type'        => 'string',
 							'required'    => false,
-							'enum'        => array_keys( redirectpress_settings()->defaults() ),
+							'enum'        => array_keys( duckdev_404_to_301_settings()->defaults() ),
 							'description' => __( 'Setting key.', '404-to-301' ),
 						),
 					),
@@ -78,7 +78,7 @@ class Settings extends Endpoint {
 						'key'   => array(
 							'type'        => 'string',
 							'required'    => false,
-							'enum'        => array_keys( redirectpress_settings()->defaults() ),
+							'enum'        => array_keys( duckdev_404_to_301_settings()->defaults() ),
 							'description' => __( 'Setting key.', '404-to-301' ),
 						),
 						'value' => array(
@@ -111,7 +111,7 @@ class Settings extends Endpoint {
 		// Get single setting value.
 		if ( ! empty( $key ) ) {
 			// Get value.
-			$value = redirectpress_settings()->get( $key, false, $valid );
+			$value = duckdev_404_to_301_settings()->get( $key, false, $valid );
 
 			return $this->get_response(
 				array(
@@ -123,7 +123,7 @@ class Settings extends Endpoint {
 		}
 
 		// Get all settings.
-		return $this->get_response( redirectpress_settings()->all() );
+		return $this->get_response( duckdev_404_to_301_settings()->all() );
 	}
 
 	/**
@@ -148,14 +148,14 @@ class Settings extends Endpoint {
 
 		if ( ! empty( $key ) && ! empty( $value ) ) {
 			// Update single setting value.
-			$success = redirectpress_settings()->set( $key, $value );
+			$success = duckdev_404_to_301_settings()->set( $key, $value );
 		} elseif ( ! empty( $value ) ) {
 			// Update the settings.
-			$success = redirectpress_settings()->update( $value );
+			$success = duckdev_404_to_301_settings()->update( $value );
 		}
 
 		// Get updated settings.
-		$settings = redirectpress_settings()->all();
+		$settings = duckdev_404_to_301_settings()->all();
 
 		// Send response.
 		return $this->get_response( $settings, $success );

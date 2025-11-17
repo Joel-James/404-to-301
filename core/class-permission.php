@@ -15,7 +15,7 @@
  * @subpackage Permission
  */
 
-namespace RedirectPress;
+namespace DuckDev\FourNotFour;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -24,7 +24,7 @@ defined( 'WPINC' ) || die;
  * Class Permission
  *
  * @since   4.0.0
- * @package RedirectPress
+ * @package DuckDev\FourNotFour
  */
 class Permission {
 
@@ -57,7 +57,7 @@ class Permission {
 		 *
 		 * @param bool $has Has access.
 		 */
-		return apply_filters( 'redirectpress_permission_has_access', $has );
+		return apply_filters( '404_to_301_permission_has_access', $has );
 	}
 
 	/**
@@ -76,6 +76,6 @@ class Permission {
 		 *
 		 * @param string $cap Capability.
 		 */
-		return apply_filters( 'redirectpress_permission_get_cap', self::CAPABILITY );
+		return apply_filters( '404_to_301_permission_get_cap', self::CAPABILITY );
 	}
 }

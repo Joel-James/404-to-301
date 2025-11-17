@@ -12,22 +12,22 @@
  * @subpackage Menu
  */
 
-namespace RedirectPress\Admin;
+namespace DuckDev\FourNotFour\Admin;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use RedirectPress\Views;
-use RedirectPress\Plugin;
-use RedirectPress\Permission;
-use RedirectPress\Utils\Base;
+use DuckDev\FourNotFour\Views;
+use DuckDev\FourNotFour\Plugin;
+use DuckDev\FourNotFour\Permission;
+use DuckDev\FourNotFour\Utils\Base;
 
 /**
  * Class Menu
  *
  * @since   4.0.0
  * @extends Base
- * @package RedirectPress\Admin
+ * @package DuckDev\FourNotFour\Admin
  */
 class Menu extends Base {
 
@@ -84,7 +84,7 @@ class Menu extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'redirectpress_admin_menu' );
+		do_action( '404_to_301_admin_menu' );
 	}
 
 	/**

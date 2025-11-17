@@ -11,7 +11,7 @@
  * @subpackage Logs
  */
 
-namespace RedirectPress\Views;
+namespace DuckDev\FourNotFour\Views;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -21,7 +21,7 @@ defined( 'WPINC' ) || die;
  *
  * @extends View
  * @since   4.0.0
- * @package RedirectPress\Views
+ * @package DuckDev\FourNotFour\Views
  */
 class Logs extends View {
 
@@ -79,7 +79,7 @@ class Logs extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'redirectpress_logs_view_filters', $filters );
+		return apply_filters( '404_to_301_logs_view_filters', $filters );
 	}
 
 	/**
@@ -102,7 +102,7 @@ class Logs extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'redirectpress_logs_view_bulk_actions', $actions );
+		return apply_filters( '404_to_301_logs_view_bulk_actions', $actions );
 	}
 
 	/**
@@ -135,7 +135,7 @@ class Logs extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'redirectpress_logs_view_filter_actions', $actions );
+		return apply_filters( '404_to_301_logs_view_filter_actions', $actions );
 	}
 
 	/**
@@ -160,6 +160,6 @@ class Logs extends View {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'redirectpress_logs_view_pagination', $pagination );
+		return apply_filters( '404_to_301_logs_view_pagination', $pagination );
 	}
 }

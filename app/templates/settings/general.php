@@ -31,7 +31,7 @@
 			name="404_to_301_settings[disable_guessing]"
 			id="disable-guessing"
 			value="1"
-			<?php checked( redirectpress_settings()->get( 'disable_guessing' ) ); ?>
+			<?php checked( duckdev_404_to_301_settings()->get( 'disable_guessing' ) ); ?>
 		> <?php esc_html_e( 'Stop WordPress from guessing URLs', '404-to-301' ); ?>
 	</label>
 </div>
@@ -48,7 +48,7 @@
 			name="404_to_301_settings[monitor_changes]"
 			id="monitor-changes"
 			value="1"
-			<?php checked( redirectpress_settings()->get( 'monitor_changes' ) ); ?>
+			<?php checked( duckdev_404_to_301_settings()->get( 'monitor_changes' ) ); ?>
 		> <?php esc_html_e( 'Monitor permalink changes and create redirects', '404-to-301' ); ?>
 	</label>
 </div>
@@ -65,7 +65,7 @@
 			name="404_to_301_settings[ip_logging]"
 			id="logs-ip-logging"
 			value="1"
-			<?php checked( redirectpress_settings()->get( 'ip_logging' ) ); ?>
+			<?php checked( duckdev_404_to_301_settings()->get( 'ip_logging' ) ); ?>
 		> <?php esc_html_e( 'Do not log visitor\'s IP address', '404-to-301' ); ?>
 	</label>
 </div>

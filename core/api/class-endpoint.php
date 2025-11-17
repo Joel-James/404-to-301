@@ -11,20 +11,20 @@
  * @subpackage Endpoint
  */
 
-namespace RedirectPress\Api;
+namespace DuckDev\FourNotFour\Api;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
 use WP_REST_Request;
 use WP_REST_Response;
-use RedirectPress\Permission;
+use DuckDev\FourNotFour\Permission;
 
 /**
  * Class Endpoint
  *
  * @since   4.0.0
- * @package RedirectPress\Api
+ * @package DuckDev\FourNotFour\Api
  */
 abstract class Endpoint {
 
@@ -159,7 +159,7 @@ abstract class Endpoint {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'redirectpress_rest_has_access', true, $request );
+		return apply_filters( '404_to_301_rest_has_access', true, $request );
 	}
 
 	/**

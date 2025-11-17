@@ -71,43 +71,43 @@ if ( version_compare( PHP_VERSION, '5.6', '<' ) ) {
 }
 
 // Plugin version.
-define( 'REDIRECTPRESS_VERSION', '4.0.0-beta' );
+define( 'DUCKDEV_404_VERSION', '4.0.0-beta' );
 
 // Plugin database version.
-define( 'REDIRECTPRESS_DB_VERSION', '4.0.0' );
+define( 'DUCKDEV_404_DB_VERSION', '4.0.0' );
 
 // Plugin url.
-define( 'REDIRECTPRESS_URL', plugin_dir_url( __FILE__ ) );
+define( 'DUCKDEV_404_URL', plugin_dir_url( __FILE__ ) );
 
 // Plugin directory path.
-define( 'REDIRECTPRESS_DIR', plugin_dir_path( __FILE__ ) );
+define( 'DUCKDEV_404_DIR', plugin_dir_path( __FILE__ ) );
 
 // Plugin file.
-define( 'REDIRECTPRESS_FILE', __FILE__ );
+define( 'DUCKDEV_404_FILE', __FILE__ );
 
 // Plugin base name.
-define( 'REDIRECTPRESS_BASE_NAME', plugin_basename( __FILE__ ) );
+define( 'DUCKDEV_404_BASE_NAME', plugin_basename( __FILE__ ) );
 
 // Auto load classes.
-require_once REDIRECTPRESS_DIR . '/vendor/autoload.php';
+require_once DUCKDEV_404_DIR . '/vendor/autoload.php';
 
 // Activation actions.
-register_activation_hook( __FILE__, array( 'RedirectPress\Plugin', 'activate' ) );
+register_activation_hook( __FILE__, array( 'DuckDev\FourNotFour\Plugin', 'activate' ) );
 
 // Deactivation actions.
-register_deactivation_hook( __FILE__, array( 'RedirectPress\Plugin', 'deactivate' ) );
+register_deactivation_hook( __FILE__, array( 'DuckDev\FourNotFour\Plugin', 'deactivate' ) );
 
 /**
- * The main RedirectPress\Core instance.
+ * The main DuckDev\FourNotFour\Core instance.
  *
  * Use this function like you would a global variable, except
  * without needing to declare the global.
  * We will initialize only if required WP and PHP versions match.
  *
- * Example: $redirectpress = \RedirectPress\Core::instance();
+ * Example: $redirectpress = \DuckDev\FourNotFour\Core::instance();
  *
  * @since 4.0.0
  *
- * @return RedirectPress\Core
+ * @return DuckDev\FourNotFour\Core
  */
-add_action( 'plugins_loaded', array( 'RedirectPress\Core', 'instance' ) );
+add_action( 'plugins_loaded', array( 'DuckDev\FourNotFour\Core', 'instance' ) );

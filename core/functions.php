@@ -22,10 +22,10 @@
  * @since  4.0.0
  * @access public
  *
- * @return RedirectPress\Settings
+ * @return DuckDev\FourNotFour\Settings
  */
-function redirectpress_settings() {
-	return RedirectPress\Settings::instance();
+function duckdev_404_to_301_settings() {
+	return DuckDev\FourNotFour\Settings::instance();
 }
 
 /**
@@ -37,14 +37,14 @@ function redirectpress_settings() {
  * @since  4.0.0
  * @access public
  *
- * @return RedirectPress\Cache
+ * @return DuckDev\FourNotFour\Cache
  */
-function redirectpress_cache() {
+function duckdev_404_to_301_cache() {
 	static $cache = null;
 
 	// Make sure only one instance is available.
 	if ( null === $cache ) {
-		$cache = new RedirectPress\Cache();
+		$cache = new DuckDev\FourNotFour\Cache();
 	}
 
 	return $cache;

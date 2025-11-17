@@ -17,4 +17,4 @@
  */
 
 ?>
-<div id="redirectpress-settings-app" class="redirectpress-settings-wrap"></div>
+<div id="404-to-301-settings-app" class="404-to-301-settings-wrap"></div>

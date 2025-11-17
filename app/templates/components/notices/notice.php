@@ -56,6 +56,6 @@ switch ( $type ) {
 
 ?>
 
-<div id="redirectpress-notice-<?php echo esc_attr( $options['id'] ); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+<div id="404-to-301-notice-<?php echo esc_attr( $options['id'] ); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 	<p><?php echo $content; ?></p>
 </div>

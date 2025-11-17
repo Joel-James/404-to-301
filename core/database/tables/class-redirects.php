@@ -11,7 +11,7 @@
  * @subpackage Redirects
  */
 
-namespace RedirectPress\Database\Tables;
+namespace DuckDev\FourNotFour\Database\Tables;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -23,7 +23,7 @@ use BerlinDB\Database\Table;
  *
  * @since   4.0.0
  * @extends Table
- * @package RedirectPress\Database\Tables
+ * @package DuckDev\FourNotFour\Database\Tables
  */
 final class Redirects extends Table {
 

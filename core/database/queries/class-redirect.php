@@ -13,7 +13,7 @@
  * @subpackage Redirect
  */
 
-namespace RedirectPress\Database\Queries;
+namespace DuckDev\FourNotFour\Database\Queries;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -23,7 +23,7 @@ defined( 'WPINC' ) || die;
  *
  * @since   4.0.0
  * @extends Query
- * @package RedirectPress\Database\Queries
+ * @package DuckDev\FourNotFour\Database\Queries
  */
 class Redirect extends Query {
 
@@ -63,7 +63,7 @@ class Redirect extends Query {
 	 * @access protected
 	 * @var    string
 	 */
-	protected $table_schema = '\\RedirectPress\\Database\\Schemas\\Redirects';
+	protected $table_schema = '\\DuckDev\\FourNotFour\\Database\\Schemas\\Redirects';
 
 	/**
 	 * Name for a single item.
@@ -96,5 +96,5 @@ class Redirect extends Query {
 	 * @access protected
 	 * @var    mixed
 	 */
-	protected $item_shape = '\\RedirectPress\\Database\\Rows\\Redirect';
+	protected $item_shape = '\\DuckDev\\FourNotFour\\Database\\Rows\\Redirect';
 }

@@ -14,19 +14,19 @@
  * @subpackage Core
  */
 
-namespace RedirectPress\Views;
+namespace DuckDev\FourNotFour\Views;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use RedirectPress\Utils\Base;
+use DuckDev\FourNotFour\Utils\Base;
 
 /**
  * Class View
  *
  * @since   4.0.0
  * @extends Base
- * @package RedirectPress\Views
+ * @package DuckDev\FourNotFour\Views
  */
 class View extends Base {
 
@@ -47,7 +47,7 @@ class View extends Base {
 	 */
 	public function render( $file, array $args = array(), $once = false ) {
 		// Full path to the file.
-		$path = REDIRECTPRESS_DIR . "/app/templates/{$file}.php";
+		$path = DUCKDEV_404_DIR . "/app/templates/{$file}.php";
 
 		if ( file_exists( $path ) ) {
 			extract( $args ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
@@ -97,7 +97,7 @@ class View extends Base {
 	 */
 	protected function get_param( $name, $default = '' ) {
 		// Get param value.
-		$value = filter_input( INPUT_GET, $name, FILTER_SANITIZE_STRING );
+		$value = filter_input( INPUT_GET, $name, FILTER_UNSAFE_RAW );
 
 		// If not exist or fails, use default value.
 		if ( is_null( $value ) || false === $value ) {
@@ -113,6 +113,6 @@ class View extends Base {
 		 *
 		 * @since 4.0.0
 		 */
-		return apply_filters( 'redirectpress_view_get_param', $value );
+		return apply_filters( '404_to_301_view_get_param', $value );
 	}
 }

@@ -11,7 +11,7 @@
  * @subpackage Helpers
  */
 
-namespace RedirectPress\Utils;
+namespace DuckDev\FourNotFour\Utils;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -20,7 +20,7 @@ defined( 'WPINC' ) || die;
  * Class Helper
  *
  * @since   4.0.0
- * @package RedirectPress\Utils
+ * @package DuckDev\FourNotFour\Utils
  */
 class Helpers {
 
@@ -56,7 +56,7 @@ class Helpers {
 	 *
 	 * @return mixed
 	 */
-	public static function input_get( $name, $filter = FILTER_SANITIZE_STRING ) {
+	public static function input_get( $name, $filter = FILTER_UNSAFE_RAW ) {
 		return filter_input( INPUT_GET, $name, $filter );
 	}
 
@@ -75,7 +75,7 @@ class Helpers {
 	 *
 	 * @return mixed
 	 */
-	public static function input_post( $name, $filter = FILTER_SANITIZE_STRING ) {
+	public static function input_post( $name, $filter = FILTER_UNSAFE_RAW ) {
 		return filter_input( INPUT_POST, $name, $filter );
 	}
 }

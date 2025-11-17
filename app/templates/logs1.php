@@ -33,7 +33,7 @@
 		 *
 		 * @since 4.0.0
 		 */
-		do_action( 'redirectpress_admin_notices', 'logs' );
+		do_action( '404_to_301_admin_notices', 'logs' );
 		?>
 	</div>
 

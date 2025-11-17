@@ -24,6 +24,6 @@
 	</h1>
 	<hr class="wp-header-end">
 
-	<div id="redirectpress-logs-app" class="redirectpress-logs-wrap"></div>
+	<div id="404-to-301-logs-app" class="404-to-301-logs-wrap"></div>
 </div>
 

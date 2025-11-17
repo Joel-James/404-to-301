@@ -13,7 +13,7 @@
  * @subpackage Logs
  */
 
-namespace RedirectPress\Models;
+namespace DuckDev\FourNotFour\Models;
 
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
@@ -22,7 +22,7 @@ defined( 'WPINC' ) || die;
  * Class Logs.
  *
  * @since   4.0.0
- * @package RedirectPress\Models
+ * @package DuckDev\FourNotFour\Models
  * @extends Model
  */
 class Logs extends Model {
@@ -48,7 +48,7 @@ class Logs extends Model {
 	 * @since 4.0.0
 	 * @var string $query
 	 */
-	protected $query = '\\RedirectPress\\Database\Queries\Log';
+	protected $query = '\\DuckDev\\FourNotFour\\Database\Queries\Log';
 
 	/**
 	 * Flag to check if hooks should be skipped.
@@ -69,14 +69,14 @@ class Logs extends Model {
 		parent::__construct();
 
 		// Handle redirect item changes.
-		add_action( 'redirectpress_model_after_redirect_create', array( $this, 'on_redirect_create' ), 10, 2 );
-		add_action( 'redirectpress_model_after_redirect_update', array( $this, 'on_redirect_update' ), 10, 2 );
-		add_action( 'redirectpress_model_after_redirect_delete', array( $this, 'on_redirect_delete' ), 10, 2 );
+		add_action( '404_to_301_model_after_redirect_create', array( $this, 'on_redirect_create' ), 10, 2 );
+		add_action( '404_to_301_model_after_redirect_update', array( $this, 'on_redirect_update' ), 10, 2 );
+		add_action( '404_to_301_model_after_redirect_delete', array( $this, 'on_redirect_delete' ), 10, 2 );
 
 		// Handle log updates.
 		add_action( 'model_after_log_create', array( $this, 'on_log_create' ), 10, 3 );
 		add_action( 'model_after_log_update', array( $this, 'on_log_update' ), 10, 3 );
-		add_filter( 'redirectpress_model_log_create_data', array( $this, 'filter_log_data' ) );
+		add_filter( '404_to_301_model_log_create_data', array( $this, 'filter_log_data' ) );
 	}
 
 	/**
@@ -177,7 +177,7 @@ class Logs extends Model {
 		 *
 		 * @param array $data Data for log creation.
 		 */
-		$data = apply_filters( 'redirectpress_model_log_create_data', $data );
+		$data = apply_filters( '404_to_301_model_log_create_data', $data );
 
 		// Create new log.
 		$log_id = $this->query()->add_item( $data );
@@ -195,7 +195,7 @@ class Logs extends Model {
 			 * @param array $log    New log.
 			 * @param array $data   Data used for creation.
 			 */
-			do_action( 'redirectpress_model_after_log_create', $log_id, $log, $data );
+			do_action( '404_to_301_model_after_log_create', $log_id, $log, $data );
 
 			return true;
 		}
@@ -227,7 +227,7 @@ class Logs extends Model {
 		 *
 		 * @param array $data Data for log update.
 		 */
-		$data = apply_filters( 'redirectpress_model_log_update_data', $data );
+		$data = apply_filters( '404_to_301_model_log_update_data', $data );
 
 		// Prepare data.
 		$data = $this->prepare_fields( $data );
@@ -246,7 +246,7 @@ class Logs extends Model {
 			 * @param object $log    Updated log.
 			 * @param array  $data   Data used for update.
 			 */
-			do_action( 'redirectpress_model_after_log_update', $log_id, $log, $data );
+			do_action( '404_to_301_model_after_log_update', $log_id, $log, $data );
 
 			return true;
 		}
@@ -279,7 +279,7 @@ class Logs extends Model {
 			 * @param array $data  Data to update.
 			 * @param array $where Where conditions.
 			 */
-			do_action( 'redirectpress_model_after_log_update_multiple', $data, $where );
+			do_action( '404_to_301_model_after_log_update_multiple', $data, $where );
 
 			return true;
 		}
@@ -318,7 +318,7 @@ class Logs extends Model {
 			 * @param int    $log_id   Log ID.
 			 * @param object $log_data Log data.
 			 */
-			do_action( 'redirectpress_model_after_log_delete', $log_id, $log_data );
+			do_action( '404_to_301_model_after_log_delete', $log_id, $log_data );
 
 			return true;
 		}
@@ -380,7 +380,7 @@ class Logs extends Model {
 			 *
 			 * @param bool $success Is hits update success.
 			 */
-			do_action( 'redirectpress_model_after_mark_hit', $hits );
+			do_action( '404_to_301_model_after_mark_hit', $hits );
 
 			return true;
 		}
