@@ -22,6 +22,7 @@ use DuckDev\Reviews\Notice;
 use DuckDev\FourNotFour\Plugin;
 use DuckDev\FourNotFour\Models\Logs;
 use DuckDev\FourNotFour\Database\Upgrader;
+use DuckDev\FourNotFour\Utils\Base;
 
 /**
  * Class Admin
@@ -30,7 +31,7 @@ use DuckDev\FourNotFour\Database\Upgrader;
  * @extends View
  * @package DuckDev\FourNotFour\Views
  */
-class Admin extends View {
+class Admin extends Base {
 
 	/**
 	 * Register all hooks for admin view.
@@ -102,7 +103,7 @@ class Admin extends View {
 					array(
 						'id'      => $id,
 						'title'   => $label,
-						'content' => $this->get_render(
+						'content' => View::get_render(
 							"components/screen-options/tab-$id"
 						),
 					)
@@ -111,7 +112,7 @@ class Admin extends View {
 
 			// Set sidebar.
 			$screen->set_help_sidebar(
-				$this->get_render(
+				View::get_render(
 					'components/screen-options/sidebar'
 				)
 			);

@@ -3,10 +3,10 @@
  * The plugin logs page view class.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    View
  * @subpackage Logs
  */
@@ -16,6 +16,8 @@ namespace DuckDev\FourNotFour\Views;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
+use DuckDev\FourNotFour\Utils\Base;
+
 /**
  * Class Logs
  *
@@ -23,7 +25,7 @@ defined( 'WPINC' ) || die;
  * @since   4.0.0
  * @package DuckDev\FourNotFour\Views
  */
-class Logs extends View {
+class Logs extends Base {
 
 	/**
 	 * Content for logs page.
@@ -37,7 +39,7 @@ class Logs extends View {
 	 */
 	public function content() {
 		// Admin logs template.
-		$this->render(
+		View::render(
 			'logs',
 			array(
 				'filters'        => $this->get_filters(),
@@ -69,15 +71,15 @@ class Logs extends View {
 				),
 			),
 			'label'   => __( 'Filter logs list', '404-to-301' ),
-			'current' => $this->get_param( 'filter', 'all' ),
+			'current' => View::get_param( 'filter', 'all' ),
 		);
 
 		/**
 		 * Filter hook to modify the logs top filters.
 		 *
-		 * @param array $filters Filters.
-		 *
 		 * @since 4.0.0
+		 *
+		 * @param array $filters Filters.
 		 */
 		return apply_filters( '404_to_301_logs_view_filters', $filters );
 	}
@@ -98,9 +100,10 @@ class Logs extends View {
 		/**
 		 * Filter hook to modify the logs list bulk actions.
 		 *
+		 * @since 4.0.0
+		 *
 		 * @param array $actions Actions.
 		 *
-		 * @since 4.0.0
 		 */
 		return apply_filters( '404_to_301_logs_view_bulk_actions', $actions );
 	}
@@ -131,9 +134,10 @@ class Logs extends View {
 		/**
 		 * Filter hook to modify the logs list filter actions.
 		 *
+		 * @since 4.0.0
+		 *
 		 * @param array $actions Actions.
 		 *
-		 * @since 4.0.0
 		 */
 		return apply_filters( '404_to_301_logs_view_filter_actions', $actions );
 	}
@@ -156,9 +160,10 @@ class Logs extends View {
 		/**
 		 * Filter hook to modify the logs list pagination.
 		 *
+		 * @since 4.0.0
+		 *
 		 * @param array $pagination Pagination data.
 		 *
-		 * @since 4.0.0
 		 */
 		return apply_filters( '404_to_301_logs_view_pagination', $pagination );
 	}

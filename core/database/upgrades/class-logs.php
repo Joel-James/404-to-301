@@ -71,7 +71,7 @@ class Logs {
 	 */
 	public function upgrade_notice() {
 		if ( ! duckdev_404_to_301_settings()->get( 'logs_upgraded' ) && $this->old_table_exists() ) {
-			View::instance()->render(
+			View::render(
 				'components/notices/upgrade-notice',
 				array(
 					'plugin'              => Plugin::name(),

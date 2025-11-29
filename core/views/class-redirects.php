@@ -16,6 +16,8 @@ namespace DuckDev\FourNotFour\Views;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
+use DuckDev\FourNotFour\Utils\Base;
+
 /**
  * Class Redirects
  *
@@ -23,7 +25,7 @@ defined( 'WPINC' ) || die;
  * @since   4.0.0
  * @package DuckDev\FourNotFour\Views
  */
-class Redirects extends View {
+class Redirects extends Base {
 
 	/**
 	 * Content for redirects page.
@@ -37,6 +39,6 @@ class Redirects extends View {
 	 */
 	public function content() {
 		// Admin redirects template.
-		$this->render( 'redirects' );
+		View::render( 'redirects' );
 	}
 }

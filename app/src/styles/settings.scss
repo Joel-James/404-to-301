@@ -1,1 +1,12 @@
 @charset "UTF-8";
+
+// Custom components for settings page.
+@use "settings/settings-footer";
+@use "settings/settings-header";
+@use "settings/settings-content";
+@use "settings/settings-form";
+
+// Fix for padding in wrap class.
+#wpcontent {
+  padding-left: 0 !important;
+}

@@ -61,126 +61,12 @@ class Assets extends Base {
 	 *
 	 * @return void
 	 */
-	public function assets( $hook_suffix ) {
+	public function assets( string $hook_suffix ) {
 		// Register assets.
-		$this->register_styles();
-		$this->register_scripts();
+		$this->register_assets();
 
 		// Setup enqueue actions only for our pages.
 		$this->do_enqueue_action( $hook_suffix );
-	}
-
-	/**
-	 * Set up action hooks for assets enqueue.
-	 *
-	 * We will register new action hook only if the current
-	 * page is one of plugin's admin page.
-	 *
-	 * @since  4.0.0
-	 * @access private
-	 *
-	 * @param string $hook_suffix The current admin page.
-	 *
-	 * @return void
-	 */
-	private function do_enqueue_action( $hook_suffix ) {
-		// Check if current page is one of our pages.
-		$page = array_search( $hook_suffix, Plugin::screens(), true );
-
-		// If our page.
-		if ( ! empty( $page ) ) {
-			/**
-			 * Action hook to enqueue assets for our pages.
-			 *
-			 * Use this hook to enqueue scripts and styles which are
-			 * only loaded on our plugins pages. This hook will be
-			 * fired only on specified page.
-			 *
-			 * @since 4.0.0
-			 *
-			 * @param string $page        Current page key.
-			 * @param string $hook_suffix The current admin page.
-			 */
-			do_action( "404_to_301_enqueue_assets_{$page}", $page, $hook_suffix );
-
-			/**
-			 * Action hook to enqueue assets for our pages.
-			 *
-			 * This hook will be fired for all plugin pages.
-			 *
-			 * @since 4.0.0
-			 *
-			 * @param string $page        Current page key.
-			 * @param string $hook_suffix The current admin page.
-			 */
-			do_action( '404_to_301_enqueue_assets', $page, $hook_suffix );
-		}
-	}
-
-	/**
-	 * Register available styles.
-	 *
-	 * We are just registering the assets with WP now.
-	 * We will enqueue them when it's really required.
-	 * To enqueue a script use Assets::enqueue_style().
-	 *
-	 * @since  4.0.0
-	 * @access private
-	 * @see    Assets::enqueue_style().
-	 * @uses   wp_register_style()
-	 *
-	 * @return void
-	 */
-	private function register_styles() {
-		// Get all styles.
-		$styles = $this->get_styles();
-
-		// Register all styles.
-		foreach ( $styles as $handle => $data ) {
-			// If external treat the source as full URL.
-			$src = empty( $data['external'] ) ? DUCKDEV_404_URL . 'app/assets/css/' . $data['src'] : $data['src'];
-
-			wp_register_style(
-				$handle, // Style name.
-				$src, // Source url.
-				empty( $data['deps'] ) ? array() : $data['deps'], // Dependencies.
-				empty( $data['version'] ) ? DUCKDEV_404_VERSION : $data['version'], // Version number.
-				empty( $data['media'] ) ? 'all' : $data['media'] // The media for which this stylesheet has been defined.
-			);
-		}
-	}
-
-	/**
-	 * Register all provided scripts.
-	 *
-	 * We are just registering the scripts with WP now.
-	 * We will enqueue them when it's really required.
-	 * To enqueue a script use Assets::enqueue_script().
-	 *
-	 * @since  4.0.0
-	 * @access private
-	 * @see    Assets::enqueue_script().
-	 * @uses   wp_register_script()
-	 *
-	 * @return void
-	 */
-	private function register_scripts() {
-		// Get all scripts.
-		$scripts = $this->get_scripts();
-
-		// Register all available scripts.
-		foreach ( $scripts as $handle => $data ) {
-			// If external treat the source as full URL.
-			$src = empty( $data['external'] ) ? DUCKDEV_404_URL . 'app/assets/' . $data['src'] : $data['src'];
-
-			wp_register_script(
-				$handle, // Script name.
-				$src, // Source URL.
-				empty( $data['deps'] ) ? array() : $data['deps'], // Dependencies.
-				empty( $data['version'] ) ? DUCKDEV_404_VERSION : $data['version'], // Version number.
-				isset( $data['footer'] ) ? $data['footer'] : true // Should enqueue in footer.
-			);
-		}
 	}
 
 	/**
@@ -200,13 +86,13 @@ class Assets extends Base {
 	 *
 	 * @return void
 	 */
-	public function enqueue_script( $script ) {
+	public function enqueue_script( string $script ) {
 		// Only if not enqueued already.
 		if ( ! wp_script_is( $script ) ) {
 			// Script vars.
 			wp_localize_script(
 				$script,
-				'duckdevFourNotFour',
+				'duckdev404',
 				/**
 				 * Filter to add/remove vars in script.
 				 *
@@ -245,95 +131,11 @@ class Assets extends Base {
 	 *
 	 * @return void
 	 */
-	public function enqueue_style( $style ) {
+	public function enqueue_style( string $style ) {
 		// Only if not enqueued already.
 		if ( ! wp_style_is( $style ) ) {
 			wp_enqueue_style( $style );
 		}
-	}
-
-	/**
-	 * Get the scripts list to register.
-	 *
-	 * This function will include all scripts
-	 * added using 404_to_301_assets_get_scripts filter.
-	 *
-	 * @since  4.0.0
-	 * @access private
-	 *
-	 * @return array
-	 */
-	private function get_scripts() {
-		$scripts = array(
-			// Logs scripts.
-			'404-to-301-logs'      => array(
-				'src'  => 'logs.js',
-				'deps' => array( 'react', 'react-dom', 'react-jsx-runtime', 'wp-api-fetch', 'wp-components', 'wp-data', 'wp-date', 'wp-dom-ready', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-url' ),
-			),
-			// Setting scripts.
-			'404-to-301-settings'  => array(
-				'src'  => 'settings.min.js',
-				'deps' => array( 'jquery', 'wp-i18n' ),
-			),
-			// Redirects scripts.
-			'404-to-301-redirects' => array(
-				'src'  => 'redirects.min.js',
-				'deps' => array( 'jquery', 'wp-i18n' ),
-			),
-		);
-
-		/**
-		 * Filter to include/exclude new script.
-		 *
-		 * Modules should use this filter so that common
-		 * localized vars will be available.
-		 *
-		 * @since 4.0.0
-		 *
-		 * @param array $scripts Scripts list.
-		 */
-		return apply_filters( '404_to_301_assets_get_scripts', $scripts );
-	}
-
-	/**
-	 * Get the styles list to register.
-	 *
-	 * This function will include all scripts
-	 * added using 404_to_301_assets_get_scripts filter.
-	 *
-	 * @since  4.0.0
-	 * @access private
-	 *
-	 * @return array
-	 */
-	private function get_styles() {
-		$styles = array(
-			// Logs styles.
-			'404-to-301-logs'      => array(
-				'src'  => 'logs.min.css',
-				'deps' => array( 'wp-components' ),
-			),
-			// Settings styles.
-			'404-to-301-settings'  => array(
-				'src'  => 'settings.min.css',
-				'deps' => array( 'wp-components' ),
-			),
-			// Settings styles.
-			'404-to-301-redirects' => array(
-				'src' => 'redirects.min.css',
-			),
-		);
-
-		/**
-		 * Filter to include/exclude new style.
-		 *
-		 * Modules should use this filter to include styles.
-		 *
-		 * @since 4.0.0
-		 *
-		 * @param array $styles Styles list.
-		 */
-		return apply_filters( '404_to_301_assets_get_styles', $styles );
 	}
 
 	/**
@@ -373,5 +175,182 @@ class Assets extends Base {
 	public function redirects_assets() {
 		$this->enqueue_script( '404-to-301-redirects' );
 		$this->enqueue_style( '404-to-301-redirects' );
+	}
+
+	/**
+	 * Set up action hooks for assets enqueue.
+	 *
+	 * We will register new action hook only if the current
+	 * page is one of plugin's admin page.
+	 *
+	 * @since  4.0.0
+	 * @access private
+	 *
+	 * @param string $hook_suffix The current admin page.
+	 *
+	 * @return void
+	 */
+	private function do_enqueue_action( string $hook_suffix ) {
+		// Check if current page is one of our pages.
+		$page = array_search( $hook_suffix, Plugin::screens(), true );
+
+		// If our page.
+		if ( ! empty( $page ) ) {
+			/**
+			 * Action hook to enqueue assets for our pages.
+			 *
+			 * Use this hook to enqueue scripts and styles which are
+			 * only loaded on our plugins pages. This hook will be
+			 * fired only on specified page.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param string $page        Current page key.
+			 * @param string $hook_suffix The current admin page.
+			 */
+			do_action( "404_to_301_enqueue_assets_{$page}", $page, $hook_suffix );
+
+			/**
+			 * Action hook to enqueue assets for our pages.
+			 *
+			 * This hook will be fired for all plugin pages.
+			 *
+			 * @since 4.0.0
+			 *
+			 * @param string $page        Current page key.
+			 * @param string $hook_suffix The current admin page.
+			 */
+			do_action( '404_to_301_enqueue_assets', $page, $hook_suffix );
+		}
+	}
+
+	/**
+	 * Register all provided assets.
+	 *
+	 * We are just registering the scripts and styles with WP now.
+	 * We will enqueue them when it's really required.
+	 * To enqueue a script use Assets::enqueue_script().
+	 * To enqueue a script use Assets::enqueue_style().
+	 *
+	 * @since  4.0.0
+	 * @access private
+	 * @see    Assets::enqueue_script().
+	 * @uses   wp_register_script()
+	 *
+	 * @return void
+	 */
+	private function register_assets() {
+		foreach ( $this->get_assets() as $handle => $assets ) {
+			// Register JS files.
+			if ( isset( $assets['script'] ) ) {
+				$script = $assets['script'];
+
+				wp_register_script(
+					"404-to-301-$handle",
+					empty( $script['external'] ) ? DUCKDEV_404_URL . 'app/assets/' . $script['src'] : $script['src'], // If external treat the source as full URL.
+					$script['dependencies'] ?? array(),
+					$script['version'] ?? DUCKDEV_404_VERSION,
+					$script['footer'] ?? true
+				);
+			}
+
+			// Register CSS files.
+			if ( isset( $assets['style'] ) ) {
+				$style = $assets['style'];
+
+				wp_register_style(
+					"404-to-301-$handle",
+					empty( $style['external'] ) ? DUCKDEV_404_URL . 'app/assets/' . $style['src'] : $style['src'], // If external treat the source as full URL.
+					$style['dependencies'] ?? array(),
+					$style['version'] ?? DUCKDEV_404_VERSION,
+					$style['media'] ?? 'all' // The media for which this stylesheet has been defined.
+				);
+			}
+		}
+	}
+
+	/**
+	 * Get the scripts list to register.
+	 *
+	 * This function will include all scripts
+	 * added using 404_to_301_assets_get_scripts filter.
+	 *
+	 * @since  4.0.0
+	 * @access private
+	 *
+	 * @return array
+	 */
+	private function get_assets(): array {
+		$assets = array();
+
+		// Plugin scripts.
+		foreach ( array( 'settings', 'logs', 'redirects' ) as $handle ) {
+			// Get auto generated asset data.
+			$asset_data = $this->get_asset_data( $handle );
+			// Style dependencies.
+			$style_dependencies = array();
+
+			// Handle style dependencies differently.
+			if ( ! empty( $asset_data['dependencies'] ) ) {
+				foreach ( $asset_data['dependencies'] as $dependency ) {
+					// Use only if style is registered.
+					if ( wp_style_is( $dependency, 'registered' ) ) {
+						$style_dependencies[] = $dependency;
+					}
+				}
+			}
+
+			$assets[ $handle ] = array(
+				'script' => array(
+					'src'          => "$handle.js",
+					'dependencies' => $asset_data['dependencies'],
+					'version'      => $asset_data['version'],
+				),
+				'style'  => array(
+					'src'          => "$handle.css",
+					'dependencies' => $style_dependencies,
+					'version'      => $asset_data['version'],
+				),
+			);
+		}
+
+		/**
+		 * Filter to include/exclude new script.
+		 *
+		 * Modules should use this filter so that common
+		 * localized vars will be available.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $assets Asset list.
+		 */
+		return apply_filters( '404_to_301_assets_get_assets', $assets );
+	}
+
+	/**
+	 * Get asset data for a page.
+	 *
+	 * @since 4.0
+	 *
+	 * @param string $handle Asset handle.
+	 *
+	 * @return array
+	 */
+	private function get_asset_data( string $handle ): array {
+		$data       = array();
+		$asset_file = DUCKDEV_404_DIR . "app/assets/{$handle}.asset.php";
+
+		// Load asset data from auto generated file.
+		if ( file_exists( $asset_file ) ) {
+			$data = require $asset_file;
+		}
+
+		return wp_parse_args(
+			$data,
+			array(
+				'dependencies' => array(),
+				'version'      => DUCKDEV_404_VERSION,
+			)
+		);
 	}
 }

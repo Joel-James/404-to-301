@@ -1,0 +1,11 @@
+@use './../utils/variables';
+
+$prefix: '#{variables.$prefix}';
+
+.#{$prefix}-wrap {
+
+  .#{$prefix}-footer {
+    text-align: center;
+    margin: 0 0 1rem;
+  }
+}

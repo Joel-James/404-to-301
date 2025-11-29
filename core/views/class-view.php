@@ -6,10 +6,10 @@
  * of the same classes being created.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    40to301
  * @subpackage Core
  */
@@ -19,16 +19,13 @@ namespace DuckDev\FourNotFour\Views;
 // If this file is called directly, abort.
 defined( 'WPINC' ) || die;
 
-use DuckDev\FourNotFour\Utils\Base;
-
 /**
  * Class View
  *
  * @since   4.0.0
- * @extends Base
  * @package DuckDev\FourNotFour\Views
  */
-class View extends Base {
+class View {
 
 	/**
 	 * Render a template.
@@ -36,16 +33,16 @@ class View extends Base {
 	 * This will look for the template file inside
 	 * /app/templates/{file}.php
 	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
 	 * @param string $file File path.
 	 * @param array  $args Arguments.
 	 * @param bool   $once Should include once.
 	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
 	 * @return void
 	 */
-	public function render( $file, array $args = array(), $once = false ) {
+	public static function render( string $file, array $args = array(), bool $once = false ): void {
 		// Full path to the file.
 		$path = DUCKDEV_404_DIR . "/app/templates/{$file}.php";
 
@@ -66,20 +63,20 @@ class View extends Base {
 	 * This will look for the template file inside
 	 * /app/templates/{file}.php
 	 *
+	 * @since  4.0.0
+	 * @access public
+	 *
 	 * @param string $file File path.
 	 * @param array  $args Arguments.
 	 * @param bool   $once Should include once.
 	 *
-	 * @since  4.0.0
-	 * @access public
-	 *
 	 * @return string
 	 */
-	public function get_render( $file, array $args = array(), $once = true ) {
+	public static function get_render( string $file, array $args = array(), bool $once = true ): string {
 		ob_start();
 
 		// Render the template.
-		$this->render( $file, $args, $once );
+		self::render( $file, $args, $once );
 
 		return ob_get_clean();
 	}
@@ -87,15 +84,15 @@ class View extends Base {
 	/**
 	 * Get a parameter from the current URL.
 	 *
-	 * @param string $name    Name of param.
-	 * @param string $default Default value.
-	 *
 	 * @since  4.0.0
 	 * @access protected
 	 *
-	 * @return array
+	 * @param string $name    Name of param.
+	 * @param mixed  $default Default value.
+	 *
+	 * @return mixed
 	 */
-	protected function get_param( $name, $default = '' ) {
+	public static function get_param( string $name, $default = '' ) {
 		// Get param value.
 		$value = filter_input( INPUT_GET, $name, FILTER_UNSAFE_RAW );
 
@@ -107,11 +104,12 @@ class View extends Base {
 		/**
 		 * Filter to modify url param.
 		 *
-		 * @param mixed  $value   Value.
+		 * @since 4.0.0
+		 *
 		 * @param string $name    Name of param.
 		 * @param string $default Default value.
 		 *
-		 * @since 4.0.0
+		 * @param mixed  $value   Value.
 		 */
 		return apply_filters( '404_to_301_view_get_param', $value );
 	}

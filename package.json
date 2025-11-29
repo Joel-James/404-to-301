@@ -9,15 +9,11 @@
   },
   "main": "404-to-301.php",
   "scripts": {
-    "build": "wp-scripts build app/src/logs.js --output-path=app/assets",
-    "start": "wp-scripts start app/src/logs.js --output-path=app/assets"
+    "build": "wp-scripts build app/src/settings.js --output-path=app/assets",
+    "start": "wp-scripts start app/src/settings.js --output-path=app/assets"
   },
   "dependencies": {
-    "@wordpress/dataviews": "^10.3.0",
-    "@wordpress/components": "^30.8.0",
-    "@wordpress/core-data": "^7.35.0",
-    "@wordpress/data": "^10.35.0",
-    "@wordpress/element": "^6.35.0"
+    "classnames": "^2.5.1"
   },
   "devDependencies": {
     "@wordpress/scripts": "^31.0.0"

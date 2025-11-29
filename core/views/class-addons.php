@@ -17,6 +17,7 @@ namespace DuckDev\FourNotFour\Views;
 defined( 'WPINC' ) || die;
 
 use DuckDev\FourNotFour\Data;
+use DuckDev\FourNotFour\Utils\Base;
 
 /**
  * Class Addons
@@ -25,7 +26,7 @@ use DuckDev\FourNotFour\Data;
  * @since   4.0.0
  * @package DuckDev\FourNotFour\Views
  */
-class Addons extends View {
+class Addons extends Base {
 
 	/**
 	 * Register all hooks for the settings UI.
@@ -59,7 +60,7 @@ class Addons extends View {
 		$user = wp_get_current_user();
 
 		// Render template.
-		$this->render(
+		View::render(
 			'settings',
 			array(
 				'page'        => $this->get_current_tab(),
@@ -82,7 +83,7 @@ class Addons extends View {
 	 */
 	public function general_content() {
 		// Render template.
-		$this->render(
+		View::render(
 			'settings/general',
 			array()
 		);
@@ -105,7 +106,7 @@ class Addons extends View {
 	 */
 	public function redirects_content() {
 		// Render template.
-		$this->render(
+		View::render(
 			'settings/redirects',
 			array(
 				'types' => Data::redirect_types(),
@@ -130,7 +131,7 @@ class Addons extends View {
 	 */
 	public function logs_content() {
 		// Render template.
-		$this->render(
+		View::render(
 			'settings/logs',
 			array()
 		);
@@ -153,7 +154,7 @@ class Addons extends View {
 	 */
 	public function notifications_content() {
 		// Render template.
-		$this->render(
+		View::render(
 			'settings/notifications',
 			array()
 		);
@@ -179,7 +180,7 @@ class Addons extends View {
 	 */
 	public function info_content() {
 		// Render template.
-		$this->render(
+		View::render(
 			'settings/info',
 			array()
 		);
@@ -204,28 +205,7 @@ class Addons extends View {
 	 * @return array
 	 */
 	public function get_settings_tabs() {
-		$tabs = array(
-			'redirects'     => array(
-				'title' => __( 'Redirect', '404-to-301' ),
-				'icon'  => 'randomize',
-			),
-			'logs'          => array(
-				'title' => __( 'Logs', '404-to-301' ),
-				'icon'  => 'media-default',
-			),
-			'notifications' => array(
-				'title' => __( 'Notifications', '404-to-301' ),
-				'icon'  => 'email-alt',
-			),
-			'general'       => array(
-				'title' => __( 'General', '404-to-301' ),
-				'icon'  => 'admin-generic',
-			),
-			'info'          => array(
-				'title' => __( 'Info', '404-to-301' ),
-				'icon'  => 'info',
-			),
-		);
+		$tabs = array();
 
 		/**
 		 * Filter to add or remove settings tabs.
@@ -288,7 +268,7 @@ class Addons extends View {
 
 			// Render each message as notice.
 			foreach ( $errors as $details ) {
-				$this->render(
+				View::render(
 					'components/notices/notice',
 					array(
 						'type'    => $details['type'],
@@ -316,7 +296,7 @@ class Addons extends View {
 	 */
 	public function get_current_tab( $default = 'redirects' ) {
 		// Get tab value.
-		$tab = $this->get_param( 'tab', $default );
+		$tab = View::get_param( 'tab', $default );
 
 		// Get allowed tabs.
 		$tabs = array_keys( $this->get_settings_tabs() );

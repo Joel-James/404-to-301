@@ -47,7 +47,8 @@ class Settings extends Base {
 	 */
 	public function init() {
 		// Register plugin settings with WP.
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'init', array( $this, 'register_settings' ) );
+		//add_action( 'rest_api_init', array( $this, 'register_settings' ) );
 	}
 
 	/**
@@ -250,9 +251,83 @@ class Settings extends Base {
 			self::KEY,
 			array(
 				'type'              => 'array',
-				'default'           => array(),
+				'default'           => array(
+					'redirect_enabled' => true,
+					'redirect_type'    => 301,
+				),
 				'description'       => __( '404 to 301 plugin settings', '404-to-301' ),
 				'sanitize_callback' => array( $this, 'sanitize_settings' ),
+				'show_in_rest'      => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'disable_guessing'     => array(
+								'type'        => 'boolean',
+								'description' => 'The sites custom name.',
+							),
+							'monitor_changes'      => array(
+								'type'        => 'boolean',
+								'description' => 'The sites custom name.',
+							),
+							'exclude_paths'        => array(
+								'type'        => 'array',
+								'description' => 'The sites custom name.',
+							),
+							'disable_ip'           => array(
+								'type'        => 'boolean',
+								'description' => 'The sites custom name.',
+							),
+							// Redirects.
+							'redirect_enabled'     => array(
+								'type'        => 'boolean',
+								'description' => 'The sites custom name.',
+							),
+							'redirect_type'        => array(
+								'type'        => 'string',
+								'description' => 'The sites custom name.',
+							),
+							'redirect_target'      => array(
+								'type'        => 'string',
+								'description' => 'The sites custom name.',
+							),
+							'redirect_link'        => array(
+								'type'        => 'string',
+								'description' => 'The sites custom name.',
+							),
+							'redirect_page'        => array(
+								'type'        => 'string',
+								'description' => 'The sites custom name.',
+							),
+							// Error logs.
+							'logs_enabled'         => array(
+								'type'        => 'boolean',
+								'description' => 'The sites custom name.',
+							),
+							'logs_skip_duplicates' => array(
+								'type'        => 'boolean',
+								'description' => 'The sites custom name.',
+							),
+							// Email notification.
+							'email_enabled'        => array(
+								'type'        => 'boolean',
+								'description' => 'The sites custom name.',
+							),
+							'email_recipient'      => array(
+								'type'        => 'string',
+								'description' => 'The sites custom name.',
+							),
+							// Others.
+							'plugin_version'       => array(
+								'type'        => 'string',
+								'description' => 'The sites custom name.',
+							),
+							'logs_upgraded'        => array(
+								'type'        => 'boolean',
+								'description' => 'The sites custom name.',
+							),
+						),
+					),
+				),
 			)
 		);
 	}

@@ -26,7 +26,7 @@
 			<h1>
 				<?php esc_html_e( '404 to 301', '404-to-301' ); ?>
 				<span class="subtitle">
-					by <a href="https://duckdev.com/?utm_source=404-to-301&utm_medium=plugin&utm_campaign=404-to-301_settings_header">Joel James</a> ( v<?php echo esc_attr( REDIRECT_VERSION ); ?> )
+					by <a href="https://duckdev.com/?utm_source=404-to-301&utm_medium=plugin&utm_campaign=404-to-301_settings_header">Joel James</a> ( v<?php echo esc_attr( DUCKDEV_404_VERSION ); ?> )
 				</span>
 			</h1>
 		</div>

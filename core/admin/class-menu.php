@@ -128,7 +128,7 @@ class Menu extends Base {
 			Permission::get_cap(),
 			self::SLUG,
 			array( Views\Logs::instance(), 'content' ),
-			'dashicons-redo',
+			'dashicons-controls-repeat',
 			89
 		);
 	}

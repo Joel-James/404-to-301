@@ -3,10 +3,10 @@
  * The plugin settings page view class.
  *
  * @since      4.0.0
+ * @link       https://duckdev.com/products/404-to-301/
  * @author     Joel James <me@joelsays.com>
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * @copyright  Copyright (c) 2021, Joel James
- * @link       https://duckdev.com/products/404-to-301/
  * @package    View
  * @subpackage Settings
  */
@@ -17,6 +17,8 @@ namespace DuckDev\FourNotFour\Views;
 defined( 'WPINC' ) || die;
 
 use DuckDev\FourNotFour\Data;
+use DuckDev\FourNotFour\Plugin;
+use DuckDev\FourNotFour\Utils\Base;
 
 /**
  * Class Settings
@@ -25,7 +27,7 @@ use DuckDev\FourNotFour\Data;
  * @since   4.0.0
  * @package DuckDev\FourNotFour\Views
  */
-class Settings extends View {
+class Settings extends Base {
 
 	/**
 	 * Register all hooks for the settings UI.
@@ -62,14 +64,15 @@ class Settings extends View {
 		$user = wp_get_current_user();
 
 		// Render template.
-		$this->render(
-			'settings',
+		View::render(
+			'settings-react',
 			array(
 				'page'        => $this->get_current_tab(),
 				'user_name'   => empty( $user->display_name ) ? $user->user_login : $user->display_name,
 				'menu_config' => array(
-					'current' => $this->get_current_tab(),
-					'items'   => $this->get_settings_tabs(),
+					'base_url'    => Plugin::get_url(),
+					'current_tab' => $this->get_current_tab(),
+					'tab_items'   => $this->get_settings_tabs(),
 				),
 			)
 		);
@@ -85,8 +88,8 @@ class Settings extends View {
 	 */
 	public function general_content() {
 		// Render template.
-		$this->render(
-			'settings/general',
+		View::render(
+			'settings/tab-general',
 			array()
 		);
 
@@ -108,8 +111,8 @@ class Settings extends View {
 	 */
 	public function redirects_content() {
 		// Render template.
-		$this->render(
-			'settings/redirects',
+		View::render(
+			'settings/tab-redirects',
 			array(
 				'types' => Data::redirect_types(),
 			)
@@ -133,8 +136,8 @@ class Settings extends View {
 	 */
 	public function logs_content() {
 		// Render template.
-		$this->render(
-			'settings/logs',
+		View::render(
+			'settings/tab-logs',
 			array()
 		);
 
@@ -156,8 +159,8 @@ class Settings extends View {
 	 */
 	public function notifications_content() {
 		// Render template.
-		$this->render(
-			'settings/notifications',
+		View::render(
+			'settings/tab-notifications',
 			array()
 		);
 
@@ -182,7 +185,7 @@ class Settings extends View {
 	 */
 	public function info_content() {
 		// Render template.
-		$this->render(
+		View::render(
 			'settings/info',
 			array()
 		);
@@ -206,36 +209,33 @@ class Settings extends View {
 	 *
 	 * @return array
 	 */
-	public function get_settings_tabs() {
+	public function get_settings_tabs(): array {
 		$tabs = array(
 			'redirects'     => array(
-				'title' => __( 'Redirect', '404-to-301' ),
-				'icon'  => 'randomize',
+				'label' => __( 'Redirects', '404-to-301' ),
+				'icon'  => 'dashicons-redo',
 			),
 			'logs'          => array(
-				'title' => __( 'Logs', '404-to-301' ),
-				'icon'  => 'media-default',
+				'label' => __( 'Logs', '404-to-301' ),
+				'icon'  => 'dashicons-media-default',
 			),
 			'notifications' => array(
-				'title' => __( 'Notifications', '404-to-301' ),
-				'icon'  => 'email-alt',
+				'label' => __( 'Notifications', '404-to-301' ),
+				'icon'  => 'dashicons-email-alt',
 			),
 			'general'       => array(
-				'title' => __( 'General', '404-to-301' ),
-				'icon'  => 'admin-generic',
-			),
-			'info'          => array(
-				'title' => __( 'Info', '404-to-301' ),
-				'icon'  => 'info',
+				'label' => __( 'General', '404-to-301' ),
+				'icon'  => 'dashicons-admin-settings',
 			),
 		);
 
 		/**
 		 * Filter to add or remove settings tabs.
 		 *
+		 * @since 4.0.0
+		 *
 		 * @param array $tabs Tabs config.
 		 *
-		 * @since 4.0.0
 		 */
 		return apply_filters( '404_to_301_settings_page_get_tabs', $tabs );
 	}
@@ -258,10 +258,11 @@ class Settings extends View {
 		/**
 		 * Filter to modify settings submit section hidden status.
 		 *
-		 * @param bool  $show   Should show.
+		 * @since 4.0.0
+		 *
 		 * @param array $hidden Hidden items.
 		 *
-		 * @since 4.0.0
+		 * @param bool  $show   Should show.
 		 */
 		return apply_filters( '404_to_301_admin_settings_show_submit', $show, $hidden );
 	}
@@ -271,10 +272,10 @@ class Settings extends View {
 	 *
 	 * Show success/error notices after processing the form.
 	 *
-	 * @param string $page Current page.
-	 *
 	 * @since  4.0.0
 	 * @access public
+	 *
+	 * @param string $page Current page.
 	 *
 	 * @return void
 	 */
@@ -291,7 +292,7 @@ class Settings extends View {
 
 			// Render each message as notice.
 			foreach ( $errors as $details ) {
-				$this->render(
+				View::render(
 					'components/notices/notice',
 					array(
 						'type'    => $details['type'],
@@ -310,16 +311,16 @@ class Settings extends View {
 	 * This is required to show current tab content, add
 	 * active class to tab etc.
 	 *
-	 * @param string $default Default tab.
-	 *
 	 * @since  4.0.0
 	 * @access public
 	 *
-	 * @return array
+	 * @param string $default Default tab.
+	 *
+	 * @return string
 	 */
-	public function get_current_tab( $default = 'redirects' ) {
+	public function get_current_tab( string $default = 'redirects' ): string {
 		// Get tab value.
-		$tab = $this->get_param( 'tab', $default );
+		$tab = View::get_param( 'tab', $default );
 
 		// Get allowed tabs.
 		$tabs = array_keys( $this->get_settings_tabs() );
@@ -330,11 +331,11 @@ class Settings extends View {
 		/**
 		 * Filter to modify active tabs logic.
 		 *
+		 * @since 4.0.0
+		 *
 		 * @param string $tab  Current tab.
 		 * @param array  $tabs Allowed tabs.
-		 *
-		 * @since 4.0.0
 		 */
-		return apply_filters( '404_to_301_admin_settings_page_get_current_tab', $tab );
+		return apply_filters( '404_to_301_admin_settings_page_get_current_tab', $tab, $tabs );
 	}
 }
