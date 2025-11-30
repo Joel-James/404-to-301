@@ -12,6 +12,7 @@ const useSettings = () => {
 	)
 
 	const { saveEditedEntityRecord } = useDispatch( coreStore )
+
 	// Notice store.
 	const { createSuccessNotice, createErrorNotice } =
 		useDispatch( noticesStore )
@@ -62,14 +63,24 @@ const useSettings = () => {
 	/**
 	 * Handle a setting value change.
 	 *
-	 * @param {string}                  key   Setting key.
-	 * @param {string | number | Array} value Setting value.
+	 * @param {string} key   Setting key.
+	 * @param {*}      value Setting value.
 	 */
 	const handleChange = ( key, value ) => {
 		setSettings( {
 			...settings,
 			[ key ]: value,
 		} )
+	}
+
+	/**
+	 * Get a single setting value.
+	 *
+	 * @param {string} key          Setting key.
+	 * @param {*}      defaultValue Setting default value.
+	 */
+	const getSetting = ( key, defaultValue = null ) => {
+		return settings[ key ] || defaultValue
 	}
 
 	// Flag to check if form has changed data.
@@ -85,6 +96,7 @@ const useSettings = () => {
 		hasLoaded,
 		settings,
 		lastError,
+		getSetting,
 		setSettings,
 		handleChange,
 		saveSettings,

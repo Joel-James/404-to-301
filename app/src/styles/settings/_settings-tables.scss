@@ -1,3 +1,7 @@
+@use './../utils/variables';
+
+$prefix: '#{variables.$prefix}';
+
 .#{$prefix}-wrap {
 
   // Repeat table component.

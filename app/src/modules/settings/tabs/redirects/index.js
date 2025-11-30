@@ -4,19 +4,35 @@ import RedirectType from './redirect-type'
 import RedirectTarget from './redirect-target'
 import RedirectPage from './redirect-page'
 import RedirectLink from './redirect-link'
-import { PanelBody } from '@wordpress/components'
 import useSettings from './../../hooks/settings'
+import { SettingsPanel } from './../../components'
+import { PanelBody, PanelRow } from '@wordpress/components'
 
 const Redirects = () => {
-	const { settings } = useSettings()
-	const redirectTarget = settings.redirect_target ?? 'link'
+	const { getSetting } = useSettings()
+	const redirectTarget = getSetting( 'redirect_target', 'link' )
+	const redirectEnabled = getSetting( 'redirect_enabled', false )
 
 	return (
 		<PanelBody title={ __( 'Redirects', '404-to-301' ) }>
-			<RedirectStatus />
-			<RedirectType />
-			<RedirectTarget />
-			{ redirectTarget === 'link' ? <RedirectLink /> : <RedirectPage /> }
+			<PanelRow>
+				<RedirectStatus />
+			</PanelRow>
+			<SettingsPanel isEnabled={ redirectEnabled }>
+				<PanelRow>
+					<RedirectType />
+				</PanelRow>
+				<PanelRow>
+					<RedirectTarget />
+				</PanelRow>
+				<PanelRow>
+					{ redirectTarget === 'link' ? (
+						<RedirectLink />
+					) : (
+						<RedirectPage />
+					) }
+				</PanelRow>
+			</SettingsPanel>
 		</PanelBody>
 	)
 }

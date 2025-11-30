@@ -141,8 +141,6 @@ class Settings extends Endpoint {
 	 * @return WP_REST_Response
 	 */
 	public function update_settings( $request ) {
-		sleep(3);
-		return $this->get_response( duckdev_404_to_301_settings()->all() );
 		$success = false;
 		// Get parameters.
 		$key   = $request->get_param( 'key' );

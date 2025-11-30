@@ -3,13 +3,13 @@ import useSettings from '../hooks/settings'
 import { Button } from '@wordpress/components'
 
 const SettingsFooter = () => {
-	const { isSaving, hasLoaded, saveSettings } = useSettings()
+	const { isSaving, hasLoaded, isDirty, saveSettings } = useSettings()
 
 	return (
 		<div className="duckdev-404-settings-footer">
 			{ hasLoaded && (
 				<Button
-					disabled={ isSaving }
+					disabled={ isSaving || ! isDirty }
 					isBusy={ isSaving }
 					variant="primary"
 					icon={ isSaving ? null : 'yes' }

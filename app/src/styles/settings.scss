@@ -5,6 +5,8 @@
 @use "settings/settings-header";
 @use "settings/settings-content";
 @use "settings/settings-form";
+@use "settings/settings-tables";
+@use "settings/settings-loader";
 
 // Fix for padding in wrap class.
 #wpcontent {

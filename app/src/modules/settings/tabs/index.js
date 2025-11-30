@@ -3,9 +3,4 @@ import Redirects from './redirects'
 import General from './general'
 import Notifications from './notifications'
 
-export {
-	Logs,
-	General,
-	Redirects,
-	Notifications
-}
+export { Logs, General, Redirects, Notifications }

@@ -17,10 +17,6 @@ $prefix: '#{variables.$prefix}';
         .components-base-control__field {
           align-items: center;
           margin-bottom: 10px;
-
-          .components-radio-control__option {
-            margin-bottom: 12px;
-          }
         }
 
         .components-combobox-control__input {
