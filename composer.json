@@ -1,11 +1,55 @@
 {
-    "name"       : "joel-james/404-to-301",
-    "version"    : "3.1.1",
-    "description": "Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.",
-    "homepage"   : "https://duckdev.com/products/404-to-301/",
-    "license"    : "GPL-2.0+",
-    "type"       : "wordpress-plugin",
-    "require"    : {
-        "composer/installers": "~1.0"
-    }
+    "name": "duckdev/404-to-301",
+    "description": "Automatically redirect every 404 error to any page using a 301 redirect, log every 404 request, and get email notifications when broken links are hit.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://wordpress.org/plugins/404-to-301/",
+    "authors": [
+        {
+            "name": "Joel James",
+            "homepage": "https://duckdev.com/"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/joel-james/404-to-301/issues",
+        "source": "https://github.com/joel-james/404-to-301",
+        "forum":  "https://wordpress.org/support/plugin/404-to-301/"
+    },
+    "require": {
+        "php": ">=7.4",
+        "composer/installers": "^1.0 || ^2.0",
+        "berlindb/core": "^2.0",
+        "duckdev/freemius-plugin-licensing": "^1.0"
+    },
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^3.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "yoast/phpunit-polyfills": "^2.0",
+        "phpunit/phpunit": "^9.6"
+    },
+    "autoload": {
+        "classmap": [
+            "includes/"
+        ]
+    },
+    "scripts": {
+        "lint": "phpcs",
+        "lint:fix": "phpcbf",
+        "test": "phpunit"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/installers": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "platform": {
+            "php": "7.4"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

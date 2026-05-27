@@ -1,0 +1,29 @@
+@use './variables';
+
+$prefix: '#{variables.$prefix}';
+
+// Center the snackbar notices over the content column.
+.components-snackbar-list.#{$prefix}-notices {
+	position: fixed;
+	bottom: auto;
+	right: auto;
+	top: 52px;
+	left: calc(50% + 80px);  // 50% + (sidebar / 2)
+	width: max-content;
+	max-width: calc(100vw - 200px);
+	transform: translateX(-50%);
+	z-index: 100000;
+}
+
+.folded .components-snackbar-list.#{$prefix}-notices {
+	left: calc(50% + 18px);
+	max-width: calc(100vw - 76px);
+}
+
+@media (max-width: 782px) {
+	.components-snackbar-list.#{$prefix}-notices {
+		top: 66px;
+		left: 50%;
+		max-width: calc(100vw - 40px);
+	}
+}

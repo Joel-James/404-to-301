@@ -1,0 +1,21 @@
+/**
+ * Redirects page entry — boots the React app on the mount point.
+ */
+import './styles/redirects.scss'
+import './utils/api-init'
+import domReady from '@wordpress/dom-ready'
+import { createRoot } from '@wordpress/element'
+import RedirectsApp from './modules/redirects'
+import { AppShell } from './common'
+
+domReady(() => {
+	const el = document.getElementById('404-to-301-redirects')
+
+	if (el) {
+		createRoot(el).render(
+			<AppShell>
+				<RedirectsApp />
+			</AppShell>,
+		)
+	}
+})

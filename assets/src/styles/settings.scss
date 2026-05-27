@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+// Common UI chrome.
+@use 'ui/page-header';
+@use 'ui/page-content';
+@use 'ui/page-loader';
+@use 'utils/notices';
+
+// Remove the default admin content padding for the full-width layout.
+#wpcontent {
+	padding-left: 0 !important;
+}

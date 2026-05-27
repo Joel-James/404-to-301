@@ -1,0 +1,69 @@
+@charset "UTF-8";
+
+// Common UI chrome.
+@use 'ui/page-header';
+@use 'ui/page-content';
+@use 'ui/page-loader';
+@use 'utils/notices';
+@use 'utils/variables';
+
+$prefix: '#{variables.$prefix}';
+
+#wpcontent {
+	padding-left: 0 !important;
+}
+
+.#{$prefix}-wrap {
+
+	.#{$prefix}-addons-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+		gap: 1rem;
+		margin-top: 1.5rem;
+	}
+
+	// Stretch every card to the same height inside the grid so the
+	// footer buttons line up across rows. Card primitives bring their
+	// own background, border, radius and elevation — no need to
+	// override any of that.
+	.#{$prefix}-addon-card {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+
+		// Make the body grow to fill the gap between header and footer.
+		.components-card__body {
+			flex: 1;
+		}
+	}
+
+	.#{$prefix}-addon-tags {
+		margin-top: .75rem;
+	}
+
+	// Badge palette used in the card header (and the tags strip).
+	.#{$prefix}-addon-badge {
+		display: inline-block;
+		padding: 2px 8px;
+		font-size: 11px;
+		font-weight: 600;
+		line-height: 1.4;
+		color: #fff;
+		background: #50575e;
+		border-radius: 3px;
+		text-transform: uppercase;
+		letter-spacing: .02em;
+
+		&--premium { background: #3582c4; }
+		&--free    { background: #50575e; }
+		&--success { background: #008a20; }
+		&--warning { background: #b26200; }
+		&--tag {
+			color: #2c3338;
+			background: #e5e5e5;
+			text-transform: none;
+			letter-spacing: 0;
+			font-weight: 500;
+		}
+	}
+}
