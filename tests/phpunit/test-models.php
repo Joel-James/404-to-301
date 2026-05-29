@@ -19,6 +19,9 @@ use DuckDev\FourNotFour\Models\Redirects;
  */
 class ModelsTest extends WP_UnitTestCase {
 
+	/**
+	 * Boot the BerlinDB-backed tables before each test runs.
+	 */
 	public function set_up(): void {
 		parent::set_up();
 
@@ -31,6 +34,9 @@ class ModelsTest extends WP_UnitTestCase {
 		// an implicit commit and break the rollback.
 	}
 
+	/**
+	 * First `record_hit` inserts; the second on the same URL bumps `hits`.
+	 */
 	public function test_logs_record_hit_inserts_then_bumps(): void {
 		$model = Logs::instance();
 		$id    = $model->record_hit(
@@ -58,6 +64,9 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertSame( 2, (int) $row->hits );
 	}
 
+	/**
+	 * Trailing slash and case differences collapse onto the same log row.
+	 */
 	public function test_logs_url_normalisation(): void {
 		$model = Logs::instance();
 		$first = $model->record_hit( array( 'url' => '/foo' ) );
@@ -66,6 +75,9 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertSame( $first, $same, 'Trailing slash + case should normalise into the same row.' );
 	}
 
+	/**
+	 * `set_status` writes the status column for a valid value.
+	 */
 	public function test_logs_set_status(): void {
 		$model = Logs::instance();
 		$id    = $model->record_hit( array( 'url' => '/fix-me' ) );
@@ -76,6 +88,9 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertSame( Logs::STATUS_FIXED, (int) $row->status );
 	}
 
+	/**
+	 * Creating a redirect persists it and exposes it via `find_exact()`.
+	 */
 	public function test_redirects_create_and_find_exact(): void {
 		$model = Redirects::instance();
 		$id    = $model->create(
@@ -100,6 +115,9 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertNotNull( $row );
 	}
 
+	/**
+	 * Prefix rules match URLs that start with the rule's source.
+	 */
 	public function test_redirects_prefix_match(): void {
 		$model = Redirects::instance();
 		$model->create(
@@ -120,6 +138,9 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertNull( $row );
 	}
 
+	/**
+	 * Regex rules match URLs that satisfy the pattern.
+	 */
 	public function test_redirects_regex_match(): void {
 		$model = Redirects::instance();
 		$model->create(
@@ -136,11 +157,17 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertNull( $model->find_match( '/products/abc' ) );
 	}
 
+	/**
+	 * `record_hit` is a no-op when no URL is supplied.
+	 */
 	public function test_logs_record_hit_skips_empty_url(): void {
 		$this->assertSame( 0, Logs::instance()->record_hit( array( 'url' => '' ) ) );
 		$this->assertSame( 0, Logs::instance()->record_hit( array() ) );
 	}
 
+	/**
+	 * `set_status` refuses any value outside the STATUS_* constants.
+	 */
 	public function test_logs_set_status_rejects_unknown_value(): void {
 		$model = Logs::instance();
 		$id    = $model->record_hit( array( 'url' => '/bad-status' ) );
@@ -148,6 +175,9 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertFalse( $model->set_status( $id, 99 ) );
 	}
 
+	/**
+	 * Linking a redirect flips status to CUSTOM; unlinking sends it back to OPEN.
+	 */
 	public function test_logs_link_redirect_flips_status_to_custom_and_back(): void {
 		$model = Logs::instance();
 		$id    = $model->record_hit( array( 'url' => '/link-me' ) );
@@ -164,6 +194,9 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertNull( $row->redirect_id );
 	}
 
+	/**
+	 * Unknown override values are coerced back to OVERRIDE_GLOBAL.
+	 */
 	public function test_logs_set_overrides_coerces_unknown_values(): void {
 		$model = Logs::instance();
 		$id    = $model->record_hit( array( 'url' => '/overrides' ) );
@@ -185,6 +218,9 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertSame( Logs::OVERRIDE_DISABLE, (int) $row->override_email );
 	}
 
+	/**
+	 * `prune` deletes rows older than the cutoff; ≤0 days is a no-op.
+	 */
 	public function test_logs_prune_removes_rows_older_than_cutoff(): void {
 		$model = Logs::instance();
 
@@ -204,6 +240,9 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertSame( 0, $model->prune( -5 ) );
 	}
 
+	/**
+	 * `find_match` resolves exact > prefix > regex when multiple rules overlap.
+	 */
 	public function test_redirects_find_match_prefers_exact_over_prefix_and_regex(): void {
 		$model = Redirects::instance();
 
@@ -243,6 +282,9 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertSame( $exact_id, (int) $row->id );
 	}
 
+	/**
+	 * Inactive rows are invisible to `find_match`.
+	 */
 	public function test_redirects_find_match_skips_inactive_rows(): void {
 		$model = Redirects::instance();
 		$model->create(
@@ -258,10 +300,16 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertNull( $model->find_match( '/disabled' ) );
 	}
 
+	/**
+	 * `record_hit` returns false when the redirect id doesn't exist.
+	 */
 	public function test_redirects_record_hit_returns_false_for_missing_id(): void {
 		$this->assertFalse( Redirects::instance()->record_hit( 999999 ) );
 	}
 
+	/**
+	 * Changing `source` refreshes the `source_hash` so `find_exact` follows.
+	 */
 	public function test_redirects_update_refreshes_source_hash(): void {
 		$model = Redirects::instance();
 		$id    = $model->create(
@@ -282,6 +330,9 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertSame( $id, (int) $row->id );
 	}
 
+	/**
+	 * Each `record_hit` bumps the counter and updates `last_hit_at`.
+	 */
 	public function test_redirects_record_hit_bumps_counter(): void {
 		$model = Redirects::instance();
 		$id    = $model->create(

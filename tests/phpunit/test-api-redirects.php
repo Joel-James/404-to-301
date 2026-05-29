@@ -2,6 +2,10 @@
 /**
  * REST tests for {@see \DuckDev\FourNotFour\Api\Redirects}.
  *
+ * Exercises the public surface of `/404-to-301/v1/redirects*` end-to-end —
+ * routes are dispatched through {@see rest_get_server()} so the permission
+ * callback, arg validation and response shaping all run.
+ *
  * @package FourNotFour
  */
 
@@ -17,13 +21,23 @@ use DuckDev\FourNotFour\Models\Redirects as RedirectsModel;
  */
 class ApiRedirectsTest extends WP_UnitTestCase {
 
+	/**
+	 * REST namespace under test.
+	 */
 	const ROUTE = '/404-to-301/v1/redirects';
 
 	/**
+	 * Admin user id, used to satisfy the `manage_options` permission
+	 * callback.
+	 *
 	 * @var int
 	 */
 	private $admin_id = 0;
 
+	/**
+	 * Boot the tables, log in as an admin, and force the REST server
+	 * to register every route before each test runs.
+	 */
 	public function set_up(): void {
 		parent::set_up();
 
@@ -35,12 +49,24 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 		rest_get_server();
 	}
 
+	/**
+	 * Reset the current user so the next test starts logged out.
+	 */
 	public function tear_down(): void {
 		wp_set_current_user( 0 );
 
 		parent::tear_down();
 	}
 
+	/**
+	 * Dispatch a request through the REST server and return the response.
+	 *
+	 * @param string $method HTTP method.
+	 * @param string $route  Route path.
+	 * @param array  $params Body / query params.
+	 *
+	 * @return WP_REST_Response
+	 */
 	private function dispatch( string $method, string $route, array $params = array() ): WP_REST_Response {
 		$request = new WP_REST_Request( $method, $route );
 
@@ -51,6 +77,9 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 		return rest_get_server()->dispatch( $request );
 	}
 
+	/**
+	 * `POST /redirects` returns 201 and persists the new row.
+	 */
 	public function test_create_returns_201_and_persists_row(): void {
 		$response = $this->dispatch(
 			'POST',
@@ -76,6 +105,9 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 		$this->assertNotNull( RedirectsModel::instance()->find( $body['id'] ) );
 	}
 
+	/**
+	 * Create requests without a `source` are rejected before they reach the callback.
+	 */
 	public function test_create_requires_source(): void {
 		$response = $this->dispatch(
 			'POST',
@@ -87,6 +119,9 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 		$this->assertSame( 'rest_missing_callback_param', $response->get_data()['code'] );
 	}
 
+	/**
+	 * REST's `enum` validator rejects unsupported redirect types with 400.
+	 */
 	public function test_create_rejects_out_of_enum_redirect_type(): void {
 		$response = $this->dispatch(
 			'POST',
@@ -101,6 +136,9 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 		$this->assertSame( 'rest_invalid_param', $response->get_data()['code'] );
 	}
 
+	/**
+	 * `GET /redirects/{id}` returns the shaped row for an existing redirect.
+	 */
 	public function test_get_returns_shaped_row(): void {
 		$id = RedirectsModel::instance()->create(
 			array(
@@ -120,12 +158,18 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 		$this->assertSame( '/get-it', $body['source'] );
 	}
 
+	/**
+	 * `GET /redirects/{id}` returns 404 when the row doesn't exist.
+	 */
 	public function test_get_returns_404_for_missing_row(): void {
 		$response = $this->dispatch( 'GET', self::ROUTE . '/999999' );
 
 		$this->assertSame( 404, $response->get_status() );
 	}
 
+	/**
+	 * `PATCH /redirects/{id}` updates the row and refreshes the `source_hash` when `source` changes.
+	 */
 	public function test_update_modifies_row_and_refreshes_hash(): void {
 		$id = RedirectsModel::instance()->create(
 			array(
@@ -161,12 +205,18 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 		$this->assertNotNull( RedirectsModel::instance()->find_exact( '/after' ) );
 	}
 
+	/**
+	 * `PATCH /redirects/{id}` returns 404 when the row doesn't exist.
+	 */
 	public function test_update_returns_404_for_missing_row(): void {
 		$response = $this->dispatch( 'PATCH', self::ROUTE . '/999999', array( 'is_active' => true ) );
 
 		$this->assertSame( 404, $response->get_status() );
 	}
 
+	/**
+	 * `DELETE /redirects/{id}` removes the row.
+	 */
 	public function test_delete_removes_row(): void {
 		$id = RedirectsModel::instance()->create(
 			array(
@@ -185,6 +235,9 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 		$this->assertNull( RedirectsModel::instance()->find( $id ) );
 	}
 
+	/**
+	 * `DELETE /redirects` with an `ids` payload removes every listed row.
+	 */
 	public function test_bulk_delete_removes_every_listed_row(): void {
 		$model = RedirectsModel::instance();
 		$ids   = array();
@@ -206,6 +259,9 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 		$this->assertSame( 3, $response->get_data()['deleted'] );
 	}
 
+	/**
+	 * `GET /redirects?is_active=…` narrows the collection to matching rows.
+	 */
 	public function test_list_filters_by_is_active(): void {
 		$model = RedirectsModel::instance();
 		$model->create(
@@ -234,6 +290,9 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 		$this->assertSame( '/off', $data[0]['source'] );
 	}
 
+	/**
+	 * Logged-in subscribers (no `manage_options`) get rejected with 401/403.
+	 */
 	public function test_subscriber_is_forbidden(): void {
 		$sub = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		wp_set_current_user( $sub );

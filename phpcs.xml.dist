@@ -87,18 +87,6 @@
 		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.InvalidPrefixPassed"/>
 	</rule>
 
-	<!--
-		Test files don't get every-function docblocks. The WP test
-		framework's own conventions (`set_up`, `tear_down`, `test_*`)
-		are self-documenting and forcing a docblock on each `test_*`
-		method adds noise without value.
-	-->
-	<rule ref="Squiz.Commenting.FunctionComment.Missing">
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
-	<rule ref="Generic.Commenting.DocComment.MissingShort">
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
 
 	<!-- PHP compatibility — minimum 7.4. -->
 	<config name="testVersion" value="7.4-"/>

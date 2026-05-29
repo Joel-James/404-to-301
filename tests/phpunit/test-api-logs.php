@@ -35,6 +35,10 @@ class ApiLogsTest extends WP_UnitTestCase {
 	 */
 	private $admin_id = 0;
 
+	/**
+	 * Boot the tables, log in as an admin, and force the REST server
+	 * to register every route before each test runs.
+	 */
 	public function set_up(): void {
 		parent::set_up();
 
@@ -48,6 +52,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		rest_get_server();
 	}
 
+	/**
+	 * Reset the current user so the next test starts logged out.
+	 */
 	public function tear_down(): void {
 		wp_set_current_user( 0 );
 
@@ -55,7 +62,7 @@ class ApiLogsTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Helper — dispatch a request through the REST server.
+	 * Dispatch a request through the REST server and return the response.
 	 *
 	 * @param string $method HTTP method.
 	 * @param string $route  Route path.
@@ -73,6 +80,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		return rest_get_server()->dispatch( $request );
 	}
 
+	/**
+	 * `GET /logs` returns paginated results with the WP collection headers.
+	 */
 	public function test_list_returns_collection_with_pagination_headers(): void {
 		$model = LogsModel::instance();
 		$model->record_hit( array( 'url' => '/one' ) );
@@ -89,6 +99,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$this->assertSame( '2', $headers['X-WP-TotalPages'] );
 	}
 
+	/**
+	 * `GET /logs?status=…` narrows the collection to the matching status.
+	 */
 	public function test_list_filters_by_status(): void {
 		$model   = LogsModel::instance();
 		$ignored = $model->record_hit( array( 'url' => '/ign' ) );
@@ -107,6 +120,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$this->assertSame( LogsModel::STATUS_IGNORED, $data[0]['status'] );
 	}
 
+	/**
+	 * `GET /logs/{id}` returns the shaped row for an existing log.
+	 */
 	public function test_get_returns_shaped_row(): void {
 		$id = LogsModel::instance()->record_hit(
 			array(
@@ -124,6 +140,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$this->assertArrayHasKey( 'status_label', $body );
 	}
 
+	/**
+	 * `GET /logs/{id}` returns 404 when the row doesn't exist.
+	 */
 	public function test_get_returns_404_for_missing_row(): void {
 		$response = $this->dispatch( 'GET', self::ROUTE . '/999999' );
 
@@ -131,6 +150,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$this->assertSame( 'rest_not_found', $response->get_data()['code'] );
 	}
 
+	/**
+	 * `PATCH /logs/{id}` flips the row's status column.
+	 */
 	public function test_update_flips_status(): void {
 		$id = LogsModel::instance()->record_hit( array( 'url' => '/patch-me' ) );
 
@@ -144,6 +166,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$this->assertSame( LogsModel::STATUS_FIXED, $response->get_data()['status'] );
 	}
 
+	/**
+	 * `PATCH /logs/{id}` writes the override flags it receives and leaves the rest alone.
+	 */
 	public function test_update_persists_override_flags(): void {
 		$id = LogsModel::instance()->record_hit( array( 'url' => '/overrides' ) );
 
@@ -163,6 +188,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$this->assertSame( LogsModel::OVERRIDE_GLOBAL, $body['override_log'] );
 	}
 
+	/**
+	 * REST's `enum` validator rejects out-of-range status values with 400.
+	 */
 	public function test_update_rejects_out_of_enum_status(): void {
 		$id = LogsModel::instance()->record_hit( array( 'url' => '/enum' ) );
 
@@ -178,6 +206,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$this->assertSame( 'rest_invalid_param', $response->get_data()['code'] );
 	}
 
+	/**
+	 * `DELETE /logs/{id}` removes the row.
+	 */
 	public function test_delete_removes_row(): void {
 		$id = LogsModel::instance()->record_hit( array( 'url' => '/delete-me' ) );
 
@@ -188,6 +219,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$this->assertNull( LogsModel::instance()->find( $id ) );
 	}
 
+	/**
+	 * `DELETE /logs` with an `ids` payload removes every listed row.
+	 */
 	public function test_bulk_delete_removes_every_listed_row(): void {
 		$model = LogsModel::instance();
 		$ids   = array(
@@ -202,6 +236,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$this->assertSame( 3, $response->get_data()['deleted'] );
 	}
 
+	/**
+	 * `POST /logs/bulk-update` flips the status on every id in one round-trip.
+	 */
 	public function test_bulk_update_flips_status_for_every_id(): void {
 		$model = LogsModel::instance();
 		$ids   = array(
@@ -226,6 +263,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * Logged-out requests get rejected with 401/403.
+	 */
 	public function test_requires_authentication(): void {
 		wp_set_current_user( 0 );
 
@@ -236,6 +276,9 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$this->assertContains( $response->get_status(), array( 401, 403 ) );
 	}
 
+	/**
+	 * Logged-in subscribers (no `manage_options`) get rejected with 401/403.
+	 */
 	public function test_subscriber_is_forbidden(): void {
 		$sub = self::factory()->user->create( array( 'role' => 'subscriber' ) );
 		wp_set_current_user( $sub );

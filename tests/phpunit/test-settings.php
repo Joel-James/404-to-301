@@ -16,6 +16,9 @@ use DuckDev\FourNotFour\Settings;
  */
 class SettingsTest extends WP_UnitTestCase {
 
+	/**
+	 * Drop both option keys so the next test starts on a clean slate.
+	 */
 	public function tear_down(): void {
 		delete_option( Settings::KEY );
 		delete_option( Settings::LEGACY_KEY );
@@ -23,6 +26,9 @@ class SettingsTest extends WP_UnitTestCase {
 		parent::tear_down();
 	}
 
+	/**
+	 * `defaults()` returns a value for every documented setting key.
+	 */
 	public function test_defaults_provide_every_expected_key(): void {
 		$defaults = Settings::instance()->defaults();
 
@@ -46,18 +52,27 @@ class SettingsTest extends WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * `set()` then `get()` round-trips through the option table.
+	 */
 	public function test_set_and_get_round_trip(): void {
 		Settings::instance()->set( 'redirect_type', '302' );
 
 		$this->assertSame( '302', Settings::instance()->get( 'redirect_type' ) );
 	}
 
+	/**
+	 * Unknown redirect-type strings fall back to the default (`301`).
+	 */
 	public function test_sanitize_replaces_invalid_redirect_type_with_default(): void {
 		$clean = Settings::instance()->sanitize( array( 'redirect_type' => 'banana' ) );
 
 		$this->assertSame( '301', $clean['redirect_type'] );
 	}
 
+	/**
+	 * Sanitizer coerces common truthy/falsy spellings into booleans.
+	 */
 	public function test_sanitize_coerces_boolean_inputs(): void {
 		$clean = Settings::instance()->sanitize(
 			array(
@@ -74,6 +89,9 @@ class SettingsTest extends WP_UnitTestCase {
 		$this->assertFalse( $clean['disable_guessing'] );
 	}
 
+	/**
+	 * `exclude_paths` is split on newlines, trimmed and deduplicated.
+	 */
 	public function test_sanitize_filters_exclude_paths_list(): void {
 		$clean = Settings::instance()->sanitize(
 			array( 'exclude_paths' => "/wp-content\n/foo\n/foo\n" )
@@ -82,6 +100,9 @@ class SettingsTest extends WP_UnitTestCase {
 		$this->assertSame( array( '/wp-content', '/foo' ), $clean['exclude_paths'] );
 	}
 
+	/**
+	 * Legacy v3 options migrate into the v4 shape on first read; subsequent calls are no-ops.
+	 */
 	public function test_legacy_option_migrates_once(): void {
 		update_option(
 			Settings::LEGACY_KEY,
@@ -117,6 +138,9 @@ class SettingsTest extends WP_UnitTestCase {
 		$this->assertSame( '307', Settings::instance()->get( 'redirect_type' ) );
 	}
 
+	/**
+	 * Legacy `redirect_to = "0"` maps to the new `redirect_target = none` + disabled.
+	 */
 	public function test_legacy_redirect_to_zero_maps_to_none(): void {
 		update_option(
 			Settings::LEGACY_KEY,
