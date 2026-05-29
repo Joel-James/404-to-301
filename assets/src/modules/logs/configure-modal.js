@@ -4,25 +4,69 @@ import {
 	Button,
 	Flex,
 	FlexItem,
-	SelectControl,
 	__experimentalVStack as VStack,
 } from '@wordpress/components'
+import { DataForm } from '@wordpress/dataviews'
+import { EnumSelectEdit } from '../../common'
 
 /**
- * Three-option select used for each toggle in the modal.
- *
- * 0 = use the global plugin setting,
- * 1 = force enable for this row,
- * 2 = force disable for this row.
- *
- * Mirrors the legacy plugin's per-log "Default / Enable / Disable"
- * affordance and matches the OVERRIDE_* enum on the server.
+ * The three-option override value-space (Global / Enable / Disable)
+ * mirrors the `OVERRIDE_*` constants on the server. Shared across the
+ * three per-log override selects below.
  */
 const overrideOptions = [
-	{ value: '0', label: __('Global', '404-to-301') },
-	{ value: '1', label: __('Enable', '404-to-301') },
-	{ value: '2', label: __('Disable', '404-to-301') },
+	{ value: 0, label: __('Global', '404-to-301') },
+	{ value: 1, label: __('Enable', '404-to-301') },
+	{ value: 2, label: __('Disable', '404-to-301') },
 ]
+
+/**
+ * DataForm field descriptors for the per-log override toggles.
+ *
+ * `EnumSelectEdit` is used directly (rather than the built-in `select`)
+ * so the SelectControl renders the per-field `description` as help
+ * text — DataForm's stock select drops it on the floor.
+ */
+const configureFormFields = [
+	{
+		id: 'override_redirect',
+		label: __('Redirect', '404-to-301'),
+		type: 'integer',
+		description: __(
+			'Override the global redirect setting for this URL only.',
+			'404-to-301',
+		),
+		Edit: EnumSelectEdit,
+		elements: overrideOptions,
+	},
+	{
+		id: 'override_log',
+		label: __('Log', '404-to-301'),
+		type: 'integer',
+		description: __(
+			'Override whether further hits to this URL are logged.',
+			'404-to-301',
+		),
+		Edit: EnumSelectEdit,
+		elements: overrideOptions,
+	},
+	{
+		id: 'override_email',
+		label: __('Email', '404-to-301'),
+		type: 'integer',
+		description: __(
+			'Override whether email alerts fire for this URL.',
+			'404-to-301',
+		),
+		Edit: EnumSelectEdit,
+		elements: overrideOptions,
+	},
+]
+
+const configureFormLayout = {
+	type: 'regular',
+	fields: ['override_redirect', 'override_log', 'override_email'],
+}
 
 /**
  * "Configure" modal — per-log overrides for the global Redirect /
@@ -43,17 +87,20 @@ const ConfigureLog = ({ items, closeModal, onSave }) => {
 	const log = items?.[0]
 
 	const [form, setForm] = useState({
-		override_redirect: String(log?.override_redirect ?? 0),
-		override_log: String(log?.override_log ?? 0),
-		override_email: String(log?.override_email ?? 0),
+		override_redirect: Number(log?.override_redirect ?? 0),
+		override_log: Number(log?.override_log ?? 0),
+		override_email: Number(log?.override_email ?? 0),
 	})
 
+	// The selection can swap to a different row while the modal is
+	// open (DataViews keeps the same action mounted) — re-seed when
+	// the underlying row changes id.
 	useEffect(() => {
 		if (log) {
 			setForm({
-				override_redirect: String(log.override_redirect ?? 0),
-				override_log: String(log.override_log ?? 0),
-				override_email: String(log.override_email ?? 0),
+				override_redirect: Number(log.override_redirect ?? 0),
+				override_log: Number(log.override_log ?? 0),
+				override_email: Number(log.override_email ?? 0),
 			})
 		}
 	}, [log])
@@ -64,17 +111,10 @@ const ConfigureLog = ({ items, closeModal, onSave }) => {
 		return null
 	}
 
-	const update = (key) => (value) =>
-		setForm((current) => ({ ...current, [key]: value }))
-
 	const handleSubmit = async (event) => {
 		event.preventDefault()
 		setIsWorking(true)
-		const ok = await onSave(log.id, {
-			override_redirect: parseInt(form.override_redirect, 10) || 0,
-			override_log: parseInt(form.override_log, 10) || 0,
-			override_email: parseInt(form.override_email, 10) || 0,
-		})
+		const ok = await onSave(log.id, form)
 		setIsWorking(false)
 		if (ok && typeof closeModal === 'function') {
 			closeModal()
@@ -85,43 +125,13 @@ const ConfigureLog = ({ items, closeModal, onSave }) => {
 		<form onSubmit={handleSubmit}>
 			<p className="d404-modal-subtitle">{log.url}</p>
 			<VStack spacing={4}>
-				<SelectControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					label={__('Redirect', '404-to-301')}
-					help={__(
-						'Override the global redirect setting for this URL only.',
-						'404-to-301',
-					)}
-					value={form.override_redirect}
-					options={overrideOptions}
-					onChange={update('override_redirect')}
-				/>
-
-				<SelectControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					label={__('Log', '404-to-301')}
-					help={__(
-						'Override whether further hits to this URL are logged.',
-						'404-to-301',
-					)}
-					value={form.override_log}
-					options={overrideOptions}
-					onChange={update('override_log')}
-				/>
-
-				<SelectControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					label={__('Email', '404-to-301')}
-					help={__(
-						'Override whether email alerts fire for this URL.',
-						'404-to-301',
-					)}
-					value={form.override_email}
-					options={overrideOptions}
-					onChange={update('override_email')}
+				<DataForm
+					data={form}
+					fields={configureFormFields}
+					form={configureFormLayout}
+					onChange={(edits) =>
+						setForm((current) => ({ ...current, ...edits }))
+					}
 				/>
 			</VStack>
 

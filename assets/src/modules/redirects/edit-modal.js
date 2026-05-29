@@ -1,19 +1,38 @@
 import { __ } from '@wordpress/i18n'
-import { useState, useEffect } from '@wordpress/element'
+import { useState, useEffect, useMemo } from '@wordpress/element'
 import {
 	Button,
 	Flex,
 	FlexItem,
 	Modal,
-	SelectControl,
-	TextControl,
-	TextareaControl,
-	ToggleControl,
 	__experimentalVStack as VStack,
 } from '@wordpress/components'
+import { DataForm, isItemValid } from '@wordpress/dataviews'
+import { redirectFormFields, redirectFormLayout } from './form-fields'
+
+/**
+ * Hydrate the form state with the row being edited (or `initialValues`
+ * when creating). Pulled out so the `useEffect` below shares the exact
+ * same defaults as the initial `useState`.
+ */
+const buildSeed = (seed = {}) => ({
+	source: seed.source ?? '',
+	match_type: seed.match_type ?? 'exact',
+	target_type: seed.target_type ?? 'link',
+	target_url: seed.target_url ?? '',
+	target_page_id: seed.target_page_id ?? 0,
+	redirect_type: seed.redirect_type ?? 301,
+	is_active: seed.is_active ?? true,
+	notes: seed.notes ?? '',
+})
 
 /**
  * Create / edit modal for a single redirect.
+ *
+ * Form internals are delegated to `@wordpress/dataviews`' `DataForm`,
+ * which consumes the field descriptors in {@see redirectFormFields}.
+ * This component keeps the Modal chrome, submit + cancel buttons, the
+ * REST-call dance, and the "edit vs. create" labelling.
  *
  * @param {Object}        props
  * @param {Object|null}   props.redirect      Existing row when editing; null when creating.
@@ -32,41 +51,37 @@ const EditRedirect = ({
 	onClose,
 }) => {
 	const isEdit = !!redirect
-	const seed = redirect || initialValues || {}
+	const [form, setForm] = useState(() =>
+		buildSeed(redirect || initialValues || {}),
+	)
+	const [isWorking, setIsWorking] = useState(false)
 
-	const [form, setForm] = useState({
-		source: seed.source ?? '',
-		match_type: seed.match_type ?? 'exact',
-		target_type: seed.target_type ?? 'link',
-		target_url: seed.target_url ?? '',
-		target_page_id: seed.target_page_id ?? 0,
-		redirect_type: seed.redirect_type ?? 301,
-		is_active: seed.is_active ?? true,
-		notes: seed.notes ?? '',
-	})
-
+	// Re-seed when the edited row changes (the page-level state can
+	// swap which row is being edited without remounting the modal).
 	useEffect(() => {
 		if (redirect) {
-			setForm({
-				source: redirect.source ?? '',
-				match_type: redirect.match_type ?? 'exact',
-				target_type: redirect.target_type ?? 'link',
-				target_url: redirect.target_url ?? '',
-				target_page_id: redirect.target_page_id ?? 0,
-				redirect_type: redirect.redirect_type ?? 301,
-				is_active: redirect.is_active ?? true,
-				notes: redirect.notes ?? '',
-			})
+			setForm(buildSeed(redirect))
 		}
 	}, [redirect])
 
-	const update = (key) => (value) =>
-		setForm((current) => ({ ...current, [key]: value }))
+	// `isItemValid` runs every field's `isValid` callback against the
+	// current draft. The submit button stays disabled until they all
+	// pass — currently just the "source must be non-empty" check.
+	const canSubmit = useMemo(
+		() => isItemValid(form, redirectFormFields, redirectFormLayout),
+		[form],
+	)
 
-	const [isWorking, setIsWorking] = useState(false)
+	// DataForm emits partial edits — merge them into the current
+	// form state so unrelated fields aren't clobbered.
+	const handleChange = (edits) =>
+		setForm((current) => ({ ...current, ...edits }))
 
 	const handleSubmit = async (event) => {
 		event.preventDefault()
+		if (!canSubmit) {
+			return
+		}
 		setIsWorking(true)
 		const ok = await onSave(form)
 		setIsWorking(false)
@@ -87,101 +102,12 @@ const EditRedirect = ({
 		>
 			<form onSubmit={handleSubmit}>
 				<VStack spacing={4}>
-				<TextControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					required
-					label={__('Source URL or pattern', '404-to-301')}
-					help={__(
-						'For "Exact" use a full path (e.g. /old-page). For "Prefix" use a starting fragment. For "Regex" use a PCRE expression.',
-						'404-to-301',
-					)}
-					value={form.source}
-					onChange={update('source')}
-				/>
-
-				<SelectControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					label={__('Match type', '404-to-301')}
-					value={form.match_type}
-					options={[
-						{ value: 'exact', label: __('Exact', '404-to-301') },
-						{ value: 'prefix', label: __('Prefix', '404-to-301') },
-						{ value: 'regex', label: __('Regex', '404-to-301') },
-					]}
-					onChange={update('match_type')}
-				/>
-
-				<SelectControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					label={__('Target type', '404-to-301')}
-					value={form.target_type}
-					options={[
-						{ value: 'link', label: __('Custom URL', '404-to-301') },
-						{
-							value: 'page',
-							label: __('Existing page', '404-to-301'),
-						},
-						{ value: 'none', label: __('No redirect', '404-to-301') },
-					]}
-					onChange={update('target_type')}
-				/>
-
-				{form.target_type === 'link' && (
-					<TextControl
-						__next40pxDefaultSize
-						__nextHasNoMarginBottom
-						type="url"
-						label={__('Target URL', '404-to-301')}
-						value={form.target_url}
-						onChange={update('target_url')}
+					<DataForm
+						data={form}
+						fields={redirectFormFields}
+						form={redirectFormLayout}
+						onChange={handleChange}
 					/>
-				)}
-
-				{form.target_type === 'page' && (
-					<TextControl
-						__next40pxDefaultSize
-						__nextHasNoMarginBottom
-						type="number"
-						min={0}
-						label={__('Target page ID', '404-to-301')}
-						value={form.target_page_id}
-						onChange={(v) =>
-							update('target_page_id')(
-								Math.max(0, parseInt(v, 10) || 0),
-							)
-						}
-					/>
-				)}
-
-				<SelectControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					label={__('Redirect status', '404-to-301')}
-					value={String(form.redirect_type)}
-					options={[
-						{ value: '301', label: '301 — Permanent' },
-						{ value: '302', label: '302 — Found' },
-						{ value: '307', label: '307 — Temporary' },
-					]}
-					onChange={(v) => update('redirect_type')(parseInt(v, 10))}
-				/>
-
-				<ToggleControl
-					__nextHasNoMarginBottom
-					label={__('Active', '404-to-301')}
-					checked={!!form.is_active}
-					onChange={update('is_active')}
-				/>
-
-				<TextareaControl
-					__nextHasNoMarginBottom
-					label={__('Notes (optional)', '404-to-301')}
-					value={form.notes}
-					onChange={update('notes')}
-				/>
 				</VStack>
 
 				<Flex justify="flex-end" gap={2} style={{ marginTop: '1.5rem' }}>
@@ -195,7 +121,7 @@ const EditRedirect = ({
 							variant="primary"
 							type="submit"
 							isBusy={isWorking}
-							disabled={isWorking}
+							disabled={isWorking || !canSubmit}
 						>
 							{isEdit
 								? __('Save changes', '404-to-301')

@@ -26,3 +26,6 @@ export {
 	TabNav,
 	Truncate,
 }
+
+// DataForm `Edit` components that aren't shipped by `@wordpress/dataviews`.
+export { EnumSelectEdit, TextareaEdit, ToggleEdit } from './form-controls'
