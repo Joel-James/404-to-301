@@ -44,7 +44,7 @@ final class Logs extends Table {
 	 * @since 4.0.0
 	 * @var string
 	 */
-	protected $version = '4.0.0';
+	protected $version = '4.1.0';
 
 	/**
 	 * Per-version upgrade routines.
@@ -56,7 +56,7 @@ final class Logs extends Table {
 	 * @var array<string, string>
 	 */
 	protected $upgrades = array(
-		// '4.1.0' => '__4_1_0',
+		'4.1.0' => '__4_1_0',
 	);
 
 	/**
@@ -82,6 +82,9 @@ final class Logs extends Table {
 			hits          INT(11)       UNSIGNED  NOT NULL  DEFAULT 1,
 			redirect_id   BIGINT(20)    UNSIGNED            DEFAULT NULL,
 			status        TINYINT(3)    UNSIGNED  NOT NULL  DEFAULT 0,
+			override_redirect TINYINT(3) UNSIGNED NOT NULL  DEFAULT 0,
+			override_log      TINYINT(3) UNSIGNED NOT NULL  DEFAULT 0,
+			override_email    TINYINT(3) UNSIGNED NOT NULL  DEFAULT 0,
 			created_at    DATETIME                NOT NULL  DEFAULT '0000-00-00 00:00:00',
 			updated_at    DATETIME                NOT NULL  DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY (id),
@@ -90,5 +93,50 @@ final class Logs extends Table {
 			KEY created_at (created_at),
 			KEY redirect_id (redirect_id)
 		";
+	}
+
+	/**
+	 * 4.1.0 upgrade: add the per-row override columns and the new
+	 * "custom redirect" status code (3).
+	 *
+	 * Idempotent — checks `information_schema` before each `ALTER` so
+	 * re-runs (or sites that ship with a freshly-created v4.1.0 table)
+	 * don't fail with "duplicate column".
+	 *
+	 * @since 4.1.0
+	 *
+	 * @return bool
+	 */
+	protected function __4_1_0(): bool { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+		$db = $this->get_db();
+
+		if ( empty( $db ) ) {
+			return false;
+		}
+
+		$columns = array(
+			'override_redirect' => "ALTER TABLE {$this->table_name} ADD COLUMN override_redirect TINYINT(3) UNSIGNED NOT NULL DEFAULT 0 AFTER status",
+			'override_log'      => "ALTER TABLE {$this->table_name} ADD COLUMN override_log TINYINT(3) UNSIGNED NOT NULL DEFAULT 0 AFTER override_redirect",
+			'override_email'    => "ALTER TABLE {$this->table_name} ADD COLUMN override_email TINYINT(3) UNSIGNED NOT NULL DEFAULT 0 AFTER override_log",
+		);
+
+		foreach ( $columns as $column => $sql ) {
+			$exists = $db->get_var(
+				$db->prepare(
+					"SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s",
+					DB_NAME,
+					$this->table_name,
+					$column
+				)
+			);
+
+			if ( $exists ) {
+				continue;
+			}
+
+			$db->query( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
+		}
+
+		return true;
 	}
 }

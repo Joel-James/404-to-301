@@ -116,13 +116,15 @@ class Assets extends Singleton {
 	 * @return array
 	 */
 	private function script_vars( string $entry ): array {
-		$pages = Plugin::pages();
-		$vars  = array(
-			'version'   => Plugin::version(),
-			'slug'      => Plugin::SLUG,
-			'name'      => Plugin::name(),
-			'page'      => $entry,
-			'pages'     => array_combine(
+		$pages    = Plugin::pages();
+		$settings = \DuckDev\FourNotFour\Core::instance()->settings();
+
+		$vars = array(
+			'version'           => Plugin::version(),
+			'slug'              => Plugin::SLUG,
+			'name'              => Plugin::name(),
+			'page'              => $entry,
+			'pages'             => array_combine(
 				array_keys( $pages ),
 				array_map(
 					static function ( $p ) {
@@ -131,9 +133,24 @@ class Assets extends Singleton {
 					$pages
 				)
 			),
-			'restUrl'   => rest_url( Endpoint::NAMESPACE . '/' ),
-			'restNonce' => wp_create_nonce( 'wp_rest' ),
-			'adminUrl'  => admin_url(),
+			'restUrl'           => rest_url( Endpoint::NAMESPACE . '/' ),
+			'restNonce'         => wp_create_nonce( 'wp_rest' ),
+			'adminUrl'          => admin_url(),
+
+			/*
+			 * Hint for the React layer: is the v3 → v4 migration
+			 * still in play on this site? When false, the Logs page
+			 * skips mounting the migration banner entirely and the
+			 * `useMigration` hook never fires its initial `GET
+			 * /migration` request — there's nothing to poll for once
+			 * the legacy table has been drained.
+			 *
+			 * Reading the cheap `logs_migrated` option is far lighter
+			 * than the alternative (every page load fetches the
+			 * migration status from REST + queries the legacy table
+			 * for a count).
+			 */
+			'migrationPending' => $settings ? ! (bool) $settings->get( 'logs_migrated', false ) : false,
 		);
 
 		/**

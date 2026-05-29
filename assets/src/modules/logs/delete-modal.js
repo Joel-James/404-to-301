@@ -1,6 +1,6 @@
 import { __, _n, sprintf } from '@wordpress/i18n'
 import { useState } from '@wordpress/element'
-import { Button, Flex, FlexItem, Modal } from '@wordpress/components'
+import { Button, Flex, FlexItem } from '@wordpress/components'
 
 /**
  * Bulk / single delete confirmation modal for logs.
@@ -27,12 +27,11 @@ const DeleteConfirmation = ({ items, closeModal, onConfirm }) => {
 		}
 	}
 
+	// DataViews wraps `RenderModal` content in its own <Modal>. Don't
+	// add a second one — return a fragment so the confirmation renders
+	// inside DataViews' modal chrome.
 	return (
-		<Modal
-			title={__('Delete logs', '404-to-301')}
-			onRequestClose={closeModal}
-			size="small"
-		>
+		<>
 			<p>
 				{sprintf(
 					/* translators: %d: number of selected logs. */
@@ -68,7 +67,7 @@ const DeleteConfirmation = ({ items, closeModal, onConfirm }) => {
 					</Button>
 				</FlexItem>
 			</Flex>
-		</Modal>
+		</>
 	)
 }
 

@@ -3,6 +3,7 @@
  */
 import './styles/redirects.scss'
 import './utils/api-init'
+import './store'
 import domReady from '@wordpress/dom-ready'
 import { createRoot } from '@wordpress/element'
 import RedirectsApp from './modules/redirects'

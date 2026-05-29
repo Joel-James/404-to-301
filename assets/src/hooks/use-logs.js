@@ -134,18 +134,30 @@ const useLogs = (view) => {
 		[fetchLogs, createSuccessNotice, createErrorNotice],
 	)
 
+	/**
+	 * Delete one or many logs in a single API call.
+	 *
+	 * Sends one `DELETE /logs` with the full `ids` array (the bulk
+	 * endpoint), then refetches once on success. Replaces the
+	 * earlier `Promise.all` of per-row DELETEs which fanned out a
+	 * separate request per id and re-rendered the table after each.
+	 */
 	const deleteLogs = useCallback(
 		async (ids) => {
-			const list = Array.isArray(ids) ? ids : [ids]
+			const list = (Array.isArray(ids) ? ids : [ids])
+				.map((id) => parseInt(id, 10))
+				.filter((id) => id > 0)
+
+			if (list.length === 0) {
+				return false
+			}
+
 			try {
-				await Promise.all(
-					list.map((id) =>
-						apiFetch({
-							path: `${BASE}/${id}`,
-							method: 'DELETE',
-						}),
-					),
-				)
+				await apiFetch({
+					path: BASE,
+					method: 'DELETE',
+					data: { ids: list },
+				})
 				createSuccessNotice(
 					list.length > 1
 						? __('Logs deleted.', '404-to-301')
@@ -164,12 +176,54 @@ const useLogs = (view) => {
 		[fetchLogs, createSuccessNotice, createErrorNotice],
 	)
 
+	/**
+	 * Flip the status on one or many logs in a single API call.
+	 *
+	 * The Mark Fixed / Mark Ignored / Reopen bulk actions all funnel
+	 * through here — the table is refetched once after the server
+	 * confirms instead of per-row.
+	 */
+	const bulkSetStatus = useCallback(
+		async (ids, status) => {
+			const list = (Array.isArray(ids) ? ids : [ids])
+				.map((id) => parseInt(id, 10))
+				.filter((id) => id > 0)
+
+			if (list.length === 0) {
+				return false
+			}
+
+			try {
+				await apiFetch({
+					path: `${BASE}/bulk-update`,
+					method: 'POST',
+					data: { ids: list, status },
+				})
+				createSuccessNotice(
+					list.length > 1
+						? __('Logs updated.', '404-to-301')
+						: __('Log updated.', '404-to-301'),
+				)
+				await fetchLogs()
+				return true
+			} catch (e) {
+				createErrorNotice(
+					e?.message ||
+						__('Failed to update log(s).', '404-to-301'),
+				)
+				return false
+			}
+		},
+		[fetchLogs, createSuccessNotice, createErrorNotice],
+	)
+
 	return {
 		items,
 		total,
 		totalPages,
 		isLoading,
 		updateLog,
+		bulkSetStatus,
 		deleteLogs,
 		refresh: fetchLogs,
 	}

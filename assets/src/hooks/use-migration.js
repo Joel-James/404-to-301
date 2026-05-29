@@ -1,39 +1,46 @@
 import { __ } from '@wordpress/i18n'
-import { useCallback, useEffect, useRef, useState } from '@wordpress/element'
-import { useDispatch } from '@wordpress/data'
+import { useCallback, useEffect, useRef } from '@wordpress/element'
+import { useDispatch, useSelect } from '@wordpress/data'
 import { store as noticesStore } from '@wordpress/notices'
-import apiFetch from './use-rest'
+import { STORE_KEY } from '../store/migration'
 
+/**
+ * Migration banner driver.
+ *
+ * State (status, isStarting) lives in the `d404/migration` store —
+ * the resolver fires the initial fetch on first read of
+ * `getStatus()`. The polling side-effect (POST `/migration/tick`
+ * until done) stays in this hook because setTimeout chains belong
+ * at the React level, not in the store.
+ *
+ * Public shape is unchanged from the previous useState-only
+ * implementation so the banner component doesn't need to know
+ * we're talking to a store.
+ */
 const useMigration = () => {
-	const [status, setStatus] = useState(null)
-	const [isStarting, setIsStarting] = useState(false)
-
-	// Ref so the tick loop can read the latest "should I keep going" flag
-	// without re-creating the effect on every status change.
-	const loopActive = useRef(false)
-
-	const { createSuccessNotice, createErrorNotice } = useDispatch(noticesStore)
-
-	const fetchStatus = useCallback(async () => {
-		try {
-			const next = await apiFetch('migration')
-			setStatus(next)
-			return next
-		} catch (err) {
-			return null
+	const { status, isStarting } = useSelect((select) => {
+		const store = select(STORE_KEY)
+		return {
+			status: store.getStatus(),
+			isStarting: store.isStarting(),
 		}
 	}, [])
 
-	// One-shot initial status load.
-	useEffect(() => {
-		fetchStatus()
-	}, [fetchStatus])
+	const { start: dispatchStart, abort: dispatchAbort, tick } =
+		useDispatch(STORE_KEY)
+	const { createSuccessNotice } = useDispatch(noticesStore)
+
+	// Whether the tick loop is currently running. Held in a ref so
+	// the loop body can `loopActive.current` to check liveness
+	// across awaits without re-creating the function.
+	const loopActive = useRef(false)
 
 	/**
-	 * Drive the migration forward — keeps POSTing /migration/tick until
-	 * the server says there are no rows left, the user aborts, or the
-	 * tab closes. Each tick processes a chunk server-side and returns
-	 * the freshest status.
+	 * Drive the migration forward.
+	 *
+	 * Pings the tick endpoint until the server reports completion,
+	 * the user aborts, or the page unmounts. Tiny breather between
+	 * iterations so the UI can repaint the progress counter.
 	 */
 	const runLoop = useCallback(async () => {
 		if (loopActive.current) {
@@ -43,102 +50,65 @@ const useMigration = () => {
 
 		try {
 			while (loopActive.current) {
-				let next
-				try {
-					next = await apiFetch('migration/tick', { method: 'POST' })
-				} catch (err) {
-					createErrorNotice(
-						err.message ||
-							__(
-								'Migration tick failed — will retry on next page load.',
-								'404-to-301',
-							),
-						{ type: 'snackbar' },
-					)
-					break
-				}
-
-				setStatus(next)
+				// eslint-disable-next-line no-await-in-loop -- sequential ticks are the point
+				const next = await tick()
 
 				// Server signals done either by clearing the legacy
-				// table or by setting logs_migrated=true.
+				// table or by setting `logs_migrated=true`.
 				if (!next || !next.running || next.remaining <= 0) {
 					createSuccessNotice(
 						__('Migration complete.', '404-to-301'),
-						{ type: 'snackbar' },
 					)
 					break
 				}
 
-				// Tiny breather between ticks so the UI can repaint
-				// the progress counter.
+				// eslint-disable-next-line no-await-in-loop
 				await new Promise((r) => setTimeout(r, 250))
 			}
 		} finally {
 			loopActive.current = false
 		}
-	}, [createErrorNotice, createSuccessNotice])
+	}, [tick, createSuccessNotice])
 
-	const start = async () => {
-		setIsStarting(true)
+	/**
+	 * Start handler used by the banner — dispatches the store's
+	 * `start` action and, on success, kicks off the loop.
+	 */
+	const start = useCallback(async () => {
+		const next = await dispatchStart()
 
-		try {
-			// The server's `start` processes one chunk inline so the
-			// counter visibly drops immediately, then we drive the
-			// rest from the loop.
-			const next = await apiFetch('migration', { method: 'POST' })
-			setStatus(next)
-
-			if (next && next.running && next.remaining > 0) {
-				runLoop()
-			} else {
-				createSuccessNotice(
-					__('Migration complete.', '404-to-301'),
-					{ type: 'snackbar' },
-				)
-			}
-		} catch (err) {
-			createErrorNotice(
-				err.message ||
-					__('Could not start the migration.', '404-to-301'),
-				{ type: 'snackbar' },
-			)
-		} finally {
-			setIsStarting(false)
+		if (next && next.running && next.remaining > 0) {
+			runLoop()
 		}
-	}
+	}, [dispatchStart, runLoop])
 
-	const abort = async () => {
-		// Stop the loop before sending the abort so the next iteration
-		// doesn't re-queue a chunk.
+	/**
+	 * Abort handler — stops the loop locally before sending the
+	 * server-side abort so the next iteration doesn't sneak in
+	 * another tick mid-flight.
+	 */
+	const abort = useCallback(async () => {
 		loopActive.current = false
+		await dispatchAbort()
+	}, [dispatchAbort])
 
-		try {
-			const next = await apiFetch('migration', { method: 'DELETE' })
-			setStatus(next)
-			createSuccessNotice(__('Migration aborted.', '404-to-301'), {
-				type: 'snackbar',
-			})
-		} catch (err) {
-			createErrorNotice(
-				err.message ||
-					__('Could not abort the migration.', '404-to-301'),
-				{ type: 'snackbar' },
-			)
-		}
-	}
-
-	// If the page loads and the migration is already running (eg. the
-	// admin reopens the tab while a background tick is mid-flight),
-	// resume the loop client-side too so the counter keeps ticking
-	// without waiting for cron.
+	// Resume the loop if the page is reopened while a migration is
+	// already in-flight (e.g. another tab kicked it off, or a
+	// scheduled wp-cron tick is mid-batch). The selector will
+	// auto-resolve the initial status; once that lands, this effect
+	// notices the `running` flag and starts ticking client-side too.
 	useEffect(() => {
-		if (status && status.running && status.remaining > 0 && !loopActive.current) {
+		if (
+			status &&
+			status.running &&
+			status.remaining > 0 &&
+			!loopActive.current
+		) {
 			runLoop()
 		}
 	}, [status, runLoop])
 
-	// Stop the loop when the component unmounts.
+	// Stop ticking when the banner unmounts.
 	useEffect(
 		() => () => {
 			loopActive.current = false
@@ -146,7 +116,7 @@ const useMigration = () => {
 		[],
 	)
 
-	return { status, isStarting, start, abort, refresh: fetchStatus }
+	return { status, isStarting, start, abort }
 }
 
 export default useMigration

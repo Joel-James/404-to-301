@@ -4,6 +4,9 @@ import { useCallback, useMemo, useState } from '@wordpress/element'
 import { fields } from './fields'
 import { defaultView } from './view'
 import DeleteConfirmation from './delete-modal'
+import ViewDetails from './view-modal'
+import ConfigureLog from './configure-modal'
+import CustomRedirectModal from './custom-redirect-modal'
 import useLogs from '../../hooks/use-logs'
 import usePersistedView from '../../hooks/persisted-view'
 import { BulkActions } from '../../common'
@@ -21,9 +24,22 @@ const getItemId = (item) => String(item.id)
 const List = () => {
 	const [view, setView] = usePersistedView(STORAGE_KEY, defaultView)
 	const [selection, setSelection] = useState([])
+	// "Custom redirect" launches the Redirects edit-modal — which
+	// supplies its own <Modal> chrome. DataViews' `RenderModal` would
+	// wrap that in a second modal, so we mount it from the page
+	// instead, gated by `customRedirectLog`.
+	const [customRedirectLog, setCustomRedirectLog] = useState(null)
 
-	const { items, total, totalPages, isLoading, updateLog, deleteLogs } =
-		useLogs(view)
+	const {
+		items,
+		total,
+		totalPages,
+		isLoading,
+		updateLog,
+		bulkSetStatus,
+		deleteLogs,
+		refresh,
+	} = useLogs(view)
 
 	const clearSelection = useCallback(() => setSelection([]), [])
 
@@ -31,41 +47,89 @@ const List = () => {
 	// `isPrimary` / `icon` so nothing renders as an inline icon button
 	// next to each row. The same actions also feed the BulkActions
 	// dropdown when one or more rows are selected.
-	const actions = useMemo(
-		() => [
+	//
+	// Status callbacks read `rows` (could be a single row from the
+	// per-row menu, or many from the bulk dropdown) and forward the
+	// full id list to `bulkSetStatus`, which sends one REST request
+	// regardless of the selection size. Same applies to delete via
+	// `deleteLogs` — both endpoints accept bulk arrays now.
+	const actions = useMemo(() => {
+		const collectIds = (rows) => rows.map((row) => row.id)
+
+		return [
+			{
+				// Single-row, read-only — opens the details modal.
+				// `supportsBulk: false` keeps it out of the BulkActions
+				// portal where it wouldn't make sense.
+				id: 'view-details',
+				label: __('View details', '404-to-301'),
+				modalHeader: __('Log details', '404-to-301'),
+				supportsBulk: false,
+				RenderModal: (props) => <ViewDetails {...props} />,
+			},
+			{
+				// Per-row override toggles (Redirect / Log / Email).
+				// Replaces the legacy plugin's per-log "Custom config"
+				// pop-up — same Default / Enable / Disable semantics.
+				id: 'configure',
+				label: __('Configure', '404-to-301'),
+				modalHeader: __('Configure log', '404-to-301'),
+				supportsBulk: false,
+				RenderModal: (props) => (
+					<ConfigureLog {...props} onSave={updateLog} />
+				),
+			},
+			{
+				// Opens the Redirects "create" modal (seeded with the
+				// log's path), creates the redirect, then links it
+				// back to this log row — same flow as the legacy
+				// plugin's "Custom redirect" inline editor.
+				id: 'custom-redirect',
+				label: __('Custom redirect', '404-to-301'),
+				supportsBulk: false,
+				callback: ([row]) => setCustomRedirectLog(row),
+			},
 			{
 				id: 'mark-fixed',
 				label: __('Mark fixed', '404-to-301'),
 				supportsBulk: true,
-				callback: (rows) =>
-					rows.forEach((row) => updateLog(row.id, { status: 2 })),
+				callback: (rows) => bulkSetStatus(collectIds(rows), 2),
 			},
 			{
 				id: 'mark-ignored',
 				label: __('Mark ignored', '404-to-301'),
 				supportsBulk: true,
-				callback: (rows) =>
-					rows.forEach((row) => updateLog(row.id, { status: 1 })),
+				callback: (rows) => bulkSetStatus(collectIds(rows), 1),
 			},
 			{
 				id: 'mark-open',
 				label: __('Reopen', '404-to-301'),
 				supportsBulk: true,
-				callback: (rows) =>
-					rows.forEach((row) => updateLog(row.id, { status: 0 })),
+				callback: (rows) => bulkSetStatus(collectIds(rows), 0),
 			},
 			{
 				id: 'delete',
-				label: __('Delete', '404-to-301'),
+				// DataViews' per-row dropdown doesn't forward
+				// `isDestructive` to the underlying Menu.Item, so the
+				// label gets the colour treatment via its own class.
+				// `modalHeader` covers the modal title (label isn't
+				// used there). Both DataViews' menu and our bulk
+				// dropdown render JSX labels via the
+				// resolveActionLabel helper in `common/bulk-actions`.
+				label: () => (
+					<span className="d404-action-destructive">
+						{__('Delete', '404-to-301')}
+					</span>
+				),
+				modalHeader: __('Delete log', '404-to-301'),
 				isDestructive: true,
 				supportsBulk: true,
 				RenderModal: (props) => (
 					<DeleteConfirmation {...props} onConfirm={deleteLogs} />
 				),
 			},
-		],
-		[updateLog, deleteLogs],
-	)
+		]
+	}, [bulkSetStatus, deleteLogs, updateLog])
 
 	return (
 		<>
@@ -96,6 +160,14 @@ const List = () => {
 				getItemId={getItemId}
 				onClear={clearSelection}
 			/>
+
+			{customRedirectLog && (
+				<CustomRedirectModal
+					log={customRedirectLog}
+					onClose={() => setCustomRedirectLog(null)}
+					onSaved={refresh}
+				/>
+			)}
 		</>
 	)
 }

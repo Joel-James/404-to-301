@@ -33,6 +33,7 @@ namespace DuckDev\FourNotFour\Migration;
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) || exit;
 
+use DuckDev\FourNotFour\Database\Database;
 use DuckDev\FourNotFour\Models\Logs as LogsModel;
 use DuckDev\FourNotFour\Models\Redirects as RedirectsModel;
 use DuckDev\FourNotFour\Settings;
@@ -66,6 +67,14 @@ class Migrator extends Singleton {
 	 */
 	protected function init(): void {
 		add_action( Scheduler::ACTION, array( $this, 'run_chunk' ) );
+
+		// Self-heal users hit by the early-activation install bug:
+		// when `phase1_done` is true but the redirects table still
+		// has no rows (or only just got installed), re-run Phase 1
+		// once on `admin_init`. Hooked late so BerlinDB has had a
+		// chance to install / upgrade the tables earlier in the
+		// same `admin_init` cycle.
+		add_action( 'admin_init', array( $this, 'self_heal_phase1' ), 99 );
 	}
 
 	/**
@@ -89,8 +98,54 @@ class Migrator extends Singleton {
 		}
 
 		// Phase 1 — move the custom-redirect rows now (small, cheap).
+		// We only flip `phase1_done` when the run reports the v4
+		// tables were available; otherwise the `self_heal_phase1()`
+		// hook on `admin_init` will retry once they exist.
 		if ( ! $settings->get( 'phase1_done', false ) ) {
-			$this->run_phase1();
+			$result = $this->run_phase1();
+
+			if ( -1 !== $result ) {
+				$settings->set( 'phase1_done', true );
+			}
+		}
+	}
+
+	/**
+	 * Re-run Phase 1 on `admin_init` if the activation run failed
+	 * before the v4 tables existed.
+	 *
+	 * Hooked at priority 99 so BerlinDB's own `admin_init` install
+	 * hook (priority 10) has already created the tables for us in
+	 * the same request.
+	 *
+	 * No-ops on the common path: when `phase1_done` is true, when
+	 * there's nothing legacy to migrate, or when the v4 tables still
+	 * aren't installed for some other reason.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function self_heal_phase1(): void {
+		$settings = Settings::instance();
+
+		if ( $settings->get( 'phase1_done', false ) ) {
+			return;
+		}
+
+		if ( ! $this->legacy_table_exists() ) {
+			$settings->set( 'phase1_done', true );
+			return;
+		}
+
+		// Tables not yet installed even on this request — try again next time.
+		if ( ! Database::instance()->tables_exist() ) {
+			return;
+		}
+
+		$result = $this->run_phase1();
+
+		if ( -1 !== $result ) {
 			$settings->set( 'phase1_done', true );
 		}
 	}
@@ -117,10 +172,19 @@ class Migrator extends Singleton {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return int Number of redirects inserted.
+	 * @return int Number of redirects inserted, or `-1` when the v4
+	 *             tables don't exist yet and the caller should retry.
 	 */
 	public function run_phase1(): int {
 		global $wpdb;
+
+		// Bail without flipping `phase1_done`: the v4 redirects table
+		// has to exist before we can write into it, and BerlinDB
+		// installs it lazily on `admin_init`. The Activator force-
+		// installs, but external callers (eg. WP-CLI) may not.
+		if ( ! Database::instance()->tables_exist() ) {
+			return -1;
+		}
 
 		$table = $wpdb->prefix . '404_to_301';
 		$rows  = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -278,10 +342,19 @@ class Migrator extends Singleton {
 		$processed_ids = array();
 
 		foreach ( (array) $rows as $row ) {
+			// The legacy plugin stored "N/A" (any casing) when the
+			// referrer header was missing. Normalise that back to an
+			// empty string so the React layer can render its standard
+			// em-dash placeholder instead of a literal "N/A".
+			$ref = (string) $row->ref;
+			if ( 'n/a' === strtolower( trim( $ref ) ) ) {
+				$ref = '';
+			}
+
 			$logs->record_hit(
 				array(
 					'url'        => (string) $row->url,
-					'ref'        => (string) $row->ref,
+					'ref'        => $ref,
 					'ip'         => Helpers::pack_ip( (string) $row->ip ),
 					'ua'         => (string) $row->ua,
 					'method'     => 'GET',

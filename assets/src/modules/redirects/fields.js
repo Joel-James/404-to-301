@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n'
 import { dateI18n } from '@wordpress/date'
-import { ExternalLink } from '@wordpress/components'
+import { ExternalLink, Tooltip } from '@wordpress/components'
+import { Icon, published, notAllowed } from '@wordpress/icons'
 import { Truncate } from '../../common'
 
 export const redirectTypes = [
@@ -94,17 +95,26 @@ export const fields = [
 		type: 'boolean',
 		elements: activeStates,
 		filterBy: { operators: ['is'] },
-		render: ({ item }) => (
-			<span
-				className={`d404-status d404-status-${
-					item.is_active ? 'active' : 'inactive'
-				}`}
-			>
-				{item.is_active
-					? __('Active', '404-to-301')
-					: __('Disabled', '404-to-301')}
-			</span>
-		),
+		render: ({ item }) => {
+			const label = item.is_active
+				? __('Active', '404-to-301')
+				: __('Disabled', '404-to-301')
+			return (
+				<Tooltip text={label}>
+					<span
+						className={`d404-status d404-status-icon d404-status-${
+							item.is_active ? 'active' : 'inactive'
+						}`}
+						aria-label={label}
+					>
+						<Icon
+							icon={item.is_active ? published : notAllowed}
+							size={20}
+						/>
+					</span>
+				</Tooltip>
+			)
+		},
 	},
 	{
 		id: 'hits',

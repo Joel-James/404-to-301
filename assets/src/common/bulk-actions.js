@@ -120,7 +120,12 @@ const BulkActions = ({
 								isDestructive={action.isDestructive}
 								onClick={() => handleAction(action, onClose)}
 							>
-								{action.label}
+								{/* Match DataViews' contract: a label
+								 * can be a string or a function that
+								 * receives the current selection. */}
+								{typeof action.label === 'function'
+									? action.label(resolveSelectedItems())
+									: action.label}
 							</MenuItem>
 						))}
 					</MenuGroup>

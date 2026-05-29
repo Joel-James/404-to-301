@@ -3,6 +3,7 @@
  */
 import './styles/settings.scss'
 import './utils/api-init'
+import './store'
 import domReady from '@wordpress/dom-ready'
 import { createRoot } from '@wordpress/element'
 import SettingsApp from './modules/settings'

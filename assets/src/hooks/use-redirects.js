@@ -140,18 +140,31 @@ const useRedirects = (view) => {
 		[fetchRedirects, createSuccessNotice, createErrorNotice],
 	)
 
+	/**
+	 * Delete one or many redirects in a single API call.
+	 *
+	 * Posts the full `ids` array to `DELETE /redirects` (the server's
+	 * bulk endpoint) and refetches once on success. Earlier versions
+	 * fanned out per-id `DELETE /redirects/{id}` requests via
+	 * `Promise.all`, which made every bulk operation N round-trips +
+	 * an N-times re-render of the table.
+	 */
 	const deleteRedirects = useCallback(
 		async (ids) => {
-			const list = Array.isArray(ids) ? ids : [ids]
+			const list = (Array.isArray(ids) ? ids : [ids])
+				.map((id) => parseInt(id, 10))
+				.filter((id) => id > 0)
+
+			if (list.length === 0) {
+				return false
+			}
+
 			try {
-				await Promise.all(
-					list.map((id) =>
-						apiFetch({
-							path: `${BASE}/${id}`,
-							method: 'DELETE',
-						}),
-					),
-				)
+				await apiFetch({
+					path: BASE,
+					method: 'DELETE',
+					data: { ids: list },
+				})
 				createSuccessNotice(
 					list.length > 1
 						? __('Redirects deleted.', '404-to-301')

@@ -1,119 +1,38 @@
-import { __ } from '@wordpress/i18n'
-import { useCallback, useEffect, useState } from '@wordpress/element'
-import { useDispatch } from '@wordpress/data'
-import { store as noticesStore } from '@wordpress/notices'
-import apiFetch from './use-rest'
+import { useSelect, useDispatch } from '@wordpress/data'
+import { STORE_KEY } from '../store/addons'
 
+/**
+ * Thin selector / dispatch wrapper around the `d404/addons` store.
+ *
+ * Component-level API is intentionally the same as the previous
+ * `useState`-based hook so consumers (Catalog tab, LicenseModal,
+ * etc.) didn't need to change shape:
+ *
+ *     const { items, isLoading, refresh, activateLicense, ... } = useAddons()
+ *
+ * The store now owns the catalog state, so multiple consumers
+ * share a single fetch. Switching from Addons → Support → Addons
+ * no longer triggers a refetch — `getItems()`'s resolver only
+ * fires the first time it's read.
+ */
 const useAddons = () => {
-	const [items, setItems] = useState([])
-	const [isLoading, setIsLoading] = useState(true)
-	const { createSuccessNotice, createErrorNotice } = useDispatch(noticesStore)
-
-	const load = useCallback(
-		async (force = false) => {
-			setIsLoading(true)
-			try {
-				const data = await apiFetch(
-					`addons${force ? '?force=1' : ''}`,
-				)
-				setItems(data.items || [])
-			} catch (err) {
-				createErrorNotice(
-					__('Could not load the addons catalog.', '404-to-301'),
-					{ type: 'snackbar' },
-				)
-			} finally {
-				setIsLoading(false)
-			}
-		},
-		[createErrorNotice],
-	)
-
-	useEffect(() => {
-		load()
-	}, [load])
-
-	/**
-	 * Merge an updated addon row back into the in-memory list so the
-	 * UI reflects the new licence state without a full reload.
-	 */
-	const replaceAddon = useCallback((next) => {
-		if (!next || !next.slug) {
-			return
+	const { items, isLoading, isRefreshing } = useSelect((select) => {
+		const store = select(STORE_KEY)
+		return {
+			items: store.getItems(),
+			isLoading: store.isLoading(),
+			isRefreshing: store.isRefreshing(),
 		}
-		setItems((current) =>
-			current.map((addon) =>
-				addon.slug === next.slug ? { ...addon, ...next } : addon,
-			),
-		)
 	}, [])
 
-	const activateLicense = async (slug, key) => {
-		try {
-			const data = await apiFetch(
-				`addons/${encodeURIComponent(slug)}/license`,
-				{
-					method: 'POST',
-					body: JSON.stringify({ key }),
-				},
-			)
-
-			if (data.success) {
-				createSuccessNotice(__('License activated.', '404-to-301'), {
-					type: 'snackbar',
-				})
-				replaceAddon(data.addon)
-				return data.addon || null
-			}
-
-			createErrorNotice(__('License activation failed.', '404-to-301'), {
-				type: 'snackbar',
-			})
-			return null
-		} catch (err) {
-			createErrorNotice(
-				err.message || __('License activation failed.', '404-to-301'),
-				{ type: 'snackbar' },
-			)
-			return null
-		}
-	}
-
-	const deactivateLicense = async (slug) => {
-		try {
-			const data = await apiFetch(
-				`addons/${encodeURIComponent(slug)}/license`,
-				{ method: 'DELETE' },
-			)
-
-			if (data.success) {
-				createSuccessNotice(
-					__('License deactivated.', '404-to-301'),
-					{ type: 'snackbar' },
-				)
-				replaceAddon(data.addon)
-				return data.addon || null
-			}
-
-			createErrorNotice(
-				__('License deactivation failed.', '404-to-301'),
-				{ type: 'snackbar' },
-			)
-			return null
-		} catch (err) {
-			createErrorNotice(
-				err.message ||
-					__('License deactivation failed.', '404-to-301'),
-				{ type: 'snackbar' },
-			)
-			return null
-		}
-	}
+	const { refresh, activateLicense, deactivateLicense } =
+		useDispatch(STORE_KEY)
 
 	return {
 		items,
 		isLoading,
-		reload: load,
+		isRefreshing,
+		refresh,
 		activateLicense,
 		deactivateLicense,
 	}

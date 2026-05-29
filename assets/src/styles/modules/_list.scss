@@ -148,6 +148,20 @@ $prefix: '#{variables.$prefix}';
 	.#{$prefix}-status-fixed    { color: #008a20; font-weight: 600; }
 	.#{$prefix}-status-ignored  { color: #8c8f94; }
 	.#{$prefix}-status-open     { color: #2271b1; }
+	.#{$prefix}-status-custom   { color: #7e3ab1; font-weight: 600; }
+
+	// Icon variant — status column renders an icon instead of text.
+	// `fill: currentColor` lets the per-status color rules above
+	// drive the icon tint.
+	.#{$prefix}-status-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+
+		svg {
+			fill: currentColor;
+		}
+	}
 
 	// Subtitle inside modals (URL preview).
 	.#{$prefix}-modal-subtitle {
@@ -163,5 +177,57 @@ $prefix: '#{variables.$prefix}';
 	// Migration banner spacing inside the list page.
 	.#{$prefix}-migration-banner {
 		margin: 16px 0 0;
+	}
+}
+
+// Red label for destructive actions in row / bulk dropdown menus.
+// Lives outside `.d404-wrap` so it applies even when the menu is
+// portalled to `body` (DataViews and `@wordpress/components` both
+// do that).
+.#{variables.$prefix}-action-destructive {
+	color: #cc1818;
+}
+
+// Log "View details" modal. Lives at the document root because
+// `@wordpress/components` Modal portals into `body`, outside the
+// `.d404-wrap` scope above.
+.#{$prefix}-log-details {
+
+	&__notice {
+		margin: 0 0 16px;
+		padding: 8px 12px;
+		background: #edfaef;
+		border-left: 3px solid #008a20;
+		border-radius: 2px;
+		color: #1e1e1e;
+	}
+
+	&__list {
+		display: grid;
+		grid-template-columns: 140px 1fr;
+		row-gap: 8px;
+		column-gap: 16px;
+		margin: 0;
+
+		dt {
+			color: #50575e;
+			font-weight: 600;
+		}
+
+		dd {
+			margin: 0;
+			word-break: break-word;
+		}
+	}
+
+	&__mono {
+		font-family: Menlo, Consolas, monospace;
+		font-size: 12px;
+	}
+
+	&__footer {
+		display: flex;
+		justify-content: flex-end;
+		margin-top: 16px;
 	}
 }

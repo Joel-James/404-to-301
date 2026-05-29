@@ -2,19 +2,24 @@
 /**
  * Addons REST endpoint.
  *
- * Surfaces the addon catalogue for the React Addons page. When the
- * parent Freemius client is configured, the catalogue comes from
- * Freemius; otherwise we serve a built-in stub list so the UI still
- * has something to render.
+ * Surfaces the addon catalog and per-addon license operations to the
+ * React Addons page. All data comes from the Freemius SDK — there is
+ * no fallback / stub list, so the page renders empty until the
+ * project is correctly configured on Freemius and the SDK can talk
+ * to the API.
  *
- * Each addon has its own Freemius project and therefore its own
- * license — activation/deactivation routes accept the addon's slug
- * (or Freemius id) and operate on the matching per-addon client.
+ * Three routes:
  *
- * Routes:
- *   GET    /addons                       — list the catalogue.
- *   POST   /addons/{slug}/license        — activate a key for one addon.
- *   DELETE /addons/{slug}/license        — deactivate the key for one addon.
+ *   GET    /addons                       — fetch the catalog.
+ *   POST   /addons/refresh               — force the SDK cache to
+ *                                          rebuild from the API.
+ *   POST   /addons/{id}/license          — activate a license key
+ *                                          against the addon's
+ *                                          Freemius client.
+ *   DELETE /addons/{id}/license          — deactivate the same.
+ *
+ * `{id}` is the addon's Freemius project id (an integer), matching
+ * the `id` field returned in every catalog row.
  *
  * @package FourNotFour
  */
@@ -27,6 +32,7 @@ namespace DuckDev\FourNotFour\Api;
 defined( 'ABSPATH' ) || exit;
 
 use DuckDev\FourNotFour\Core;
+use DuckDev\FourNotFour\Freemius;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -41,7 +47,9 @@ use WP_REST_Server;
 class Addons extends Endpoint {
 
 	/**
-	 * Register the routes.
+	 * Register the routes with the REST API.
+	 *
+	 * Called from {@see Endpoint::__construct()} on `rest_api_init`.
 	 *
 	 * @since 4.0.0
 	 *
@@ -56,23 +64,35 @@ class Addons extends Endpoint {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'list' ),
 					'permission_callback' => array( $this, 'require_access' ),
-					'args'                => array(
-						'force' => array( 'type' => 'boolean', 'default' => false ),
-					),
 				),
 			)
 		);
 
 		register_rest_route(
 			self::NAMESPACE,
-			'/addons/(?P<slug>[a-z0-9_\-]+)/license',
+			'/addons/refresh',
+			array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'refresh' ),
+					'permission_callback' => array( $this, 'require_access' ),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/addons/(?P<id>\d+)/license',
 			array(
 				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'activate_license' ),
 					'permission_callback' => array( $this, 'require_access' ),
 					'args'                => array(
-						'key' => array( 'type' => 'string', 'required' => true ),
+						'key' => array(
+							'type'     => 'string',
+							'required' => true,
+						),
 					),
 				),
 				array(
@@ -85,57 +105,80 @@ class Addons extends Endpoint {
 	}
 
 	/**
-	 * GET /addons — return the catalogue.
+	 * GET /addons — return the decorated catalog.
+	 *
+	 * Uses the SDK's 24h cache. The first request after activation
+	 * (or after the cache expires) does a live API call; subsequent
+	 * requests are local.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 *
-	 * @return WP_REST_Response
+	 * @return WP_REST_Response Response with shape `{ items: [...] }`.
 	 */
 	public function list( WP_REST_Request $request ): WP_REST_Response {
-		$catalog = $this->catalog( (bool) $request->get_param( 'force' ) );
-
-		// Decorate every row with its license status before returning.
-		$catalog = array_map( array( $this, 'with_license_status' ), $catalog );
+		unset( $request );
 
 		return $this->respond(
 			array(
-				'items' => array_values( $catalog ),
-				'total' => count( $catalog ),
+				'items' => $this->shape_catalog( false ),
 			)
 		);
 	}
 
 	/**
-	 * POST /addons/{slug}/license.
+	 * POST /addons/refresh — bypass the SDK cache and re-fetch.
+	 *
+	 * Used by the "Refresh" button in the Addons page header. The
+	 * SDK rate-limits its own remote requests to one per five
+	 * minutes — repeated clicks return the last-known catalog
+	 * unchanged.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 *
+	 * @return WP_REST_Response Response with the freshly-pulled list.
+	 */
+	public function refresh( WP_REST_Request $request ): WP_REST_Response {
+		unset( $request );
+
+		return $this->respond(
+			array(
+				'items' => $this->shape_catalog( true ),
+			)
+		);
+	}
+
+	/**
+	 * POST /addons/{id}/license — activate a license key.
+	 *
+	 * Delegates to {@see Freemius::activate_license()}. Wraps the
+	 * SDK's WP_Error result with a 400 status so the React layer's
+	 * `apiFetch` rejects cleanly.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param WP_REST_Request $request REST request. Path captures
+	 *                                 `id`; body provides `key`.
+	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function activate_license( WP_REST_Request $request ) {
-		$slug  = (string) $request['slug'];
-		$key   = (string) $request->get_param( 'key' );
-		$addon = $this->find_addon( $slug );
+		$freemius = Core::instance()->freemius();
+		$id       = (int) $request['id'];
+		$key      = (string) $request->get_param( 'key' );
 
-		if ( ! $addon ) {
-			return new WP_Error( 'rest_not_found', __( 'Add-on not found.', '404-to-301' ), array( 'status' => 404 ) );
-		}
-
-		$client = $this->addon_client( $addon );
-
-		if ( ! $client ) {
+		if ( ! $freemius || ! $freemius->is_ready() ) {
 			return new WP_Error(
 				'rest_no_freemius',
-				__( 'This add-on does not have licensing configured.', '404-to-301' ),
+				__( 'Licensing is not configured.', '404-to-301' ),
 				array( 'status' => 400 )
 			);
 		}
 
-		$result = $client->license()->activate( $key );
+		$result = $freemius->activate_license( $id, $key );
 
 		if ( is_wp_error( $result ) ) {
 			return new WP_Error(
@@ -148,13 +191,13 @@ class Addons extends Endpoint {
 		return $this->respond(
 			array(
 				'success' => (bool) $result,
-				'addon'   => $this->with_license_status( $addon ),
+				'addon'   => $this->shape_addon_by_id( $id ),
 			)
 		);
 	}
 
 	/**
-	 * DELETE /addons/{slug}/license.
+	 * DELETE /addons/{id}/license — deactivate a license.
 	 *
 	 * @since 4.0.0
 	 *
@@ -163,24 +206,18 @@ class Addons extends Endpoint {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function deactivate_license( WP_REST_Request $request ) {
-		$slug  = (string) $request['slug'];
-		$addon = $this->find_addon( $slug );
+		$freemius = Core::instance()->freemius();
+		$id       = (int) $request['id'];
 
-		if ( ! $addon ) {
-			return new WP_Error( 'rest_not_found', __( 'Add-on not found.', '404-to-301' ), array( 'status' => 404 ) );
-		}
-
-		$client = $this->addon_client( $addon );
-
-		if ( ! $client ) {
+		if ( ! $freemius || ! $freemius->is_ready() ) {
 			return new WP_Error(
 				'rest_no_freemius',
-				__( 'This add-on does not have licensing configured.', '404-to-301' ),
+				__( 'Licensing is not configured.', '404-to-301' ),
 				array( 'status' => 400 )
 			);
 		}
 
-		$result = $client->license()->deactivate();
+		$result = $freemius->deactivate_license( $id );
 
 		if ( is_wp_error( $result ) ) {
 			return new WP_Error(
@@ -193,200 +230,103 @@ class Addons extends Endpoint {
 		return $this->respond(
 			array(
 				'success' => (bool) $result,
-				'addon'   => $this->with_license_status( $addon ),
+				'addon'   => $this->shape_addon_by_id( $id ),
 			)
 		);
 	}
 
+	// --------------------------------------------------------------------- //
+	// Internals.
+	// --------------------------------------------------------------------- //
+
 	/**
-	 * Fetch the addon catalogue, falling back to the stub list when
-	 * Freemius isn't configured.
+	 * Shape the SDK catalog rows for the React UI.
+	 *
+	 * The SDK returns its rows in a slightly noisy shape (lots of
+	 * fields the UI doesn't need); this method extracts just what
+	 * the React side consumes and decorates each row with:
+	 *
+	 *   - `is_active`         — whether the addon plugin has
+	 *                           registered itself locally (i.e. it's
+	 *                           installed and active).
+	 *   - `is_license_active` — whether the stored license is
+	 *                           currently activated on Freemius.
+	 *   - `license_key`       — raw key value, so the input can
+	 *                           pre-fill and go read-only when active.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param bool $force Force a remote refresh (Freemius-only).
+	 * @param bool $force Force a Freemius API refresh.
 	 *
-	 * @return array
+	 * @return array<int, array> Empty array when the SDK isn't
+	 *                           configured or returns nothing.
 	 */
-	private function catalog( bool $force ): array {
+	private function shape_catalog( bool $force ): array {
 		$freemius = Core::instance()->freemius();
 
-		if ( $freemius && $freemius->is_ready() ) {
-			$service = $freemius->addon();
-			$catalog = $service ? (array) $service->get_addons( $force ) : array();
-		} else {
-			$catalog = $this->fallback_catalog();
+		if ( ! $freemius || ! $freemius->is_ready() ) {
+			return array();
+		}
+
+		$catalog    = $freemius->get_addons( $force );
+		$registered = $freemius->get_registered_addons();
+		$licenses   = $freemius->get_license_items();
+
+		$items = array();
+
+		foreach ( (array) $catalog as $addon ) {
+			$id      = (int) ( $addon['id'] ?? 0 );
+			$license = $licenses[ $id ] ?? array();
+
+			$items[] = array(
+				'id'                => $id,
+				'title'             => (string) ( $addon['title'] ?? '' ),
+				'icon'              => (string) ( $addon['icon'] ?? '' ),
+				'link'              => (string) ( $addon['link'] ?? '' ),
+				'description'       => (string) ( $addon['info']['description'] ?? '' ),
+				'homepage'          => (string) ( $addon['info']['url'] ?? '' ),
+				'is_premium'        => (bool) ( $addon['is_premium'] ?? false ),
+				'is_active'         => isset( $registered[ $id ] ),
+				'is_license_active' => (bool) ( $license['active'] ?? false ),
+				'license_key'       => (string) ( $license['key'] ?? '' ),
+				'banner'            => (string) ( $addon['info']['card_banner_url'] ?? '' ),
+			);
 		}
 
 		/**
-		 * Filter the addons catalogue before licensing decoration.
+		 * Filter the shaped addon catalog before it goes over REST.
+		 *
+		 * Useful for self-hosted / white-label builds that want to
+		 * splice in their own rows without standing up a separate
+		 * Freemius project.
 		 *
 		 * @since 4.0.0
 		 *
-		 * @param array $catalog Addons.
+		 * @param array $items   Shaped catalog rows.
+		 * @param array $catalog Raw SDK catalog rows.
 		 */
-		return (array) apply_filters( '404_to_301_addons_catalog', $catalog );
+		return (array) apply_filters( '404_to_301_addons_catalog', $items, $catalog );
 	}
 
 	/**
-	 * Look up a single addon by slug.
+	 * Return the single shaped row for a given id.
+	 *
+	 * Used inside the activate / deactivate handlers so the response
+	 * carries the fresh row back to the React layer in one round-trip.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $slug Addon slug.
+	 * @param int $id Freemius project id.
 	 *
-	 * @return array|null
+	 * @return array Empty array when the id isn't in the catalog.
 	 */
-	private function find_addon( string $slug ): ?array {
-		foreach ( $this->catalog( false ) as $addon ) {
-			if ( ( $addon['slug'] ?? '' ) === $slug ) {
+	private function shape_addon_by_id( int $id ): array {
+		foreach ( $this->shape_catalog( false ) as $addon ) {
+			if ( (int) $addon['id'] === $id ) {
 				return $addon;
 			}
 		}
 
-		return null;
-	}
-
-	/**
-	 * Get (or build) the Freemius client for a specific addon.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param array $addon Addon row.
-	 *
-	 * @return \DuckDev\Freemius\Freemius|null
-	 */
-	private function addon_client( array $addon ) {
-		$freemius = Core::instance()->freemius();
-
-		if ( ! $freemius ) {
-			return null;
-		}
-
-		$id = (int) ( $addon['freemius_id'] ?? 0 );
-
-		if ( $id <= 0 ) {
-			return null;
-		}
-
-		return $freemius->for_addon(
-			$id,
-			array(
-				'slug'       => (string) ( $addon['slug'] ?? '' ),
-				'main_file'  => (string) ( $addon['main_file'] ?? '' ),
-				'public_key' => (string) ( $addon['freemius_public_key'] ?? '' ),
-				'is_premium' => (bool) ( $addon['is_premium'] ?? true ),
-				'has_addons' => false,
-			)
-		);
-	}
-
-	/**
-	 * Decorate an addon row with its current license status.
-	 *
-	 * Adds three keys:
-	 *  - `has_license`    — whether the addon supports licensing at all.
-	 *  - `license_status` — one of 'active' | 'inactive' | 'unknown'.
-	 *  - `license_masked` — last four characters of the key, prefixed
-	 *                      with `***-` (or empty string).
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param array $addon Addon row.
-	 *
-	 * @return array
-	 */
-	private function with_license_status( array $addon ): array {
-		$client = $this->addon_client( $addon );
-
-		$addon['has_license']    = (bool) $client;
-		$addon['license_status'] = 'unknown';
-		$addon['license_masked'] = '';
-
-		if ( ! $client ) {
-			return $addon;
-		}
-
-		// The Freemius lib stores activation data under the addon's
-		// option key. The license service exposes it via a protected
-		// `get_activation_data()` — but the constants for ACTIVATED /
-		// DEACTIVATED are on the `Service` parent. We probe the
-		// public option key directly to keep this read-only and not
-		// trigger any remote API calls.
-		$option = get_option( 'duckdev_freemius_' . ( $addon['freemius_id'] ?? 0 ), array() );
-		if ( ! is_array( $option ) ) {
-			$option = array();
-		}
-
-		$status = (string) ( $option['status'] ?? '' );
-		$key    = (string) ( $option['activation_params']['license_key'] ?? '' );
-
-		if ( 'activated' === $status && '' !== $key ) {
-			$addon['license_status'] = 'active';
-			$addon['license_masked'] = '***-' . substr( $key, -4 );
-		} elseif ( '' !== $status ) {
-			$addon['license_status'] = 'inactive';
-		}
-
-		return $addon;
-	}
-
-	/**
-	 * Stub catalogue used when the parent Freemius client isn't
-	 * configured. Each entry mirrors the shape Freemius returns so
-	 * the UI doesn't need to branch on the source.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return array
-	 */
-	private function fallback_catalog(): array {
-		return array(
-			array(
-				'id'                  => 1,
-				'slug'                => 'lazy-load-for-comments',
-				'title'               => __( 'Lazy Load for Comments', '404-to-301' ),
-				'description'         => __( 'Defer the comments markup until the visitor scrolls or clicks — pairs well with 404 to 301 to keep page speed high.', '404-to-301' ),
-				'icon'                => '',
-				'tags'                => array( 'performance' ),
-				'cta_url'             => 'https://wordpress.org/plugins/lazy-load-for-comments/',
-				'installed'           => false,
-				'active'              => false,
-				'is_premium'          => false,
-				'freemius_id'         => 0,
-				'freemius_public_key' => '',
-				'main_file'           => '',
-			),
-			array(
-				'id'                  => 2,
-				'slug'                => 'loggedin',
-				'title'               => __( 'Loggedin', '404-to-301' ),
-				'description'         => __( 'Limit the number of concurrent sessions a user can keep open. A nice companion when you start cleaning up sloppy 404 traffic.', '404-to-301' ),
-				'icon'                => '',
-				'tags'                => array( 'security' ),
-				'cta_url'             => 'https://wordpress.org/plugins/loggedin/',
-				'installed'           => false,
-				'active'              => false,
-				'is_premium'          => false,
-				'freemius_id'         => 0,
-				'freemius_public_key' => '',
-				'main_file'           => '',
-			),
-			array(
-				'id'                  => 3,
-				'slug'                => '404-to-301-log-manager',
-				'title'               => __( '404 to 301 — Log Manager (Pro)', '404-to-301' ),
-				'description'         => __( 'Premium add-on: digest emails on a schedule, advanced filters, and bulk export of 404 logs.', '404-to-301' ),
-				'icon'                => '',
-				'tags'                => array( 'pro', 'reporting' ),
-				'cta_url'             => 'https://duckdev.com/products/404-to-301/',
-				'installed'           => false,
-				'active'              => false,
-				'is_premium'          => true,
-				'freemius_id'         => 0,
-				'freemius_public_key' => '',
-				'main_file'           => '',
-			),
-		);
+		return array();
 	}
 }

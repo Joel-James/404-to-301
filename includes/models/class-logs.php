@@ -32,6 +32,17 @@ class Logs extends Model {
 	const STATUS_OPEN    = 0;
 	const STATUS_IGNORED = 1;
 	const STATUS_FIXED   = 2;
+	const STATUS_CUSTOM  = 3;
+
+	/**
+	 * Per-row override value-space (matches the schema). Kept here so
+	 * the REST + UI layers can `enum`-validate against a single source.
+	 *
+	 * @since 4.1.0
+	 */
+	const OVERRIDE_GLOBAL  = 0;
+	const OVERRIDE_ENABLE  = 1;
+	const OVERRIDE_DISABLE = 2;
 
 	/**
 	 * BerlinDB query class for the logs table.
@@ -126,7 +137,12 @@ class Logs extends Model {
 	 * @return bool
 	 */
 	public function set_status( int $id, int $status ): bool {
-		$allowed = array( self::STATUS_OPEN, self::STATUS_IGNORED, self::STATUS_FIXED );
+		$allowed = array(
+			self::STATUS_OPEN,
+			self::STATUS_IGNORED,
+			self::STATUS_FIXED,
+			self::STATUS_CUSTOM,
+		);
 
 		if ( ! in_array( $status, $allowed, true ) ) {
 			return false;
@@ -157,8 +173,49 @@ class Logs extends Model {
 			$id,
 			array(
 				'redirect_id' => $redirect_id > 0 ? $redirect_id : null,
-				'status'      => $redirect_id > 0 ? self::STATUS_FIXED : self::STATUS_OPEN,
+				// A linked redirect promotes the row to the dedicated
+				// `custom redirect` status so it surfaces with its own
+				// badge / filter on the UI. Unlinking sends it back to
+				// `open` so the admin can decide what to do next.
+				'status'      => $redirect_id > 0 ? self::STATUS_CUSTOM : self::STATUS_OPEN,
 				'updated_at'  => current_time( 'mysql', true ),
+			)
+		);
+	}
+
+	/**
+	 * Set the per-row override toggles in one shot.
+	 *
+	 * Each value must be one of the OVERRIDE_* constants — anything
+	 * else is silently coerced to OVERRIDE_GLOBAL so an unexpected
+	 * payload never persists a junk value into the table.
+	 *
+	 * @since 4.1.0
+	 *
+	 * @param int   $id        Log row id.
+	 * @param array $overrides {
+	 *     @type int $override_redirect
+	 *     @type int $override_log
+	 *     @type int $override_email
+	 * }
+	 *
+	 * @return bool
+	 */
+	public function set_overrides( int $id, array $overrides ): bool {
+		$allowed = array( self::OVERRIDE_GLOBAL, self::OVERRIDE_ENABLE, self::OVERRIDE_DISABLE );
+
+		$normalise = static function ( $value ) use ( $allowed ) {
+			$value = (int) $value;
+			return in_array( $value, $allowed, true ) ? $value : self::OVERRIDE_GLOBAL;
+		};
+
+		return $this->update(
+			$id,
+			array(
+				'override_redirect' => $normalise( $overrides['override_redirect'] ?? 0 ),
+				'override_log'      => $normalise( $overrides['override_log'] ?? 0 ),
+				'override_email'    => $normalise( $overrides['override_email'] ?? 0 ),
+				'updated_at'        => current_time( 'mysql', true ),
 			)
 		);
 	}

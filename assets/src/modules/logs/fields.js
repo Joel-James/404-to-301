@@ -1,13 +1,28 @@
 import { __ } from '@wordpress/i18n'
 import { dateI18n } from '@wordpress/date'
-import { ExternalLink } from '@wordpress/components'
+import { ExternalLink, Tooltip } from '@wordpress/components'
+import {
+	Icon,
+	published,
+	unseen,
+	notFound,
+	shuffle,
+} from '@wordpress/icons'
 import { Truncate } from '../../common'
 
 const statusElements = [
 	{ value: 0, label: __('Open', '404-to-301') },
 	{ value: 1, label: __('Ignored', '404-to-301') },
 	{ value: 2, label: __('Fixed', '404-to-301') },
+	{ value: 3, label: __('Custom redirect', '404-to-301') },
 ]
+
+const statusMeta = {
+	0: { slug: 'open', icon: notFound },
+	1: { slug: 'ignored', icon: unseen },
+	2: { slug: 'fixed', icon: published },
+	3: { slug: 'custom', icon: shuffle },
+}
 
 const empty = <span className="d404-empty">{'—'}</span>
 
@@ -81,16 +96,16 @@ export const fields = [
 				statusElements.find((el) => el.value === item.status)?.label ||
 				item.status_label ||
 				''
-			const slug =
-				item.status === 0
-					? 'open'
-					: item.status === 1
-						? 'ignored'
-						: 'fixed'
+			const meta = statusMeta[item.status] || statusMeta[2]
 			return (
-				<span className={`d404-status d404-status-${slug}`}>
-					{label}
-				</span>
+				<Tooltip text={label}>
+					<span
+						className={`d404-status d404-status-icon d404-status-${meta.slug}`}
+						aria-label={label}
+					>
+						<Icon icon={meta.icon} size={20} />
+					</span>
+				</Tooltip>
 			)
 		},
 	},

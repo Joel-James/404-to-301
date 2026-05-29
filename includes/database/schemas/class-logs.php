@@ -124,7 +124,8 @@ class Logs extends Schema {
 			'sortable'   => true,
 		),
 
-		// Lifecycle marker: 0 = open, 1 = ignored, 2 = fixed.
+		// Lifecycle marker:
+		// 0 = open, 1 = ignored, 2 = fixed, 3 = custom redirect set.
 		array(
 			'name'     => 'status',
 			'type'     => 'tinyint',
@@ -132,6 +133,38 @@ class Logs extends Schema {
 			'unsigned' => true,
 			'default'  => '0',
 			'sortable' => true,
+		),
+
+		// Per-row override for the global "redirect on 404" toggle.
+		// 0 = use global setting, 1 = force enable, 2 = force disable.
+		// Mirrors the per-log overrides from the legacy plugin so
+		// admins can opt a single 404 path in or out of redirecting.
+		array(
+			'name'     => 'override_redirect',
+			'type'     => 'tinyint',
+			'length'   => '3',
+			'unsigned' => true,
+			'default'  => '0',
+		),
+
+		// Per-row override for the global "log 404 hits" toggle.
+		// Same value space as `override_redirect`.
+		array(
+			'name'     => 'override_log',
+			'type'     => 'tinyint',
+			'length'   => '3',
+			'unsigned' => true,
+			'default'  => '0',
+		),
+
+		// Per-row override for the global "email on 404" alert toggle.
+		// Same value space as `override_redirect`.
+		array(
+			'name'     => 'override_email',
+			'type'     => 'tinyint',
+			'length'   => '3',
+			'unsigned' => true,
+			'default'  => '0',
 		),
 
 		// First time we saw the URL.

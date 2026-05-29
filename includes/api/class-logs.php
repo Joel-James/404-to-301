@@ -60,6 +60,32 @@ class Logs extends Endpoint {
 			)
 		);
 
+		// Dedicated bulk-update endpoint. Keeps `PATCH /logs/{id}`
+		// for single-item updates and gives bulk operations a single
+		// round-trip instead of N concurrent requests.
+		register_rest_route(
+			self::NAMESPACE,
+			'/logs/bulk-update',
+			array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'bulk_update' ),
+					'permission_callback' => array( $this, 'require_access' ),
+					'args'                => array(
+						'ids'    => array(
+							'type'     => 'array',
+							'required' => true,
+							'items'    => array( 'type' => 'integer' ),
+						),
+						'status' => array(
+							'type' => 'integer',
+							'enum' => array( 0, 1, 2 ),
+						),
+					),
+				),
+			)
+		);
+
 		register_rest_route(
 			self::NAMESPACE,
 			'/logs/(?P<id>\d+)',
@@ -74,8 +100,11 @@ class Logs extends Endpoint {
 					'callback'            => array( $this, 'update' ),
 					'permission_callback' => array( $this, 'require_access' ),
 					'args'                => array(
-						'status'      => array( 'type' => 'integer', 'enum' => array( 0, 1, 2 ) ),
-						'redirect_id' => array( 'type' => 'integer' ),
+						'status'            => array( 'type' => 'integer', 'enum' => array( 0, 1, 2, 3 ) ),
+						'redirect_id'       => array( 'type' => 'integer' ),
+						'override_redirect' => array( 'type' => 'integer', 'enum' => array( 0, 1, 2 ) ),
+						'override_log'      => array( 'type' => 'integer', 'enum' => array( 0, 1, 2 ) ),
+						'override_email'    => array( 'type' => 'integer', 'enum' => array( 0, 1, 2 ) ),
 					),
 				),
 				array(
@@ -187,6 +216,30 @@ class Logs extends Endpoint {
 			$model->set_status( $id, (int) $status );
 		}
 
+		// Per-row override toggles. We accept any subset — anything not
+		// in the payload is left untouched on the row.
+		$override_keys = array( 'override_redirect', 'override_log', 'override_email' );
+		$overrides     = array();
+
+		foreach ( $override_keys as $key ) {
+			$value = $request->get_param( $key );
+			if ( null !== $value ) {
+				$overrides[ $key ] = (int) $value;
+			}
+		}
+
+		if ( ! empty( $overrides ) ) {
+			$fresh = $model->find( $id );
+			$model->set_overrides(
+				$id,
+				array(
+					'override_redirect' => $overrides['override_redirect'] ?? (int) $fresh->override_redirect,
+					'override_log'      => $overrides['override_log'] ?? (int) $fresh->override_log,
+					'override_email'    => $overrides['override_email'] ?? (int) $fresh->override_email,
+				)
+			);
+		}
+
 		return $this->respond( $this->shape( $model->find( $id ) ) );
 	}
 
@@ -234,6 +287,41 @@ class Logs extends Endpoint {
 	}
 
 	/**
+	 * POST /logs/bulk-update — flip the status on every selected row
+	 * in a single round-trip.
+	 *
+	 * The React layer used to call `PATCH /logs/{id}` once per id
+	 * from `Array.prototype.forEach`, which hammered the API on
+	 * larger selections and re-rendered the list after each
+	 * response. This endpoint accepts an `ids` array + a single
+	 * `status` value and applies them server-side.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param WP_REST_Request $request REST request.
+	 *
+	 * @return WP_REST_Response Body shape: `{ updated: int }`.
+	 */
+	public function bulk_update( WP_REST_Request $request ): WP_REST_Response {
+		$ids    = array_map( 'intval', (array) $request->get_param( 'ids' ) );
+		$status = $request->get_param( 'status' );
+		$model  = LogsModel::instance();
+		$count  = 0;
+
+		if ( null === $status ) {
+			return $this->respond( array( 'updated' => 0 ) );
+		}
+
+		foreach ( $ids as $id ) {
+			if ( $id > 0 && $model->set_status( $id, (int) $status ) ) {
+				++$count;
+			}
+		}
+
+		return $this->respond( array( 'updated' => $count ) );
+	}
+
+	/**
 	 * REST argument schema for the list endpoint.
 	 *
 	 * @since 4.0.0
@@ -271,21 +359,25 @@ class Logs extends Endpoint {
 			LogsModel::STATUS_OPEN    => __( 'Open', '404-to-301' ),
 			LogsModel::STATUS_IGNORED => __( 'Ignored', '404-to-301' ),
 			LogsModel::STATUS_FIXED   => __( 'Fixed', '404-to-301' ),
+			LogsModel::STATUS_CUSTOM  => __( 'Custom redirect', '404-to-301' ),
 		);
 
 		return array(
-			'id'           => (int) $row->id,
-			'url'          => (string) $row->url,
-			'ref'          => (string) $row->ref,
-			'ip'           => $row->ip(),
-			'ua'           => (string) $row->ua,
-			'method'       => (string) $row->method,
-			'hits'         => (int) $row->hits,
-			'status'       => (int) $row->status,
-			'status_label' => $status_label[ (int) $row->status ] ?? '',
-			'redirect_id'  => null === $row->redirect_id ? null : (int) $row->redirect_id,
-			'created_at'   => $row->created_at,
-			'updated_at'   => $row->updated_at,
+			'id'                => (int) $row->id,
+			'url'               => (string) $row->url,
+			'ref'               => (string) $row->ref,
+			'ip'                => $row->ip(),
+			'ua'                => (string) $row->ua,
+			'method'            => (string) $row->method,
+			'hits'              => (int) $row->hits,
+			'status'            => (int) $row->status,
+			'status_label'      => $status_label[ (int) $row->status ] ?? '',
+			'redirect_id'       => null === $row->redirect_id ? null : (int) $row->redirect_id,
+			'override_redirect' => (int) $row->override_redirect,
+			'override_log'      => (int) $row->override_log,
+			'override_email'    => (int) $row->override_email,
+			'created_at'        => $row->created_at,
+			'updated_at'        => $row->updated_at,
 		);
 	}
 }

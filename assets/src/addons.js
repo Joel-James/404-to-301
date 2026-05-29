@@ -3,6 +3,7 @@
  */
 import './styles/addons.scss'
 import './utils/api-init'
+import './store'
 import domReady from '@wordpress/dom-ready'
 import { createRoot } from '@wordpress/element'
 import AddonsApp from './modules/addons'

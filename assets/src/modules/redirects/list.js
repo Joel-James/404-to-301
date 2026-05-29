@@ -46,7 +46,15 @@ const List = ({
 			},
 			{
 				id: 'delete',
-				label: __('Delete', '404-to-301'),
+				// JSX label so the menu item picks up its red colour —
+				// DataViews' per-row dropdown ignores `isDestructive`.
+				// See the matching action on the Logs list for context.
+				label: () => (
+					<span className="d404-action-destructive">
+						{__('Delete', '404-to-301')}
+					</span>
+				),
+				modalHeader: __('Delete redirects', '404-to-301'),
 				isDestructive: true,
 				supportsBulk: true,
 				RenderModal: (props) => (

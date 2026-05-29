@@ -1,6 +1,6 @@
 import { __, _n, sprintf } from '@wordpress/i18n'
 import { useState } from '@wordpress/element'
-import { Button, Flex, FlexItem, Modal } from '@wordpress/components'
+import { Button, Flex, FlexItem } from '@wordpress/components'
 
 /**
  * Bulk / single delete confirmation modal for redirects.
@@ -23,12 +23,11 @@ const DeleteConfirmation = ({ items, closeModal, onConfirm }) => {
 		}
 	}
 
+	// DataViews wraps `RenderModal` content in its own <Modal>. Return
+	// a fragment instead of nesting a second Modal (which would render
+	// blank over the confirmation).
 	return (
-		<Modal
-			title={__('Delete redirects', '404-to-301')}
-			onRequestClose={closeModal}
-			size="small"
-		>
+		<>
 			<p>
 				{sprintf(
 					/* translators: %d: number of selected redirects. */
@@ -64,7 +63,7 @@ const DeleteConfirmation = ({ items, closeModal, onConfirm }) => {
 					</Button>
 				</FlexItem>
 			</Flex>
-		</Modal>
+		</>
 	)
 }
 

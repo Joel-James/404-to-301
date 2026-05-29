@@ -16,22 +16,33 @@ import {
  * Create / edit modal for a single redirect.
  *
  * @param {Object}        props
- * @param {Object|null}   props.redirect Existing row when editing; null when creating.
- * @param {Function}      props.onSave   `(payload) => Promise<boolean>`
- * @param {Function}      props.onClose  Close handler.
+ * @param {Object|null}   props.redirect      Existing row when editing; null when creating.
+ * @param {Object|null}   props.initialValues Optional pre-filled values for the
+ *                                            create form (e.g. when the Logs page
+ *                                            launches it with a 404 path seeded
+ *                                            into `source`). Ignored when
+ *                                            `redirect` is set.
+ * @param {Function}      props.onSave        `(payload) => Promise<boolean>`
+ * @param {Function}      props.onClose       Close handler.
  */
-const EditRedirect = ({ redirect = null, onSave, onClose }) => {
+const EditRedirect = ({
+	redirect = null,
+	initialValues = null,
+	onSave,
+	onClose,
+}) => {
 	const isEdit = !!redirect
+	const seed = redirect || initialValues || {}
 
 	const [form, setForm] = useState({
-		source: redirect?.source ?? '',
-		match_type: redirect?.match_type ?? 'exact',
-		target_type: redirect?.target_type ?? 'link',
-		target_url: redirect?.target_url ?? '',
-		target_page_id: redirect?.target_page_id ?? 0,
-		redirect_type: redirect?.redirect_type ?? 301,
-		is_active: redirect?.is_active ?? true,
-		notes: redirect?.notes ?? '',
+		source: seed.source ?? '',
+		match_type: seed.match_type ?? 'exact',
+		target_type: seed.target_type ?? 'link',
+		target_url: seed.target_url ?? '',
+		target_page_id: seed.target_page_id ?? 0,
+		redirect_type: seed.redirect_type ?? 301,
+		is_active: seed.is_active ?? true,
+		notes: seed.notes ?? '',
 	})
 
 	useEffect(() => {

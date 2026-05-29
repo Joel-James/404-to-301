@@ -9,39 +9,166 @@
 
 $prefix: '#{variables.$prefix}';
 
+// Remove the default admin content padding so the page sits flush
+// against the admin-bar / sidebar.
 #wpcontent {
 	padding-left: 0 !important;
 }
 
 .#{$prefix}-wrap {
 
+	// Action row above the addon grid. Holds the "Refresh" button.
+	// Margin-top puts a comfortable gap below the page header without
+	// leaving the button hugging the card edge.
+	.#{$prefix}-addons-toolbar {
+		margin: 1rem 0 1.5rem;
+	}
+
+	// Responsive 320px-min grid. `auto-fill` lets the card column
+	// count grow with the viewport on big screens without us having
+	// to define media-query breakpoints.
 	.#{$prefix}-addons-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 		gap: 1rem;
-		margin-top: 1.5rem;
 	}
 
-	// Stretch every card to the same height inside the grid so the
-	// footer buttons line up across rows. Card primitives bring their
-	// own background, border, radius and elevation — no need to
-	// override any of that.
+	// Stretch every card to the full grid-cell height so footer
+	// buttons line up across rows. Card primitives handle their
+	// own background / border / shadow.
 	.#{$prefix}-addon-card {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
 
-		// Make the body grow to fill the gap between header and footer.
-		.components-card__body {
-			flex: 1;
+		// The description body soaks up any extra vertical slack the
+		// grid hands us, so short descriptions leave whitespace below
+		// the text instead of ballooning the footer.
+		.#{$prefix}-addon-description {
+			flex: 1 1 auto;
+		}
+
+		// Header, media and footer slots stay at their natural,
+		// content-driven heights so the action row looks the same on
+		// every card regardless of how long the description is.
+		.components-card__header,
+		.components-card__media,
+		.components-card__footer {
+			flex: 0 0 auto;
 		}
 	}
 
-	.#{$prefix}-addon-tags {
-		margin-top: .75rem;
+	// Card media slot used by the optional marketing banner.
+	//
+	// Aspect ratio locked to 3:1 (300 x 100, the size Freemius
+	// returns) so cards line up across the grid regardless of which
+	// addon ships a banner. `position: relative` is the anchor for
+	// the absolutely-positioned "Active" pill and the placeholder
+	// shimmer that show while the image loads.
+	.#{$prefix}-addon-banner {
+		position: relative;
+		aspect-ratio: 300 / 100;
+		overflow: hidden;
+		// Soft grey placeholder background — visible while the
+		// banner image is in-flight (or if it fails to load at all).
+		background: #f0f0f1;
+
+		// Subtle shimmer overlaid on top of the placeholder while the
+		// image hasn't loaded yet. Disappears the moment the `img`
+		// gets its `is-loaded` class.
+		&::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: linear-gradient(
+				90deg,
+				#f0f0f1 0%,
+				#e2e4e7 50%,
+				#f0f0f1 100%
+			);
+			background-size: 200% 100%;
+			animation: d404-banner-shimmer 1.4s ease-in-out infinite;
+			pointer-events: none;
+		}
+
+		// Hide the shimmer once the image has loaded.
+		&:has(.#{$prefix}-addon-banner__img.is-loaded)::before {
+			display: none;
+		}
+
+		// Respect the user's reduced-motion preference — drop the
+		// animation but keep the placeholder colour.
+		@media (prefers-reduced-motion: reduce) {
+			&::before {
+				animation: none;
+			}
+		}
 	}
 
-	// Badge palette used in the card header (and the tags strip).
+	.#{$prefix}-addon-banner__img {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+		// Start invisible and fade in once the browser fires `load`.
+		// Keeps the placeholder shimmer visible the whole time the
+		// image is downloading.
+		opacity: 0;
+		transition: opacity .25s ease-in;
+
+		&.is-loaded {
+			opacity: 1;
+		}
+	}
+
+	// Shimmer keyframes — slides the highlight band horizontally.
+	@keyframes d404-banner-shimmer {
+		0%   { background-position: 200% 0; }
+		100% { background-position: -200% 0; }
+	}
+
+	// Active-state pill overlaid on the top-right of the banner.
+	// Lives inside `.d404-addon-banner` so it inherits the dark
+	// canvas — the pill itself is a small green chip with a glyph
+	// dot so the meaning reads at a glance even from the grid view.
+	.#{$prefix}-addon-banner .#{$prefix}-addon-status {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 3px 10px 3px 8px;
+		font-size: 11px;
+		font-weight: 600;
+		line-height: 1.4;
+		color: #fff;
+		background: #008a20;
+		border-radius: 12px;
+		text-transform: uppercase;
+		letter-spacing: .02em;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+
+		// Status dot — solid white so it pops against the green
+		// background.
+		&::before {
+			content: '';
+			width: 6px;
+			height: 6px;
+			border-radius: 50%;
+			background: #fff;
+		}
+	}
+
+	// Row of secondary buttons inside a Support tab PanelBody — same
+	// look LLC uses for its documentation / author link strips.
+	.#{$prefix}-link-row {
+		margin-top: .5rem;
+	}
+
+	// Badge palette used in the card header.
 	.#{$prefix}-addon-badge {
 		display: inline-block;
 		padding: 2px 8px;
@@ -58,12 +185,5 @@ $prefix: '#{variables.$prefix}';
 		&--free    { background: #50575e; }
 		&--success { background: #008a20; }
 		&--warning { background: #b26200; }
-		&--tag {
-			color: #2c3338;
-			background: #e5e5e5;
-			text-transform: none;
-			letter-spacing: 0;
-			font-weight: 500;
-		}
 	}
 }

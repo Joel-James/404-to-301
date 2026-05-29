@@ -101,12 +101,43 @@ class Log extends Row {
 	public $redirect_id = null;
 
 	/**
-	 * Lifecycle status: 0 = open, 1 = ignored, 2 = fixed.
+	 * Lifecycle status:
+	 *   0 = open, 1 = ignored, 2 = fixed, 3 = custom redirect set.
 	 *
 	 * @since 4.0.0
 	 * @var int
 	 */
 	public $status = 0;
+
+	/**
+	 * Per-row override for the global "redirect on 404" toggle.
+	 *
+	 * 0 = use global, 1 = force enable, 2 = force disable.
+	 *
+	 * @since 4.1.0
+	 * @var int
+	 */
+	public $override_redirect = 0;
+
+	/**
+	 * Per-row override for the global "log 404 hits" toggle.
+	 *
+	 * Same value space as {@see self::$override_redirect}.
+	 *
+	 * @since 4.1.0
+	 * @var int
+	 */
+	public $override_log = 0;
+
+	/**
+	 * Per-row override for the global "email on 404" alert toggle.
+	 *
+	 * Same value space as {@see self::$override_redirect}.
+	 *
+	 * @since 4.1.0
+	 * @var int
+	 */
+	public $override_email = 0;
 
 	/**
 	 * Datetime (MySQL format).

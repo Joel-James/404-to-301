@@ -47,9 +47,14 @@ class Activator {
 	 * @return void
 	 */
 	public static function run(): void {
-		// Bring the database layer up (creates / upgrades the tables).
+		// Bring the database layer up. BerlinDB defers `maybe_upgrade()`
+		// to the `admin_init` hook, which has NOT fired yet during the
+		// activation request. Phase 1 of the migration runs
+		// synchronously below and needs both tables on disk — call
+		// `install_now()` so we install up-front instead of waiting
+		// for `admin_init` to fire on the next admin pageload.
 		if ( class_exists( '\\DuckDev\\FourNotFour\\Database\\Database' ) ) {
-			\DuckDev\FourNotFour\Database\Database::instance();
+			\DuckDev\FourNotFour\Database\Database::instance()->install_now();
 		}
 
 		// Seed defaults and pick up the v3 option, if any.
