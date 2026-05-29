@@ -69,9 +69,9 @@ class Upgrader extends Singleton {
 			return;
 		}
 
-		$steps = array(
-			// '4.1.0' => array( $this, 'to_4_1_0' ),
-		);
+		// Per-version upgrade callbacks land here as we ship them; the
+		// first entry will look like `'4.1.0' => array( $this, 'to_4_1_0' )`.
+		$steps = array();
 
 		foreach ( $steps as $version => $callback ) {
 			if ( version_compare( $stored, $version, '<' ) && is_callable( $callback ) ) {

@@ -23,19 +23,22 @@ class ModelsTest extends WP_UnitTestCase {
 		parent::set_up();
 
 		Database::instance();
-	}
 
-	public function tear_down(): void {
 		// `WP_UnitTestCase` wraps every test in a DB transaction and
-		// rolls it back here, so inserts into the plugin tables get
-		// cleaned up automatically. A manual `TRUNCATE` would issue an
-		// implicit commit and break that rollback.
-		parent::tear_down();
+		// rolls it back in `tear_down()`, so inserts into the plugin
+		// tables get cleaned up automatically. We intentionally do NOT
+		// override `tear_down()` here — a manual `TRUNCATE` would issue
+		// an implicit commit and break the rollback.
 	}
 
 	public function test_logs_record_hit_inserts_then_bumps(): void {
 		$model = Logs::instance();
-		$id    = $model->record_hit( array( 'url' => '/missing', 'ua' => 'browser' ) );
+		$id    = $model->record_hit(
+			array(
+				'url' => '/missing',
+				'ua'  => 'browser',
+			)
+		);
 
 		$this->assertGreaterThan( 0, $id );
 
@@ -43,7 +46,12 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertSame( 1, (int) $row->hits );
 
 		// Second hit on the same URL bumps `hits` instead of inserting a new row.
-		$same = $model->record_hit( array( 'url' => '/missing', 'ua' => 'browser' ) );
+		$same = $model->record_hit(
+			array(
+				'url' => '/missing',
+				'ua'  => 'browser',
+			)
+		);
 		$this->assertSame( $id, $same );
 
 		$row = $model->find( $id );
@@ -72,12 +80,12 @@ class ModelsTest extends WP_UnitTestCase {
 		$model = Redirects::instance();
 		$id    = $model->create(
 			array(
-				'source'      => '/old-page',
-				'target_url'  => 'https://example.com/new',
-				'target_type' => 'link',
-				'match_type'  => 'exact',
+				'source'        => '/old-page',
+				'target_url'    => 'https://example.com/new',
+				'target_type'   => 'link',
+				'match_type'    => 'exact',
 				'redirect_type' => 301,
-				'is_active'   => 1,
+				'is_active'     => 1,
 			)
 		);
 
@@ -278,11 +286,11 @@ class ModelsTest extends WP_UnitTestCase {
 		$model = Redirects::instance();
 		$id    = $model->create(
 			array(
-				'source'     => '/x',
-				'target_url' => 'https://example.com/',
+				'source'      => '/x',
+				'target_url'  => 'https://example.com/',
 				'target_type' => 'link',
-				'match_type' => 'exact',
-				'is_active'  => 1,
+				'match_type'  => 'exact',
+				'is_active'   => 1,
 			)
 		);
 

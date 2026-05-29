@@ -80,7 +80,7 @@ abstract class Model extends Singleton {
 
 		$row = $this->query()->get_item( $id );
 
-		return $row ?: null;
+		return $row ? $row : null;
 	}
 
 	/**
@@ -127,7 +127,7 @@ abstract class Model extends Singleton {
 	public function create( array $data ): int {
 		$id = $this->query()->add_item( $data );
 
-		return (int) ( $id ?: 0 );
+		return (int) ( $id ? $id : 0 );
 	}
 
 	/**
@@ -199,7 +199,12 @@ abstract class Model extends Singleton {
 	 * @return bool
 	 */
 	public function has_items(): bool {
-		$query = new $this->query_class( array( 'number' => 1, 'fields' => 'ids' ) );
+		$query = new $this->query_class(
+			array(
+				'number' => 1,
+				'fields' => 'ids',
+			)
+		);
 
 		return ! empty( $query->items );
 	}

@@ -100,11 +100,23 @@ class Logs extends Endpoint {
 					'callback'            => array( $this, 'update' ),
 					'permission_callback' => array( $this, 'require_access' ),
 					'args'                => array(
-						'status'            => array( 'type' => 'integer', 'enum' => array( 0, 1, 2, 3 ) ),
+						'status'            => array(
+							'type' => 'integer',
+							'enum' => array( 0, 1, 2, 3 ),
+						),
 						'redirect_id'       => array( 'type' => 'integer' ),
-						'override_redirect' => array( 'type' => 'integer', 'enum' => array( 0, 1, 2 ) ),
-						'override_log'      => array( 'type' => 'integer', 'enum' => array( 0, 1, 2 ) ),
-						'override_email'    => array( 'type' => 'integer', 'enum' => array( 0, 1, 2 ) ),
+						'override_redirect' => array(
+							'type' => 'integer',
+							'enum' => array( 0, 1, 2 ),
+						),
+						'override_log'      => array(
+							'type' => 'integer',
+							'enum' => array( 0, 1, 2 ),
+						),
+						'override_email'    => array(
+							'type' => 'integer',
+							'enum' => array( 0, 1, 2 ),
+						),
 					),
 				),
 				array(
@@ -132,8 +144,8 @@ class Logs extends Endpoint {
 		$args = array(
 			'number'  => $per_page,
 			'offset'  => ( $page - 1 ) * $per_page,
-			'orderby' => (string) ( $request->get_param( 'orderby' ) ?: 'updated_at' ),
-			'order'   => strtoupper( (string) ( $request->get_param( 'order' ) ?: 'DESC' ) ),
+			'orderby' => (string) ( $request->get_param( 'orderby' ) ? $request->get_param( 'orderby' ) : 'updated_at' ),
+			'order'   => strtoupper( (string) ( $request->get_param( 'order' ) ? $request->get_param( 'order' ) : 'DESC' ) ),
 		);
 
 		$status = $request->get_param( 'status' );
@@ -260,7 +272,12 @@ class Logs extends Endpoint {
 			return new WP_Error( 'rest_delete_failed', __( 'Could not delete the log.', '404-to-301' ), array( 'status' => 500 ) );
 		}
 
-		return $this->respond( array( 'id' => $id, 'deleted' => true ) );
+		return $this->respond(
+			array(
+				'id'      => $id,
+				'deleted' => true,
+			)
+		);
 	}
 
 	/**
@@ -330,12 +347,28 @@ class Logs extends Endpoint {
 	 */
 	private function list_args(): array {
 		return array(
-			'page'      => array( 'type' => 'integer', 'default' => 1 ),
-			'per_page'  => array( 'type' => 'integer', 'default' => 20 ),
-			'orderby'   => array( 'type' => 'string', 'default' => 'updated_at' ),
-			'order'     => array( 'type' => 'string', 'enum' => array( 'ASC', 'DESC', 'asc', 'desc' ), 'default' => 'DESC' ),
+			'page'      => array(
+				'type'    => 'integer',
+				'default' => 1,
+			),
+			'per_page'  => array(
+				'type'    => 'integer',
+				'default' => 20,
+			),
+			'orderby'   => array(
+				'type'    => 'string',
+				'default' => 'updated_at',
+			),
+			'order'     => array(
+				'type'    => 'string',
+				'enum'    => array( 'ASC', 'DESC', 'asc', 'desc' ),
+				'default' => 'DESC',
+			),
 			'search'    => array( 'type' => 'string' ),
-			'status'    => array( 'type' => 'integer', 'enum' => array( 0, 1, 2 ) ),
+			'status'    => array(
+				'type' => 'integer',
+				'enum' => array( 0, 1, 2 ),
+			),
 			'date_from' => array( 'type' => 'string' ),
 			'date_to'   => array( 'type' => 'string' ),
 		);

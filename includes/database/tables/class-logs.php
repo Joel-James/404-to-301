@@ -107,7 +107,7 @@ final class Logs extends Table {
 	 *
 	 * @return bool
 	 */
-	protected function __4_1_0(): bool { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+	protected function __4_1_0(): bool { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore, PHPCompatibility.FunctionNameRestrictions.ReservedFunctionNames.MethodDoubleUnderscore -- BerlinDB looks up schema upgrade callbacks by the `__<version>` naming convention; we don't get to pick a different prefix.
 		$db = $this->get_db();
 
 		if ( empty( $db ) ) {
@@ -123,7 +123,7 @@ final class Logs extends Table {
 		foreach ( $columns as $column => $sql ) {
 			$exists = $db->get_var(
 				$db->prepare(
-					"SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s",
+					'SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
 					DB_NAME,
 					$this->table_name,
 					$column

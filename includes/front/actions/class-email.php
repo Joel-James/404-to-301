@@ -94,11 +94,11 @@ class Email extends Action {
 		$lines = array(
 			__( 'A new 404 error has been detected on your site:', '404-to-301' ),
 			'',
-			sprintf( '%s: %s', __( 'URL', '404-to-301' ),       $request->url() ),
-			sprintf( '%s: %s', __( 'Referer', '404-to-301' ),   $request->referer() ?: __( '(none)', '404-to-301' ) ),
-			sprintf( '%s: %s', __( 'IP', '404-to-301' ),        $request->ip() ?: __( '(masked)', '404-to-301' ) ),
+			sprintf( '%s: %s', __( 'URL', '404-to-301' ), $request->url() ),
+			sprintf( '%s: %s', __( 'Referer', '404-to-301' ), $request->referer() ? $request->referer() : __( '(none)', '404-to-301' ) ),
+			sprintf( '%s: %s', __( 'IP', '404-to-301' ), $request->ip() ? $request->ip() : __( '(masked)', '404-to-301' ) ),
 			sprintf( '%s: %s', __( 'User-Agent', '404-to-301' ), $request->user_agent() ),
-			sprintf( '%s: %s', __( 'Method', '404-to-301' ),    $request->method() ),
+			sprintf( '%s: %s', __( 'Method', '404-to-301' ), $request->method() ),
 			'',
 			__( 'You can manage 404 errors and custom redirects in the WordPress admin under "404 to 301".', '404-to-301' ),
 		);

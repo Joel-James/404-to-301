@@ -238,7 +238,7 @@ class Request {
 			$this->redirect = Redirects::instance()->find_match( $this->url() );
 		}
 
-		return $this->redirect ?: null;
+		return $this->redirect ? $this->redirect : null;
 	}
 
 	/**
@@ -253,7 +253,7 @@ class Request {
 			$this->log = Logs::instance()->get_by_url( $this->url() );
 		}
 
-		return $this->log ?: null;
+		return $this->log ? $this->log : null;
 	}
 
 	/**

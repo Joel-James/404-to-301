@@ -53,8 +53,8 @@ class Redirects extends Schema {
 
 		// SHA1 of normalised source — unique key.
 		array(
-			'name' => 'source_hash',
-			'type' => 'char',
+			'name'   => 'source_hash',
+			'type'   => 'char',
 			'length' => '40',
 		),
 
@@ -67,7 +67,7 @@ class Redirects extends Schema {
 			'sortable' => true,
 		),
 
-		// Target kind: 'link' (target_url), 'page' (target_page_id), 'none'.
+		// Target kind. Values: link (target_url), page (target_page_id), or none.
 		array(
 			'name'     => 'target_type',
 			'type'     => 'varchar',

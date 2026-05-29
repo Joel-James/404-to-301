@@ -61,9 +61,9 @@ class SettingsTest extends WP_UnitTestCase {
 	public function test_sanitize_coerces_boolean_inputs(): void {
 		$clean = Settings::instance()->sanitize(
 			array(
-				'logs_enabled'    => 'true',
-				'email_enabled'   => '1',
-				'mask_ip'         => 'no',
+				'logs_enabled'     => 'true',
+				'email_enabled'    => '1',
+				'mask_ip'          => 'no',
 				'disable_guessing' => 'off',
 			)
 		);

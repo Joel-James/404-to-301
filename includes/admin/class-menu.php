@@ -126,6 +126,11 @@ class Menu extends Singleton {
 
 		foreach ( $menu as $position => $data ) {
 			if ( isset( $data[2] ) && Plugin::PAGE_LOGS === $data[2] ) {
+				// Rewriting our own row's display label in the global
+				// `$menu` is the documented WP way to override the
+				// auto-derived top-level title (default is the first
+				// submenu page's name). This is the only touch we make.
+				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 				$menu[ $position ][0] = Plugin::name();
 				return;
 			}

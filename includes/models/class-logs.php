@@ -83,7 +83,8 @@ class Logs extends Model {
 	 * @since 4.0.0
 	 *
 	 * @param array $data {
-	 *     Column => value. At minimum:
+	 *     Column => value, must contain at least `url`.
+	 *
 	 *     @type string $url Raw URL.
 	 * }
 	 *
@@ -194,6 +195,8 @@ class Logs extends Model {
 	 *
 	 * @param int   $id        Log row id.
 	 * @param array $overrides {
+	 *     Override values keyed by column.
+	 *
 	 *     @type int $override_redirect
 	 *     @type int $override_log
 	 *     @type int $override_email

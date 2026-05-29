@@ -111,8 +111,8 @@ class Redirects extends Endpoint {
 		$args = array(
 			'number'  => $per_page,
 			'offset'  => ( $page - 1 ) * $per_page,
-			'orderby' => (string) ( $request->get_param( 'orderby' ) ?: 'id' ),
-			'order'   => strtoupper( (string) ( $request->get_param( 'order' ) ?: 'DESC' ) ),
+			'orderby' => (string) ( $request->get_param( 'orderby' ) ? $request->get_param( 'orderby' ) : 'id' ),
+			'order'   => strtoupper( (string) ( $request->get_param( 'order' ) ? $request->get_param( 'order' ) : 'DESC' ) ),
 		);
 
 		// Optional filters.
@@ -229,7 +229,12 @@ class Redirects extends Endpoint {
 			return new WP_Error( 'rest_delete_failed', __( 'Could not delete the redirect.', '404-to-301' ), array( 'status' => 500 ) );
 		}
 
-		return $this->respond( array( 'id' => $id, 'deleted' => true ) );
+		return $this->respond(
+			array(
+				'id'      => $id,
+				'deleted' => true,
+			)
+		);
 	}
 
 	/**
@@ -295,13 +300,32 @@ class Redirects extends Endpoint {
 	 */
 	private function list_args(): array {
 		return array(
-			'page'          => array( 'type' => 'integer', 'default' => 1 ),
-			'per_page'      => array( 'type' => 'integer', 'default' => 20 ),
-			'orderby'       => array( 'type' => 'string', 'default' => 'id' ),
-			'order'         => array( 'type' => 'string', 'enum' => array( 'ASC', 'DESC', 'asc', 'desc' ), 'default' => 'DESC' ),
+			'page'          => array(
+				'type'    => 'integer',
+				'default' => 1,
+			),
+			'per_page'      => array(
+				'type'    => 'integer',
+				'default' => 20,
+			),
+			'orderby'       => array(
+				'type'    => 'string',
+				'default' => 'id',
+			),
+			'order'         => array(
+				'type'    => 'string',
+				'enum'    => array( 'ASC', 'DESC', 'asc', 'desc' ),
+				'default' => 'DESC',
+			),
 			'search'        => array( 'type' => 'string' ),
-			'match_type'    => array( 'type' => 'string', 'enum' => array( 'exact', 'prefix', 'regex' ) ),
-			'target_type'   => array( 'type' => 'string', 'enum' => array( 'link', 'page', 'none' ) ),
+			'match_type'    => array(
+				'type' => 'string',
+				'enum' => array( 'exact', 'prefix', 'regex' ),
+			),
+			'target_type'   => array(
+				'type' => 'string',
+				'enum' => array( 'link', 'page', 'none' ),
+			),
 			'redirect_type' => array( 'type' => 'integer' ),
 			'is_active'     => array( 'type' => 'boolean' ),
 		);
@@ -320,12 +344,24 @@ class Redirects extends Endpoint {
 	 */
 	private function writable_args( bool $is_create ): array {
 		return array(
-			'source'         => array( 'type' => 'string', 'required' => $is_create ),
-			'match_type'     => array( 'type' => 'string', 'enum' => array( 'exact', 'prefix', 'regex' ) ),
-			'target_type'    => array( 'type' => 'string', 'enum' => array( 'link', 'page', 'none' ) ),
+			'source'         => array(
+				'type'     => 'string',
+				'required' => $is_create,
+			),
+			'match_type'     => array(
+				'type' => 'string',
+				'enum' => array( 'exact', 'prefix', 'regex' ),
+			),
+			'target_type'    => array(
+				'type' => 'string',
+				'enum' => array( 'link', 'page', 'none' ),
+			),
 			'target_url'     => array( 'type' => 'string' ),
 			'target_page_id' => array( 'type' => 'integer' ),
-			'redirect_type'  => array( 'type' => 'integer', 'enum' => array( 301, 302, 307 ) ),
+			'redirect_type'  => array(
+				'type' => 'integer',
+				'enum' => array( 301, 302, 307 ),
+			),
 			'is_active'      => array( 'type' => 'boolean' ),
 			'notes'          => array( 'type' => 'string' ),
 		);
@@ -377,10 +413,10 @@ class Redirects extends Endpoint {
 
 		// Sensible create-time defaults.
 		if ( $with_defaults ) {
-			$data['match_type']    = $data['match_type']    ?? 'exact';
-			$data['target_type']   = $data['target_type']   ?? 'link';
+			$data['match_type']    = $data['match_type'] ?? 'exact';
+			$data['target_type']   = $data['target_type'] ?? 'link';
 			$data['redirect_type'] = $data['redirect_type'] ?? 301;
-			$data['is_active']     = $data['is_active']     ?? 1;
+			$data['is_active']     = $data['is_active'] ?? 1;
 		}
 
 		return $data;

@@ -90,7 +90,7 @@ class ApiLogsTest extends WP_UnitTestCase {
 	}
 
 	public function test_list_filters_by_status(): void {
-		$model = LogsModel::instance();
+		$model   = LogsModel::instance();
 		$ignored = $model->record_hit( array( 'url' => '/ign' ) );
 		$model->set_status( $ignored, LogsModel::STATUS_IGNORED );
 		$model->record_hit( array( 'url' => '/open' ) );
@@ -108,7 +108,12 @@ class ApiLogsTest extends WP_UnitTestCase {
 	}
 
 	public function test_get_returns_shaped_row(): void {
-		$id = LogsModel::instance()->record_hit( array( 'url' => '/get-me', 'ua' => 'Mozilla/5.0' ) );
+		$id = LogsModel::instance()->record_hit(
+			array(
+				'url' => '/get-me',
+				'ua'  => 'Mozilla/5.0',
+			)
+		);
 
 		$response = $this->dispatch( 'GET', self::ROUTE . '/' . $id );
 

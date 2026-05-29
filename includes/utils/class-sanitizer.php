@@ -154,7 +154,8 @@ class Sanitizer {
 	 */
 	public static function string_list( $value ): array {
 		if ( is_string( $value ) ) {
-			$value = preg_split( '/[\r\n,]+/', $value ) ?: array();
+			$split = preg_split( '/[\r\n,]+/', $value );
+			$value = false === $split ? array() : $split;
 		}
 
 		if ( ! is_array( $value ) ) {

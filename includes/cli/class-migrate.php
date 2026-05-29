@@ -114,7 +114,7 @@ class Migrate extends Command {
 		$progress = \WP_CLI\Utils\make_progress_bar( __( 'Migrating logs', '404-to-301' ), $status['remaining'] );
 
 		while ( true ) {
-			$before    = $migrator->remaining_rows();
+			$before = $migrator->remaining_rows();
 			$migrator->run_chunk();
 			$after     = $migrator->remaining_rows();
 			$processed = max( 0, $before - $after );

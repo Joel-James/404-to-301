@@ -80,34 +80,34 @@ class Settings extends Singleton {
 			'404_to_301_settings_defaults',
 			array(
 				// General.
-				'disable_guessing'    => true,
-				'exclude_paths'       => array(),
-				'monitor_post_slug'   => false,
-				'mask_ip'             => false,
+				'disable_guessing'     => true,
+				'exclude_paths'        => array(),
+				'monitor_post_slug'    => false,
+				'mask_ip'              => false,
 
 				// Redirects (global defaults — per-row settings live on the redirects table).
-				'redirect_enabled'    => true,
-				'redirect_type'       => '301',
-				'redirect_target'     => 'link',
-				'redirect_link'       => home_url(),
-				'redirect_page'       => 0,
+				'redirect_enabled'     => true,
+				'redirect_type'        => '301',
+				'redirect_target'      => 'link',
+				'redirect_link'        => home_url(),
+				'redirect_page'        => 0,
 
 				// Logs.
-				'logs_enabled'        => true,
-				'logs_skip_bots'      => true,
+				'logs_enabled'         => true,
+				'logs_skip_bots'       => true,
 				'logs_skip_duplicates' => false,
-				'logs_retention_days' => 0,
+				'logs_retention_days'  => 0,
 
 				// Notifications.
-				'email_enabled'       => false,
-				'email_recipient'     => (string) get_option( 'admin_email' ),
-				'email_threshold'     => 1,
+				'email_enabled'        => false,
+				'email_recipient'      => (string) get_option( 'admin_email' ),
+				'email_threshold'      => 1,
 
 				// Internal — not exposed in the settings UI.
-				'plugin_version'      => '',
-				'db_version'          => '',
-				'logs_migrated'       => false,
-				'phase1_done'         => false,
+				'plugin_version'       => '',
+				'db_version'           => '',
+				'logs_migrated'        => false,
+				'phase1_done'          => false,
 				'legacy_table_dropped' => false,
 			)
 		);
@@ -377,13 +377,13 @@ class Settings extends Singleton {
 
 			if ( isset( $legacy['redirect_to'] ) ) {
 				// v3 used 'page', 'link' or '0' (off). Map '0' to 'none'.
-				$map                       = array(
+				$map                          = array(
 					'page' => 'page',
 					'link' => 'link',
 					'0'    => 'none',
 				);
-				$key                       = (string) $legacy['redirect_to'];
-				$settings['redirect_target'] = $map[ $key ] ?? 'link';
+				$key                          = (string) $legacy['redirect_to'];
+				$settings['redirect_target']  = $map[ $key ] ?? 'link';
 				$settings['redirect_enabled'] = 'none' !== $settings['redirect_target'];
 			}
 

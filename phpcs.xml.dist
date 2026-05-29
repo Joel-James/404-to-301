@@ -75,6 +75,29 @@
 				<element value="DuckDev\FourNotFour"/>
 			</property>
 		</properties>
+		<!--
+			`404_to_301` starts with a digit, which the sniff flags as
+			"not a valid PHP identifier prefix." It's the long-standing
+			public hook prefix for this plugin — every hook the legacy
+			versions exposed is named `404_to_301_*` and we can't rename
+			them without breaking every existing integration. Silence
+			the structural warning; the namespaced prefixes above stay
+			active for the real enforcement.
+		-->
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.InvalidPrefixPassed"/>
+	</rule>
+
+	<!--
+		Test files don't get every-function docblocks. The WP test
+		framework's own conventions (`set_up`, `tear_down`, `test_*`)
+		are self-documenting and forcing a docblock on each `test_*`
+		method adds noise without value.
+	-->
+	<rule ref="Squiz.Commenting.FunctionComment.Missing">
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="Generic.Commenting.DocComment.MissingShort">
+		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
 	<!-- PHP compatibility — minimum 7.4. -->

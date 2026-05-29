@@ -40,10 +40,10 @@ class Assets extends Singleton {
 	 * @var array<string, string>
 	 */
 	private const HANDLES = array(
-		'toplevel_page_404-to-301-logs'         => 'logs',
-		'404-errors_page_404-to-301-redirects'  => 'redirects',
-		'404-errors_page_404-to-301-settings'   => 'settings',
-		'404-errors_page_404-to-301-addons'     => 'addons',
+		'toplevel_page_404-to-301-logs'        => 'logs',
+		'404-errors_page_404-to-301-redirects' => 'redirects',
+		'404-errors_page_404-to-301-settings'  => 'settings',
+		'404-errors_page_404-to-301-addons'    => 'addons',
 	);
 
 	/**
@@ -120,11 +120,11 @@ class Assets extends Singleton {
 		$settings = \DuckDev\FourNotFour\Core::instance()->settings();
 
 		$vars = array(
-			'version'           => Plugin::version(),
-			'slug'              => Plugin::SLUG,
-			'name'              => Plugin::name(),
-			'page'              => $entry,
-			'pages'             => array_combine(
+			'version'          => Plugin::version(),
+			'slug'             => Plugin::SLUG,
+			'name'             => Plugin::name(),
+			'page'             => $entry,
+			'pages'            => array_combine(
 				array_keys( $pages ),
 				array_map(
 					static function ( $p ) {
@@ -133,9 +133,9 @@ class Assets extends Singleton {
 					$pages
 				)
 			),
-			'restUrl'           => rest_url( Endpoint::NAMESPACE . '/' ),
-			'restNonce'         => wp_create_nonce( 'wp_rest' ),
-			'adminUrl'          => admin_url(),
+			'restUrl'          => rest_url( Endpoint::NAMESPACE . '/' ),
+			'restNonce'        => wp_create_nonce( 'wp_rest' ),
+			'adminUrl'         => admin_url(),
 
 			/*
 			 * Hint for the React layer: is the v3 → v4 migration

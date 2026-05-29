@@ -53,8 +53,8 @@ class Links extends Singleton {
 		$links = is_array( $links ) ? $links : array();
 
 		$ours = array(
-			sprintf( '<a href="%s">%s</a>', esc_url( Plugin::get_url( 'settings' ) ),  esc_html__( 'Settings',  '404-to-301' ) ),
-			sprintf( '<a href="%s">%s</a>', esc_url( Plugin::get_url( 'logs' ) ),      esc_html__( 'Logs',      '404-to-301' ) ),
+			sprintf( '<a href="%s">%s</a>', esc_url( Plugin::get_url( 'settings' ) ), esc_html__( 'Settings', '404-to-301' ) ),
+			sprintf( '<a href="%s">%s</a>', esc_url( Plugin::get_url( 'logs' ) ), esc_html__( 'Logs', '404-to-301' ) ),
 			sprintf( '<a href="%s">%s</a>', esc_url( Plugin::get_url( 'redirects' ) ), esc_html__( 'Redirects', '404-to-301' ) ),
 		);
 

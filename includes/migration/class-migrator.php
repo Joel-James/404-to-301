@@ -1,6 +1,6 @@
 <?php
 /**
- * v3 → v4 data migrator.
+ * V3 → V4 data migrator.
  *
  * Migrates the legacy `wp_404_to_301` table (single table holding both
  * log rows and the custom-redirect column) into the two new BerlinDB
@@ -187,9 +187,10 @@ class Migrator extends Singleton {
 		}
 
 		$table = $wpdb->prefix . '404_to_301';
-		$rows  = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			"SELECT url, redirect, options FROM {$table} WHERE redirect IS NOT NULL AND redirect <> ''"
-		);
+		// Table name is built from `$wpdb->prefix` + a fixed literal —
+		// no user input ever reaches the SQL string, so safe to interpolate.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results( "SELECT url, redirect, options FROM {$table} WHERE redirect IS NOT NULL AND redirect <> ''" );
 
 		if ( empty( $rows ) ) {
 			return 0;
@@ -326,19 +327,17 @@ class Migrator extends Singleton {
 		}
 
 		$table = $wpdb->prefix . '404_to_301';
-		$rows  = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$wpdb->prepare(
-				"SELECT id, url, ref, ip, ua, date FROM {$table} ORDER BY id ASC LIMIT %d",
-				self::CHUNK_SIZE
-			)
-		);
+		// Table name is built from `$wpdb->prefix` + a fixed literal — the
+		// LIMIT placeholder is prepared, no user input lands in the SQL.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT id, url, ref, ip, ua, date FROM {$table} ORDER BY id ASC LIMIT %d", self::CHUNK_SIZE ) );
 
 		if ( empty( $rows ) ) {
 			$this->finalise();
 			return;
 		}
 
-		$logs     = LogsModel::instance();
+		$logs          = LogsModel::instance();
 		$processed_ids = array();
 
 		foreach ( (array) $rows as $row ) {
@@ -358,7 +357,7 @@ class Migrator extends Singleton {
 					'ip'         => Helpers::pack_ip( (string) $row->ip ),
 					'ua'         => (string) $row->ua,
 					'method'     => 'GET',
-					'created_at' => $row->date ?: current_time( 'mysql', true ),
+					'created_at' => $row->date ? $row->date : current_time( 'mysql', true ),
 				)
 			);
 
@@ -369,12 +368,12 @@ class Migrator extends Singleton {
 		// up the next batch and we resume cleanly across restarts.
 		if ( ! empty( $processed_ids ) ) {
 			$placeholders = implode( ',', array_fill( 0, count( $processed_ids ), '%d' ) );
-			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				$wpdb->prepare(
-					"DELETE FROM {$table} WHERE id IN ({$placeholders})",
-					$processed_ids
-				)
-			);
+			// `$placeholders` is a hand-built list of `%d` markers — each id
+			// then flows through `$wpdb->prepare`, so the final SQL is fully
+			// parameterised even though the sniff can't see through the
+			// dynamic IN(…) string.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN ({$placeholders})", $processed_ids ) );
 		}
 
 		// More rows to process? Queue the next chunk; otherwise tidy up.
@@ -399,15 +398,15 @@ class Migrator extends Singleton {
 		$running  = $this->legacy_table_exists() && ! $settings->get( 'logs_migrated', false );
 
 		return array(
-			'phase1_done'        => (bool) $settings->get( 'phase1_done', false ),
-			'logs_migrated'      => (bool) $settings->get( 'logs_migrated', false ),
-			'legacy_present'     => $this->legacy_table_exists(),
-			'remaining'          => $this->remaining_rows(),
-			'running'            => $running,
-			'has_as'             => Scheduler::has_action_scheduler(),
-			'can_install_as'     => current_user_can( 'install_plugins' )
+			'phase1_done'    => (bool) $settings->get( 'phase1_done', false ),
+			'logs_migrated'  => (bool) $settings->get( 'logs_migrated', false ),
+			'legacy_present' => $this->legacy_table_exists(),
+			'remaining'      => $this->remaining_rows(),
+			'running'        => $running,
+			'has_as'         => Scheduler::has_action_scheduler(),
+			'can_install_as' => current_user_can( 'install_plugins' )
 				&& ! ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS ),
-			'install_as_url'     => Scheduler::install_as_url(),
+			'install_as_url' => Scheduler::install_as_url(),
 		);
 	}
 

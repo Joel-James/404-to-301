@@ -71,6 +71,7 @@ class Settings extends Command {
 		$value = $settings->get( $key );
 
 		if ( null === $value ) {
+			/* translators: %s: setting key. */
 			WP_CLI::error( sprintf( __( 'Setting "%s" not found.', '404-to-301' ), $key ) );
 		}
 
