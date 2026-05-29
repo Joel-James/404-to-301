@@ -6,7 +6,10 @@ import {
 	SelectControl,
 	TextControl,
 	ToggleControl,
+	__experimentalInputControl as InputControl,
+	__experimentalInputControlPrefixWrapper as InputControlPrefixWrapper,
 } from '@wordpress/components'
+import { Icon, link } from '@wordpress/icons'
 import useSettings from '../../../hooks/use-settings'
 
 const RedirectsTab = () => {
@@ -105,17 +108,21 @@ const RedirectsTab = () => {
 
 			{target === 'link' && (
 				<PanelRow>
-					<TextControl
+					<InputControl
 						__next40pxDefaultSize
-						__nextHasNoMarginBottom
 						type="url"
 						label={__('Destination URL', '404-to-301')}
 						help={__(
 							'Absolute URL (including https://).',
 							'404-to-301',
 						)}
+						prefix={
+							<InputControlPrefixWrapper>
+								<Icon icon={link} size={20} />
+							</InputControlPrefixWrapper>
+						}
 						value={getSetting('redirect_link', '')}
-						onChange={(v) => setSetting('redirect_link', v)}
+						onChange={(v) => setSetting('redirect_link', v ?? '')}
 					/>
 				</PanelRow>
 			)}

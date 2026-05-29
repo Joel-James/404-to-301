@@ -114,7 +114,9 @@ class Redirects extends Model {
 				'is_active'  => 1,
 				'orderby'    => 'source',
 				'order'      => 'DESC', // Longer prefixes win.
-				'number'     => -1,
+				// BerlinDB runs `number` through `absint()`, so `-1`
+				// silently truncates to `LIMIT 1`. Use `0` for no limit.
+				'number'     => 0,
 			)
 		);
 
@@ -144,7 +146,8 @@ class Redirects extends Model {
 			array(
 				'match_type' => 'regex',
 				'is_active'  => 1,
-				'number'     => -1,
+				// See `find_prefix()` — BerlinDB caps `-1` to `LIMIT 1`.
+				'number'     => 0,
 			)
 		);
 

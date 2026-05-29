@@ -78,6 +78,12 @@ $prefix: '#{variables.$prefix}';
 			}
 		}
 
+		// Breathing room above the filters toolbar so it doesn't sit
+		// flush against the wrapper's top border.
+		.dataviews__view-actions {
+			padding-top: 40px;
+		}
+
 		// Constrain each table cell so long URLs/agents truncate cleanly
 		// instead of pushing the column out and breaking the table layout.
 		.dataviews-view-table tbody td {

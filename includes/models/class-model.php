@@ -176,7 +176,10 @@ abstract class Model extends Singleton {
 	 */
 	public function delete_where( array $args ): int {
 		$args['fields'] = 'ids';
-		$args['number'] = -1;
+		// BerlinDB runs the `number` arg through `absint()` before
+		// building the LIMIT clause, so `-1` becomes `LIMIT 1`. Pass
+		// `0` to skip the LIMIT entirely (per the SDK docs).
+		$args['number'] = 0;
 
 		$query = new $this->query_class( $args );
 		$ids   = (array) $query->items;

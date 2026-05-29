@@ -5,7 +5,10 @@ import {
 	PanelRow,
 	TextControl,
 	ToggleControl,
+	__experimentalInputControl as InputControl,
+	__experimentalInputControlPrefixWrapper as InputControlPrefixWrapper,
 } from '@wordpress/components'
+import { Icon, envelope } from '@wordpress/icons'
 import useSettings from '../../../hooks/use-settings'
 
 const Notifications = () => {
@@ -40,17 +43,21 @@ const Notifications = () => {
 			)}
 
 			<PanelRow>
-				<TextControl
+				<InputControl
 					__next40pxDefaultSize
-					__nextHasNoMarginBottom
 					type="email"
 					label={__('Recipient email', '404-to-301')}
 					help={__(
 						'Where to send the notifications.',
 						'404-to-301',
 					)}
+					prefix={
+						<InputControlPrefixWrapper>
+							<Icon icon={envelope} size={20} />
+						</InputControlPrefixWrapper>
+					}
 					value={getSetting('email_recipient', '')}
-					onChange={(v) => setSetting('email_recipient', v)}
+					onChange={(v) => setSetting('email_recipient', v ?? '')}
 				/>
 			</PanelRow>
 
