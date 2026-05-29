@@ -3,15 +3,15 @@
 	<description>Coding standards for the 404 to 301 plugin.</description>
 
 	<!--
-		Paths scanned by phpcs. Tests scaffold is included so test
-		files get linted too. Build output, vendor and node_modules
-		are excluded — they are generated, not authored.
+		Paths scanned by phpcs. Build output, vendor and node_modules
+		are excluded — they are generated, not authored. Tests are
+		excluded from lint; they follow PHPUnit conventions that clash
+		with WPCS (eg. test-method docblocks, fixture naming).
 	-->
 	<file>./404-to-301.php</file>
 	<file>./uninstall.php</file>
 	<file>./includes</file>
 	<file>./templates</file>
-	<file>./tests/phpunit</file>
 
 	<!-- Directories that must never be linted. -->
 	<exclude-pattern>*/vendor/*</exclude-pattern>
