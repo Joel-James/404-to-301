@@ -13,8 +13,11 @@ node_modules/
 /.phpunit.result.cache
 /coverage/
 
-# Lockfiles intentionally not committed (matches existing project policy).
-package-lock.json
+# `composer.lock` stays gitignored — this is a plugin (a library, not
+# an application), so consumers' Composer installs resolve fresh against
+# their own constraints. `package-lock.json` *is* committed so CI can
+# `npm ci` against deterministic builds and `actions/setup-node` can
+# warm its cache.
 composer.lock
 
 # Local dev conveniences.
