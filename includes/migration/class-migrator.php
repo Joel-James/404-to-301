@@ -420,12 +420,24 @@ class Migrator extends Singleton {
 	public function legacy_table_exists(): bool {
 		global $wpdb;
 
-		$table  = $wpdb->prefix . '404_to_301';
-		$exists = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
-			$wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table ) )
+		$table = $wpdb->prefix . '404_to_301';
+
+		// Use `information_schema` with an exact-match comparison
+		// rather than `SHOW TABLES LIKE`. The LIKE form requires
+		// `esc_like()` to escape the underscores in the table name,
+		// and the resulting backslashes are re-escaped by
+		// `wpdb::prepare()` — the round-trip silently breaks the
+		// match on some MySQL 8 builds and the detector then reports
+		// the table as missing even when it exists. Exact equality
+		// against `information_schema.tables` sidesteps that entirely.
+		$found = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$wpdb->prepare(
+				'SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = %s LIMIT 1',
+				$table
+			)
 		);
 
-		return $table === $exists;
+		return $table === $found;
 	}
 
 	/**
