@@ -54,3 +54,11 @@ tests_add_filter(
 
 // Start the WordPress test environment.
 require $d404_tests_dir . '/includes/bootstrap.php';
+
+// BerlinDB defers `maybe_upgrade()` to `admin_init`, which never fires
+// in the PHPUnit runner. Install the plugin tables synchronously here
+// so every test sees them on disk. Safe to call repeatedly — BerlinDB
+// short-circuits when the schema is already current. We run this once
+// at bootstrap (before any WP_UnitTestCase transaction starts) so the
+// table-create DDL doesn't commit a per-test transaction mid-flight.
+\DuckDev\FourNotFour\Database\Database::instance()->install_now();
