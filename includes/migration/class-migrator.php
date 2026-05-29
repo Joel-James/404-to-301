@@ -422,22 +422,32 @@ class Migrator extends Singleton {
 
 		$table = $wpdb->prefix . '404_to_301';
 
-		// Use `information_schema` with an exact-match comparison
-		// rather than `SHOW TABLES LIKE`. The LIKE form requires
-		// `esc_like()` to escape the underscores in the table name,
-		// and the resulting backslashes are re-escaped by
-		// `wpdb::prepare()` — the round-trip silently breaks the
-		// match on some MySQL 8 builds and the detector then reports
-		// the table as missing even when it exists. Exact equality
-		// against `information_schema.tables` sidesteps that entirely.
-		$found = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-			$wpdb->prepare(
-				'SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = %s LIMIT 1',
-				$table
-			)
-		);
+		// Probe the table directly instead of asking the catalogue.
+		// `SHOW TABLES LIKE` needs `esc_like()` for the underscores in
+		// the table name and the round-trip through `wpdb::prepare()`
+		// silently re-escapes the backslashes — the resulting pattern
+		// fails to match on the MySQL 8 image GHA's CI uses, and the
+		// detector then reports the table as missing even when it's
+		// there. `information_schema` had a different failure mode on
+		// the same runner. A bare `DESCRIBE` on the table succeeds iff
+		// the table exists, with no LIKE pattern or catalogue view in
+		// the loop. Errors are suppressed so a missing table doesn't
+		// leak a notice into the request.
+		$previous_suppress = $wpdb->suppress_errors( true );
+		$previous_show     = $wpdb->show_errors( false );
+		$wpdb->last_error  = '';
 
-		return $table === $found;
+		// `$table` is built from `$wpdb->prefix` + a fixed literal — no
+		// user input, safe to interpolate.
+		$wpdb->query( "DESCRIBE `{$table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		$exists = '' === (string) $wpdb->last_error;
+
+		$wpdb->suppress_errors( $previous_suppress );
+		$wpdb->show_errors( $previous_show );
+		$wpdb->last_error = '';
+
+		return $exists;
 	}
 
 	/**
