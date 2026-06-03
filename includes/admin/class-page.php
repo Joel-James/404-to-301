@@ -2,9 +2,12 @@
 /**
  * Admin page renderers.
  *
- * Each method outputs the matching React mount-point template. The
- * actual UI lives in `assets/src/{settings,logs,redirects,addons}.js`,
- * which are loaded by {@see Assets} on the matching screen only.
+ * Each method outputs the matching React mount-point div. The actual
+ * UI lives in `assets/src/{settings,logs,redirects,addons}.js`, which
+ * are loaded by {@see Assets} on the matching screen only.
+ *
+ * The mount-point markup is literally one div per page, so we emit it
+ * inline rather than load a template file — see {@see self::mount()}.
  *
  * @package FourNotFour
  */
@@ -62,7 +65,7 @@ class Page extends Singleton {
 	 * @return void
 	 */
 	public function render_logs(): void {
-		$this->render_template( 'logs', self::MOUNT_LOGS );
+		$this->mount( self::MOUNT_LOGS );
 	}
 
 	/**
@@ -73,7 +76,7 @@ class Page extends Singleton {
 	 * @return void
 	 */
 	public function render_redirects(): void {
-		$this->render_template( 'redirects', self::MOUNT_REDIRECTS );
+		$this->mount( self::MOUNT_REDIRECTS );
 	}
 
 	/**
@@ -84,7 +87,7 @@ class Page extends Singleton {
 	 * @return void
 	 */
 	public function render_settings(): void {
-		$this->render_template( 'settings', self::MOUNT_SETTINGS );
+		$this->mount( self::MOUNT_SETTINGS );
 	}
 
 	/**
@@ -95,29 +98,26 @@ class Page extends Singleton {
 	 * @return void
 	 */
 	public function render_addons(): void {
-		$this->render_template( 'addons', self::MOUNT_ADDONS );
+		$this->mount( self::MOUNT_ADDONS );
 	}
 
 	/**
-	 * Locate and include a template under `/templates/`.
+	 * Emit the React mount-point div.
 	 *
-	 * The template receives one variable in scope, `$mount_id`, which
-	 * is the DOM id the React app attaches to.
+	 * Every admin screen rendered by this plugin is just an empty div
+	 * the React app attaches to — printing the markup here is cheaper
+	 * (and easier to audit) than including a one-line template file.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $name     Template name (no extension).
-	 * @param string $mount_id Mount-point DOM id passed into the template.
+	 * @param string $mount_id DOM id the React app attaches to.
 	 *
 	 * @return void
 	 */
-	private function render_template( string $name, string $mount_id ): void {
-		$path = D404_DIR . 'templates/' . $name . '.php';
-
-		if ( ! is_readable( $path ) ) {
-			return;
-		}
-
-		include $path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+	private function mount( string $mount_id ): void {
+		printf(
+			'<div id="%s" class="d404-wrap"></div>',
+			esc_attr( $mount_id )
+		);
 	}
 }

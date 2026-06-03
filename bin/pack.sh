@@ -26,7 +26,6 @@ INCLUDES=(
 	"readme.txt"
 	"LICENSE"
 	"includes"
-	"templates"
 	"languages"
 	"build"
 	"vendor"
