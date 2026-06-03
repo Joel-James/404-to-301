@@ -39,7 +39,6 @@ defined( 'ABSPATH' ) || exit;
 use DuckDev\Freemius\Freemius as Client;
 use DuckDev\Freemius\Services\Addon as AddonService;
 use DuckDev\Freemius\Services\License as LicenseService;
-use DuckDev\Freemius\Services\Service;
 use DuckDev\Freemius\Services\Update as UpdateService;
 use DuckDev\FourNotFour\Utils\Singleton;
 use WP_Error;
@@ -302,8 +301,8 @@ class Freemius extends Singleton {
 	 * Get the per-addon license state for every registered addon.
 	 *
 	 * Walks the registered-addons list and, for each one, builds (or
-	 * fetches) the addon's Freemius client and pulls its activation
-	 * data out of the local options table. The returned shape is the
+	 * fetches) the addon's Freemius client and reads its `Activation`
+	 * value object from the License service. The returned shape is the
 	 * one the Addons React UI consumes:
 	 *
 	 *     [
@@ -333,14 +332,18 @@ class Freemius extends Singleton {
 				continue;
 			}
 
-			$license    = $client->license();
-			$activation = $license ? (array) $license->get_activation_data() : array();
-			$status     = (string) ( $activation['status'] ?? '' );
+			$license = $client->license();
+
+			if ( ! $license ) {
+				continue;
+			}
+
+			$activation = $license->get_activation();
 
 			$items[ $id ] = array(
-				'key'    => (string) ( $activation['activation_params']['license_key'] ?? '' ),
-				'status' => $status,
-				'active' => Service::ACTIVATED === $status,
+				'key'    => $activation->license_key(),
+				'status' => $activation->status(),
+				'active' => $activation->is_active(),
 			);
 		}
 

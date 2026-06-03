@@ -19,7 +19,7 @@
         "php": ">=7.4",
         "composer/installers": "^1.0 || ^2.0",
         "berlindb/core": "^2.0",
-        "duckdev/freemius-plugin-licensing": "^1.0"
+        "duckdev/freemius-plugin-licensing": "^2.0"
     },
     "require-dev": {
         "wp-coding-standards/wpcs": "^3.0",
