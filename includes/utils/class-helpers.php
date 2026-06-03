@@ -97,18 +97,18 @@ class Helpers {
 	}
 
 	/**
-	 * Validate and normalise an IP address for the DB.
+	 * Pack an IP address into its binary form for `VARBINARY(16)` storage.
 	 *
-	 * Round-trips through `inet_pton`/`inet_ntop` so the stored value is
-	 * the canonical form of the input (e.g. compressed IPv6). Returns an
-	 * empty string when the input isn't a valid IP, so callers can skip
-	 * the column write without an extra check.
+	 * Uses `inet_pton` so both IPv4 (4 bytes) and IPv6 (16 bytes) fit in
+	 * the same column. Returns an empty string when the input isn't a
+	 * valid IP, so callers can skip the column write without an extra
+	 * check. Unpack the value with {@see Helpers::unpack_ip()}.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @param string $ip Dotted-quad IPv4 or colon-hex IPv6.
 	 *
-	 * @return string Canonical printable IP, or '' when invalid.
+	 * @return string Binary packed IP, or '' when invalid.
 	 */
 	public static function pack_ip( string $ip ): string {
 		if ( '' === $ip ) {
@@ -117,13 +117,28 @@ class Helpers {
 
 		$packed = @inet_pton( $ip ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- inet_pton emits a warning on invalid input; we want the warning silenced and the false return.
 
-		if ( ! is_string( $packed ) ) {
+		return is_string( $packed ) ? $packed : '';
+	}
+
+	/**
+	 * Convert a packed IP (from {@see Helpers::pack_ip()}) back to its
+	 * printable form.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $packed Binary packed IP as stored in the DB.
+	 *
+	 * @return string Printable IP, or '' when the input isn't a valid
+	 *                packed address.
+	 */
+	public static function unpack_ip( string $packed ): string {
+		if ( '' === $packed ) {
 			return '';
 		}
 
-		$normalised = @inet_ntop( $packed ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- same rationale as above.
+		$ip = @inet_ntop( $packed ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- inet_ntop emits a warning on invalid input; we want the warning silenced and the false return.
 
-		return is_string( $normalised ) ? $normalised : '';
+		return is_string( $ip ) ? $ip : '';
 	}
 
 	/**

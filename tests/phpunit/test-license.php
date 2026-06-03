@@ -12,7 +12,7 @@
 
 declare( strict_types = 1 );
 
-use DuckDev\Freemius\Services\Service;
+use DuckDev\Freemius\Data\Activation;
 use DuckDev\FourNotFour\Freemius;
 
 /**
@@ -64,12 +64,14 @@ class LicenseTest extends WP_UnitTestCase {
 	 * directly to its option (the License service is a thin wrapper
 	 * around this option).
 	 */
-	private function seed_activation( int $id, string $key, string $status = Service::ACTIVATED ): void {
+	private function seed_activation( int $id, string $key, string $status = Activation::STATUS_ACTIVATED ): void {
 		$option        = get_option( self::ACTIVATION_OPTION, array() );
 		$option[ $id ] = array(
+			'install_id'        => 'install_' . $id,
 			'status'            => $status,
 			'activation_params' => array(
 				'license_key' => $key,
+				'uid'         => 'uid_' . $id,
 			),
 		);
 		update_option( self::ACTIVATION_OPTION, $option );
@@ -108,7 +110,7 @@ class LicenseTest extends WP_UnitTestCase {
 
 		$this->assertArrayHasKey( self::ADDON_ID, $items );
 		$this->assertSame( 'ABCD-EFGH-IJKL-MNOP', $items[ self::ADDON_ID ]['key'] );
-		$this->assertSame( Service::ACTIVATED, $items[ self::ADDON_ID ]['status'] );
+		$this->assertSame( Activation::STATUS_ACTIVATED, $items[ self::ADDON_ID ]['status'] );
 		$this->assertTrue( $items[ self::ADDON_ID ]['active'] );
 	}
 
@@ -118,11 +120,11 @@ class LicenseTest extends WP_UnitTestCase {
 	 */
 	public function test_get_license_items_reports_deactivated_addon(): void {
 		$this->register_dummy_addon();
-		$this->seed_activation( self::ADDON_ID, 'KEY-1', Service::DEACTIVATED );
+		$this->seed_activation( self::ADDON_ID, 'KEY-1', Activation::STATUS_DEACTIVATED );
 
 		$items = Freemius::instance()->get_license_items();
 
-		$this->assertSame( Service::DEACTIVATED, $items[ self::ADDON_ID ]['status'] );
+		$this->assertSame( Activation::STATUS_DEACTIVATED, $items[ self::ADDON_ID ]['status'] );
 		$this->assertFalse( $items[ self::ADDON_ID ]['active'] );
 		$this->assertSame( 'KEY-1', $items[ self::ADDON_ID ]['key'] );
 	}

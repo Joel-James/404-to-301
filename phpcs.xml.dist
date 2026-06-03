@@ -11,7 +11,6 @@
 	<file>./404-to-301.php</file>
 	<file>./uninstall.php</file>
 	<file>./includes</file>
-	<file>./templates</file>
 
 	<!-- Directories that must never be linted. -->
 	<exclude-pattern>*/vendor/*</exclude-pattern>
