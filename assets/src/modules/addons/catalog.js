@@ -4,7 +4,6 @@ import {
 	Flex,
 	FlexItem,
 	Notice,
-	Placeholder,
 	Spinner,
 } from '@wordpress/components'
 import { useState } from '@wordpress/element'
@@ -72,9 +71,9 @@ const Catalog = () => {
 			</Flex>
 
 			{isLoading && items.length === 0 ? (
-				<Placeholder>
+				<div className="d404-page-loader">
 					<Spinner />
-				</Placeholder>
+				</div>
 			) : items.length === 0 ? (
 				<Notice status="info" isDismissible={false}>
 					{__(

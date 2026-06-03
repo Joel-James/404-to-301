@@ -1,14 +1,83 @@
 import { __ } from '@wordpress/i18n'
-import {
-	PanelBody,
-	PanelRow,
-	TextControl,
-	ToggleControl,
-} from '@wordpress/components'
+import { Notice, PanelBody, PanelRow, ToggleControl } from '@wordpress/components'
+import { applyFilters } from '@wordpress/hooks'
 import useSettings from '../../../hooks/use-settings'
+
+/**
+ * Default cross-sell Notice promoting the Logs Cleaner addon.
+ *
+ * Lives at the bottom of the Error logs panel and is routed through
+ * the `d404.settings.logs.cross_sell` filter so the addon — which is
+ * loaded on this same screen — returns `null` to hide it once active.
+ *
+ * The CTA is passed via the `actions` prop (the documented Notice
+ * pattern) so it picks up the component's built-in button layout
+ * rather than relying on us styling a child <Button> by hand.
+ *
+ * The Notice is non-dismissible: a dismissible CTA would persist its
+ * dismissed state in component memory only (no server round-trip), so
+ * it'd come straight back on the next page load. Better to render a
+ * stable banner the addon can swap out entirely.
+ */
+const DefaultCrossSell = () => (
+	<PanelRow className="d404-logs-cross-sell">
+		<Notice
+			status="info"
+			isDismissible={false}
+			actions={[
+				{
+					label: __('Get Logs Cleaner', '404-to-301'),
+					url: 'https://duckdev.com/addons/loggedin/',
+					variant: 'primary',
+				},
+			]}
+		>
+			<p className="d404-logs-cross-sell__title">
+				<strong>
+					{__('Drowning in 404 logs?', '404-to-301')}
+				</strong>
+			</p>
+			<p>
+				{__(
+					'Install the Logs Cleaner addon to auto-prune the 404 log table — by age, by row count, or on a fixed schedule. Set it once and the table stays small on its own.',
+					'404-to-301',
+				)}
+			</p>
+		</Notice>
+	</PanelRow>
+)
 
 const LogsTab = () => {
 	const { getSetting, setSetting } = useSettings()
+
+	/*
+	 * Addon extension point. Addons (eg. Logs Cleaner) hook into
+	 * `d404.settings.logs.fields` via `@wordpress/hooks` and return
+	 * one or more React nodes that are rendered at the end of the
+	 * Error logs PanelBody. The filter receives the `getSetting` /
+	 * `setSetting` accessors so the injected controls read and write
+	 * through the same hook the built-in fields use.
+	 *
+	 * Note: the hook name must start with a letter — `@wordpress/hooks`
+	 * rejects names that lead with a digit, so we use the `d404`
+	 * prefix here instead of `404_to_301`.
+	 */
+	const extra = applyFilters(
+		'd404.settings.logs.fields',
+		null,
+		{ getSetting, setSetting },
+	)
+
+	/*
+	 * Cross-sell slot. Defaults to <DefaultCrossSell />; addons return
+	 * `null` (or their own node) to suppress / replace it. Kept as a
+	 * separate filter from `…fields` so an addon that wants to inject
+	 * fields *without* hiding the promo can do so.
+	 */
+	const crossSell = applyFilters(
+		'd404.settings.logs.cross_sell',
+		<DefaultCrossSell />,
+	)
 
 	return (
 		<PanelBody title={__('Error logs', '404-to-301')}>
@@ -48,26 +117,8 @@ const LogsTab = () => {
 					onChange={(v) => setSetting('logs_skip_duplicates', v)}
 				/>
 			</PanelRow>
-			<PanelRow>
-				<TextControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					type="number"
-					min={0}
-					label={__('Retention (days)', '404-to-301')}
-					help={__(
-						'Auto-prune logs older than this many days. Set to 0 to keep forever.',
-						'404-to-301',
-					)}
-					value={getSetting('logs_retention_days', 0)}
-					onChange={(v) =>
-						setSetting(
-							'logs_retention_days',
-							Math.max(0, parseInt(v, 10) || 0),
-						)
-					}
-				/>
-			</PanelRow>
+			{extra}
+			{crossSell}
 		</PanelBody>
 	)
 }

@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n'
 import { useState } from '@wordpress/element'
-import { Placeholder, Spinner } from '@wordpress/components'
+import { Spinner } from '@wordpress/components'
 import useSettings from '../../hooks/use-settings'
 import tabs from './tabs'
 import {
@@ -38,9 +38,9 @@ const SettingsApp = () => {
 
 			<PageBody>
 				{!hasLoaded ? (
-					<Placeholder>
+					<div className="d404-page-loader">
 						<Spinner />
-					</Placeholder>
+					</div>
 				) : (
 					<>
 						<ActiveTab />

@@ -21,7 +21,7 @@ namespace DuckDev\FourNotFour\Models;
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) || exit;
 
-use BerlinDB\Database\Query;
+use BerlinDB\Database\Kern\Query;
 use DuckDev\FourNotFour\Utils\Singleton;
 
 /**

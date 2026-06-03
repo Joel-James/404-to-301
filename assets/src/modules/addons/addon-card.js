@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n'
 import { useState } from '@wordpress/element'
-import clsx from 'clsx'
 import {
 	Button,
 	Card,
@@ -11,16 +10,15 @@ import {
 	Flex,
 	FlexBlock,
 	FlexItem,
+	Spinner,
 } from '@wordpress/components'
 
 /**
- * Small `<img>` wrapper that fades the image in once it has loaded
- * and reveals a soft grey placeholder underneath in the meantime.
- *
- * Banner assets are served from Freemius (`info.card_banner_url`),
- * so they can be slow to first paint over flaky connections — the
- * placeholder keeps the card layout stable and gives the user
- * something polished to look at instead of a black void.
+ * Banner image with a native WP <Spinner /> shown while the asset
+ * is in-flight. Banner assets come from Freemius and can be slow on
+ * flaky connections, so we keep the card layout stable with a fixed
+ * aspect-ratio container (see SCSS) and overlay the spinner until
+ * the browser fires `load` (or `error`).
  *
  * @param {Object} props
  * @param {string} props.src Image URL.
@@ -30,18 +28,21 @@ const BannerImage = ({ src, alt }) => {
 	const [isLoaded, setIsLoaded] = useState(false)
 
 	return (
-		<img
-			src={src}
-			alt={alt}
-			loading="lazy"
-			className={clsx('d404-addon-banner__img', {
-				'is-loaded': isLoaded,
-			})}
-			onLoad={() => setIsLoaded(true)}
-			// Treat broken image responses the same as a finished load
-			// so the placeholder stops shimmering forever.
-			onError={() => setIsLoaded(true)}
-		/>
+		<>
+			{!isLoaded && (
+				<span className="d404-addon-banner__spinner" aria-hidden="true">
+					<Spinner />
+				</span>
+			)}
+			<img
+				src={src}
+				alt={alt}
+				loading="lazy"
+				className="d404-addon-banner__img"
+				onLoad={() => setIsLoaded(true)}
+				onError={() => setIsLoaded(true)}
+			/>
+		</>
 	)
 }
 

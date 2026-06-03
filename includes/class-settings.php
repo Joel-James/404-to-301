@@ -96,7 +96,6 @@ class Settings extends Singleton {
 				'logs_enabled'         => true,
 				'logs_skip_bots'       => true,
 				'logs_skip_duplicates' => false,
-				'logs_retention_days'  => 0,
 
 				// Notifications.
 				'email_enabled'        => false,
@@ -254,10 +253,6 @@ class Settings extends Singleton {
 					$clean[ $key ] = Sanitizer::integer( $raw, 0 );
 					break;
 
-				case 'logs_retention_days':
-					$clean[ $key ] = Sanitizer::integer( $raw, 0 );
-					break;
-
 				case 'email_threshold':
 					$clean[ $key ] = Sanitizer::integer( $raw, 1 );
 					break;
@@ -301,7 +296,19 @@ class Settings extends Singleton {
 	 * @return array
 	 */
 	private function rest_schema_properties(): array {
-		return array(
+		/**
+		 * Filter the REST schema property map.
+		 *
+		 * Addons that introduce their own keys via the
+		 * `404_to_301_settings_defaults` filter should also hook in
+		 * here so their keys are accepted by the `/wp/v2/settings`
+		 * endpoint instead of being silently dropped on save.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $properties Property map keyed by setting name.
+		 */
+		return (array) apply_filters( '404_to_301_settings_rest_schema', array(
 			'disable_guessing'     => array( 'type' => 'boolean' ),
 			'exclude_paths'        => array(
 				'type'  => 'array',
@@ -328,7 +335,6 @@ class Settings extends Singleton {
 			'logs_enabled'         => array( 'type' => 'boolean' ),
 			'logs_skip_bots'       => array( 'type' => 'boolean' ),
 			'logs_skip_duplicates' => array( 'type' => 'boolean' ),
-			'logs_retention_days'  => array( 'type' => 'integer' ),
 
 			'email_enabled'        => array( 'type' => 'boolean' ),
 			'email_recipient'      => array(
@@ -342,7 +348,7 @@ class Settings extends Singleton {
 			'logs_migrated'        => array( 'type' => 'boolean' ),
 			'phase1_done'          => array( 'type' => 'boolean' ),
 			'legacy_table_dropped' => array( 'type' => 'boolean' ),
-		);
+		) );
 	}
 
 	/**

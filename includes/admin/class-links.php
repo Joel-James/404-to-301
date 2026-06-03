@@ -77,7 +77,7 @@ class Links extends Singleton {
 		if ( D404_BASE_NAME === $file ) {
 			$meta['docs'] = sprintf(
 				'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
-				'https://duckdev.com/docs/404-to-301/',
+				'https://docs.duckdev.com/404-to-301/',
 				esc_html__( 'Documentation', '404-to-301' )
 			);
 

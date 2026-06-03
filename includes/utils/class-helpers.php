@@ -97,16 +97,18 @@ class Helpers {
 	}
 
 	/**
-	 * Pack an IP string into the compact binary form used in the DB.
+	 * Validate and normalise an IP address for the DB.
 	 *
-	 * Returns an empty string when the input is not a valid IP, so
-	 * callers can skip the column write without an extra check.
+	 * Round-trips through `inet_pton`/`inet_ntop` so the stored value is
+	 * the canonical form of the input (e.g. compressed IPv6). Returns an
+	 * empty string when the input isn't a valid IP, so callers can skip
+	 * the column write without an extra check.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @param string $ip Dotted-quad IPv4 or colon-hex IPv6.
 	 *
-	 * @return string Binary representation suitable for `VARBINARY(16)`.
+	 * @return string Canonical printable IP, or '' when invalid.
 	 */
 	public static function pack_ip( string $ip ): string {
 		if ( '' === $ip ) {
@@ -115,26 +117,13 @@ class Helpers {
 
 		$packed = @inet_pton( $ip ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- inet_pton emits a warning on invalid input; we want the warning silenced and the false return.
 
-		return is_string( $packed ) ? $packed : '';
-	}
-
-	/**
-	 * Unpack a binary IP from the DB into a human-readable string.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $packed Binary value from a `VARBINARY` column.
-	 *
-	 * @return string Empty string when the input is invalid.
-	 */
-	public static function unpack_ip( string $packed ): string {
-		if ( '' === $packed ) {
+		if ( ! is_string( $packed ) ) {
 			return '';
 		}
 
-		$ip = @inet_ntop( $packed ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- same rationale as pack_ip().
+		$normalised = @inet_ntop( $packed ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- same rationale as above.
 
-		return is_string( $ip ) ? $ip : '';
+		return is_string( $normalised ) ? $normalised : '';
 	}
 
 	/**

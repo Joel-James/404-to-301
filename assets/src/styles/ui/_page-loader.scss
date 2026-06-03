@@ -2,9 +2,18 @@
 
 $prefix: '#{variables.$prefix}';
 
-.#{$prefix}-wrap {
-
-	.components-placeholder {
-		background: #f6f6f6;
-	}
+// Initial hydration loader for page-level data fetches.
+//
+// Matches the bare centered <Spinner /> pattern WP uses in the Site
+// Editor and DataViews — no border, no card, just the native spinner
+// in the middle of whatever vertical space the page has so far.
+//
+// The min-height keeps short pages from snapping the spinner up
+// against the page header before the data arrives.
+.#{$prefix}-page-loader {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 240px;
+	width: 100%;
 }
