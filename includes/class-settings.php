@@ -308,47 +308,50 @@ class Settings extends Singleton {
 		 *
 		 * @param array $properties Property map keyed by setting name.
 		 */
-		return (array) apply_filters( '404_to_301_settings_rest_schema', array(
-			'disable_guessing'     => array( 'type' => 'boolean' ),
-			'exclude_paths'        => array(
-				'type'  => 'array',
-				'items' => array( 'type' => 'string' ),
-			),
-			'monitor_post_slug'    => array( 'type' => 'boolean' ),
-			'mask_ip'              => array( 'type' => 'boolean' ),
+		return (array) apply_filters(
+			'404_to_301_settings_rest_schema',
+			array(
+				'disable_guessing'     => array( 'type' => 'boolean' ),
+				'exclude_paths'        => array(
+					'type'  => 'array',
+					'items' => array( 'type' => 'string' ),
+				),
+				'monitor_post_slug'    => array( 'type' => 'boolean' ),
+				'mask_ip'              => array( 'type' => 'boolean' ),
 
-			'redirect_enabled'     => array( 'type' => 'boolean' ),
-			'redirect_type'        => array(
-				'type' => 'string',
-				'enum' => array( '301', '302', '307' ),
-			),
-			'redirect_target'      => array(
-				'type' => 'string',
-				'enum' => array( 'link', 'page', 'none' ),
-			),
-			'redirect_link'        => array(
-				'type'   => 'string',
-				'format' => 'uri',
-			),
-			'redirect_page'        => array( 'type' => 'integer' ),
+				'redirect_enabled'     => array( 'type' => 'boolean' ),
+				'redirect_type'        => array(
+					'type' => 'string',
+					'enum' => array( '301', '302', '307' ),
+				),
+				'redirect_target'      => array(
+					'type' => 'string',
+					'enum' => array( 'link', 'page', 'none' ),
+				),
+				'redirect_link'        => array(
+					'type'   => 'string',
+					'format' => 'uri',
+				),
+				'redirect_page'        => array( 'type' => 'integer' ),
 
-			'logs_enabled'         => array( 'type' => 'boolean' ),
-			'logs_skip_bots'       => array( 'type' => 'boolean' ),
-			'logs_skip_duplicates' => array( 'type' => 'boolean' ),
+				'logs_enabled'         => array( 'type' => 'boolean' ),
+				'logs_skip_bots'       => array( 'type' => 'boolean' ),
+				'logs_skip_duplicates' => array( 'type' => 'boolean' ),
 
-			'email_enabled'        => array( 'type' => 'boolean' ),
-			'email_recipient'      => array(
-				'type'   => 'string',
-				'format' => 'email',
-			),
-			'email_threshold'      => array( 'type' => 'integer' ),
+				'email_enabled'        => array( 'type' => 'boolean' ),
+				'email_recipient'      => array(
+					'type'   => 'string',
+					'format' => 'email',
+				),
+				'email_threshold'      => array( 'type' => 'integer' ),
 
-			'plugin_version'       => array( 'type' => 'string' ),
-			'db_version'           => array( 'type' => 'string' ),
-			'logs_migrated'        => array( 'type' => 'boolean' ),
-			'phase1_done'          => array( 'type' => 'boolean' ),
-			'legacy_table_dropped' => array( 'type' => 'boolean' ),
-		) );
+				'plugin_version'       => array( 'type' => 'string' ),
+				'db_version'           => array( 'type' => 'string' ),
+				'logs_migrated'        => array( 'type' => 'boolean' ),
+				'phase1_done'          => array( 'type' => 'boolean' ),
+				'legacy_table_dropped' => array( 'type' => 'boolean' ),
+			)
+		);
 	}
 
 	/**
