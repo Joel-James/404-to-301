@@ -3,8 +3,8 @@
 # per line, no leading slash, glob-style matching).
 #
 # The released ZIP contains only the runtime files needed to run the
-# plugin — `includes/`, `build/`, `templates/`, `languages/`, the
-# bootstrap PHP, the readme files, the license and uninstall.php.
+# plugin — `includes/`, `build/`, `languages/`, the bootstrap PHP,
+# the readme files, the license and uninstall.php.
 
 # Dev tooling configuration.
 .editorconfig
