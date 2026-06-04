@@ -186,6 +186,14 @@ class Migrator extends Singleton {
 			return -1;
 		}
 
+		// Nothing to read from — fresh installs and sites that have
+		// already finished the migration have no legacy table. Without
+		// this guard, the SELECT below errors with "table doesn't exist"
+		// when a CLI user runs `migrate run` on a clean install.
+		if ( ! $this->legacy_table_exists() ) {
+			return 0;
+		}
+
 		$table = $wpdb->prefix . '404_to_301';
 		// Table name is built from `$wpdb->prefix` + a fixed literal —
 		// no user input ever reaches the SQL string, so safe to interpolate.
