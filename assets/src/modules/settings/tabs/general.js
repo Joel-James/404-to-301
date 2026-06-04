@@ -222,6 +222,18 @@ const General = () => {
 						onChange={(v) => setSetting('mask_ip', v)}
 					/>
 				</PanelRow>
+				<PanelRow>
+					<ToggleControl
+						__nextHasNoMarginBottom
+						label={__('Track admin 404s', '404-to-301')}
+						help={__(
+							'Also process 404 requests that occur on the WordPress admin side. Off by default — most sites only care about front-end 404s.',
+							'404-to-301',
+						)}
+						checked={!!getSetting('track_admin_404', false)}
+						onChange={(v) => setSetting('track_admin_404', v)}
+					/>
+				</PanelRow>
 			</PanelBody>
 
 			<PanelBody title={__('Exclude paths', '404-to-301')}>

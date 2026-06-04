@@ -168,7 +168,12 @@ final class Core extends Singleton {
 	 */
 	private function front(): void {
 		if ( is_admin() ) {
-			return;
+			$settings = $this->settings();
+			$track    = $settings && $settings->get( 'track_admin_404', false );
+
+			if ( ! $track ) {
+				return;
+			}
 		}
 
 		// Wired up in P4.

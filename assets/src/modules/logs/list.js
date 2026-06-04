@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n'
+import { applyFilters } from '@wordpress/hooks'
 import { DataViews } from '@wordpress/dataviews'
 import { useCallback, useMemo, useState } from '@wordpress/element'
 import { fields } from './fields'
@@ -131,8 +132,13 @@ const List = () => {
 		]
 	}, [bulkSetStatus, deleteLogs, updateLog])
 
+	// Addon slot for extra toolbar UI (eg. an Export-CSV button). Returns
+	// `null` by default; the Logs Exporter addon swaps in its button.
+	const toolbar = applyFilters('d404.logs.toolbar', null, { view, selection })
+
 	return (
 		<>
+			{toolbar}
 			<DataViews
 				data={items}
 				fields={fields}

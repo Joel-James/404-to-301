@@ -84,6 +84,7 @@ class Settings extends Singleton {
 				'exclude_paths'        => array(),
 				'monitor_post_slug'    => false,
 				'mask_ip'              => false,
+				'track_admin_404'      => false,
 
 				// Redirects (global defaults — per-row settings live on the redirects table).
 				'redirect_enabled'     => true,
@@ -226,6 +227,7 @@ class Settings extends Singleton {
 				case 'disable_guessing':
 				case 'monitor_post_slug':
 				case 'mask_ip':
+				case 'track_admin_404':
 				case 'redirect_enabled':
 				case 'logs_enabled':
 				case 'logs_skip_bots':
@@ -318,6 +320,7 @@ class Settings extends Singleton {
 				),
 				'monitor_post_slug'    => array( 'type' => 'boolean' ),
 				'mask_ip'              => array( 'type' => 'boolean' ),
+				'track_admin_404'      => array( 'type' => 'boolean' ),
 
 				'redirect_enabled'     => array( 'type' => 'boolean' ),
 				'redirect_type'        => array(

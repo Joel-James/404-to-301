@@ -63,8 +63,17 @@ class Controller extends Singleton {
 	 */
 	public function dispatch(): void {
 		// Cheap bail-outs first.
-		if ( is_admin() || ( defined( 'WP_CLI' ) && \WP_CLI ) ) {
+		if ( defined( 'WP_CLI' ) && \WP_CLI ) {
 			return;
+		}
+
+		if ( is_admin() ) {
+			$settings = Core::instance()->settings();
+			$track    = $settings && $settings->get( 'track_admin_404', false );
+
+			if ( ! $track ) {
+				return;
+			}
 		}
 
 		$request = new Request();
