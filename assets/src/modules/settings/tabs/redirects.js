@@ -19,11 +19,11 @@ const RedirectsTab = () => {
 	const target = getSetting('redirect_target', 'link')
 
 	return (
-		<PanelBody title={__('Default redirect', '404-to-301')}>
+		<PanelBody title={__('Redirect', '404-to-301')}>
 			<PanelRow>
 				<ToggleControl
 					__nextHasNoMarginBottom
-					label={__('Enable default redirect', '404-to-301')}
+					label={__('Enable redirect', '404-to-301')}
 					help={__(
 						'When on, 404 URLs without a specific custom redirect fall back to the destination configured here.',
 						'404-to-301',
@@ -37,7 +37,7 @@ const RedirectsTab = () => {
 				<PanelRow>
 					<Notice status="info" isDismissible={false}>
 						{__(
-							'The default redirect is off. Per-URL redirects from the Redirects page still fire.',
+							'The redirect is off. Per-URL redirects from the Redirects page still fire.',
 							'404-to-301',
 						)}
 					</Notice>
@@ -48,7 +48,7 @@ const RedirectsTab = () => {
 				<SelectControl
 					__next40pxDefaultSize
 					__nextHasNoMarginBottom
-					label={__('Default redirect type', '404-to-301')}
+					label={__('Redirect type', '404-to-301')}
 					help={__(
 						'HTTP status code used when this fallback redirect fires.',
 						'404-to-301',
