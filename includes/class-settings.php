@@ -86,7 +86,12 @@ class Settings extends Singleton {
 			'404_to_301_settings_defaults',
 			array(
 				// General.
-				'disable_guessing'     => true,
+				// Three-state dial that replaces the old boolean:
+				//   - `off`    — let WordPress do everything (default WP behaviour).
+				//   - `light`  — only stop the "guess closest post" lookup; trailing
+				//                slash + case redirects still happen.
+				//   - `strict` — bypass `redirect_canonical()` entirely.
+				'disable_guessing'     => 'light',
 				'exclude_paths'        => array(),
 				'monitor_post_slug'    => false,
 				'mask_ip'              => false,
@@ -297,6 +302,16 @@ class Settings extends Singleton {
 
 			switch ( $key ) {
 				case 'disable_guessing':
+					// Coerce legacy boolean values so an existing
+					// pre-release install survives the schema change:
+					// the old `true` was equivalent to today's
+					// `strict`; the old `false` to `off`.
+					if ( is_bool( $raw ) ) {
+						$raw = $raw ? 'strict' : 'off';
+					}
+					$clean[ $key ] = Sanitizer::enum( $raw, array( 'off', 'light', 'strict' ), 'light' );
+					break;
+
 				case 'monitor_post_slug':
 				case 'mask_ip':
 				case 'track_admin_404':
@@ -385,7 +400,10 @@ class Settings extends Singleton {
 		return (array) apply_filters(
 			'404_to_301_settings_rest_schema',
 			array(
-				'disable_guessing'     => array( 'type' => 'boolean' ),
+				'disable_guessing'     => array(
+					'type' => 'string',
+					'enum' => array( 'off', 'light', 'strict' ),
+				),
 				'exclude_paths'        => array(
 					'type'  => 'array',
 					'items' => array( 'type' => 'string' ),
@@ -495,7 +513,11 @@ class Settings extends Singleton {
 			}
 
 			if ( isset( $legacy['disable_guessing'] ) ) {
-				$settings['disable_guessing'] = Sanitizer::boolean( $legacy['disable_guessing'] );
+				// v3 stored a single boolean. Map onto the new enum:
+				// the historical "disable guessing = on" matched the
+				// strictest mode (bypass `redirect_canonical` entirely),
+				// so a v3 import lands at `strict` to preserve intent.
+				$settings['disable_guessing'] = Sanitizer::boolean( $legacy['disable_guessing'] ) ? 'strict' : 'off';
 			}
 
 			if ( isset( $legacy['exclude_paths'] ) ) {

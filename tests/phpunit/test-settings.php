@@ -76,17 +76,36 @@ class SettingsTest extends WP_UnitTestCase {
 	public function test_sanitize_coerces_boolean_inputs(): void {
 		$clean = Settings::instance()->sanitize(
 			array(
-				'logs_enabled'     => 'true',
-				'email_enabled'    => '1',
-				'mask_ip'          => 'no',
-				'disable_guessing' => 'off',
+				'logs_enabled'  => 'true',
+				'email_enabled' => '1',
+				'mask_ip'       => 'no',
 			)
 		);
 
 		$this->assertTrue( $clean['logs_enabled'] );
 		$this->assertTrue( $clean['email_enabled'] );
 		$this->assertFalse( $clean['mask_ip'] );
-		$this->assertFalse( $clean['disable_guessing'] );
+	}
+
+	/**
+	 * `disable_guessing` is a three-state enum (`off` / `light` /
+	 * `strict`) and absorbs legacy boolean inputs.
+	 */
+	public function test_sanitize_disable_guessing_enum(): void {
+		$cases = array(
+			array( 'off', 'off' ),
+			array( 'light', 'light' ),
+			array( 'strict', 'strict' ),
+			array( true, 'strict' ),     // Legacy boolean coercion.
+			array( false, 'off' ),
+			array( 'banana', 'light' ),  // Unknown → default.
+		);
+
+		foreach ( $cases as $case ) {
+			[ $input, $expected ] = $case;
+			$clean                = Settings::instance()->sanitize( array( 'disable_guessing' => $input ) );
+			$this->assertSame( $expected, $clean['disable_guessing'], sprintf( 'Input %s should sanitise to %s.', var_export( $input, true ), $expected ) );
+		}
 	}
 
 	/**
@@ -128,7 +147,7 @@ class SettingsTest extends WP_UnitTestCase {
 		$this->assertTrue( $saved['logs_enabled'] );
 		$this->assertTrue( $saved['email_enabled'] );
 		$this->assertSame( array( 'me@example.com' ), $saved['email_recipient'] );
-		$this->assertTrue( $saved['disable_guessing'] );
+		$this->assertSame( 'strict', $saved['disable_guessing'] );
 		$this->assertSame( array( '/wp-content', '/foo' ), $saved['exclude_paths'] );
 
 		// Second call is a no-op.

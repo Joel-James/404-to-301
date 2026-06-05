@@ -4,6 +4,7 @@ import {
 	Button,
 	PanelBody,
 	PanelRow,
+	SelectControl,
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components'
@@ -208,17 +209,50 @@ const General = () => {
 		<>
 			<PanelBody title={__('Behaviour', '404-to-301')}>
 				<PanelRow>
-					<ToggleControl
+					<SelectControl
+						__next40pxDefaultSize
 						__nextHasNoMarginBottom
-						label={__(
-							'Disable WordPress URL guessing',
-							'404-to-301',
-						)}
+						label={__('WordPress URL guessing', '404-to-301')}
 						help={__(
-							'Stop WordPress from auto-correcting incorrect URLs to the closest matching post.',
+							'How aggressively to block WordPress’ auto-correction of unknown URLs. "Light" stops the closest-post guess; "Strict" also bypasses trailing-slash, case, and attachment fallback redirects.',
 							'404-to-301',
 						)}
-						checked={!!getSetting('disable_guessing', true)}
+						value={(() => {
+							const raw = getSetting('disable_guessing', 'light')
+							// Defend against stale boolean values that
+							// may live on disk from earlier pre-release
+							// builds: render them as the closest enum
+							// equivalent rather than crashing the
+							// SelectControl.
+							if (raw === true) return 'strict'
+							if (raw === false) return 'off'
+							return ['off', 'light', 'strict'].includes(raw)
+								? raw
+								: 'light'
+						})()}
+						options={[
+							{
+								value: 'off',
+								label: __(
+									'Off — let WordPress guess (default WP behaviour)',
+									'404-to-301',
+								),
+							},
+							{
+								value: 'light',
+								label: __(
+									'Light — block closest-post guessing only',
+									'404-to-301',
+								),
+							},
+							{
+								value: 'strict',
+								label: __(
+									'Strict — bypass redirect_canonical() entirely',
+									'404-to-301',
+								),
+							},
+						]}
 						onChange={(v) => setSetting('disable_guessing', v)}
 					/>
 				</PanelRow>

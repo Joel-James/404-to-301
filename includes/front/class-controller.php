@@ -50,7 +50,12 @@ class Controller extends Singleton {
 	 * @return void
 	 */
 	protected function init(): void {
+		// Both canonical filters are always added — the mode is read
+		// inside the callbacks so a runtime settings change (REST
+		// PATCH, WP-CLI, test fixtures) takes effect without
+		// re-registration.
 		add_filter( 'redirect_canonical', array( $this, 'disable_canonical_guessing' ) );
+		add_filter( 'do_redirect_guess_404_permalink', array( $this, 'maybe_block_404_guess' ) );
 		add_action( 'template_redirect', array( $this, 'dispatch' ), 1 );
 	}
 
@@ -163,11 +168,19 @@ class Controller extends Singleton {
 	}
 
 	/**
-	 * Disable WordPress's URL-guessing redirect when the admin opts to.
+	 * Strict-mode handler for the `redirect_canonical` filter.
 	 *
-	 * `redirect_canonical` is the filter WordPress uses to decide
-	 * whether to redirect, say, `/post-typo` to `/post-name`. The
-	 * setting is opt-in because some sites prefer the guessing.
+	 * `redirect_canonical` is the top-level filter WP runs on the URL
+	 * its canonicalisation function would have redirected to — covers
+	 * post-name guessing, trailing slashes, case folding, and the
+	 * attachment fallback. Returning `false` short-circuits the whole
+	 * function, so we only do that on the `strict` mode. The lighter
+	 * mode targets only the 404-guessing portion via
+	 * {@see maybe_block_404_guess()}.
+	 *
+	 * The `?p=` short-circuit is preserved from the v3 behaviour —
+	 * `wp_safe_redirect` on a numeric `?p=42` is genuinely useful for
+	 * sites that paste old links around.
 	 *
 	 * @since 4.0.0
 	 *
@@ -176,12 +189,74 @@ class Controller extends Singleton {
 	 * @return string|bool
 	 */
 	public function disable_canonical_guessing( $guess ) {
-		$settings = Core::instance()->settings();
+		if ( isset( $_GET['p'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return $guess;
+		}
 
-		if ( $settings && $settings->get( 'disable_guessing', true ) && ! isset( $_GET['p'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( 'strict' === $this->guessing_mode() ) {
 			return false;
 		}
 
 		return $guess;
+	}
+
+	/**
+	 * Light-mode handler for `do_redirect_guess_404_permalink`.
+	 *
+	 * WP's `redirect_guess_404_permalink()` only walks posts when this
+	 * filter returns true. Returning false here keeps the rest of
+	 * `redirect_canonical()` (trailing slash, case folding) intact
+	 * while killing the "find a similar post by slug" lookup that's
+	 * the main source of unexpected redirects.
+	 *
+	 * Both `light` and `strict` block the guess — strict reaches it
+	 * via the top-level filter, but covering both modes here means
+	 * the behaviour is consistent even if a plugin re-enables
+	 * `redirect_canonical()`.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param bool $do Whether to attempt the guess.
+	 *
+	 * @return bool
+	 */
+	public function maybe_block_404_guess( $do ) {
+		if ( isset( $_GET['p'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return $do;
+		}
+
+		$mode = $this->guessing_mode();
+
+		if ( 'light' === $mode || 'strict' === $mode ) {
+			return false;
+		}
+
+		return $do;
+	}
+
+	/**
+	 * Resolve the current `disable_guessing` mode, defending against
+	 * stale boolean values that may still be on disk from earlier
+	 * pre-release builds.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string One of `off`, `light`, `strict`.
+	 */
+	private function guessing_mode(): string {
+		$settings = Core::instance()->settings();
+		if ( ! $settings ) {
+			return 'light';
+		}
+
+		$mode = $settings->get( 'disable_guessing', 'light' );
+
+		if ( is_bool( $mode ) ) {
+			return $mode ? 'strict' : 'off';
+		}
+
+		$mode = is_string( $mode ) ? $mode : 'light';
+
+		return in_array( $mode, array( 'off', 'light', 'strict' ), true ) ? $mode : 'light';
 	}
 }
