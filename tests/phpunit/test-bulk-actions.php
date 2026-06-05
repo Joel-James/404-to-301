@@ -180,6 +180,140 @@ class BulkActionsTest extends WP_UnitTestCase {
 		$this->assertSame( 'rest_missing_callback_param', $response->get_data()['code'] );
 	}
 
+	/* ----------------------------------------------------------- *
+	 * Redirects bulk-update (#4)
+	 * ----------------------------------------------------------- */
+
+	/**
+	 * `POST /redirects/bulk-update` flips `is_active` on every row.
+	 */
+	public function test_redirects_bulk_update_deactivates_selected_rows(): void {
+		$model = RedirectsModel::instance();
+		$ids   = array();
+		foreach ( array( '/b1', '/b2', '/b3' ) as $src ) {
+			$ids[] = $model->create(
+				array(
+					'source'      => $src,
+					'target_url'  => 'https://example.com' . $src,
+					'target_type' => 'link',
+					'match_type'  => 'exact',
+					'is_active'   => 1,
+				)
+			);
+		}
+
+		$response = $this->dispatch(
+			'POST',
+			self::REDIRECTS_ROUTE . '/bulk-update',
+			array(
+				'ids'       => $ids,
+				'is_active' => false,
+			)
+		);
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame( 3, $response->get_data()['updated'] );
+
+		foreach ( $ids as $id ) {
+			$this->assertSame( 0, (int) $model->find( $id )->is_active );
+		}
+	}
+
+	/**
+	 * Bulk update also accepts `redirect_type` and applies it to every
+	 * targeted row.
+	 */
+	public function test_redirects_bulk_update_changes_redirect_type(): void {
+		$model = RedirectsModel::instance();
+		$ids   = array(
+			$model->create(
+				array(
+					'source'        => '/r301',
+					'target_url'    => 'https://example.com/r301',
+					'target_type'   => 'link',
+					'match_type'    => 'exact',
+					'redirect_type' => 301,
+					'is_active'     => 1,
+				)
+			),
+		);
+
+		$response = $this->dispatch(
+			'POST',
+			self::REDIRECTS_ROUTE . '/bulk-update',
+			array(
+				'ids'           => $ids,
+				'redirect_type' => 302,
+			)
+		);
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame( 1, $response->get_data()['updated'] );
+		$this->assertSame( 302, (int) $model->find( $ids[0] )->redirect_type );
+	}
+
+	/**
+	 * Bulk update with no mutating fields is a no-op (returns 0 rather
+	 * than 500ing). Same shape as the logs bulk-update contract.
+	 */
+	public function test_redirects_bulk_update_without_fields_is_a_no_op(): void {
+		$model = RedirectsModel::instance();
+		$id    = $model->create(
+			array(
+				'source'      => '/no-op',
+				'target_url'  => 'https://example.com/no-op',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		$response = $this->dispatch(
+			'POST',
+			self::REDIRECTS_ROUTE . '/bulk-update',
+			array( 'ids' => array( $id ) )
+		);
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame( 0, $response->get_data()['updated'] );
+		// Row is unchanged.
+		$this->assertSame( 1, (int) $model->find( $id )->is_active );
+	}
+
+	/**
+	 * `source` and `target_url` are not bulk-editable — passing them
+	 * is silently ignored (every row would otherwise end up identical).
+	 */
+	public function test_redirects_bulk_update_ignores_unsupported_columns(): void {
+		$model = RedirectsModel::instance();
+		$id    = $model->create(
+			array(
+				'source'      => '/keep',
+				'target_url'  => 'https://example.com/keep',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		$response = $this->dispatch(
+			'POST',
+			self::REDIRECTS_ROUTE . '/bulk-update',
+			array(
+				'ids'        => array( $id ),
+				'source'     => '/clobbered',
+				'target_url' => 'https://example.com/clobbered',
+			)
+		);
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame( 0, $response->get_data()['updated'] );
+
+		$row = $model->find( $id );
+		$this->assertSame( '/keep', $row->source );
+		$this->assertSame( 'https://example.com/keep', $row->target_url );
+	}
+
 	/**
 	 * Bulk update flips every targeted row to the requested status.
 	 */

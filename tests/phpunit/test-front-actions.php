@@ -352,4 +352,111 @@ class FrontActionsTest extends WP_UnitTestCase {
 
 		$this->addToAssertionCount( 1 );
 	}
+
+	/* ---------------------------------------------------------------- *
+	 * Per-redirect query handling — `preserve` (#6)
+	 * ---------------------------------------------------------------- */
+
+	/**
+	 * `preserve` rows forward the request query string to the
+	 * destination, with destination keys winning on collision.
+	 */
+	public function test_preserve_mode_forwards_query_to_destination(): void {
+		$model = RedirectsModel::instance();
+		$model->create(
+			array(
+				'source'         => '/landing',
+				'target_url'     => 'https://example.com/dest?source=campaign',
+				'target_type'    => 'link',
+				'match_type'     => 'exact',
+				'query_handling' => 'preserve',
+				'is_active'      => 1,
+			)
+		);
+
+		$this->configure( array( 'redirect_enabled' => true ) );
+
+		$_SERVER['REQUEST_URI'] = '/landing?utm_source=newsletter&source=user';
+
+		$thrown = null;
+		try {
+			( new Redirect() )->run( new Request() );
+		} catch ( FrontActionsRedirectFired $e ) {
+			$thrown = $e;
+		}
+
+		$this->assertNotNull( $thrown );
+
+		$parts = wp_parse_url( $thrown->url );
+		$query = array();
+		wp_parse_str( $parts['query'] ?? '', $query );
+
+		$this->assertSame( 'newsletter', $query['utm_source'] ?? null );
+		// Destination's explicit `source=campaign` wins over the
+		// incoming `source=user`.
+		$this->assertSame( 'campaign', $query['source'] ?? null );
+	}
+
+	/* ---------------------------------------------------------------- *
+	 * disable_guessing enum (#14)
+	 * ---------------------------------------------------------------- */
+
+	/**
+	 * `off` mode leaves both canonical filters alone.
+	 */
+	public function test_disable_guessing_off_leaves_filters_untouched(): void {
+		$this->configure( array( 'disable_guessing' => 'off' ) );
+
+		$controller = \DuckDev\FourNotFour\Front\Controller::instance();
+
+		$this->assertSame( '/wherever', $controller->disable_canonical_guessing( '/wherever' ) );
+		$this->assertTrue( $controller->maybe_block_404_guess( true ) );
+	}
+
+	/**
+	 * `light` mode blocks the closest-post guess but lets the rest of
+	 * `redirect_canonical()` run.
+	 */
+	public function test_disable_guessing_light_blocks_only_404_guess(): void {
+		$this->configure( array( 'disable_guessing' => 'light' ) );
+
+		$controller = \DuckDev\FourNotFour\Front\Controller::instance();
+
+		// `redirect_canonical` passes through (trailing slash etc. still
+		// happens).
+		$this->assertSame( '/wherever', $controller->disable_canonical_guessing( '/wherever' ) );
+		// The targeted 404-guess filter is shorted to false.
+		$this->assertFalse( $controller->maybe_block_404_guess( true ) );
+	}
+
+	/**
+	 * `strict` mode returns false from `redirect_canonical` too — full
+	 * bypass of WordPress URL canonicalisation.
+	 */
+	public function test_disable_guessing_strict_kills_redirect_canonical(): void {
+		$this->configure( array( 'disable_guessing' => 'strict' ) );
+
+		$controller = \DuckDev\FourNotFour\Front\Controller::instance();
+
+		$this->assertFalse( $controller->disable_canonical_guessing( '/wherever' ) );
+		$this->assertFalse( $controller->maybe_block_404_guess( true ) );
+	}
+
+	/**
+	 * `?p=` short-circuit keeps direct post-id links working in every
+	 * mode — even strict.
+	 */
+	public function test_disable_guessing_preserves_post_id_shortlink(): void {
+		$this->configure( array( 'disable_guessing' => 'strict' ) );
+
+		$controller = \DuckDev\FourNotFour\Front\Controller::instance();
+
+		$_GET['p'] = '42';
+		try {
+			$this->assertSame( '/some-target', $controller->disable_canonical_guessing( '/some-target' ) );
+			$this->assertTrue( $controller->maybe_block_404_guess( true ) );
+		} finally {
+			unset( $_GET['p'] );
+		}
+	}
 }

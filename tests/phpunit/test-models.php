@@ -352,4 +352,274 @@ class ModelsTest extends WP_UnitTestCase {
 		$this->assertSame( 2, (int) $row->hits );
 		$this->assertNotNull( $row->last_hit_at );
 	}
+
+	/* ---------------------------------------------------------------- *
+	 * Audit trail (#5)
+	 * ---------------------------------------------------------------- */
+
+	/**
+	 * `create()` stamps `modified_by` from the current user.
+	 */
+	public function test_redirects_create_stamps_modified_by(): void {
+		$user_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+
+		$model = Redirects::instance();
+		$id    = $model->create(
+			array(
+				'source'      => '/audited-create',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		$row = $model->find( $id );
+		$this->assertSame( $user_id, (int) $row->modified_by );
+
+		wp_set_current_user( 0 );
+	}
+
+	/**
+	 * `update()` re-stamps `modified_by` to the editing user.
+	 */
+	public function test_redirects_update_restamps_modified_by(): void {
+		$creator = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		$editor  = self::factory()->user->create( array( 'role' => 'administrator' ) );
+
+		wp_set_current_user( $creator );
+		$model = Redirects::instance();
+		$id    = $model->create(
+			array(
+				'source'      => '/audited-update',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		wp_set_current_user( $editor );
+		$model->update( $id, array( 'target_url' => 'https://example.com/new' ) );
+
+		$row = $model->find( $id );
+		$this->assertSame( $editor, (int) $row->modified_by );
+
+		wp_set_current_user( 0 );
+	}
+
+	/**
+	 * `record_hit()` is a public side-effect — it must not masquerade
+	 * as a user edit by overwriting `modified_by`.
+	 */
+	public function test_redirects_record_hit_does_not_change_modified_by(): void {
+		$user_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+
+		$model = Redirects::instance();
+		$id    = $model->create(
+			array(
+				'source'      => '/no-stamp-on-hit',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		wp_set_current_user( 0 );
+		$model->record_hit( $id );
+
+		$row = $model->find( $id );
+		$this->assertSame( $user_id, (int) $row->modified_by );
+	}
+
+	/**
+	 * The `404_to_301_redirect_audit` action fires on create / update /
+	 * delete with the expected payload.
+	 */
+	public function test_redirect_audit_action_fires_on_each_mutation(): void {
+		$events = array();
+		$listener = static function ( $action, $id, $user_id, $data ) use ( &$events ) {
+			$events[] = compact( 'action', 'id', 'user_id', 'data' );
+		};
+
+		add_action( '404_to_301_redirect_audit', $listener, 10, 4 );
+
+		$user_id = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+
+		$model = Redirects::instance();
+		$id    = $model->create(
+			array(
+				'source'      => '/audit-hook',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		$model->update( $id, array( 'is_active' => 0 ) );
+		$model->delete( $id );
+
+		remove_action( '404_to_301_redirect_audit', $listener, 10 );
+		wp_set_current_user( 0 );
+
+		$this->assertCount( 3, $events );
+		$this->assertSame( 'created', $events[0]['action'] );
+		$this->assertSame( 'updated', $events[1]['action'] );
+		$this->assertSame( 'deleted', $events[2]['action'] );
+
+		foreach ( $events as $event ) {
+			$this->assertSame( $id, (int) $event['id'] );
+			$this->assertSame( $user_id, (int) $event['user_id'] );
+		}
+
+		// Delete fires with an empty data array.
+		$this->assertSame( array(), $events[2]['data'] );
+	}
+
+	/**
+	 * Caller-supplied `modified_by` wins over `get_current_user_id()`
+	 * so WP-CLI / migrations can attribute writes deliberately.
+	 */
+	public function test_redirects_create_preserves_caller_modified_by(): void {
+		$current = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		$author  = self::factory()->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( $current );
+
+		$model = Redirects::instance();
+		$id    = $model->create(
+			array(
+				'source'      => '/explicit-author',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+				'modified_by' => $author,
+			)
+		);
+
+		$row = $model->find( $id );
+		$this->assertSame( $author, (int) $row->modified_by );
+
+		wp_set_current_user( 0 );
+	}
+
+	/* ---------------------------------------------------------------- *
+	 * Per-redirect query handling (#6)
+	 * ---------------------------------------------------------------- */
+
+	/**
+	 * `require` rows hash the query string and so coexist as two
+	 * distinct rows under the same path.
+	 */
+	public function test_redirects_require_mode_allows_query_variants_to_coexist(): void {
+		$model = Redirects::instance();
+
+		$summer_id = $model->create(
+			array(
+				'source'         => '/promo?code=summer',
+				'target_url'     => 'https://example.com/summer',
+				'target_type'    => 'link',
+				'match_type'     => 'exact',
+				'query_handling' => 'require',
+				'is_active'      => 1,
+			)
+		);
+
+		$winter_id = $model->create(
+			array(
+				'source'         => '/promo?code=winter',
+				'target_url'     => 'https://example.com/winter',
+				'target_type'    => 'link',
+				'match_type'     => 'exact',
+				'query_handling' => 'require',
+				'is_active'      => 1,
+			)
+		);
+
+		$this->assertGreaterThan( 0, $summer_id );
+		$this->assertGreaterThan( 0, $winter_id );
+		$this->assertNotSame( $summer_id, $winter_id );
+
+		$summer = $model->find_exact( '/promo?code=summer' );
+		$winter = $model->find_exact( '/promo?code=winter' );
+
+		$this->assertNotNull( $summer );
+		$this->assertNotNull( $winter );
+		$this->assertSame( $summer_id, (int) $summer->id );
+		$this->assertSame( $winter_id, (int) $winter->id );
+	}
+
+	/**
+	 * When a request carries a query that doesn't match a `require`
+	 * row, lookup falls back to an `ignore` row stored on the same
+	 * path.
+	 */
+	public function test_redirects_find_exact_falls_back_to_ignore_row(): void {
+		$model = Redirects::instance();
+
+		$specific = $model->create(
+			array(
+				'source'         => '/promo?code=summer',
+				'target_url'     => 'https://example.com/summer',
+				'target_type'    => 'link',
+				'match_type'     => 'exact',
+				'query_handling' => 'require',
+				'is_active'      => 1,
+			)
+		);
+
+		$generic = $model->create(
+			array(
+				'source'         => '/promo',
+				'target_url'     => 'https://example.com/promo',
+				'target_type'    => 'link',
+				'match_type'     => 'exact',
+				'query_handling' => 'ignore',
+				'is_active'      => 1,
+			)
+		);
+
+		$match_specific = $model->find_exact( '/promo?code=summer' );
+		$match_generic  = $model->find_exact( '/promo?code=other' );
+
+		$this->assertSame( $specific, (int) $match_specific->id );
+		$this->assertSame( $generic, (int) $match_generic->id );
+	}
+
+	/**
+	 * Flipping `query_handling` on an existing row refreshes its hash
+	 * so the row still matches correctly afterwards.
+	 */
+	public function test_redirects_update_query_handling_refreshes_hash(): void {
+		$model = Redirects::instance();
+		$id    = $model->create(
+			array(
+				'source'         => '/swappy?a=1',
+				'target_url'     => 'https://example.com/',
+				'target_type'    => 'link',
+				'match_type'     => 'exact',
+				'query_handling' => 'ignore',
+				'is_active'      => 1,
+			)
+		);
+
+		// In `ignore` mode the row is stored under the path-only hash.
+		$this->assertNotNull( $model->find_exact( '/swappy?a=1' ) );
+
+		$model->update( $id, array( 'query_handling' => 'require' ) );
+
+		// After switching to `require`, the row's hash includes the
+		// query — only the exact query matches now.
+		$matched = $model->find_exact( '/swappy?a=1' );
+		$this->assertNotNull( $matched );
+		$this->assertSame( $id, (int) $matched->id );
+
+		// A request with a different query should not match the row.
+		$this->assertNull( $model->find_exact( '/swappy?a=2' ) );
+	}
 }
