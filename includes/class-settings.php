@@ -57,6 +57,12 @@ class Settings extends Singleton {
 	protected function init(): void {
 		add_action( 'init', array( $this, 'register' ) );
 		add_action( 'rest_api_init', array( $this, 'register' ) );
+
+		// Hook on the option-specific variant so the diff/dispatch runs
+		// for every write path — Settings::update(), the REST settings
+		// endpoint, and any third-party update_option() call — without
+		// having to wrap each call site.
+		add_action( 'updated_option_' . self::KEY, array( $this, 'on_updated' ), 10, 2 );
 	}
 
 	/**
@@ -172,6 +178,72 @@ class Settings extends Singleton {
 	 */
 	public function update( array $values ): bool {
 		return update_option( self::KEY, $this->sanitize( $values ) );
+	}
+
+	/**
+	 * Dispatch plugin-specific update actions whenever the settings
+	 * option is written.
+	 *
+	 * Hooked on `updated_option_404_to_301_settings` so it fires for
+	 * every write path (Settings::update(), the REST settings endpoint,
+	 * direct `update_option()` calls). WordPress only fires
+	 * `updated_option` when the new value actually differs from the
+	 * old, so no extra diff-against-noop is needed here.
+	 *
+	 * @since 4.1.0
+	 *
+	 * @param mixed $old_value Previous option value.
+	 * @param mixed $value     New option value.
+	 *
+	 * @return void
+	 */
+	public function on_updated( $old_value, $value ): void {
+		$previous = is_array( $old_value ) ? $old_value : array();
+		$current  = is_array( $value ) ? $value : array();
+
+		/**
+		 * Fires after the settings option is successfully written.
+		 *
+		 * Addons should hook here instead of listening for
+		 * `updated_option` on `404_to_301_settings` directly — the
+		 * payload is already sanitised and the previous snapshot is
+		 * passed in so addons don't need to diff against `get_option()`
+		 * themselves.
+		 *
+		 * @since 4.1.0
+		 *
+		 * @param array $current  Sanitised settings just written.
+		 * @param array $previous Settings as they were immediately before this write.
+		 */
+		do_action( '404_to_301_settings_updated', $current, $previous );
+
+		// Per-key signal for addons that only care about a single
+		// setting. Walk the union of both arrays so a freshly added key
+		// (eg. one introduced by an addon's defaults filter) still
+		// fires its first-write event.
+		$keys = array_unique( array_merge( array_keys( $previous ), array_keys( $current ) ) );
+
+		foreach ( $keys as $key ) {
+			$old = array_key_exists( $key, $previous ) ? $previous[ $key ] : null;
+			$new = array_key_exists( $key, $current ) ? $current[ $key ] : null;
+
+			if ( $old === $new ) {
+				continue;
+			}
+
+			/**
+			 * Fires after a single setting key changes value.
+			 *
+			 * The hook name is dynamic — the suffix is the setting key.
+			 * Example: `404_to_301_setting_updated_email_enabled`.
+			 *
+			 * @since 4.1.0
+			 *
+			 * @param mixed $new New value (sanitised).
+			 * @param mixed $old Previous value, or null if the key did not exist before.
+			 */
+			do_action( "404_to_301_setting_updated_{$key}", $new, $old );
+		}
 	}
 
 	/**
