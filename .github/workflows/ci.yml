@@ -3,9 +3,9 @@ name: CI
 # Run on every push and pull request that targets a long-lived branch.
 on:
   push:
-    branches: [ main, master, develop, 'new/**' ]
+    branches: [ master, dev, 'new/**', 'fix/**', 'improve/**' ]
   pull_request:
-    branches: [ main, master, develop ]
+    branches: [ master, dev ]
 
 # Cancel any in-flight run on the same branch when a new commit lands.
 concurrency:
