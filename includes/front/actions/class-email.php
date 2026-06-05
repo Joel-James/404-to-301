@@ -46,8 +46,8 @@ class Email extends Action {
 			return false;
 		}
 
-		$recipient = (string) $this->setting( 'email_recipient', '' );
-		if ( '' === $recipient || ! is_email( $recipient ) ) {
+		$recipients = $this->recipients();
+		if ( empty( $recipients ) ) {
 			return false;
 		}
 
@@ -87,7 +87,7 @@ class Email extends Action {
 			return;
 		}
 
-		$recipient = (string) $this->setting( 'email_recipient', get_option( 'admin_email' ) );
+		$recipients = $this->recipients();
 
 		// Decoded site name — used in both the subject and the body
 		// greeting so a forwarded email is self-identifying without
@@ -148,17 +148,22 @@ class Email extends Action {
 		$body = implode( "\n", $lines );
 
 		/**
-		 * Filter the notification email recipient, subject and body.
+		 * Filter the notification email recipient(s), subject and body.
+		 *
+		 * `recipient` is an array of validated email addresses since 4.0.0.
+		 * Callbacks that previously returned a string are still honoured
+		 * — `wp_mail()` accepts both forms — but new code should treat
+		 * the field as `string[]`.
 		 *
 		 * @since 4.0.0
 		 *
-		 * @param array{recipient:string,subject:string,body:string} $email   Email payload.
-		 * @param Request                                            $request Current request.
+		 * @param array{recipient:string[],subject:string,body:string} $email   Email payload.
+		 * @param Request                                              $request Current request.
 		 */
 		$email = (array) apply_filters(
 			'404_to_301_email_payload',
 			array(
-				'recipient' => $recipient,
+				'recipient' => $recipients,
 				'subject'   => $subject,
 				'body'      => $body,
 			),
@@ -176,5 +181,28 @@ class Email extends Action {
 		 * @param Request $request Current request.
 		 */
 		do_action( '404_to_301_email_sent', $email, $request );
+	}
+
+	/**
+	 * Resolve the configured recipient list.
+	 *
+	 * Accepts both shapes for resilience: an array is consumed as-is
+	 * and a string (legacy / third-party direct write) is split on the
+	 * usual separators and re-validated. The result is always a clean
+	 * array of valid addresses, possibly empty — when empty the
+	 * caller's `should_run()` short-circuits, matching the historical
+	 * "no valid recipient → skip the action" semantics. There is no
+	 * implicit fallback to `admin_email` here: clearing the field is
+	 * a deliberate way to silence notifications without flipping the
+	 * master toggle.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string[]
+	 */
+	private function recipients(): array {
+		$raw = $this->setting( 'email_recipient', array() );
+
+		return \DuckDev\FourNotFour\Utils\Sanitizer::email_list( $raw );
 	}
 }

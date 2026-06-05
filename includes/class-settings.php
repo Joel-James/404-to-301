@@ -100,7 +100,7 @@ class Settings extends Singleton {
 
 				// Notifications.
 				'email_enabled'        => false,
-				'email_recipient'      => (string) get_option( 'admin_email' ),
+				'email_recipient'      => array( (string) get_option( 'admin_email' ) ),
 				'email_threshold'      => 1,
 
 				// Internal — not exposed in the settings UI.
@@ -260,7 +260,7 @@ class Settings extends Singleton {
 					break;
 
 				case 'email_recipient':
-					$clean[ $key ] = Sanitizer::email( $raw );
+					$clean[ $key ] = Sanitizer::email_list( $raw );
 					break;
 
 				case 'exclude_paths':
@@ -343,8 +343,11 @@ class Settings extends Singleton {
 
 				'email_enabled'        => array( 'type' => 'boolean' ),
 				'email_recipient'      => array(
-					'type'   => 'string',
-					'format' => 'email',
+					'type'  => 'array',
+					'items' => array(
+						'type'   => 'string',
+						'format' => 'email',
+					),
 				),
 				'email_threshold'      => array( 'type' => 'integer' ),
 
@@ -416,7 +419,7 @@ class Settings extends Singleton {
 			}
 
 			if ( isset( $legacy['email_notify_address'] ) ) {
-				$settings['email_recipient'] = Sanitizer::email( (string) $legacy['email_notify_address'] );
+				$settings['email_recipient'] = Sanitizer::email_list( (string) $legacy['email_notify_address'] );
 			}
 
 			if ( isset( $legacy['disable_guessing'] ) ) {

@@ -158,7 +158,7 @@ class FrontActionsTest extends WP_UnitTestCase {
 
 		// Email should have fired exactly once.
 		$this->assertCount( 1, $this->mails );
-		$this->assertSame( 'admin@example.com', $this->mails[0]['to'] );
+		$this->assertSame( array( 'admin@example.com' ), $this->mails[0]['to'] );
 
 		// Redirect action throws the captured-redirect exception.
 		$thrown = null;

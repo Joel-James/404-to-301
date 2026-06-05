@@ -127,7 +127,7 @@ class SettingsTest extends WP_UnitTestCase {
 		$this->assertSame( 'https://example.com/404', $saved['redirect_link'] );
 		$this->assertTrue( $saved['logs_enabled'] );
 		$this->assertTrue( $saved['email_enabled'] );
-		$this->assertSame( 'me@example.com', $saved['email_recipient'] );
+		$this->assertSame( array( 'me@example.com' ), $saved['email_recipient'] );
 		$this->assertTrue( $saved['disable_guessing'] );
 		$this->assertSame( array( '/wp-content', '/foo' ), $saved['exclude_paths'] );
 

@@ -140,6 +140,35 @@ class Sanitizer {
 	}
 
 	/**
+	 * Sanitise a list of email addresses (array, comma-separated, or
+	 * newline-separated).
+	 *
+	 * Each candidate is run through {@see sanitize_email()} and then
+	 * validated with {@see is_email()}; only valid addresses survive.
+	 * Order is preserved, duplicates are dropped.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $value Raw value.
+	 *
+	 * @return string[]
+	 */
+	public static function email_list( $value ): array {
+		$candidates = self::string_list( $value );
+		$clean      = array();
+
+		foreach ( $candidates as $candidate ) {
+			$email = sanitize_email( $candidate );
+			if ( '' === $email || ! is_email( $email ) ) {
+				continue;
+			}
+			$clean[] = $email;
+		}
+
+		return array_values( array_unique( $clean ) );
+	}
+
+	/**
 	 * Sanitise a list of strings (one per line / comma-separated / array).
 	 *
 	 * Accepts either an array or a string containing newline- or
