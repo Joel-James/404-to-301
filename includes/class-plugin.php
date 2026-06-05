@@ -9,7 +9,7 @@
  * The class is intentionally static — there is only one plugin, so
  * carrying around an instance just to read its name would be noise.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

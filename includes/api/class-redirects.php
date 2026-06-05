@@ -7,7 +7,7 @@
  * page consumes these routes via plain `fetch()` (not core-data), so
  * the response shape is intentionally compact and predictable.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

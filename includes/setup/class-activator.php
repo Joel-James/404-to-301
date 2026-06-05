@@ -8,7 +8,7 @@
  * cache warm-up, data migration) is deferred to background processing
  * orchestrated by {@see \DuckDev\FourNotFour\Migration\Migrator}.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

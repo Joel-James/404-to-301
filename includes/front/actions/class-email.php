@@ -7,7 +7,7 @@
  * busy sites — the email only fires once `hits >= threshold` (i.e.
  * the threshold-th hit triggers the notification).
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

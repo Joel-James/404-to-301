@@ -21,7 +21,7 @@
  * `{id}` is the addon's Freemius project id (an integer), matching
  * the `id` field returned in every catalog row.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

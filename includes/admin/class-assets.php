@@ -7,7 +7,7 @@
  * from `npm run build` and their dependency lists live next to them
  * in `*.asset.php`, read via {@see Assets\Utils\Assets::manifest()}.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

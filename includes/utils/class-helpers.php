@@ -6,7 +6,7 @@
  * subsystem: redirect status code catalogue, URL hashing, bot
  * detection, IP packing/unpacking, etc.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

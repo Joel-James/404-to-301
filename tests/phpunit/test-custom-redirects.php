@@ -7,7 +7,7 @@
  * delimiters, hit counter, and the log <-> redirect link maintained
  * by the Redirect action.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

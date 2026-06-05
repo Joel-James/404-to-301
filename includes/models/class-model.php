@@ -11,7 +11,7 @@
  * Subclasses set `$query_class` and add their own typed helpers
  * (`get_by_url()`, `record_hit()` etc.).
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

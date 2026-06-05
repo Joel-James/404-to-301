@@ -2,7 +2,7 @@
 /**
  * `wp 404-to-301 logs ...` subcommands.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

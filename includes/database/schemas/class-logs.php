@@ -7,7 +7,7 @@
  *  - validate values on `Query::add_item()` / `update_item()`,
  *  - drive search / sort / cache-key behaviour on the Query class.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

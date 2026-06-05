@@ -12,7 +12,7 @@
  * deliberately scoped to the import/export workflow so the two paths
  * don't compete for the same route.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

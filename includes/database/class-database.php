@@ -13,7 +13,7 @@
  * and Phase 1 of the v3 -> v4 migration assumes the redirects table
  * already exists.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

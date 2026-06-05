@@ -6,7 +6,7 @@
  * SQL, exercises a migrator entry point, and asserts the resulting
  * shape of the v4 tables and the migration flags.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

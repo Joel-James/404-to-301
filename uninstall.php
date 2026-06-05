@@ -15,7 +15,7 @@
  * `DROP TABLE`s — the file stays readable so audits can confirm
  * "deleting the plugin actually deletes the plugin's data".
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

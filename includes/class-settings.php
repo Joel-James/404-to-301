@@ -11,7 +11,7 @@
  * option `i4t3_gnrl_options` is the only data on disk, we map it to
  * the v4 schema once on activation and then forget it lived.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

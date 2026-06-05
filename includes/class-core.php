@@ -11,7 +11,7 @@
  * of truth, and subclassing it would let third-party code reorder the
  * sequence in ways that are very hard to debug.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

@@ -17,7 +17,7 @@
  * Also hooks the WordPress `redirect_canonical` filter to honour the
  * "disable URL guessing" setting.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

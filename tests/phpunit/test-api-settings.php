@@ -3,7 +3,7 @@
  * Tests for the `/settings/export` and `/settings/import` REST
  * endpoints (#9).
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

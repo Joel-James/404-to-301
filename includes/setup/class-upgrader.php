@@ -10,7 +10,7 @@
  * The class is intentionally non-destructive: each step is idempotent,
  * so a partial run followed by a full re-run lands at the same place.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

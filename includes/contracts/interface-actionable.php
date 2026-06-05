@@ -7,7 +7,7 @@
  * \DuckDev\FourNotFour\Front\Controller} hands the current request
  * to a chain of Actionables and runs each one in turn.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

@@ -2,7 +2,7 @@
 /**
  * 404 logs REST endpoint.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

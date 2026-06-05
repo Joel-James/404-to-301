@@ -6,7 +6,7 @@
  * routes are dispatched through {@see rest_get_server()} so the
  * permission callback, arg validation and response shaping all run.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

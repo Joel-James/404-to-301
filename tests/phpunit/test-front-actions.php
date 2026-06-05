@@ -7,7 +7,7 @@
  * circuited by hooking `404_to_301_pre_redirect` and throwing — the
  * test then captures the would-be URL + status code from the hook.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

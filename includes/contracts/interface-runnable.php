@@ -5,7 +5,7 @@
  * Each plugin CLI command implements this interface so the root
  * command (`wp 404-to-301`) can register them uniformly.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

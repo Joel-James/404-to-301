@@ -7,7 +7,7 @@
  * after that instance is built. The implementation prevents cloning and
  * unserialising so the single instance contract cannot be broken.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

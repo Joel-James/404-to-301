@@ -3,7 +3,7 @@
  * Tests for the {@see \DuckDev\FourNotFour\Models\Logs} and
  * {@see \DuckDev\FourNotFour\Models\Redirects} facades.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

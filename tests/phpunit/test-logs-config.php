@@ -6,7 +6,7 @@
  * `logs_skip_duplicates`, `exclude_paths` and `logs_retention_days`
  * each shape what the Log action and prune routine actually do.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

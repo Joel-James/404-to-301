@@ -10,7 +10,7 @@
  * expected type. None of them throw — failure modes return the
  * documented fallback so callers don't need try/catch blocks.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

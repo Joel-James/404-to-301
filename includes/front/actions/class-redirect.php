@@ -6,7 +6,7 @@
  * default. The action fires before `Log` / `Email` are scheduled
  * because a successful redirect terminates the request (via `exit`).
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

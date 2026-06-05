@@ -13,7 +13,7 @@
  * boot. Keeping registration on each subcommand class means adding a
  * new top-level verb is a one-class change.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

@@ -3,7 +3,7 @@
  * Tests for the URL-normalisation policy and the
  * `404_to_301_normalise_url` filter (#8).
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

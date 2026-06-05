@@ -6,7 +6,7 @@
  * versioning. We just declare the table name, version and per-version
  * upgrade routines.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

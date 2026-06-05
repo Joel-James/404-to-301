@@ -7,7 +7,7 @@
  * tracked. Honours the plugin's "skip bots" and "skip duplicates"
  * settings.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

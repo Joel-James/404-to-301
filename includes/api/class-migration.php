@@ -7,7 +7,7 @@
  *  - `POST   /migration` — start phase 2.
  *  - `DELETE /migration` — abort.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

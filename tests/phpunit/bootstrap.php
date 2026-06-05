@@ -11,7 +11,7 @@
  *    once to install the WordPress test scaffolding under `/tmp/`.
  *  - Run `composer install` so the Yoast PHPUnit polyfills are present.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

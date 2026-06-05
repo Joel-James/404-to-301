@@ -13,6 +13,8 @@
  * Domain Path:       /languages
  * Requires PHP:      7.4
  * Requires at least: 6.4
+ *
+ * @package DuckDev\FourNotFour
  */
 
 // If this file is called directly, abort.

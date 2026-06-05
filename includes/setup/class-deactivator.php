@@ -6,7 +6,7 @@
  * deactivation is not the same as uninstallation, so user data and
  * settings are preserved — full cleanup happens in `uninstall.php`.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

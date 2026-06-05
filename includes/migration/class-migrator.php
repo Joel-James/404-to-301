@@ -23,7 +23,7 @@
  * then it is the source of truth, so we can resume cleanly after a
  * deactivation / fatal / crash.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

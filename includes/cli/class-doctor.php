@@ -11,7 +11,7 @@
  * Addons can register their own checks via the
  * `404_to_301_doctor_checks` filter.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

@@ -8,7 +8,7 @@
  * and passed into every Actionable so the actions don't need to peek
  * at `$_SERVER` themselves.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

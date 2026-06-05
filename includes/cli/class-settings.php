@@ -2,7 +2,7 @@
 /**
  * `wp 404-to-301 settings ...` subcommands.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

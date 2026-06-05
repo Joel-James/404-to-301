@@ -7,7 +7,7 @@
  * shape, error paths for unregistered ids) and seed the SDK's local
  * activation option directly. Nothing hits the network.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

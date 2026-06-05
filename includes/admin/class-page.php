@@ -9,7 +9,7 @@
  * The mount-point markup is literally one div per page, so we emit it
  * inline rather than load a template file — see {@see self::mount()}.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

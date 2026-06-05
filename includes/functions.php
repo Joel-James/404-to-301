@@ -8,7 +8,7 @@
  * on {@see \DuckDev\FourNotFour\Core}, so swapping the underlying
  * class out at the core level swaps it out everywhere.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

@@ -2,7 +2,7 @@
 /**
  * Bulk-action coverage that complements the per-row REST tests.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

@@ -13,7 +13,7 @@
  * admin pages are just React mount-points; the real UI lives in
  * `assets/src/`.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

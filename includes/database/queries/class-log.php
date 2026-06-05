@@ -6,7 +6,7 @@
  * (where clauses, ordering, pagination, caching, meta-style queries).
  * We just point it at the table + row shape and let it work.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

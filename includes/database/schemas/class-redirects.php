@@ -2,7 +2,7 @@
 /**
  * Schema for the custom redirects table.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

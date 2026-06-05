@@ -10,7 +10,7 @@
  * defaults when the manifest is missing (typically because the bundle
  * has not been built yet in a dev environment).
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

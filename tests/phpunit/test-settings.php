@@ -2,7 +2,7 @@
 /**
  * Tests for {@see \DuckDev\FourNotFour\Settings}.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

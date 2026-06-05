@@ -7,7 +7,7 @@
  * class exists so we can expose typed accessors (eg. unpacking the
  * binary IP) without leaking that conversion into every consumer.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

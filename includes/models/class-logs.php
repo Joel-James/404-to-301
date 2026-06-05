@@ -2,7 +2,7 @@
 /**
  * Model facade for the 404 logs table.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

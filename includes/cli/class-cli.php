@@ -7,7 +7,7 @@
  * registration in one place means each subcommand only needs to know
  * its own leaf name.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

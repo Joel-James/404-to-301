@@ -10,7 +10,7 @@
  * The class is intentionally tiny — Migrator does the actual chunk
  * processing; Scheduler only decides *who* runs it.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

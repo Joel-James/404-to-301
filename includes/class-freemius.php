@@ -26,7 +26,7 @@
  * The class is a {@see Singleton} so {@see Core} can hand out the
  * same instance everywhere (REST endpoint, React script vars, etc.).
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

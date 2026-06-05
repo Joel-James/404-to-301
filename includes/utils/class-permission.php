@@ -7,7 +7,7 @@
  * defers to {@see Permission::has_access()} instead of calling
  * `current_user_can()` directly.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

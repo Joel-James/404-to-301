@@ -8,7 +8,7 @@
  * discoverable at the type level — a class that `implements Routable`
  * is a class that registers one or more REST routes.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

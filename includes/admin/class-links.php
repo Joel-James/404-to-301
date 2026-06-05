@@ -7,7 +7,7 @@
  * `wp-admin/plugins.php`, so admins can jump straight to the plugin
  * pages without leaving the list table.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );

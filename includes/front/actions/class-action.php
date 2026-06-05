@@ -7,7 +7,7 @@
  * with a fallback, and a no-op default `should_run()` that subclasses
  * can override for short-circuit checks.
  *
- * @package FourNotFour
+ * @package DuckDev\FourNotFour
  */
 
 declare( strict_types = 1 );
