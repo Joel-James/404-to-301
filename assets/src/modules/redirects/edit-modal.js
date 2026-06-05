@@ -22,6 +22,7 @@ const buildSeed = (seed = {}) => ({
 	target_url: seed.target_url ?? '',
 	target_page_id: seed.target_page_id ?? 0,
 	redirect_type: seed.redirect_type ?? 301,
+	query_handling: seed.query_handling ?? 'ignore',
 	is_active: seed.is_active ?? true,
 	notes: seed.notes ?? '',
 })

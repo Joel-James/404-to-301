@@ -111,6 +111,27 @@ export const redirectFormFields = [
 		],
 	},
 	{
+		id: 'query_handling',
+		label: __('Query string', '404-to-301'),
+		type: 'text',
+		Edit: EnumSelectEdit,
+		description: __(
+			'How the source URL\'s query string affects this rule. "Preserve" forwards tracking params (utm_*, gclid, …) to the destination.',
+			'404-to-301',
+		),
+		elements: [
+			{ value: 'ignore', label: __('Ignore — strip on match', '404-to-301') },
+			{
+				value: 'preserve',
+				label: __('Preserve — forward to destination', '404-to-301'),
+			},
+			{
+				value: 'require',
+				label: __('Require — must match exactly', '404-to-301'),
+			},
+		],
+	},
+	{
 		id: 'is_active',
 		label: __('Active', '404-to-301'),
 		// `boolean` isn't a built-in DataForm type; the field's `Edit`
@@ -141,6 +162,7 @@ export const redirectFormLayout = {
 		'target_url',
 		'target_page_id',
 		'redirect_type',
+		'query_handling',
 		'is_active',
 		'notes',
 	],

@@ -97,6 +97,37 @@ class Helpers {
 	}
 
 	/**
+	 * Query-aware SHA1 — keeps the `?query=string` portion as part of
+	 * the hash. Used by `query_handling = 'require'` redirect rows so
+	 * `/old?promo=summer` and `/old?promo=winter` can coexist as two
+	 * distinct exact-match entries.
+	 *
+	 * The path portion goes through the same lower-case + trailing
+	 * slash normalisation as {@see normalise_url()}, but the query
+	 * string is kept verbatim — query values can be case-sensitive
+	 * (tokens, hashes, etc.).
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $url Raw URL or path.
+	 *
+	 * @return string 40-char hexadecimal hash.
+	 */
+	public static function url_hash_with_query( string $url ): string {
+		$url = trim( $url );
+
+		$qpos  = strpos( $url, '?' );
+		$path  = false === $qpos ? $url : substr( $url, 0, $qpos );
+		$query = false === $qpos ? '' : substr( $url, $qpos );
+
+		if ( strlen( $path ) > 1 && '/' === substr( $path, -1 ) ) {
+			$path = rtrim( $path, '/' );
+		}
+
+		return sha1( strtolower( $path ) . $query );
+	}
+
+	/**
 	 * Pack an IP address into its binary form for `VARBINARY(16)` storage.
 	 *
 	 * Uses `inet_pton` so both IPv4 (4 bytes) and IPv6 (16 bytes) fit in

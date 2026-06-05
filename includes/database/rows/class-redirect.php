@@ -121,13 +121,20 @@ class Redirect extends Row {
 	/**
 	 * WP user id that last touched this row.
 	 *
-	 * Null for rows that pre-date the audit column or were written
-	 * outside an HTTP request (CLI, cron, etc.).
+	 * Null for rows written outside an HTTP request (CLI, cron, etc.).
 	 *
-	 * @since 4.1.0
+	 * @since 4.0.0
 	 * @var int|null
 	 */
 	public $modified_by = null;
+
+	/**
+	 * Query-string handling mode. One of `ignore`, `preserve`, `require`.
+	 *
+	 * @since 4.0.0
+	 * @var string
+	 */
+	public $query_handling = 'ignore';
 
 	/**
 	 * Row lifecycle timestamps.

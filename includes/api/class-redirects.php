@@ -371,6 +371,7 @@ class Redirects extends Endpoint {
 			'hits'             => (int) $row->hits,
 			'last_hit_at'      => $row->last_hit_at,
 			'notes'            => $row->notes,
+			'query_handling'   => (string) $row->query_handling,
 			'modified_by'      => $modified_by,
 			'modified_by_name' => $modified_by_name,
 			'created_at'       => $row->created_at,
@@ -451,6 +452,10 @@ class Redirects extends Endpoint {
 			),
 			'is_active'      => array( 'type' => 'boolean' ),
 			'notes'          => array( 'type' => 'string' ),
+			'query_handling' => array(
+				'type' => 'string',
+				'enum' => array( 'ignore', 'preserve', 'require' ),
+			),
 		);
 	}
 
@@ -485,6 +490,11 @@ class Redirects extends Endpoint {
 				case 'match_type':
 				case 'target_type':
 					$data[ $key ] = (string) $value;
+					break;
+
+				case 'query_handling':
+					$mode         = (string) $value;
+					$data[ $key ] = in_array( $mode, array( 'ignore', 'preserve', 'require' ), true ) ? $mode : 'ignore';
 					break;
 
 				case 'target_page_id':

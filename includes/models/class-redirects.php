@@ -76,9 +76,40 @@ class Redirects extends Model {
 	 * @return RedirectRow|null
 	 */
 	public function find_exact( string $url ) {
+		// `require` rows hash the full URL (path + query) and so are
+		// only found via the query-aware hash. Try that first — when
+		// the URL has a query string it can match a require row; when
+		// it doesn't, the two hashes are identical and the single
+		// lookup serves both modes.
+		$with_query = Helpers::url_hash_with_query( $url );
+		$row        = $this->find_exact_by_hash( $with_query );
+		if ( $row instanceof RedirectRow ) {
+			return $row;
+		}
+
+		// Fall back to the query-stripped hash so `/foo?utm=x` still
+		// matches an `ignore` / `preserve` row stored as `/foo`.
+		$without_query = Helpers::url_hash( $url );
+		if ( $without_query === $with_query ) {
+			return null;
+		}
+
+		return $this->find_exact_by_hash( $without_query );
+	}
+
+	/**
+	 * Look up a single active exact-match row by its `source_hash`.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $hash SHA1 of either the normalised URL or the URL+query.
+	 *
+	 * @return RedirectRow|null
+	 */
+	private function find_exact_by_hash( string $hash ) {
 		$query = new RedirectQuery(
 			array(
-				'source_hash' => Helpers::url_hash( $url ),
+				'source_hash' => $hash,
 				'match_type'  => 'exact',
 				'is_active'   => 1,
 				'number'      => 1,
@@ -221,7 +252,7 @@ class Redirects extends Model {
 			return 0;
 		}
 
-		$data['source_hash'] = Helpers::url_hash( $source );
+		$data['source_hash'] = $this->hash_for_mode( $source, (string) ( $data['query_handling'] ?? 'ignore' ) );
 
 		$now                = current_time( 'mysql', true );
 		$data['created_at'] = $now;
@@ -257,8 +288,17 @@ class Redirects extends Model {
 	 * @return bool
 	 */
 	public function update( int $id, array $data ): bool {
-		if ( isset( $data['source'] ) ) {
-			$data['source_hash'] = Helpers::url_hash( (string) $data['source'] );
+		// Either column changing invalidates the hash. When only one
+		// of them is in the payload we read the other from the current
+		// row so the hash stays consistent with what's stored.
+		if ( isset( $data['source'] ) || isset( $data['query_handling'] ) ) {
+			$current = $this->find( $id );
+			$source  = isset( $data['source'] ) ? (string) $data['source'] : (string) ( $current->source ?? '' );
+			$mode    = isset( $data['query_handling'] ) ? (string) $data['query_handling'] : (string) ( $current->query_handling ?? 'ignore' );
+
+			if ( '' !== $source ) {
+				$data['source_hash'] = $this->hash_for_mode( $source, $mode );
+			}
 		}
 
 		$data['updated_at'] = current_time( 'mysql', true );
@@ -315,6 +355,27 @@ class Redirects extends Model {
 	 *
 	 * @return void
 	 */
+	/**
+	 * Hash a source URL according to the row's `query_handling` mode.
+	 *
+	 * `require` rows include the query string in the hash so multiple
+	 * rows can share a path with different query requirements; every
+	 * other mode hashes the path-only form for case-insensitive,
+	 * trailing-slash-tolerant matching.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $source The `source` column value.
+	 * @param string $mode   `ignore` | `preserve` | `require`.
+	 *
+	 * @return string 40-char hex SHA1.
+	 */
+	private function hash_for_mode( string $source, string $mode ): string {
+		return 'require' === $mode
+			? Helpers::url_hash_with_query( $source )
+			: Helpers::url_hash( $source );
+	}
+
 	private function dispatch_audit( string $action, int $id, array $data ): void {
 		$user_id = isset( $data['modified_by'] ) ? (int) $data['modified_by'] : get_current_user_id();
 

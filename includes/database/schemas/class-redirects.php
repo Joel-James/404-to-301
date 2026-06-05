@@ -145,8 +145,7 @@ class Redirects extends Schema {
 		),
 
 		// WP user id that last created or updated this row. Nullable
-		// because rows that pre-date the audit column have no author on
-		// record, and CLI / cron writes (no current user) leave it null.
+		// because CLI / cron writes (no current user) leave it null.
 		array(
 			'name'       => 'modified_by',
 			'type'       => 'bigint',
@@ -155,6 +154,26 @@ class Redirects extends Schema {
 			'allow_null' => true,
 			'default'    => null,
 			'sortable'   => true,
+		),
+
+		// How the query string on the source URL affects matching and
+		// the resolved destination.
+		//
+		// - `ignore`   — default; query string stripped before matching
+		//                and not appended to the destination.
+		// - `preserve` — query string stripped before matching, but the
+		//                request's query is appended to the destination
+		//                so tracking params survive the redirect.
+		// - `require`  — query string is part of the match (the row's
+		//                `source` includes `?…` and the hash is
+		//                computed including it). Only meaningful for
+		//                `match_type = 'exact'`.
+		array(
+			'name'     => 'query_handling',
+			'type'     => 'varchar',
+			'length'   => '10',
+			'default'  => 'ignore',
+			'sortable' => true,
 		),
 
 		// Row lifecycle timestamps.

@@ -75,6 +75,15 @@ class Redirect extends Action {
 		if ( $row instanceof RedirectRow ) {
 			$target = $row->resolve_target();
 			$status = (int) $row->redirect_type;
+
+			// `preserve` rows carry the request's query string across
+			// to the destination so tracking params (utm_*, gclid, …)
+			// survive the redirect. `require` rows already include the
+			// query in the match — preserving it again would double
+			// up; `ignore` is the explicit opt-out.
+			if ( '' !== $target && 'preserve' === (string) $row->query_handling ) {
+				$target = $this->append_request_query( $target, $request->url() );
+			}
 		} elseif ( $request->is_404() ) {
 			// No per-row match: only fall back to the global default
 			// when this actually is a 404 (we should never redirect a
@@ -167,5 +176,55 @@ class Redirect extends Action {
 			default:
 				return '';
 		}
+	}
+
+	/**
+	 * Append the request's query string to a destination URL.
+	 *
+	 * Used by `query_handling = 'preserve'` redirect rows. Merges
+	 * sensibly when the destination already carries its own query —
+	 * the destination's keys win on collision so an admin's explicit
+	 * `?source=campaign` isn't silently overwritten by a request-side
+	 * `?source=user`.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $target      Destination URL (may already have a query).
+	 * @param string $request_url Raw request URI (path + query).
+	 *
+	 * @return string
+	 */
+	private function append_request_query( string $target, string $request_url ): string {
+		$qpos = strpos( $request_url, '?' );
+		if ( false === $qpos ) {
+			return $target;
+		}
+
+		$incoming = substr( $request_url, $qpos + 1 );
+		if ( '' === $incoming ) {
+			return $target;
+		}
+
+		$args = array();
+		wp_parse_str( $incoming, $args );
+
+		if ( empty( $args ) ) {
+			return $target;
+		}
+
+		// Resolve collisions key-by-key so the destination's own query
+		// args (which an admin set deliberately when configuring the
+		// row) win over any incoming key of the same name. We pre-fill
+		// from the incoming request, then layer the destination's
+		// existing args on top.
+		$existing = array();
+		$dest_q   = strpos( $target, '?' );
+		if ( false !== $dest_q ) {
+			wp_parse_str( substr( $target, $dest_q + 1 ), $existing );
+		}
+
+		$merged = array_merge( $args, $existing );
+
+		return add_query_arg( $merged, $target );
 	}
 }

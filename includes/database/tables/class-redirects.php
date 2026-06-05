@@ -43,12 +43,16 @@ final class Redirects extends Table {
 	/**
 	 * Per-version upgrade routines.
 	 *
+	 * Bumping `$version` is enough for plain column additions — dbDelta
+	 * runs from the schema string above and adds missing columns
+	 * automatically. We only need explicit `__<version>` callbacks
+	 * here when an alteration can't be expressed in the base schema
+	 * (data backfills, index renames, type changes, etc.).
+	 *
 	 * @since 4.0.0
 	 * @var array<string, string>
 	 */
-	protected $upgrades = array(
-		'4.1.0' => '__4_1_0',
-	);
+	protected $upgrades = array();
 
 	/**
 	 * Wire the schema in.
@@ -72,6 +76,7 @@ final class Redirects extends Table {
 			last_hit_at     DATETIME                          DEFAULT NULL,
 			notes           TEXT                              DEFAULT NULL,
 			modified_by     BIGINT(20)    UNSIGNED            DEFAULT NULL,
+			query_handling  VARCHAR(10)             NOT NULL  DEFAULT 'ignore',
 			created_at      DATETIME                NOT NULL  DEFAULT '0000-00-00 00:00:00',
 			updated_at      DATETIME                NOT NULL  DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY (id),
@@ -81,39 +86,5 @@ final class Redirects extends Table {
 			KEY match_type (match_type),
 			KEY modified_by (modified_by)
 		";
-	}
-
-	/**
-	 * 4.1.0 upgrade: add the `modified_by` column for the audit trail.
-	 *
-	 * Idempotent — checks `information_schema` before the `ALTER` so
-	 * re-runs (or sites that ship with a freshly-created v4.1.0 table)
-	 * don't fail with "duplicate column".
-	 *
-	 * @since 4.1.0
-	 *
-	 * @return bool
-	 */
-	protected function __4_1_0(): bool { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore, PHPCompatibility.FunctionNameRestrictions.ReservedFunctionNames.MethodDoubleUnderscore -- BerlinDB looks up schema upgrade callbacks by the `__<version>` naming convention.
-		$db = $this->get_db();
-
-		if ( empty( $db ) ) {
-			return false;
-		}
-
-		$exists = $db->get_var(
-			$db->prepare(
-				'SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
-				DB_NAME,
-				$this->table_name,
-				'modified_by'
-			)
-		);
-
-		if ( ! $exists ) {
-			$db->query( "ALTER TABLE {$this->table_name} ADD COLUMN modified_by BIGINT(20) UNSIGNED DEFAULT NULL AFTER notes, ADD KEY modified_by (modified_by)" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
-		}
-
-		return true;
 	}
 }
