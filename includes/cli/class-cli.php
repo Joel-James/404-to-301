@@ -59,5 +59,6 @@ class CLI implements Runnable {
 		Redirects::register();
 		Settings::register();
 		Migrate::register();
+		Doctor::register();
 	}
 }
