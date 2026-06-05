@@ -67,7 +67,7 @@ Yes — the BerlinDB-backed tables are per-site, so each site keeps its own logs
 
 1. 404 logs page with filters, bulk actions and lifecycle status.
 2. Custom redirects with exact / prefix / regex matching.
-3. Settings page split across General, Redirects, Logs and Notifications tabs.
+3. Settings page split across General, Redirects, Logs, Notifications and Tools tabs.
 
 == Changelog ==
 

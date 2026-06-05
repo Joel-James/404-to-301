@@ -58,11 +58,25 @@ class Settings extends Singleton {
 		add_action( 'init', array( $this, 'register' ) );
 		add_action( 'rest_api_init', array( $this, 'register' ) );
 
-		// Hook on the option-specific variant so the diff/dispatch runs
-		// for every write path — Settings::update(), the REST settings
-		// endpoint, and any third-party update_option() call — without
-		// having to wrap each call site.
-		add_action( 'updated_option_' . self::KEY, array( $this, 'on_updated' ), 10, 2 );
+		// Hook on the option-specific variants so the diff/dispatch
+		// runs for every write path — Settings::update(), the REST
+		// settings endpoint, and any third-party update_option() call —
+		// without having to wrap each call site.
+		//
+		// Note: WP fires `update_option_{$option}` (no trailing "d")
+		// as the option-specific post-write hook; there is no
+		// `updated_option_{$option}` action — that one only exists in
+		// the generic form. The argument order on the specific hook is
+		// `(old_value, new_value, option_name)`.
+		add_action( 'update_option_' . self::KEY, array( $this, 'on_updated' ), 10, 3 );
+
+		// `update_option()` calls `add_option()` internally on the very
+		// first write (when the option row doesn't exist yet), and the
+		// `update_option_*` hook is silent in that case. Listen for
+		// the add too so addons see the initial creation event with the
+		// same payload shape — `$old_value` is normalised to an empty
+		// array when we dispatch.
+		add_action( 'add_option_' . self::KEY, array( $this, 'on_added' ), 10, 2 );
 	}
 
 	/**
@@ -186,23 +200,53 @@ class Settings extends Singleton {
 	}
 
 	/**
-	 * Dispatch plugin-specific update actions whenever the settings
-	 * option is written.
+	 * `add_option_<KEY>` adapter — first-write event.
 	 *
-	 * Hooked on `updated_option_404_to_301_settings` so it fires for
-	 * every write path (Settings::update(), the REST settings endpoint,
-	 * direct `update_option()` calls). WordPress only fires
-	 * `updated_option` when the new value actually differs from the
-	 * old, so no extra diff-against-noop is needed here.
+	 * WP fires this hook the first time the option row is inserted
+	 * (the path `update_option()` falls into when no prior row exists).
+	 * The argument order is `(string $option_name, mixed $value)` —
+	 * different from `update_option_*` — so we normalise into the same
+	 * payload shape `on_updated()` produces and dispatch through that.
 	 *
-	 * @since 4.1.0
+	 * @since 4.0.0
 	 *
-	 * @param mixed $old_value Previous option value.
-	 * @param mixed $value     New option value.
+	 * @param string $option_name Option key (always `self::KEY` here).
+	 * @param mixed  $value       New option value.
 	 *
 	 * @return void
 	 */
-	public function on_updated( $old_value, $value ): void {
+	public function on_added( $option_name, $value ): void {
+		unset( $option_name );
+		$this->on_updated( array(), $value );
+	}
+
+	/**
+	 * Dispatch plugin-specific update actions whenever the settings
+	 * option is written.
+	 *
+	 * Hooked on `update_option_404_to_301_settings` (option-specific
+	 * post-write action) so the diff/dispatch runs for every write
+	 * path — {@see self::update()}, the REST `/wp/v2/settings` bridge,
+	 * and any direct `update_option()` call — without having to wrap
+	 * each call site. WordPress only fires this hook when the new
+	 * value actually differs from the old, so the per-key loop below
+	 * never has to defend against a no-op update.
+	 *
+	 * The `$option_name` parameter is part of the hook's signature on
+	 * the specific variant; it's always `self::KEY` here and so isn't
+	 * used. Defaulted so the method is still callable directly from
+	 * {@see self::on_added()} with only two arguments.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed  $old_value   Previous option value.
+	 * @param mixed  $value       New option value.
+	 * @param string $option_name Option name fired through the hook.
+	 *
+	 * @return void
+	 */
+	public function on_updated( $old_value, $value, $option_name = '' ): void {
+		unset( $option_name );
 		$previous = is_array( $old_value ) ? $old_value : array();
 		$current  = is_array( $value ) ? $value : array();
 

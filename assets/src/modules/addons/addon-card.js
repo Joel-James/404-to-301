@@ -1,5 +1,4 @@
 import { __ } from '@wordpress/i18n'
-import { useState } from '@wordpress/element'
 import {
 	Button,
 	Card,
@@ -10,81 +9,10 @@ import {
 	Flex,
 	FlexBlock,
 	FlexItem,
-	Spinner,
 } from '@wordpress/components'
-
-/**
- * Banner image with a native WP <Spinner /> shown while the asset
- * is in-flight. Banner assets come from Freemius and can be slow on
- * flaky connections, so we keep the card layout stable with a fixed
- * aspect-ratio container (see SCSS) and overlay the spinner until
- * the browser fires `load` (or `error`).
- *
- * @param {Object} props
- * @param {string} props.src Image URL.
- * @param {string} props.alt Alternative text.
- */
-const BannerImage = ({ src, alt }) => {
-	const [isLoaded, setIsLoaded] = useState(false)
-
-	return (
-		<>
-			{!isLoaded && (
-				<span className="d404-addon-banner__spinner" aria-hidden="true">
-					<Spinner />
-				</span>
-			)}
-			<img
-				src={src}
-				alt={alt}
-				loading="lazy"
-				className="d404-addon-banner__img"
-				onLoad={() => setIsLoaded(true)}
-				onError={() => setIsLoaded(true)}
-			/>
-		</>
-	)
-}
-
-/**
- * Small status pill used in the card header.
- *
- * Variants: `free` (grey), `premium` (blue), `success` (green —
- * for an activated license) and `warning` (amber — for an inactive
- * license on an installed addon).
- *
- * @param {Object} props
- * @param {string} [props.kind='default'] One of the variants above.
- * @param {Object} props.children          Badge label.
- */
-const Badge = ({ children, kind = 'default' }) => (
-	<span className={`d404-addon-badge d404-addon-badge--${kind}`}>
-		{children}
-	</span>
-)
-
-/**
- * License-state badge — returns the matching `<Badge />` or `null`
- * when there's nothing meaningful to show. We only paint it for
- * addons that are locally registered, otherwise users get a
- * misleading "Unlicensed" for addons they haven't even installed.
- *
- * @param {Object}  props
- * @param {boolean} props.isActive          Whether the addon is registered locally.
- * @param {boolean} props.isLicenseActive   Whether the stored license is activated.
- * @return {JSX.Element|null}
- */
-const LicenseBadge = ({ isActive, isLicenseActive }) => {
-	if (!isActive) {
-		return null
-	}
-
-	return isLicenseActive ? (
-		<Badge kind="success">{__('Licensed', '404-to-301')}</Badge>
-	) : (
-		<Badge kind="warning">{__('Unlicensed', '404-to-301')}</Badge>
-	)
-}
+import BannerImage from './components/banner-image'
+import Badge from './components/badge'
+import LicenseBadge from './components/license-badge'
 
 /**
  * Single addon card.

@@ -3,6 +3,7 @@ import General from './general'
 import Redirects from './redirects'
 import Logs from './logs'
 import Notifications from './notifications'
+import Tools from './tools'
 
 /**
  * Tab registry: key => { label, component }.
@@ -26,6 +27,10 @@ const tabs = {
 	notifications: {
 		label: __('Notifications', '404-to-301'),
 		component: Notifications,
+	},
+	tools: {
+		label: __('Tools', '404-to-301'),
+		component: Tools,
 	},
 }
 

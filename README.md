@@ -30,43 +30,6 @@ Automatically redirect every 404 error to any page using a 301 redirect, log eve
 
 ---
 
-## Folder layout
-
-```
-404-to-301/
-├── 404-to-301.php             # bootstrap (constants, autoload, plugins_loaded boot)
-├── uninstall.php              # drops options + tables on plugin delete
-├── includes/                  # all PHP
-│   ├── class-core.php         # final Core extends Singleton
-│   ├── class-plugin.php       # SLUG, PAGE_*, screen ids, urls
-│   ├── class-settings.php     # option-backed settings + REST
-│   ├── class-freemius.php     # licensing wrapper
-│   ├── admin/                 # Menu, Assets, Page, Links
-│   ├── api/                   # REST endpoints
-│   ├── database/              # BerlinDB schemas/tables/queries/rows
-│   ├── models/                # facades the rest of the plugin talks to
-│   ├── front/                 # Controller + Request + Actions
-│   ├── migration/             # v3 → v4 chunked migrator
-│   ├── cli/                   # WP-CLI subcommands
-│   ├── contracts/             # Routable, Runnable, Actionable interfaces
-│   ├── setup/                 # Activator, Deactivator, Upgrader
-│   └── utils/                 # Singleton, Permission, Helpers, Sanitizer, Assets
-├── templates/                 # PHP mount points the admin React apps attach to
-├── assets/src/                # React + SCSS sources
-│   ├── settings.js logs.js redirects.js addons.js  # entry files
-│   ├── common/                # PageHeader, PageBody, TabNav, Footer, Notices
-│   ├── hooks/                 # use-settings, use-logs, use-redirects, ...
-│   ├── modules/               # one folder per page: settings/, logs/, ...
-│   └── styles/                # shared.scss + per-page partials
-├── build/                     # wp-scripts output (gitignored)
-├── bin/                       # install-wp-tests.sh, pack.sh
-├── tests/phpunit/             # PHPUnit tests
-├── languages/                 # POT + translations
-└── .github/workflows/         # ci.yml + release.yml
-```
-
----
-
 ## Development
 
 Install dependencies:

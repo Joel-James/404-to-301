@@ -142,3 +142,13 @@ $prefix: '#{variables.$prefix}';
 		margin-top: 4px;
 	}
 }
+
+// Import / Export action row — lay the two buttons out side-by-side
+// with the same 12px gap used between repeater controls so the spacing
+// reads as part of the same design system rather than ad-hoc.
+.#{$prefix}-import-export-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+}
