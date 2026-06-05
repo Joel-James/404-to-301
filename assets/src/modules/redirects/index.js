@@ -26,6 +26,7 @@ const RedirectsPage = () => {
 		createRedirect,
 		updateRedirect,
 		deleteRedirects,
+		bulkUpdateRedirects,
 	} = useRedirects(view)
 
 	return (
@@ -51,6 +52,7 @@ const RedirectsPage = () => {
 					setView={setView}
 					updateRedirect={updateRedirect}
 					deleteRedirects={deleteRedirects}
+					bulkUpdateRedirects={bulkUpdateRedirects}
 				/>
 			</PageBody>
 

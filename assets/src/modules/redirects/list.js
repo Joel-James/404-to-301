@@ -16,6 +16,8 @@ const getItemId = (item) => String(item.id)
  * is controlled here so {@see BulkActions} can portal a dropdown into
  * the native DataViews footer.
  */
+const collectIds = (rows) => rows.map((r) => r.id)
+
 const List = ({
 	items,
 	total,
@@ -25,6 +27,7 @@ const List = ({
 	setView,
 	updateRedirect,
 	deleteRedirects,
+	bulkUpdateRedirects,
 }) => {
 	const [editing, setEditing] = useState(null)
 	const [selection, setSelection] = useState([])
@@ -36,13 +39,29 @@ const List = ({
 			{
 				id: 'edit',
 				label: __('Edit', '404-to-301'),
+				supportsBulk: false,
 				callback: ([item]) => setEditing(item),
 			},
 			{
 				id: 'toggle',
 				label: __('Toggle active', '404-to-301'),
+				supportsBulk: false,
 				callback: ([item]) =>
 					updateRedirect(item.id, { is_active: !item.is_active }),
+			},
+			{
+				id: 'activate',
+				label: __('Activate', '404-to-301'),
+				supportsBulk: true,
+				callback: (rows) =>
+					bulkUpdateRedirects(collectIds(rows), { is_active: true }),
+			},
+			{
+				id: 'deactivate',
+				label: __('Deactivate', '404-to-301'),
+				supportsBulk: true,
+				callback: (rows) =>
+					bulkUpdateRedirects(collectIds(rows), { is_active: false }),
 			},
 			{
 				id: 'delete',
@@ -65,7 +84,7 @@ const List = ({
 				),
 			},
 		],
-		[updateRedirect, deleteRedirects],
+		[updateRedirect, deleteRedirects, bulkUpdateRedirects],
 	)
 
 	return (

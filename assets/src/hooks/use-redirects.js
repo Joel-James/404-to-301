@@ -183,6 +183,48 @@ const useRedirects = (view) => {
 		[fetchRedirects, createSuccessNotice, createErrorNotice],
 	)
 
+	/**
+	 * Apply a column change to many redirects in a single API call.
+	 *
+	 * Funnels the Activate / Deactivate bulk actions through the
+	 * server's `/redirects/bulk-update` endpoint instead of fanning
+	 * out per-id `PATCH /redirects/{id}` requests. The table is
+	 * refetched once after the server confirms instead of per-row.
+	 */
+	const bulkUpdateRedirects = useCallback(
+		async (ids, data) => {
+			const list = (Array.isArray(ids) ? ids : [ids])
+				.map((id) => parseInt(id, 10))
+				.filter((id) => id > 0)
+
+			if (list.length === 0 || !data || Object.keys(data).length === 0) {
+				return false
+			}
+
+			try {
+				await apiFetch({
+					path: `${BASE}/bulk-update`,
+					method: 'POST',
+					data: { ids: list, ...data },
+				})
+				createSuccessNotice(
+					list.length > 1
+						? __('Redirects updated.', '404-to-301')
+						: __('Redirect updated.', '404-to-301'),
+				)
+				await fetchRedirects()
+				return true
+			} catch (e) {
+				createErrorNotice(
+					e?.message ||
+						__('Failed to update redirect(s).', '404-to-301'),
+				)
+				return false
+			}
+		},
+		[fetchRedirects, createSuccessNotice, createErrorNotice],
+	)
+
 	return {
 		items,
 		total,
@@ -191,6 +233,7 @@ const useRedirects = (view) => {
 		createRedirect,
 		updateRedirect,
 		deleteRedirects,
+		bulkUpdateRedirects,
 		refresh: fetchRedirects,
 	}
 }

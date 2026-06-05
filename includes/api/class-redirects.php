@@ -71,6 +71,33 @@ class Redirects extends Endpoint {
 			)
 		);
 
+		// Dedicated bulk-update endpoint. Keeps `PATCH /redirects/{id}`
+		// for single-item updates and gives bulk operations a single
+		// round-trip instead of N concurrent requests.
+		register_rest_route(
+			self::NAMESPACE,
+			'/redirects/bulk-update',
+			array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'bulk_update' ),
+					'permission_callback' => array( $this, 'require_access' ),
+					'args'                => array(
+						'ids'           => array(
+							'type'     => 'array',
+							'required' => true,
+							'items'    => array( 'type' => 'integer' ),
+						),
+						'is_active'     => array( 'type' => 'boolean' ),
+						'redirect_type' => array(
+							'type' => 'integer',
+							'enum' => array( 301, 302, 307 ),
+						),
+					),
+				),
+			)
+		);
+
 		register_rest_route(
 			self::NAMESPACE,
 			'/redirects/(?P<id>\d+)',
@@ -258,6 +285,54 @@ class Redirects extends Endpoint {
 		}
 
 		return $this->respond( array( 'deleted' => $deleted ) );
+	}
+
+	/**
+	 * POST /redirects/bulk-update — apply a small set of column changes
+	 * to every selected row in a single round-trip.
+	 *
+	 * Supported columns: `is_active`, `redirect_type`. The endpoint
+	 * intentionally accepts only a curated subset of writable fields —
+	 * bulk-editing `source` or `target_url` makes no sense (every row
+	 * would end up identical), and a "set everything" API would be
+	 * easy to misuse from the UI.
+	 *
+	 * Any column not in the payload is left untouched. Passing no
+	 * mutating fields is a no-op that returns `{ updated: 0 }`.
+	 *
+	 * @since 4.1.0
+	 *
+	 * @param WP_REST_Request $request REST request.
+	 *
+	 * @return WP_REST_Response Body shape: `{ updated: int }`.
+	 */
+	public function bulk_update( WP_REST_Request $request ): WP_REST_Response {
+		$ids   = array_map( 'intval', (array) $request->get_param( 'ids' ) );
+		$data  = array();
+		$model = RedirectsModel::instance();
+
+		$is_active = $request->get_param( 'is_active' );
+		if ( null !== $is_active ) {
+			$data['is_active'] = (int) (bool) $is_active;
+		}
+
+		$redirect_type = $request->get_param( 'redirect_type' );
+		if ( null !== $redirect_type ) {
+			$data['redirect_type'] = (int) $redirect_type;
+		}
+
+		if ( empty( $data ) || empty( $ids ) ) {
+			return $this->respond( array( 'updated' => 0 ) );
+		}
+
+		$updated = 0;
+		foreach ( $ids as $id ) {
+			if ( $id > 0 && $model->update( $id, $data ) ) {
+				++$updated;
+			}
+		}
+
+		return $this->respond( array( 'updated' => $updated ) );
 	}
 
 	/**
