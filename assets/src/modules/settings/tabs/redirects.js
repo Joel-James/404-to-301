@@ -10,6 +10,7 @@ import {
 	__experimentalInputControlPrefixWrapper as InputControlPrefixWrapper,
 } from '@wordpress/components'
 import { Icon, link } from '@wordpress/icons'
+import { applyFilters } from '@wordpress/hooks'
 import useSettings from '../../../hooks/use-settings'
 
 const RedirectsTab = () => {
@@ -17,6 +18,31 @@ const RedirectsTab = () => {
 
 	const enabled = !!getSetting('redirect_enabled', true)
 	const target = getSetting('redirect_target', 'link')
+
+	/*
+	 * Addon extension point. Addons hook into
+	 * `d404.settings.redirects.fields` via `@wordpress/hooks` and return
+	 * one or more React nodes rendered at the end of the Redirect
+	 * PanelBody. The filter receives the `getSetting` / `setSetting`
+	 * accessors so the injected controls read and write through the
+	 * same hook the built-in fields use.
+	 *
+	 * Note: the hook name must start with a letter — `@wordpress/hooks`
+	 * rejects names that lead with a digit, so we use the `d404` prefix
+	 * here instead of `404_to_301`.
+	 */
+	const extra = applyFilters(
+		'd404.settings.redirects.fields',
+		null,
+		{ getSetting, setSetting },
+	)
+
+	/*
+	 * Cross-sell slot. No default promo today, but the filter exists so
+	 * addons can inject (or replace) one without a future parent-side
+	 * code change.
+	 */
+	const crossSell = applyFilters('d404.settings.redirects.cross_sell', null)
 
 	return (
 		<PanelBody title={__('Redirect', '404-to-301')}>
@@ -148,6 +174,9 @@ const RedirectsTab = () => {
 					/>
 				</PanelRow>
 			)}
+
+			{extra}
+			{crossSell}
 		</PanelBody>
 	)
 }
