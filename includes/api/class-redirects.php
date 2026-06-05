@@ -349,20 +349,32 @@ class Redirects extends Endpoint {
 			return array();
 		}
 
+		$modified_by      = null === $row->modified_by ? null : (int) $row->modified_by;
+		$modified_by_name = '';
+		if ( $modified_by ) {
+			// `display_name` is the canonical human label across the
+			// admin UI. `get_userdata()` returns false on a stale id so
+			// we degrade gracefully when the user has been deleted.
+			$user             = get_userdata( $modified_by );
+			$modified_by_name = $user ? (string) $user->display_name : '';
+		}
+
 		return array(
-			'id'             => (int) $row->id,
-			'source'         => (string) $row->source,
-			'match_type'     => (string) $row->match_type,
-			'target_type'    => (string) $row->target_type,
-			'target_url'     => (string) $row->target_url,
-			'target_page_id' => null === $row->target_page_id ? null : (int) $row->target_page_id,
-			'redirect_type'  => (int) $row->redirect_type,
-			'is_active'      => (bool) $row->is_active,
-			'hits'           => (int) $row->hits,
-			'last_hit_at'    => $row->last_hit_at,
-			'notes'          => $row->notes,
-			'created_at'     => $row->created_at,
-			'updated_at'     => $row->updated_at,
+			'id'               => (int) $row->id,
+			'source'           => (string) $row->source,
+			'match_type'       => (string) $row->match_type,
+			'target_type'      => (string) $row->target_type,
+			'target_url'       => (string) $row->target_url,
+			'target_page_id'   => null === $row->target_page_id ? null : (int) $row->target_page_id,
+			'redirect_type'    => (int) $row->redirect_type,
+			'is_active'        => (bool) $row->is_active,
+			'hits'             => (int) $row->hits,
+			'last_hit_at'      => $row->last_hit_at,
+			'notes'            => $row->notes,
+			'modified_by'      => $modified_by,
+			'modified_by_name' => $modified_by_name,
+			'created_at'       => $row->created_at,
+			'updated_at'       => $row->updated_at,
 		);
 	}
 

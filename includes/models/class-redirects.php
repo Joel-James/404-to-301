@@ -193,7 +193,10 @@ class Redirects extends Model {
 			return false;
 		}
 
-		return $this->update(
+		// Hit counters are bumped by the front-controller — not a
+		// user-initiated edit. Bypass the audit-stamping `update()`
+		// override so a public 404 doesn't masquerade as an admin action.
+		return parent::update(
 			$id,
 			array(
 				'hits'        => (int) $row->hits + 1,
@@ -224,7 +227,23 @@ class Redirects extends Model {
 		$data['created_at'] = $now;
 		$data['updated_at'] = $now;
 
-		return parent::create( $data );
+		// Stamp the author when there's a logged-in user. Caller may
+		// pre-set the key (eg. WP-CLI passing a `--user` flag) — only
+		// fill it in when absent so explicit values are preserved.
+		if ( ! array_key_exists( 'modified_by', $data ) ) {
+			$user_id = get_current_user_id();
+			if ( $user_id > 0 ) {
+				$data['modified_by'] = $user_id;
+			}
+		}
+
+		$id = parent::create( $data );
+
+		if ( $id > 0 ) {
+			$this->dispatch_audit( 'created', $id, $data );
+		}
+
+		return $id;
 	}
 
 	/**
@@ -244,6 +263,72 @@ class Redirects extends Model {
 
 		$data['updated_at'] = current_time( 'mysql', true );
 
-		return parent::update( $id, $data );
+		// Stamp the author when there's a logged-in user. See
+		// `create()` for why explicit caller values are preserved.
+		if ( ! array_key_exists( 'modified_by', $data ) ) {
+			$user_id = get_current_user_id();
+			if ( $user_id > 0 ) {
+				$data['modified_by'] = $user_id;
+			}
+		}
+
+		$result = parent::update( $id, $data );
+
+		if ( $result ) {
+			$this->dispatch_audit( 'updated', $id, $data );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Delete a redirect and emit the audit event.
+	 *
+	 * @since 4.1.0
+	 *
+	 * @param int $id Row id.
+	 *
+	 * @return bool
+	 */
+	public function delete( int $id ): bool {
+		$result = parent::delete( $id );
+
+		if ( $result ) {
+			$this->dispatch_audit( 'deleted', $id, array() );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Fire the audit-trail action for a redirect mutation.
+	 *
+	 * Addons (security, compliance, activity-log integrations) hook
+	 * `404_to_301_redirect_audit` to stream the event elsewhere — eg.
+	 * to a SIEM or a third-party activity logger.
+	 *
+	 * @since 4.1.0
+	 *
+	 * @param string $action Mutation type: `created`, `updated`, or `deleted`.
+	 * @param int    $id     Redirect row id.
+	 * @param array  $data   Sanitised data passed to the write. Empty array on delete.
+	 *
+	 * @return void
+	 */
+	private function dispatch_audit( string $action, int $id, array $data ): void {
+		$user_id = isset( $data['modified_by'] ) ? (int) $data['modified_by'] : get_current_user_id();
+
+		/**
+		 * Fires after a redirect row is created, updated, or deleted.
+		 *
+		 * @since 4.1.0
+		 *
+		 * @param string $action  One of `created`, `updated`, `deleted`.
+		 * @param int    $id      Redirect row id.
+		 * @param int    $user_id User responsible for the change, or 0 for
+		 *                        non-user contexts (CLI, cron).
+		 * @param array  $data    Sanitised payload that was written. Empty on delete.
+		 */
+		do_action( '404_to_301_redirect_audit', $action, $id, $user_id, $data );
 	}
 }

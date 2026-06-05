@@ -144,6 +144,19 @@ class Redirects extends Schema {
 			'searchable' => true,
 		),
 
+		// WP user id that last created or updated this row. Nullable
+		// because rows that pre-date the audit column have no author on
+		// record, and CLI / cron writes (no current user) leave it null.
+		array(
+			'name'       => 'modified_by',
+			'type'       => 'bigint',
+			'length'     => '20',
+			'unsigned'   => true,
+			'allow_null' => true,
+			'default'    => null,
+			'sortable'   => true,
+		),
+
 		// Row lifecycle timestamps.
 		array(
 			'name'       => 'created_at',

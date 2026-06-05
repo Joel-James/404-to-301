@@ -119,6 +119,17 @@ class Redirect extends Row {
 	public $notes = null;
 
 	/**
+	 * WP user id that last touched this row.
+	 *
+	 * Null for rows that pre-date the audit column or were written
+	 * outside an HTTP request (CLI, cron, etc.).
+	 *
+	 * @since 4.1.0
+	 * @var int|null
+	 */
+	public $modified_by = null;
+
+	/**
 	 * Row lifecycle timestamps.
 	 *
 	 * @since 4.0.0

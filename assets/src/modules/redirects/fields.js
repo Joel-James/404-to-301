@@ -151,4 +151,20 @@ export const fields = [
 				empty
 			),
 	},
+	{
+		// Audit-trail column. Hidden by default — not in
+		// `defaultView.fields` — so multi-author teams can opt in from
+		// the DataViews "Fields" picker without bloating the table for
+		// single-author sites.
+		id: 'modified_by',
+		label: __('Last edited by', '404-to-301'),
+		type: 'text',
+		enableSorting: true,
+		render: ({ item }) =>
+			item.modified_by_name ? (
+				<span className="d404-modified-by">{item.modified_by_name}</span>
+			) : (
+				empty
+			),
+	},
 ]
