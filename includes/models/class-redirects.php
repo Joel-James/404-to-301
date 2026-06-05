@@ -376,6 +376,21 @@ class Redirects extends Model {
 			: Helpers::url_hash( $source );
 	}
 
+	/**
+	 * Fire the `404_to_301_redirect_audit` action for a row mutation.
+	 *
+	 * Centralised so create / update / delete all produce the same shape
+	 * — the actor user id is resolved here (falling back to the current
+	 * user when the payload doesn't carry an explicit `modified_by`),
+	 * and the canonical argument order is locked in one place.
+	 *
+	 * @since 4.1.0
+	 *
+	 * @param string $action One of `created`, `updated`, `deleted`.
+	 * @param int    $id     Affected redirect row id.
+	 * @param array  $data   Sanitised payload that was written. Empty on delete.
+	 * @return void
+	 */
 	private function dispatch_audit( string $action, int $id, array $data ): void {
 		$user_id = isset( $data['modified_by'] ) ? (int) $data['modified_by'] : get_current_user_id();
 

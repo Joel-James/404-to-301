@@ -160,14 +160,14 @@ class Redirects extends Schema {
 		// the resolved destination.
 		//
 		// - `ignore`   — default; query string stripped before matching
-		//                and not appended to the destination.
+		// and not appended to the destination.
 		// - `preserve` — query string stripped before matching, but the
-		//                request's query is appended to the destination
-		//                so tracking params survive the redirect.
+		// request's query is appended to the destination
+		// so tracking params survive the redirect.
 		// - `require`  — query string is part of the match (the row's
-		//                `source` includes `?…` and the hash is
-		//                computed including it). Only meaningful for
-		//                `match_type = 'exact'`.
+		// `source` includes `?…` and the hash is
+		// computed including it). Only meaningful for
+		// `match_type = 'exact'`.
 		array(
 			'name'     => 'query_handling',
 			'type'     => 'varchar',

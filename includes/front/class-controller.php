@@ -216,13 +216,13 @@ class Controller extends Singleton {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param bool $do Whether to attempt the guess.
+	 * @param bool $should_guess Whether WP intends to attempt the guess.
 	 *
 	 * @return bool
 	 */
-	public function maybe_block_404_guess( $do ) {
+	public function maybe_block_404_guess( $should_guess ) {
 		if ( isset( $_GET['p'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return $do;
+			return $should_guess;
 		}
 
 		$mode = $this->guessing_mode();
@@ -231,7 +231,7 @@ class Controller extends Singleton {
 			return false;
 		}
 
-		return $do;
+		return $should_guess;
 	}
 
 	/**

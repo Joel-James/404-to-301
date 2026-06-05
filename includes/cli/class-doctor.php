@@ -353,12 +353,16 @@ class Doctor extends Command {
 		// point at a redirect that has since been deleted. The UI
 		// would render these as "Custom redirect (gone)" — better to
 		// flag them.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
+		// Table names come from our own BerlinDB schemas — there is no
+		// user input here, only trusted identifiers, so the interpolation
+		// is intentional and safe.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$orphans = (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$logs} l
 			LEFT JOIN {$redirects} r ON r.id = l.redirect_id
 			WHERE l.redirect_id IS NOT NULL AND r.id IS NULL"
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		if ( $orphans > 0 ) {
 			$checks[] = array(
@@ -375,12 +379,15 @@ class Doctor extends Command {
 		// Duplicate `source_hash` on the redirects table. There's a
 		// UNIQUE index so the only way to get here is a manual SQL
 		// poke at the table; surfacing it tells you something is off.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
+		// Same as above — the only interpolated value is the trusted
+		// table name from our own schema.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$dupes = (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM (
 				SELECT source_hash FROM {$redirects} GROUP BY source_hash HAVING COUNT(*) > 1
 			) AS d"
 		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		if ( $dupes > 0 ) {
 			$checks[] = array(

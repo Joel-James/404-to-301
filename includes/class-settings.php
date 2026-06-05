@@ -101,10 +101,10 @@ class Settings extends Singleton {
 			array(
 				// General.
 				// Three-state dial that replaces the old boolean:
-				//   - `off`    — let WordPress do everything (default WP behaviour).
-				//   - `light`  — only stop the "guess closest post" lookup; trailing
-				//                slash + case redirects still happen.
-				//   - `strict` — bypass `redirect_canonical()` entirely.
+				// - `off`    — let WordPress do everything (default WP behaviour).
+				// - `light`  — only stop the "guess closest post" lookup; trailing
+				// slash + case redirects still happen.
+				// - `strict` — bypass `redirect_canonical()` entirely.
 				'disable_guessing'     => 'light',
 				'exclude_paths'        => array(),
 				'monitor_post_slug'    => false,
