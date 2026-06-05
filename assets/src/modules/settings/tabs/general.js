@@ -10,6 +10,7 @@ import {
 import { closeSmall, plus } from '@wordpress/icons'
 import { applyFilters } from '@wordpress/hooks'
 import useSettings from '../../../hooks/use-settings'
+import ImportExport from '../import-export'
 
 /**
  * Shallow-equal compare for two string arrays. Used to decide whether
@@ -289,6 +290,9 @@ const General = () => {
 			</PanelBody>
 
 			{extra}
+
+			<ImportExport />
+
 			{crossSell}
 		</>
 	)
