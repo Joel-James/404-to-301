@@ -54,10 +54,19 @@ class Helpers {
 	 * Normalise a URL/path for hashing and exact-match lookup.
 	 *
 	 * The 404 logging path and the custom-redirect lookup both need to
-	 * recognise `/foo`, `/foo/`, `/foo?utm=1` and `/foo?utm=2` as the
-	 * same entry. This method strips the trailing slash, lowercases
-	 * the path, and drops the query string. The result is small enough
-	 * to live inside a CHAR(40) SHA1 column.
+	 * recognise `/foo`, `/foo/`, `/foo?utm=1`, `/About` and
+	 * `/about%20us` as the same entry as `/about us`. The chain mirrors
+	 * the three rules nginx's `try_files` block uses:
+	 *
+	 *   1. Strip the query string.
+	 *   2. Percent-decode the path so `%20`, `%2F`, etc. compare
+	 *      equally to their decoded forms.
+	 *   3. Strip a trailing slash on anything that isn't the root, and
+	 *      lowercase the result so casing doesn't fragment matches.
+	 *
+	 * The final value is run through the `404_to_301_normalise_url`
+	 * filter so power users can plug in stricter (or looser) rules
+	 * without forking the helper.
 	 *
 	 * @since 4.0.0
 	 *
@@ -66,6 +75,7 @@ class Helpers {
 	 * @return string Normalised path (no query string, no trailing slash, lowercased).
 	 */
 	public static function normalise_url( string $url ): string {
+		$raw = $url;
 		$url = trim( $url );
 
 		// Strip the query string entirely.
@@ -74,12 +84,40 @@ class Helpers {
 			$url = substr( $url, 0, $qpos );
 		}
 
+		// Percent-decode so encoded equivalents collapse onto the same
+		// canonical form. `rawurldecode()` (not `urldecode()`) leaves
+		// `+` alone — path segments only encode spaces as `%20`, so a
+		// literal `+` should not be treated as one.
+		$url = rawurldecode( $url );
+
 		// Strip a trailing slash on anything that isn't the root.
 		if ( strlen( $url ) > 1 && '/' === substr( $url, -1 ) ) {
 			$url = rtrim( $url, '/' );
 		}
 
-		return strtolower( $url );
+		$normalised = strtolower( $url );
+
+		/**
+		 * Filter the normalised form of a URL before it's hashed or
+		 * compared.
+		 *
+		 * Return a different string to override the policy — eg.
+		 * preserve original casing for case-sensitive sites, or fold
+		 * additional URL noise (session ids, language prefixes, …) so
+		 * the matcher treats them as the same row.
+		 *
+		 * Both arguments are passed: `$normalised` is what the helper
+		 * would return; `$raw` is the original input. Returning a
+		 * non-string falls back to `$normalised`.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param string $normalised Normalised URL.
+		 * @param string $raw        Original input as passed in.
+		 */
+		$filtered = apply_filters( '404_to_301_normalise_url', $normalised, $raw );
+
+		return is_string( $filtered ) ? $filtered : $normalised;
 	}
 
 	/**
@@ -120,11 +158,12 @@ class Helpers {
 		$path  = false === $qpos ? $url : substr( $url, 0, $qpos );
 		$query = false === $qpos ? '' : substr( $url, $qpos );
 
-		if ( strlen( $path ) > 1 && '/' === substr( $path, -1 ) ) {
-			$path = rtrim( $path, '/' );
-		}
-
-		return sha1( strtolower( $path ) . $query );
+		// Route the path through the same normalisation policy as
+		// query-less matching — percent-decode, trailing-slash strip,
+		// case-fold, and the `404_to_301_normalise_url` filter. The
+		// query string is kept verbatim because values can be
+		// case-sensitive (tokens, hashes, …).
+		return sha1( self::normalise_url( $path ) . $query );
 	}
 
 	/**
