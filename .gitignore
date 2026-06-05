@@ -1,41 +1,51 @@
-# Recommended from: https://gist.github.com/octocat/9257657
-
-# Compiled source #
-###################
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.so
-
-# Development Libraries #
-#########################
+# Dependencies — restored by `composer install` and `npm ci`.
+/vendor/
 node_modules/
+
+# Built bundles — produced by `npm run build`, never committed.
+/build/
+
+# Packed plugin ZIPs — produced by `npm run pack`.
+/releases/
+
+# Tool caches.
+/.phpcs.cache
+/.phpunit.result.cache
+/coverage/
+
+# `composer.lock` stays gitignored — this is a plugin (a library, not
+# an application), so consumers' Composer installs resolve fresh against
+# their own constraints. `package-lock.json` *is* committed so CI can
+# `npm ci` against deterministic builds and `actions/setup-node` can
+# warm its cache.
+composer.lock
+
+# Local dev conveniences.
+.claude/
+.config.json
 config.json
-package-lock.json
 
-# Packages #
-############
-# it's better to unpack these files and commit the raw source
-# git has its own built in compression methods
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
+# Editor directories and files.
+.idea/
+.vscode/
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# Logs and databases #
-######################
-*.log
-*.sql
-*.sqlite
+# Local env files.
+.env.local
+.env.*.local
 
-# OS generated files #
-######################
+# Log files.
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS noise.
 .DS_Store
 .DS_Store?
 ._*
@@ -43,30 +53,4 @@ package-lock.json
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# ---------------------------------------------
-
-# IDE's #
-#########
-
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
-*.iml
-## Directory-based project format:
-.idea/
-
-# Netbeans #
-nbproject/private/
-build/
-nbbuild/
-dist/
-nbdist/
-nbactions.xml
-nb-configuration.xml
-
-
-# Releases folder #
-releases/
-
-# Generated assets #
-assets/js
-assets/css
+*.log

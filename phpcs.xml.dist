@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<ruleset name="FourNotFour">
+	<description>Coding standards for the 404 to 301 plugin.</description>
+
+	<!--
+		Paths scanned by phpcs. Build output, vendor and node_modules
+		are excluded — they are generated, not authored. Tests are
+		excluded from lint; they follow PHPUnit conventions that clash
+		with WPCS (eg. test-method docblocks, fixture naming).
+	-->
+	<file>./404-to-301.php</file>
+	<file>./uninstall.php</file>
+	<file>./includes</file>
+
+	<!-- Directories that must never be linted. -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
+	<exclude-pattern>*/assets/*</exclude-pattern>
+	<exclude-pattern>*/languages/*</exclude-pattern>
+
+	<!-- Show progress, sniff codes and coloured output. -->
+	<arg value="ps"/>
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+
+	<!-- Use all available CPU cores. -->
+	<arg name="parallel" value="8"/>
+
+	<!-- Cache results between runs. -->
+	<arg name="cache" value=".phpcs.cache"/>
+
+	<!-- Use the WordPress and WordPress-Extra rulesets. -->
+	<rule ref="WordPress">
+		<!--
+			Allow short array syntax (`[]`). Modern WPCS still accepts
+			both `array()` and `[]`; we prefer `array()` for consistency
+			with the rest of the WordPress ecosystem but do not enforce.
+		-->
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+
+		<!--
+			File-name rule conflicts with our `interface-foo.php`
+			naming. WPCS expects `class-foo.php` for both classes and
+			interfaces.
+		-->
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+	</rule>
+	<rule ref="WordPress-Extra"/>
+
+	<!-- Enforce WP-style hyphenated, lowercase file names. -->
+	<rule ref="WordPress.Files.FileName">
+		<properties>
+			<property name="strict_class_file_names" value="false"/>
+		</properties>
+	</rule>
+
+	<!-- Set the project's text domain. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="404-to-301"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Project prefix for hooks and globals. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="404_to_301"/>
+				<element value="duckdev_404_to_301"/>
+				<element value="D404_"/>
+				<element value="DuckDev\FourNotFour"/>
+			</property>
+		</properties>
+		<!--
+			`404_to_301` starts with a digit, which the sniff flags as
+			"not a valid PHP identifier prefix." It's the long-standing
+			public hook prefix for this plugin — every hook the legacy
+			versions exposed is named `404_to_301_*` and we can't rename
+			them without breaking every existing integration. Silence
+			the structural warning; the namespaced prefixes above stay
+			active for the real enforcement.
+		-->
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.InvalidPrefixPassed"/>
+	</rule>
+
+
+	<!-- PHP compatibility — minimum 7.4. -->
+	<config name="testVersion" value="7.4-"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- WordPress minimum version. -->
+	<config name="minimum_wp_version" value="6.4"/>
+</ruleset>

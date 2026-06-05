@@ -1,0 +1,52 @@
+@use './../utils/variables';
+
+$prefix: '#{variables.$prefix}';
+
+.#{$prefix}-wrap {
+
+	.#{$prefix}-page-body {
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 780px;
+
+		.components-panel__body {
+			margin: 25px 0;
+			background: #fff;
+			border: 1px solid #e2e4e7;
+
+			&.is-opened > .components-panel__body-title {
+				border-bottom: 1px solid #e2e4e7;
+			}
+		}
+
+		.components-panel__row {
+			padding: 12px 16px;
+		}
+
+		// Stretch only the settings-form controls to full width. We
+		// used to target every `.components-base-control` under the
+		// page body, which leaked into the DataViews footer's bulk
+		// selection control and pushed the checkbox far away from
+		// the count label.
+		.components-panel__row .components-base-control {
+			width: 100%;
+		}
+	}
+
+	// Wide variant — DataView pages and Addons.
+	// Responsive: hugs the viewport on small screens (with 24px gutter
+	// on each side), grows to 1400px on desktop.
+	.#{$prefix}-page-body--wide {
+		max-width: min(calc(100vw - 48px), 1400px);
+		padding: 0 24px;
+	}
+
+	// Sticky save bar — used on the Settings page only.
+	.#{$prefix}-footer {
+		position: sticky;
+		bottom: 1rem;
+		margin: 2rem 0 0;
+		text-align: center;
+		z-index: 10;
+	}
+}

@@ -1,99 +1,134 @@
 <?php
 /**
- * Plugin Name:     404 to 301 - Redirect, Log and Notify 404 Errors
- * Plugin URI:      https://duckdev.com/products/404-to-301/
- * Description:     Automatically redirect all <strong>404 errors</strong> to any page using <strong>301 redirect for SEO</strong>. You can <strong>redirect and log</strong> every 404 errors. No more 404 errors in Webmaster tool.
- * Version:         3.1.4
- * Author:          Joel James
- * Author URI:      https://duckdev.com/
- * Donate link:     https://paypal.me/JoelCJ
- * License:         GPL-2.0+
- * License URI:     http://www.gnu.org/licenses/gpl-3.0.txt
- * Text Domain:     404-to-301
- * Domain Path:     /languages
- *
- * 404 to 301 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * any later version.
- *
- * 404 to 301 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with 404 to 301. If not, see <http://www.gnu.org/licenses/>.
- *
- * @author   Joel James <mail@cjoel.com>
- * @license  http://www.gnu.org/licenses/ GNU General Public License
- * @category Core
- * @link     https://duckdev.com/products/404-to-301/
- * @package  JJ4T3
+ * Plugin Name:       404 to 301 - Redirect, Log and Notify 404 Errors
+ * Plugin URI:        https://wordpress.org/plugins/404-to-301/
+ * Description:       Automatically redirect every 404 error to any page using a 301 redirect, log every 404 request, and get email notifications when broken links are hit. Built for SEO.
+ * Version:           4.0.0
+ * Author:            Joel James
+ * Author URI:        https://duckdev.com/
+ * Donate link:       https://paypal.me/JoelCJ
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:       404-to-301
+ * Domain Path:       /languages
+ * Requires PHP:      7.4
+ * Requires at least: 6.4
  */
 
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) || exit;
 
-// Define plugin slug name.
-define( 'JJ4T3_NAME', '404-to-301' );
-// Define plugin directory.
-define( 'JJ4T3_DIR', plugin_dir_path( __FILE__ ) );
-// Define plugin base url.
-define( 'JJ4T3_URL', plugin_dir_url( __FILE__ ) );
-// Define plugin base file.
-define( 'JJ4T3_BASE_FILE', __FILE__ );
-// Define plugin version.
-define( 'JJ4T3_VERSION', '3.1.4' );
-// Define plugin version.
-define( 'JJ4T3_DB_VERSION', '11.0' );
-// Define plugin log table.
-define( 'JJ4T3_TABLE', $GLOBALS['wpdb']->prefix . '404_to_301' );
+/*
+ * IMPORTANT: this file is intentionally PHP-version-agnostic.
+ *
+ * It runs the "PHP 7.4 or higher" guard below before doing anything
+ * else, so an older PHP install still parses the file and the admin
+ * notice still renders. That means no `declare(strict_types=1)`, no
+ * arrow functions, no other 7.4+ syntax above the guard.
+ */
 
-// Set who all can access plugin settings.
-// You can change this if you want to give others access.
-if ( ! defined( 'JJ4T3_ACCESS' ) ) {
-	define( 'JJ4T3_ACCESS', 'manage_options' );
+// Bail with a friendly admin notice if PHP is below the supported version.
+if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
+	add_action(
+		'admin_notices',
+		function () {
+			printf(
+				'<div class="notice notice-error"><p>%s</p></div>',
+				esc_html(
+					sprintf(
+						/* translators: 1: required PHP version, 2: current PHP version. */
+						__( '404 to 301 requires PHP %1$s or higher. Your site is running PHP %2$s.', '404-to-301' ),
+						'7.4',
+						PHP_VERSION
+					)
+				)
+			);
+		}
+	);
+
+	return;
 }
 
-// File that contains main plugin class.
-require_once JJ4T3_DIR . 'includes/class-jj-404-to-301.php';
-require_once JJ4T3_DIR . 'includes/class-jj4t3-activator-deactivator-uninstaller.php';
-
-/**
- * The main function for that returns JJ_404_to_301
+/*
+ * Plugin constants.
  *
- * The main function responsible for returning the one true JJ_404_to_301
- * instance to functions everywhere.
- *
- * Use this function like you would a global variable, except without needing
- * to declare the global.
- *
- * Example: <?php $jj4t3 = jj_404_to_301(); ?>
- *
- * @since 3.0.0
- *
- * @return JJ_404_to_301|object
+ * Defined once here so every other class can read the plugin's
+ * version, paths and URLs without re-deriving them from `__FILE__`.
  */
-function jj_404_to_301() {
-	return JJ_404_to_301::instance();
+
+// Plugin version (kept in sync with the `Version:` header above).
+define( 'D404_VERSION', '4.0.0' );
+
+// Database schema version. Bumped only when migrations change.
+define( 'D404_DB_VERSION', '4.0.0' );
+
+// Absolute path to this bootstrap file.
+define( 'D404_FILE', __FILE__ );
+
+// Absolute plugin directory path (with a trailing slash).
+define( 'D404_DIR', plugin_dir_path( __FILE__ ) );
+
+// Plugin directory URL (with a trailing slash).
+define( 'D404_URL', plugin_dir_url( __FILE__ ) );
+
+// Plugin base name (e.g. `404-to-301/404-to-301.php`).
+define( 'D404_BASE_NAME', plugin_basename( __FILE__ ) );
+
+/*
+ * Composer autoloader.
+ *
+ * Generated by `composer install` / `composer dump-autoload -o`. Uses a
+ * classmap (not PSR-4) because the plugin keeps the WordPress-style
+ * `class-foo.php` filenames — Composer scans `includes/` once at build
+ * time and writes a lookup table for every class found.
+ *
+ * If the autoloader is missing (a checkout that has never had
+ * `composer install` run on it), bail with a clear admin notice so the
+ * failure is obvious rather than silent.
+ */
+if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	add_action(
+		'admin_notices',
+		function () {
+			printf(
+				'<div class="notice notice-error"><p>%s</p></div>',
+				esc_html__(
+					'404 to 301: Composer dependencies are missing. Run `composer install` inside the plugin directory.',
+					'404-to-301'
+				)
+			);
+		}
+	);
+
+	return;
 }
 
-/**
- * Plugin activation actions.
+require_once __DIR__ . '/vendor/autoload.php';
+
+/*
+ * Global helper functions.
  *
- * Actions to perform during plugin activation.
- * We will be registering default options in this function.
- *
- * @uses   register_activation_hook() To register activation hook.
+ * Loaded here (not via Composer's `files` autoload) so the file is only
+ * included inside a real WordPress request — its `ABSPATH` guard would
+ * otherwise terminate any CLI tool (PHPCS, PHPUnit, …) that loads
+ * vendor/autoload.php outside WordPress.
  */
-register_activation_hook(
-	JJ4T3_BASE_FILE,
-	array( 'JJ4T3_Activator_Deactivator_Uninstaller', 'activate' )
+require_once __DIR__ . '/includes/functions.php';
+
+// Lifecycle hooks — handled by their dedicated classes inside the Setup namespace.
+register_activation_hook( __FILE__, array( 'DuckDev\FourNotFour\Setup\Activator', 'run' ) );
+register_deactivation_hook( __FILE__, array( 'DuckDev\FourNotFour\Setup\Deactivator', 'run' ) );
+
+/*
+ * Boot the plugin once every other plugin has loaded.
+ *
+ * Hooking on `plugins_loaded` (rather than running at file scope) lets
+ * addons declare themselves as dependencies and reliably hook into the
+ * `404_to_301_init` action that Core fires after boot.
+ */
+add_action(
+	'plugins_loaded',
+	function () {
+		DuckDev\FourNotFour\Core::instance();
+	}
 );
-
-// Check the minimum required PHP version (5.6) and run the plugin.
-if ( version_compare( PHP_VERSION, '5.6', '>=' ) ) {
-	// Run the plugin.
-	add_action( 'plugins_loaded', 'jj_404_to_301' );
-}

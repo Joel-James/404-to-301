@@ -1,0 +1,154 @@
+@charset "UTF-8";
+
+// Common UI chrome.
+@use 'ui/page-header';
+@use 'ui/page-content';
+@use 'ui/page-loader';
+@use 'utils/notices';
+@use 'utils/variables';
+
+$prefix: '#{variables.$prefix}';
+
+// Remove the default admin content padding for the full-width layout.
+#wpcontent {
+	padding-left: 0 !important;
+}
+
+// Cross-sell notice in the Logs panel — flatten the title paragraph
+// so it sits flush with the body copy below it. Scoped to the title
+// only; the body <p> keeps its default Notice spacing.
+.#{$prefix}-logs-cross-sell .components-notice__content .#{$prefix}-logs-cross-sell__title {
+	margin: 0;
+}
+
+// Repeater field — borderless table of rows used for list-style
+// settings (eg. Exclude paths). Each row is a full-width TextControl
+// plus a remove button; an "Add path" button appends a new row.
+//
+// PanelRow lays its children out as a horizontal flex with the label
+// on the left and the control on the right. We opt out of that here
+// because the repeater is wide and needs the full panel width, so
+// the wrapping `.#{$prefix}-repeater-field` claims `flex: 1` and the
+// label is rendered as a block above the rows rather than beside.
+.#{$prefix}-repeater-field {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+	min-width: 0;
+
+	&__label {
+		font-size: 11px;
+		font-weight: 500;
+		line-height: 1.4;
+		text-transform: uppercase;
+		color: #1e1e1e;
+	}
+}
+
+.#{$prefix}-repeater {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+	min-width: 0;
+
+	// Light-grey count line. `aria-live="polite"` so screen readers
+	// announce changes as rows are added or removed.
+	&__meta {
+		font-size: 12px;
+		color: #757575;
+	}
+
+	// Scroll container — caps the visible row count so a long list
+	// doesn't push the rest of the settings page off-screen. The
+	// "Add path" button sits outside this container so it stays
+	// reachable without scrolling.
+	&__rows {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		max-height: 420px;
+		overflow-y: auto;
+	}
+
+	&__row {
+		display: flex;
+		align-items: center;
+		// Generous gap between the input and the remove button so the
+		// destructive action isn't hugging the field edge.
+		gap: 12px;
+		// Only pad vertically — horizontal padding would shove the
+		// input rightward and break alignment with the label above.
+		padding: 2px 0;
+	}
+
+	// Input takes all available horizontal space so long URLs aren't
+	// cramped. min-width: 0 lets the flex item actually shrink past
+	// the browser's default min-content width.
+	&__field {
+		flex: 1;
+		min-width: 0;
+
+		.components-text-control__input {
+			width: 100%;
+			// Compact height — wp-admin's form CSS forces ~36px even
+			// when we strip the component's `__next40pxDefaultSize`
+			// opt-in, so override it directly. !important is needed
+			// because `wp-admin/css/forms.css` selectors have the
+			// same specificity but load after our bundle on some
+			// screens.
+			height: 32px !important;
+			min-height: 32px;
+			line-height: 1.4;
+			padding: 4px 8px;
+			// Long URLs scroll horizontally within the input rather
+			// than wrapping — matches how the browser address bar
+			// behaves and keeps row height uniform.
+			text-overflow: ellipsis;
+		}
+	}
+
+	&__actions {
+		flex: 0 0 auto;
+
+		// Remove button — render flat at rest (no chip background),
+		// reveal a light-red wash only on hover/focus. Overrides
+		// the default Button hover treatment which paints a grey
+		// pill that visually crowds the input next to it.
+		.components-button.is-destructive {
+			background: transparent;
+			box-shadow: none;
+			// Match the input's 32px height so the row baseline
+			// stays even regardless of which size variant the
+			// component ships with.
+			height: 32px;
+			width: 32px;
+			padding: 0;
+			border-radius: 2px;
+
+			&:hover:not(:disabled),
+			&:focus:not(:disabled) {
+				background: #fcebea;
+				box-shadow: none;
+			}
+		}
+	}
+
+	&__footer {
+		display: flex;
+		justify-content: flex-start;
+		margin-top: 4px;
+	}
+}
+
+// Import / Export action row — lay the two buttons out side-by-side
+// with the same 12px gap used between repeater controls so the spacing
+// reads as part of the same design system rather than ad-hoc.
+.#{$prefix}-import-export-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+}
