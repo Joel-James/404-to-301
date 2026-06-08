@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       404 to 301 - Redirect, Log and Notify 404 Errors
  * Plugin URI:        https://wordpress.org/plugins/404-to-301/
- * Description:       Automatically redirect every 404 error to any page using a 301 redirect, log every 404 request, and get email notifications when broken links are hit. Built for SEO.
+ * Description:       Manage custom redirects, automatically redirect every 404 error to any page, log broken links and get email alerts when they happen. Built for SEO.
  * Version:           4.0.0
  * Author:            Joel James
  * Author URI:        https://duckdev.com/

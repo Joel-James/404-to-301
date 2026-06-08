@@ -64,7 +64,7 @@ class Helpers {
 	 *   3. Strip a trailing slash on anything that isn't the root, and
 	 *      lowercase the result so casing doesn't fragment matches.
 	 *
-	 * The final value is run through the `404_to_301_normalise_url`
+	 * The final value is run through the `404_to_301_normalize_url`
 	 * filter so power users can plug in stricter (or looser) rules
 	 * without forking the helper.
 	 *
@@ -115,7 +115,7 @@ class Helpers {
 		 * @param string $normalised Normalised URL.
 		 * @param string $raw        Original input as passed in.
 		 */
-		$filtered = apply_filters( '404_to_301_normalise_url', $normalised, $raw );
+		$filtered = apply_filters( '404_to_301_normalize_url', $normalised, $raw );
 
 		return is_string( $filtered ) ? $filtered : $normalised;
 	}
@@ -160,7 +160,7 @@ class Helpers {
 
 		// Route the path through the same normalisation policy as
 		// query-less matching — percent-decode, trailing-slash strip,
-		// case-fold, and the `404_to_301_normalise_url` filter. The
+		// case-fold, and the `404_to_301_normalize_url` filter. The
 		// query string is kept verbatim because values can be
 		// case-sensitive (tokens, hashes, …).
 		return sha1( self::normalise_url( $path ) . $query );

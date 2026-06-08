@@ -1,7 +1,7 @@
 <?php
 /**
  * Tests for the URL-normalisation policy and the
- * `404_to_301_normalise_url` filter (#8).
+ * `404_to_301_normalize_url` filter (#8).
  *
  * @package DuckDev\FourNotFour
  */
@@ -25,7 +25,7 @@ class UrlNormalisationTest extends WP_UnitTestCase {
 	}
 
 	public function tear_down(): void {
-		remove_all_filters( '404_to_301_normalise_url' );
+		remove_all_filters( '404_to_301_normalize_url' );
 		parent::tear_down();
 	}
 
@@ -76,13 +76,13 @@ class UrlNormalisationTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * The `404_to_301_normalise_url` filter receives both the
+	 * The `404_to_301_normalize_url` filter receives both the
 	 * normalised form and the raw input.
 	 */
 	public function test_normalise_url_filter_receives_both_normalised_and_raw(): void {
 		$captured = null;
 		add_filter(
-			'404_to_301_normalise_url',
+			'404_to_301_normalize_url',
 			static function ( $normalised, $raw ) use ( &$captured ) {
 				$captured = compact( 'normalised', 'raw' );
 				return $normalised;
@@ -103,7 +103,7 @@ class UrlNormalisationTest extends WP_UnitTestCase {
 	 * own output — the matcher is never handed a poison value.
 	 */
 	public function test_normalise_url_filter_falls_back_on_non_string_return(): void {
-		add_filter( '404_to_301_normalise_url', static fn () => null );
+		add_filter( '404_to_301_normalize_url', static fn () => null );
 
 		$this->assertSame( '/foo', Helpers::normalise_url( '/foo' ) );
 	}
@@ -114,7 +114,7 @@ class UrlNormalisationTest extends WP_UnitTestCase {
 	 */
 	public function test_normalise_url_filter_can_override_policy(): void {
 		add_filter(
-			'404_to_301_normalise_url',
+			'404_to_301_normalize_url',
 			static function ( $normalised, $raw ) {
 				// Case-sensitive override: redo just the slash strip
 				// and skip lowercasing.

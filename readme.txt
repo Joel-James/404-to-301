@@ -1,6 +1,6 @@
 === 404 to 301 - Redirect, Log and Notify 404 Errors ===
 Contributors: joelcj91, duckdev
-Tags: 404, 301, 302, 307, redirect, not found, 404 redirect, custom 404 page, seo redirect, broken links
+Tags: redirect, redirection, 301 redirect, redirect manager, 404
 Donate link: https://www.paypal.me/JoelCJ
 Requires at least: 6.4
 Tested up to: 6.5
@@ -9,11 +9,13 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Automatically redirect every 404 error to any page using a 301 redirect, log every 404 request, and get email notifications when broken links are hit. Built for SEO.
+Manage custom redirects, automatically redirect every 404 error to any page, log broken links and get email alerts when they happen. Built for SEO.
 
 == Description ==
 
-If you care about your site, you care about 404 errors — they hurt the visitor experience and your SEO. 404 to 301 finds them, logs them, lets you fix them with one click, and quietly redirects everything to a sensible destination.
+404 to 301 is a complete redirection toolkit for WordPress. Create and manage custom redirects with exact, prefix or regex matching and your choice of redirect type, then let the plugin automatically redirect every remaining 404 error to any page of your choice. Every broken-link hit is logged so you can fix the real problem rather than just papering over it, and an optional email alert tells you when the same URL keeps getting hit.
+
+Whether you are migrating a site, cleaning up old URLs after a redesign, or just keeping your SEO and visitor experience tidy, 404 to 301 gives you fine-grained redirect management plus a safety net for everything you miss.
 
 = What's new in v4 =
 
@@ -25,14 +27,14 @@ v4 is a ground-up rewrite focused on three things:
 
 = Features =
 
-* **Custom redirects** with exact, prefix or regex matching, per-row redirect status (301/302/307), active/inactive flag, hit counter, last-hit timestamp.
+* **Custom redirects** with exact, prefix or regex matching, per-row redirect type, active/inactive flag, hit counter, last-hit timestamp.
 * **404 logs** with deduplication, hit counter, lifecycle status (open / ignored / fixed) and date filters.
 * **Email notifications** with a configurable hit threshold so busy sites don't flood the inbox.
 * **Site Health-friendly** — `redirect_canonical` is opt-in disabled, IP can be masked for GDPR.
 * **Exclude paths** — skip 404s on paths you don't care about.
 * **WP-CLI commands** for logs, redirects, settings and migration.
 * **REST API** at `/404-to-301/v1/`.
-* **Add-on catalogue** with license-key activation via Freemius.
+* **Add-on catalogue** listing both free wordpress.org companions and premium add-ons, with one-screen license activation for the premium ones.
 * **Background migration** from v3 — runs in chunks, opportunistically uses Action Scheduler when available.
 
 == Installation ==
@@ -80,7 +82,7 @@ Yes — the BerlinDB-backed tables are per-site, so each site keeps its own logs
 * Per-redirect lifecycle (active/inactive, exact/prefix/regex match) and hit counter.
 * Email threshold setting so busy sites don't get flooded.
 * Optional Action Scheduler integration for background migration.
-* Add-on catalogue + Freemius licensing.
+* Add-on catalogue listing both free wordpress.org add-ons and premium ones, with Freemius licensing for the premium tier.
 * Drops Symfony HttpFoundation, jQuery / thickbox modals and the legacy `JJ4T3_*` class surface.
 
 = 3.1.3 =

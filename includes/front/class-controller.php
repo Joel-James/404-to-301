@@ -119,7 +119,7 @@ class Controller extends Singleton {
 			 *
 			 * @param Request $request Current request.
 			 */
-			do_action( '404_to_301_404_request', $request );
+			do_action( '404_to_301_caught_404', $request );
 		}
 	}
 
