@@ -114,7 +114,7 @@ class Log extends Row {
 	 *
 	 * 0 = use global, 1 = force enable, 2 = force disable.
 	 *
-	 * @since 4.1.0
+	 * @since 4.0.0
 	 * @var int
 	 */
 	public $override_redirect = 0;
@@ -124,7 +124,7 @@ class Log extends Row {
 	 *
 	 * Same value space as {@see self::$override_redirect}.
 	 *
-	 * @since 4.1.0
+	 * @since 4.0.0
 	 * @var int
 	 */
 	public $override_log = 0;
@@ -134,7 +134,7 @@ class Log extends Row {
 	 *
 	 * Same value space as {@see self::$override_redirect}.
 	 *
-	 * @since 4.1.0
+	 * @since 4.0.0
 	 * @var int
 	 */
 	public $override_email = 0;

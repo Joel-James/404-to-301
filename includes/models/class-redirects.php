@@ -324,7 +324,7 @@ class Redirects extends Model {
 	/**
 	 * Delete a redirect and emit the audit event.
 	 *
-	 * @since 4.1.0
+	 * @since 4.0.0
 	 *
 	 * @param int $id Row id.
 	 *
@@ -347,7 +347,7 @@ class Redirects extends Model {
 	 * `404_to_301_redirect_audit` to stream the event elsewhere — eg.
 	 * to a SIEM or a third-party activity logger.
 	 *
-	 * @since 4.1.0
+	 * @since 4.0.0
 	 *
 	 * @param string $action Mutation type: `created`, `updated`, or `deleted`.
 	 * @param int    $id     Redirect row id.
@@ -384,7 +384,7 @@ class Redirects extends Model {
 	 * user when the payload doesn't carry an explicit `modified_by`),
 	 * and the canonical argument order is locked in one place.
 	 *
-	 * @since 4.1.0
+	 * @since 4.0.0
 	 *
 	 * @param string $action One of `created`, `updated`, `deleted`.
 	 * @param int    $id     Affected redirect row id.
@@ -397,7 +397,7 @@ class Redirects extends Model {
 		/**
 		 * Fires after a redirect row is created, updated, or deleted.
 		 *
-		 * @since 4.1.0
+		 * @since 4.0.0
 		 *
 		 * @param string $action  One of `created`, `updated`, `deleted`.
 		 * @param int    $id      Redirect row id.

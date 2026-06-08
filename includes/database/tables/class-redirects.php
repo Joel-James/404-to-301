@@ -38,7 +38,7 @@ final class Redirects extends Table {
 	 * @since 4.0.0
 	 * @var string
 	 */
-	protected $version = '4.1.0';
+	protected $version = '4.0.0';
 
 	/**
 	 * Per-version upgrade routines.

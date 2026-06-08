@@ -84,6 +84,23 @@ class Redirect extends Action {
 			if ( '' !== $target && 'preserve' === (string) $row->query_handling ) {
 				$target = $this->append_request_query( $target, $request->url() );
 			}
+
+			// Terminal status codes (410 Gone, 451 Unavailable for
+			// Legal Reasons) don't redirect — they emit the status
+			// header and end the request. We branch here so the rest
+			// of the redirect plumbing (target resolution, filters,
+			// `wp_safe_redirect`) doesn't have to special-case empty
+			// targets.
+			if ( $this->is_terminal_status( $status ) ) {
+				if ( $row instanceof RedirectRow ) {
+					Redirects::instance()->record_hit( (int) $row->id );
+				}
+				$this->emit_terminal_status( $status, $request );
+				// `emit_terminal_status()` calls `exit`; we never get
+				// here, but keep the early return for the static
+				// analyser.
+				return;
+			}
 		} elseif ( $request->is_404() ) {
 			// No per-row match: only fall back to the global default
 			// when this actually is a 404 (we should never redirect a
@@ -143,7 +160,66 @@ class Redirect extends Action {
 			}
 		}
 
+		// `wp_safe_redirect()` ignores any status outside the 3xx
+		// range, so we never reach here with 410/451 — those are
+		// short-circuited above via `emit_terminal_status()`.
 		wp_safe_redirect( $url, $status );
+		exit;
+	}
+
+	/**
+	 * HTTP status codes that don't redirect — they signal a final
+	 * disposition (Gone, Unavailable for Legal Reasons) and end the
+	 * request without a `Location` header.
+	 *
+	 * Mirrors `terminalStatusCodes` in `assets/src/modules/redirects/fields.js`.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int $status HTTP status code.
+	 *
+	 * @return bool
+	 */
+	private function is_terminal_status( int $status ): bool {
+		return in_array( $status, array( 410, 451 ), true );
+	}
+
+	/**
+	 * Emit a status-only response for a terminal code and exit.
+	 *
+	 * Used by 410 Gone and 451 Unavailable for Legal Reasons rows —
+	 * both communicate "this URL has no replacement" rather than
+	 * sending the visitor somewhere else. We keep the body tiny on
+	 * purpose: nothing visible to humans needs to be there, and a
+	 * minimal body keeps the response cacheable by intermediaries
+	 * that respect `Cache-Control`.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int     $status  Terminal HTTP status (410 or 451).
+	 * @param Request $request Current request.
+	 *
+	 * @return void
+	 */
+	private function emit_terminal_status( int $status, Request $request ): void {
+		/**
+		 * Fires immediately before a terminal status header is sent.
+		 *
+		 * Mirrors `404_to_301_pre_redirect` — addons that want to
+		 * log / audit the response can hook the same point.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param int     $status  HTTP status code.
+		 * @param Request $request Current request.
+		 */
+		do_action( '404_to_301_pre_terminal_status', $status, $request );
+
+		nocache_headers();
+		status_header( $status );
+
+		// A blank body is valid for 410/451 and avoids any chance of a
+		// theme-rendered template leaking into the response.
 		exit;
 	}
 

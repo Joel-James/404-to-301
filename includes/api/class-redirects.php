@@ -91,7 +91,11 @@ class Redirects extends Endpoint {
 						'is_active'     => array( 'type' => 'boolean' ),
 						'redirect_type' => array(
 							'type' => 'integer',
-							'enum' => array( 301, 302, 307 ),
+							// Keep in sync with `assets/src/modules/redirects/fields.js`
+							// `redirectTypes`. 410 + 451 are terminal codes — they
+							// don't redirect; the front-controller emits the
+							// status header and exits.
+							'enum' => array( 301, 302, 303, 307, 308, 410, 451 ),
 						),
 					),
 				),
@@ -300,7 +304,7 @@ class Redirects extends Endpoint {
 	 * Any column not in the payload is left untouched. Passing no
 	 * mutating fields is a no-op that returns `{ updated: 0 }`.
 	 *
-	 * @since 4.1.0
+	 * @since 4.0.0
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 *
@@ -448,7 +452,11 @@ class Redirects extends Endpoint {
 			'target_page_id' => array( 'type' => 'integer' ),
 			'redirect_type'  => array(
 				'type' => 'integer',
-				'enum' => array( 301, 302, 307 ),
+				// Keep in sync with `assets/src/modules/redirects/fields.js`
+				// `redirectTypes`. 410 + 451 are terminal codes — they
+				// don't redirect; the front-controller emits the
+				// status header and exits.
+				'enum' => array( 301, 302, 303, 307, 308, 410, 451 ),
 			),
 			'is_active'      => array( 'type' => 'boolean' ),
 			'notes'          => array( 'type' => 'string' ),

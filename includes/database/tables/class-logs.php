@@ -37,27 +37,18 @@ final class Logs extends Table {
 	protected $name = '404_to_301_logs';
 
 	/**
-	 * Schema version. Bumped only when the schema itself changes —
-	 * adding a new upgrade routine and incrementing this triggers
-	 * `dbDelta` on every site automatically.
+	 * Schema version.
+	 *
+	 * 4.0.0 is the first BerlinDB-backed schema; v3 → v4 migration is
+	 * handled separately by {@see \DuckDev\FourNotFour\Migration\Migrator},
+	 * not as a BerlinDB upgrade step. Don't bump this for changes made
+	 * before v4 ships — fold the change into the base schema string
+	 * instead so every install gets it on the first `dbDelta` pass.
 	 *
 	 * @since 4.0.0
 	 * @var string
 	 */
-	protected $version = '4.1.0';
-
-	/**
-	 * Per-version upgrade routines.
-	 *
-	 * Each entry is `version => method`. Adding a new step is purely
-	 * additive: declare the method, append the row, bump `$version`.
-	 *
-	 * @since 4.0.0
-	 * @var array<string, string>
-	 */
-	protected $upgrades = array(
-		'4.1.0' => '__4_1_0',
-	);
+	protected $version = '4.0.0';
 
 	/**
 	 * Wire the schema in.
@@ -93,50 +84,5 @@ final class Logs extends Table {
 			KEY created_at (created_at),
 			KEY redirect_id (redirect_id)
 		";
-	}
-
-	/**
-	 * 4.1.0 upgrade: add the per-row override columns and the new
-	 * "custom redirect" status code (3).
-	 *
-	 * Idempotent — checks `information_schema` before each `ALTER` so
-	 * re-runs (or sites that ship with a freshly-created v4.1.0 table)
-	 * don't fail with "duplicate column".
-	 *
-	 * @since 4.1.0
-	 *
-	 * @return bool
-	 */
-	protected function __4_1_0(): bool { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore, PHPCompatibility.FunctionNameRestrictions.ReservedFunctionNames.MethodDoubleUnderscore -- BerlinDB looks up schema upgrade callbacks by the `__<version>` naming convention; we don't get to pick a different prefix.
-		$db = $this->get_db();
-
-		if ( empty( $db ) ) {
-			return false;
-		}
-
-		$columns = array(
-			'override_redirect' => "ALTER TABLE {$this->table_name} ADD COLUMN override_redirect TINYINT(3) UNSIGNED NOT NULL DEFAULT 0 AFTER status",
-			'override_log'      => "ALTER TABLE {$this->table_name} ADD COLUMN override_log TINYINT(3) UNSIGNED NOT NULL DEFAULT 0 AFTER override_redirect",
-			'override_email'    => "ALTER TABLE {$this->table_name} ADD COLUMN override_email TINYINT(3) UNSIGNED NOT NULL DEFAULT 0 AFTER override_log",
-		);
-
-		foreach ( $columns as $column => $sql ) {
-			$exists = $db->get_var(
-				$db->prepare(
-					'SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
-					DB_NAME,
-					$this->table_name,
-					$column
-				)
-			);
-
-			if ( $exists ) {
-				continue;
-			}
-
-			$db->query( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
-		}
-
-		return true;
 	}
 }

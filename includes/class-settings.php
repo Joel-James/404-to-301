@@ -259,7 +259,7 @@ class Settings extends Singleton {
 		 * passed in so addons don't need to diff against `get_option()`
 		 * themselves.
 		 *
-		 * @since 4.1.0
+		 * @since 4.0.0
 		 *
 		 * @param array $current  Sanitised settings just written.
 		 * @param array $previous Settings as they were immediately before this write.
@@ -286,7 +286,7 @@ class Settings extends Singleton {
 			 * The hook name is dynamic — the suffix is the setting key.
 			 * Example: `404_to_301_setting_updated_email_enabled`.
 			 *
-			 * @since 4.1.0
+			 * @since 4.0.0
 			 *
 			 * @param mixed $new New value (sanitised).
 			 * @param mixed $old Previous value, or null if the key did not exist before.

@@ -41,6 +41,18 @@ $prefix: '#{variables.$prefix}';
 		flex-direction: column;
 		height: 100%;
 
+		// WP <Card /> wraps its children in an inner content <View />
+		// (height: 100% but not display:flex), so the flex rules below
+		// would otherwise be inert — their parent wouldn't be a flex
+		// container. Promote that inner wrapper to a flex column so
+		// the body grows and the footer stays content-sized.
+		> div:first-child {
+			display: flex;
+			flex: 1 1 auto;
+			flex-direction: column;
+			min-height: 0;
+		}
+
 		// The description body soaks up any extra vertical slack the
 		// grid hands us, so short descriptions leave whitespace below
 		// the text instead of ballooning the footer.

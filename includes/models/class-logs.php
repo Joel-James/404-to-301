@@ -38,7 +38,7 @@ class Logs extends Model {
 	 * Per-row override value-space (matches the schema). Kept here so
 	 * the REST + UI layers can `enum`-validate against a single source.
 	 *
-	 * @since 4.1.0
+	 * @since 4.0.0
 	 */
 	const OVERRIDE_GLOBAL  = 0;
 	const OVERRIDE_ENABLE  = 1;
@@ -191,7 +191,7 @@ class Logs extends Model {
 	 * else is silently coerced to OVERRIDE_GLOBAL so an unexpected
 	 * payload never persists a junk value into the table.
 	 *
-	 * @since 4.1.0
+	 * @since 4.0.0
 	 *
 	 * @param int   $id        Log row id.
 	 * @param array $overrides {
