@@ -40,6 +40,15 @@ const AddonCard = ({ addon, onManageLicense }) => {
 	 * states are mutually exclusive so we only need one of them at
 	 * a time.
 	 */
+	let ctaLabel
+	if (addon.is_wporg) {
+		ctaLabel = __('Download', '404-to-301')
+	} else if (addon.is_premium) {
+		ctaLabel = __('Buy Now', '404-to-301')
+	} else {
+		ctaLabel = __('Get it', '404-to-301')
+	}
+
 	const purchaseCta = (
 		<Button
 			variant={addon.is_premium ? 'primary' : 'secondary'}
@@ -47,9 +56,7 @@ const AddonCard = ({ addon, onManageLicense }) => {
 			target="_blank"
 			rel="noopener noreferrer"
 		>
-			{addon.is_premium
-				? __('Buy Now', '404-to-301')
-				: __('Get it', '404-to-301')}
+			{ctaLabel}
 		</Button>
 	)
 
@@ -95,10 +102,12 @@ const AddonCard = ({ addon, onManageLicense }) => {
 								{__('Free', '404-to-301')}
 							</Badge>
 						)}
-						<LicenseBadge
-							isActive={addon.is_active}
-							isLicenseActive={addon.is_license_active}
-						/>
+						{!addon.is_wporg && (
+							<LicenseBadge
+								isActive={addon.is_active}
+								isLicenseActive={addon.is_license_active}
+							/>
+						)}
 					</Flex>
 				</FlexItem>
 			</CardHeader>
@@ -124,14 +133,20 @@ const AddonCard = ({ addon, onManageLicense }) => {
 				  */}
 				<FlexItem>
 					{addon.is_active ? (
-						<Button
-							variant="secondary"
-							onClick={() => onManageLicense(addon)}
-						>
-							{addon.is_license_active
-								? __('Manage License', '404-to-301')
-								: __('Activate License', '404-to-301')}
-						</Button>
+						addon.is_wporg ? (
+							<span className="d404-addon-active-label">
+								{__('Installed', '404-to-301')}
+							</span>
+						) : (
+							<Button
+								variant="secondary"
+								onClick={() => onManageLicense(addon)}
+							>
+								{addon.is_license_active
+									? __('Manage License', '404-to-301')
+									: __('Activate License', '404-to-301')}
+							</Button>
+						)
 					) : (
 						purchaseCta
 					)}

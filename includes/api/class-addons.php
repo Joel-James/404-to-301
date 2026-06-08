@@ -263,34 +263,38 @@ class Addons extends Endpoint {
 	 */
 	private function shape_catalog( bool $force ): array {
 		$freemius = Core::instance()->freemius();
+		$catalog  = array();
+		$items    = array();
 
-		if ( ! $freemius || ! $freemius->is_ready() ) {
-			return array();
+		if ( $freemius && $freemius->is_ready() ) {
+			$catalog    = $freemius->get_addons( $force );
+			$registered = $freemius->get_registered_addons();
+			$licenses   = $freemius->get_license_items();
+
+			foreach ( (array) $catalog as $addon ) {
+				$id      = (int) ( $addon['id'] ?? 0 );
+				$license = $licenses[ $id ] ?? array();
+
+				$items[] = array(
+					'id'                => $id,
+					'source'            => 'freemius',
+					'title'             => (string) ( $addon['title'] ?? '' ),
+					'icon'              => (string) ( $addon['icon'] ?? '' ),
+					'link'              => (string) ( $addon['link'] ?? '' ),
+					'description'       => (string) ( $addon['info']['description'] ?? '' ),
+					'homepage'          => (string) ( $addon['info']['url'] ?? '' ),
+					'is_premium'        => (bool) ( $addon['is_premium'] ?? false ),
+					'is_wporg'          => false,
+					'is_active'         => isset( $registered[ $id ] ),
+					'is_license_active' => (bool) ( $license['active'] ?? false ),
+					'license_key'       => (string) ( $license['key'] ?? '' ),
+					'banner'            => (string) ( $addon['info']['card_banner_url'] ?? '' ),
+				);
+			}
 		}
 
-		$catalog    = $freemius->get_addons( $force );
-		$registered = $freemius->get_registered_addons();
-		$licenses   = $freemius->get_license_items();
-
-		$items = array();
-
-		foreach ( (array) $catalog as $addon ) {
-			$id      = (int) ( $addon['id'] ?? 0 );
-			$license = $licenses[ $id ] ?? array();
-
-			$items[] = array(
-				'id'                => $id,
-				'title'             => (string) ( $addon['title'] ?? '' ),
-				'icon'              => (string) ( $addon['icon'] ?? '' ),
-				'link'              => (string) ( $addon['link'] ?? '' ),
-				'description'       => (string) ( $addon['info']['description'] ?? '' ),
-				'homepage'          => (string) ( $addon['info']['url'] ?? '' ),
-				'is_premium'        => (bool) ( $addon['is_premium'] ?? false ),
-				'is_active'         => isset( $registered[ $id ] ),
-				'is_license_active' => (bool) ( $license['active'] ?? false ),
-				'license_key'       => (string) ( $license['key'] ?? '' ),
-				'banner'            => (string) ( $addon['info']['card_banner_url'] ?? '' ),
-			);
+		foreach ( $this->get_wporg_addons() as $addon ) {
+			$items[] = $addon;
 		}
 
 		/**
@@ -306,6 +310,118 @@ class Addons extends Endpoint {
 		 * @param array $catalog Raw SDK catalog rows.
 		 */
 		return (array) apply_filters( '404_to_301_addons_catalog', $items, $catalog );
+	}
+
+	/**
+	 * Free addons hosted on the wordpress.org plugin repository.
+	 *
+	 * Returns rows in the same shape as Freemius addons so the React
+	 * layer can render them in the same grid. Each entry only carries
+	 * presentational data — there's no license, no remote update flow,
+	 * and no Freemius registration. WordPress itself handles install
+	 * and updates once the user clicks through.
+	 *
+	 * The list is keyed by wp.org slug. To add a real addon, append a
+	 * row here (or use the `404_to_301_wporg_addons` filter from a
+	 * site-specific plugin). Banner / icon URLs follow the predictable
+	 * `ps.w.org` asset path so most entries need nothing more than a
+	 * slug, title, and description.
+	 *
+	 * `id` is a negative integer derived from a CRC32 of the slug so
+	 * it can't collide with a Freemius project id (those are positive).
+	 * Stable across requests so React keys don't churn.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array<int, array> Shaped rows ready for the catalog.
+	 */
+	private function get_wporg_addons(): array {
+		/**
+		 * Filter the raw list of wp.org free addons before shaping.
+		 *
+		 * Each entry is an associative array keyed by wp.org slug with:
+		 *   - title       (string, required)
+		 *   - description (string)
+		 *   - banner      (string URL, optional — defaults to ps.w.org)
+		 *   - icon        (string URL, optional — defaults to ps.w.org)
+		 *   - homepage    (string URL, optional — defaults to wp.org page)
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array<string, array> $addons Slug-keyed addon definitions.
+		 */
+		$raw = (array) apply_filters(
+			'404_to_301_wporg_addons',
+			array(
+				'404-to-301' => array( // @todo Update this slug to match the plugin slug.
+					'title'       => __( 'Redirects Importer', '404-to-301' ),
+					'description' => __( 'Bulk import 301 redirects into 404 to 301 from CSV files or migrate them in from other redirect plugins like Redirection, Rank Math, and Yoast — no manual re-entry.', '404-to-301' ),
+				),
+			)
+		);
+
+		if ( empty( $raw ) ) {
+			return array();
+		}
+
+		$items = array();
+
+		foreach ( $raw as $slug => $addon ) {
+			$slug = sanitize_key( (string) $slug );
+			if ( '' === $slug || empty( $addon['title'] ) ) {
+				continue;
+			}
+
+			$items[] = array(
+				'id'                => -abs( (int) sprintf( '%u', crc32( $slug ) ) % PHP_INT_MAX ),
+				'source'            => 'wporg',
+				'slug'              => $slug,
+				'title'             => (string) $addon['title'],
+				'icon'              => (string) ( $addon['icon'] ?? "https://ps.w.org/{$slug}/assets/icon-128x128.png" ),
+				'link'              => "https://downloads.wordpress.org/plugin/{$slug}.latest-stable.zip",
+				'description'       => (string) ( $addon['description'] ?? '' ),
+				'homepage'          => (string) ( $addon['homepage'] ?? "https://wordpress.org/plugins/{$slug}/" ),
+				'is_premium'        => false,
+				'is_wporg'          => true,
+				'is_active'         => $this->is_wporg_addon_active( $slug ),
+				'is_license_active' => false,
+				'license_key'       => '',
+				'banner'            => (string) ( $addon['banner'] ?? "https://ps.w.org/{$slug}/assets/banner-772x250.png" ),
+			);
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Whether a wp.org addon plugin is installed and active locally.
+	 *
+	 * Scans `active_plugins` (and network-active on multisite) for
+	 * any file path under the addon's slug directory, so we catch
+	 * both `slug/slug.php` and `slug/anything.php` layouts without
+	 * having to know the bootstrap filename up front.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $slug wp.org plugin slug.
+	 *
+	 * @return bool
+	 */
+	private function is_wporg_addon_active( string $slug ): bool {
+		$prefix = $slug . '/';
+		$active = (array) get_option( 'active_plugins', array() );
+
+		if ( is_multisite() ) {
+			$active = array_merge( $active, array_keys( (array) get_site_option( 'active_sitewide_plugins', array() ) ) );
+		}
+
+		foreach ( $active as $plugin ) {
+			if ( is_string( $plugin ) && 0 === strpos( $plugin, $prefix ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
