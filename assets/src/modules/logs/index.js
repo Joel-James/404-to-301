@@ -9,7 +9,7 @@ import { Notices, PageBody, PageHeader } from '../../common'
  */
 const LogsPage = () => (
 	<>
-		<PageHeader title={__('404 to 301 - Error Logs', '404-to-301')} />
+		<PageHeader title={__('404 to 301 - 404 Error Logs', '404-to-301')} />
 		<PageBody wide>
 			<Notices />
 			<MigrationBanner />

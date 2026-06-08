@@ -81,6 +81,8 @@ class Links extends Singleton {
 				esc_html__( 'Documentation', '404-to-301' )
 			);
 
+			$meta['addons'] = sprintf( '<a href="%s">%s</a>', esc_url( Plugin::get_url( 'addons' ) ), esc_html__( 'Add-ons', '404-to-301' ) );
+
 			$meta['support'] = sprintf(
 				'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
 				'https://wordpress.org/support/plugin/404-to-301/',

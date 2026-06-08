@@ -17,7 +17,7 @@ import { Notices, PageBody, PageHeader, TabNav } from '../../common'
  */
 const tabs = {
 	catalog: {
-		label: __('Addons', '404-to-301'),
+		label: __('Add-ons', '404-to-301'),
 		component: Catalog,
 	},
 	support: {
@@ -56,7 +56,7 @@ const AddonsApp = () => {
 
 	return (
 		<>
-			<PageHeader title={__('404 to 301 - Addons', '404-to-301')}>
+			<PageHeader title={__('404 to 301 - Add-ons', '404-to-301')}>
 				<TabNav current={current} navs={navs} onChange={setCurrent} />
 			</PageHeader>
 
