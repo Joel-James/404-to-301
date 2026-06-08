@@ -3,9 +3,9 @@
  * Admin menu registration.
  *
  * Builds the 4-item menu under "404 to 301":
- *   Logs (top level)
- *   ├ Logs       (alias of top level)
- *   ├ Redirects
+ *   Redirects (top level)
+ *   ├ Redirects  (alias of top level)
+ *   ├ 404 Logs
  *   ├ Settings
  *   └ Addons
  *
@@ -57,29 +57,20 @@ class Menu extends Singleton {
 	public function register(): void {
 		$cap = Permission::get_cap();
 
-		// Top-level page — defaults to the Logs view.
+		// Top-level page — defaults to the Redirects view.
 		add_menu_page(
-			__( '404 Errors — 404 to 301', '404-to-301' ),
-			__( '404 Errors', '404-to-301' ),
+			__( 'Custom Redirects — 404 to 301', '404-to-301' ),
+			__( 'Redirects', '404-to-301' ),
 			$cap,
-			Plugin::PAGE_LOGS,
-			array( Page::instance(), 'render_logs' ),
+			Plugin::PAGE_REDIRECTS,
+			array( Page::instance(), 'render_redirects' ),
 			'dashicons-redo',
 			89
 		);
 
 		// Sub-menu pages, in display order.
 		add_submenu_page(
-			Plugin::PAGE_LOGS,
-			__( '404 Error Logs', '404-to-301' ),
-			__( 'Logs', '404-to-301' ),
-			$cap,
-			Plugin::PAGE_LOGS,
-			array( Page::instance(), 'render_logs' )
-		);
-
-		add_submenu_page(
-			Plugin::PAGE_LOGS,
+			Plugin::PAGE_REDIRECTS,
 			__( 'Custom Redirects', '404-to-301' ),
 			__( 'Redirects', '404-to-301' ),
 			$cap,
@@ -88,7 +79,16 @@ class Menu extends Singleton {
 		);
 
 		add_submenu_page(
+			Plugin::PAGE_REDIRECTS,
+			__( '404 Error Logs', '404-to-301' ),
+			__( '404 Logs', '404-to-301' ),
+			$cap,
 			Plugin::PAGE_LOGS,
+			array( Page::instance(), 'render_logs' )
+		);
+
+		add_submenu_page(
+			Plugin::PAGE_REDIRECTS,
 			__( '404 to 301 Settings', '404-to-301' ),
 			__( 'Settings', '404-to-301' ),
 			$cap,
@@ -97,7 +97,7 @@ class Menu extends Singleton {
 		);
 
 		add_submenu_page(
-			Plugin::PAGE_LOGS,
+			Plugin::PAGE_REDIRECTS,
 			__( '404 to 301 Add-ons', '404-to-301' ),
 			__( 'Add-ons', '404-to-301' ),
 			$cap,
@@ -110,7 +110,7 @@ class Menu extends Singleton {
 	 * Rename the top-level menu label to the brand name.
 	 *
 	 * WordPress uses the first sub-menu's label as the parent label
-	 * by default. We register the parent with "404 Errors" so the
+	 * by default. We register the parent with "Redirects" so the
 	 * first submenu reads cleanly, then swap the parent label here.
 	 *
 	 * @since 4.0.0
@@ -125,7 +125,7 @@ class Menu extends Singleton {
 		}
 
 		foreach ( $menu as $position => $data ) {
-			if ( isset( $data[2] ) && Plugin::PAGE_LOGS === $data[2] ) {
+			if ( isset( $data[2] ) && Plugin::PAGE_REDIRECTS === $data[2] ) {
 				// Rewriting our own row's display label in the global
 				// `$menu` is the documented WP way to override the
 				// auto-derived top-level title (default is the first

@@ -40,10 +40,10 @@ class Assets extends Singleton {
 	 * @var array<string, string>
 	 */
 	private const HANDLES = array(
-		'toplevel_page_404-to-301-logs'        => 'logs',
-		'404-errors_page_404-to-301-redirects' => 'redirects',
-		'404-errors_page_404-to-301-settings'  => 'settings',
-		'404-errors_page_404-to-301-addons'    => 'addons',
+		'toplevel_page_404-to-301-redirects' => 'redirects',
+		'redirects_page_404-to-301-logs'     => 'logs',
+		'redirects_page_404-to-301-settings' => 'settings',
+		'redirects_page_404-to-301-addons'   => 'addons',
 	);
 
 	/**

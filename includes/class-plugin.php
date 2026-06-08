@@ -77,10 +77,10 @@ class Plugin {
 	 * @var array<string, string>
 	 */
 	private static $screens = array(
-		'logs'      => 'toplevel_page_404-to-301-logs',
-		'redirects' => '404-errors_page_404-to-301-redirects',
-		'settings'  => '404-errors_page_404-to-301-settings',
-		'addons'    => '404-errors_page_404-to-301-addons',
+		'redirects' => 'toplevel_page_404-to-301-redirects',
+		'logs'      => 'redirects_page_404-to-301-logs',
+		'settings'  => 'redirects_page_404-to-301-settings',
+		'addons'    => 'redirects_page_404-to-301-addons',
 	);
 
 	/**
