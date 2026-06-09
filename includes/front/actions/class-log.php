@@ -17,6 +17,7 @@ namespace DuckDev\FourNotFour\Front\Actions;
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) || exit;
 
+use DuckDev\FourNotFour\Database\Rows\Log as LogRow;
 use DuckDev\FourNotFour\Front\Request;
 use DuckDev\FourNotFour\Models\Logs;
 use DuckDev\FourNotFour\Utils\Helpers;
@@ -93,11 +94,25 @@ class Log extends Action {
 		 */
 		$data = (array) apply_filters( '404_to_301_pre_log_insert', $data, $request );
 
-		$id = Logs::instance()->record_hit( $data );
+		// Reuse the row already memoised on the Request (looked up in
+		// `should_run()` for `logs_skip_duplicates`, or by Email's
+		// threshold check) so `record_hit` doesn't re-fetch it. The
+		// `prefetched=true` flag matters when the lookup legitimately
+		// returned null — without it, `record_hit` can't distinguish
+		// "no row exists" from "caller didn't fetch" and re-queries.
+		$existing = $request->log();
+		$id       = Logs::instance()->record_hit( $data, $existing, true );
 
-		// Allow downstream actions to read the log row that was just
-		// touched — refresh memoisation so the Request reflects reality.
-		$request->refresh_log();
+		// Keep the Request's memoised log in sync with what's now on
+		// disk, without forcing Email's `should_run()` to re-SELECT.
+		if ( $existing instanceof LogRow ) {
+			++$existing->hits;
+			$request->set_log( $existing );
+		} else {
+			// New row — refresh once so downstream actions see the
+			// real id / hits / timestamps.
+			$request->refresh_log();
+		}
 
 		/**
 		 * Fires after a log row has been written.

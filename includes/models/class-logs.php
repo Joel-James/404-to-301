@@ -82,38 +82,39 @@ class Logs extends Model {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param array $data {
+	 * @param array       $data {
 	 *     Column => value, must contain at least `url`.
 	 *
 	 *     @type string $url Raw URL.
 	 * }
+	 * @param LogRow|null $existing     Pre-fetched row for this URL, or
+	 *                                  null when the caller already looked
+	 *                                  it up and found nothing. Pair with
+	 *                                  `$prefetched = true` to skip the
+	 *                                  duplicate SELECT.
+	 * @param bool        $prefetched   Whether `$existing` represents a
+	 *                                  completed lookup (true) or just a
+	 *                                  defaulted "I don't know" (false).
+	 *                                  Without this flag we can't tell a
+	 *                                  legit "no row exists" null apart
+	 *                                  from "caller didn't fetch yet".
 	 *
 	 * @return int Row id of the inserted/updated log.
 	 */
-	public function record_hit( array $data ): int {
+	public function record_hit( array $data, ?LogRow $existing = null, bool $prefetched = false ): int {
 		$url = (string) ( $data['url'] ?? '' );
 
 		if ( '' === $url ) {
 			return 0;
 		}
 
-		$existing = $this->get_by_url( $url );
-		$now      = current_time( 'mysql', true );
+		if ( ! $prefetched ) {
+			$existing = $this->get_by_url( $url );
+		}
+		$now = current_time( 'mysql', true );
 
 		if ( $existing instanceof LogRow ) {
-			$this->update(
-				(int) $existing->id,
-				array(
-					'hits'       => (int) $existing->hits + 1,
-					'updated_at' => $now,
-					// Refresh contextual fields so the latest hit is
-					// represented in the log.
-					'ref'        => (string) ( $data['ref'] ?? $existing->ref ),
-					'ip'         => (string) ( $data['ip'] ?? $existing->ip ),
-					'ua'         => (string) ( $data['ua'] ?? $existing->ua ),
-					'method'     => (string) ( $data['method'] ?? $existing->method ),
-				)
-			);
+			$this->bump_existing_hit( $existing, $data, $now );
 
 			return (int) $existing->id;
 		}
@@ -125,6 +126,68 @@ class Logs extends Model {
 		$data['updated_at'] = $now;
 
 		return $this->create( $data );
+	}
+
+	/**
+	 * Bump the `hits` counter on an existing log row.
+	 *
+	 * Sidesteps BerlinDB's `update_item()` for this hot, front-end
+	 * code path: that helper runs `get_item_raw()` once before the
+	 * UPDATE (to diff column values) and once after (to refresh the
+	 * row cache), so each 404 hit on a known URL produces two extra
+	 * `SELECT * ... WHERE id = X` queries that Query Monitor reports
+	 * as duplicates. A direct `$wpdb->update()` collapses the whole
+	 * write to a single statement.
+	 *
+	 * Per-id and last-changed cache entries are invalidated by hand
+	 * so the admin Logs list (which reads through BerlinDB) still
+	 * reflects the new `hits` value on the next page load.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param LogRow $existing Memoised row whose counter is being bumped.
+	 * @param array  $data     Latest request context (`ref`, `ip`, `ua`, `method`).
+	 * @param string $now      MySQL-format timestamp for `updated_at`.
+	 *
+	 * @return void
+	 */
+	private function bump_existing_hit( LogRow $existing, array $data, string $now ): void {
+		global $wpdb;
+
+		$id    = (int) $existing->id;
+		$table = $wpdb->prefix . '404_to_301_logs';
+
+		// Use the same fallback-to-current-value pattern as the old
+		// BerlinDB update path so contextual columns aren't blanked
+		// when the caller doesn't supply them.
+		$row = array(
+			'hits'       => (int) $existing->hits + 1,
+			'updated_at' => $now,
+			'ref'        => (string) ( $data['ref'] ?? $existing->ref ),
+			'ip'         => (string) ( $data['ip'] ?? $existing->ip ),
+			'ua'         => (string) ( $data['ua'] ?? $existing->ua ),
+			'method'     => (string) ( $data['method'] ?? $existing->method ),
+		);
+
+		// Direct write: BerlinDB's `update_item()` would issue two
+		// extra SELECTs around this UPDATE (diff + cache refresh),
+		// which Query Monitor flags as duplicates on every 404 hit.
+		// Cache invalidation is handled by hand right below.
+		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$table,
+			$row,
+			array( 'id' => $id ),
+			array( '%d', '%s', '%s', '%s', '%s', '%s' ),
+			array( '%d' )
+		);
+
+		// BerlinDB stores per-row caches under the Query's `cache_group`
+		// (declared on {@see LogQuery}); the key is the primary id and
+		// the `last_changed` sentinel scopes query-result caches. Both
+		// need invalidating so admin listings / `find()` see the bumped
+		// values on the next call.
+		wp_cache_delete( $id, '404_to_301_logs' );
+		wp_cache_set( 'last_changed', microtime(), '404_to_301_logs' );
 	}
 
 	/**

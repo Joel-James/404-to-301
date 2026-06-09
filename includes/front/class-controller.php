@@ -83,6 +83,16 @@ class Controller extends Singleton {
 
 		$request = new Request();
 
+		// The whole pipeline is 404-centric: per-row redirects only make
+		// sense as a destination for URLs WordPress couldn't resolve, and
+		// logging a healthy page as a 404 is just wrong. Bail before any
+		// of the redirect-table lookups (3+ queries) fire on healthy
+		// pages. `is_404()` runs through `$request` so the test filter
+		// (`404_to_301_request_is_404`) still works.
+		if ( ! $request->is_404() ) {
+			return;
+		}
+
 		/**
 		 * Allow short-circuiting the whole pipeline.
 		 *

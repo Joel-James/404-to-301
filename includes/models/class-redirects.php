@@ -12,6 +12,7 @@ namespace DuckDev\FourNotFour\Models;
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) || exit;
 
+use DuckDev\Cache\Cache;
 use DuckDev\FourNotFour\Database\Queries\Redirect as RedirectQuery;
 use DuckDev\FourNotFour\Database\Rows\Redirect as RedirectRow;
 use DuckDev\FourNotFour\Utils\Helpers;
@@ -23,6 +24,30 @@ use DuckDev\FourNotFour\Utils\Helpers;
  * @package DuckDev\FourNotFour\Models
  */
 class Redirects extends Model {
+
+	/**
+	 * Cache prefix for {@see Cache::get_instance()}.
+	 *
+	 * Scopes every key + group + filter under `404_to_301`, so the
+	 * library's per-prefix container can be safely shared with any
+	 * other consumer on the site.
+	 *
+	 * @since 4.0.0
+	 * @var string
+	 */
+	private const CACHE_PREFIX = '404_to_301';
+
+	/**
+	 * Cache group for redirect-table lookups.
+	 *
+	 * One group means a single `flush_group()` on any redirect mutation
+	 * invalidates every cached lookup (exact / prefix / regex) at once
+	 * — there is no per-key bookkeeping to keep in sync.
+	 *
+	 * @since 4.0.0
+	 * @var string
+	 */
+	private const CACHE_GROUP = 'redirects';
 
 	/**
 	 * BerlinDB query class for the redirects table.
@@ -107,18 +132,24 @@ class Redirects extends Model {
 	 * @return RedirectRow|null
 	 */
 	private function find_exact_by_hash( string $hash ) {
-		$query = new RedirectQuery(
-			array(
-				'source_hash' => $hash,
-				'match_type'  => 'exact',
-				'is_active'   => 1,
-				'number'      => 1,
-			)
+		return $this->cache()->remember(
+			'exact:' . $hash,
+			static function () use ( $hash ) {
+				$query = new RedirectQuery(
+					array(
+						'source_hash' => $hash,
+						'match_type'  => 'exact',
+						'is_active'   => 1,
+						'number'      => 1,
+					)
+				);
+
+				$items = (array) $query->items;
+
+				return ! empty( $items ) ? $items[0] : null;
+			},
+			self::CACHE_GROUP
 		);
-
-		$items = (array) $query->items;
-
-		return ! empty( $items ) ? $items[0] : null;
 	}
 
 	/**
@@ -138,20 +169,9 @@ class Redirects extends Model {
 	 */
 	public function find_prefix( string $url ) {
 		$normalised = Helpers::normalise_url( $url );
+		$rows       = $this->active_rows_by_type( 'prefix' );
 
-		$query = new RedirectQuery(
-			array(
-				'match_type' => 'prefix',
-				'is_active'  => 1,
-				'orderby'    => 'source',
-				'order'      => 'DESC', // Longer prefixes win.
-				// BerlinDB runs `number` through `absint()`, so `-1`
-				// silently truncates to `LIMIT 1`. Use `0` for no limit.
-				'number'     => 0,
-			)
-		);
-
-		foreach ( (array) $query->items as $row ) {
+		foreach ( $rows as $row ) {
 			$source = Helpers::normalise_url( (string) $row->source );
 
 			if ( '' !== $source && 0 === strpos( $normalised, $source ) ) {
@@ -173,16 +193,9 @@ class Redirects extends Model {
 	 * @return RedirectRow|null
 	 */
 	public function find_regex( string $url ) {
-		$query = new RedirectQuery(
-			array(
-				'match_type' => 'regex',
-				'is_active'  => 1,
-				// See `find_prefix()` — BerlinDB caps `-1` to `LIMIT 1`.
-				'number'     => 0,
-			)
-		);
+		$rows = $this->active_rows_by_type( 'regex' );
 
-		foreach ( (array) $query->items as $row ) {
+		foreach ( $rows as $row ) {
 			$pattern = (string) $row->source;
 			if ( '' === $pattern ) {
 				continue;
@@ -356,6 +369,75 @@ class Redirects extends Model {
 	 * @return void
 	 */
 	/**
+	 * Load every active row of a given match type, cached for the
+	 * lifetime of the cache group (flushed on any redirect mutation).
+	 *
+	 * Used by {@see find_prefix()} and {@see find_regex()} — both walk
+	 * the entire active set in PHP. The lists are small (a handful of
+	 * rules per site) so caching the hydrated rows is cheap and cuts a
+	 * SELECT off every 404.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $match_type `prefix` or `regex`.
+	 *
+	 * @return RedirectRow[]
+	 */
+	private function active_rows_by_type( string $match_type ): array {
+		return (array) $this->cache()->remember(
+			'active:' . $match_type,
+			static function () use ( $match_type ) {
+				$query = new RedirectQuery(
+					array(
+						'match_type' => $match_type,
+						'is_active'  => 1,
+						'orderby'    => 'source',
+						'order'      => 'DESC', // Longer prefixes win.
+						// BerlinDB runs `number` through `absint()`,
+						// so `-1` silently truncates to `LIMIT 1`.
+						// Use `0` for no limit.
+						'number'     => 0,
+					)
+				);
+
+				return (array) $query->items;
+			},
+			self::CACHE_GROUP
+		);
+	}
+
+	/**
+	 * Drop every cached lookup in the redirects group.
+	 *
+	 * Hooked from {@see dispatch_audit()} so any create / update /
+	 * delete invalidates the exact / prefix / regex caches in one go —
+	 * the version-bump implementation in the cache helper means we
+	 * don't enumerate keys.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function flush_cache(): void {
+		$this->cache()->flush_group( self::CACHE_GROUP );
+	}
+
+	/**
+	 * Container for the redirect-table cache group.
+	 *
+	 * Scoped under `404_to_301` so other consumers on the site can't
+	 * collide with our keys, and so the library's
+	 * `404_to_301_can_cache` filter can disable caching for debugging.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return Cache
+	 */
+	private function cache(): Cache {
+		return Cache::get_instance( self::CACHE_PREFIX );
+	}
+
+	/**
 	 * Hash a source URL according to the row's `query_handling` mode.
 	 *
 	 * `require` rows include the query string in the hash so multiple
@@ -392,6 +474,11 @@ class Redirects extends Model {
 	 * @return void
 	 */
 	private function dispatch_audit( string $action, int $id, array $data ): void {
+		// Any mutation invalidates the lookup cache. Done here (not in
+		// each create/update/delete) so the single seam stays the only
+		// place future write paths need to remember to plumb through.
+		$this->flush_cache();
+
 		$user_id = (int) ( $data['modified_by'] ?? get_current_user_id() );
 
 		/**

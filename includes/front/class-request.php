@@ -268,6 +268,22 @@ class Request {
 	}
 
 	/**
+	 * Inject the memoised log row directly.
+	 *
+	 * Used after a write when the caller already holds the up-to-date
+	 * row — avoids a follow-up SELECT that would re-fetch the same data.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param LogRow|null $log Row to memoise (null clears).
+	 *
+	 * @return void
+	 */
+	public function set_log( ?LogRow $log ): void {
+		$this->log = $log ? $log : null;
+	}
+
+	/**
 	 * Build the lowercased headers map from `$_SERVER`.
 	 *
 	 * @since 4.0.0
