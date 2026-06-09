@@ -86,7 +86,7 @@ class Doctor extends Command {
 	public function __invoke( array $args, array $assoc ): void {
 		unset( $args );
 
-		$format = isset( $assoc['format'] ) ? (string) $assoc['format'] : 'report';
+		$format = (string) ( $assoc['format'] ?? 'report' );
 
 		$groups = array(
 			'cron'     => array(

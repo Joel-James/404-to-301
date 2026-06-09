@@ -102,7 +102,7 @@ class Migrate extends Command {
 			return;
 		}
 
-		$limit  = isset( $assoc['limit'] ) ? (int) $assoc['limit'] : 0;
+		$limit  = (int) ( $assoc['limit'] ?? 0 );
 		$ran    = 0;
 		$status = $migrator->status();
 

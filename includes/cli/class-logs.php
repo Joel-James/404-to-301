@@ -62,8 +62,8 @@ class Logs extends Command {
 	 * @return void
 	 */
 	public function list( array $args, array $assoc ): void {
-		$per_page = isset( $assoc['per-page'] ) ? (int) $assoc['per-page'] : 20;
-		$page     = isset( $assoc['page'] ) ? (int) $assoc['page'] : 1;
+		$per_page = (int) ( $assoc['per-page'] ?? 20 );
+		$page     = (int) ( $assoc['page'] ?? 1 );
 
 		$query = array(
 			'number'  => max( 1, $per_page ),
@@ -289,7 +289,7 @@ class Logs extends Command {
 	 * @return void
 	 */
 	public function prune( array $args, array $assoc ): void {
-		$days  = isset( $assoc['days'] ) ? (int) $assoc['days'] : 30;
+		$days  = (int) ( $assoc['days'] ?? 30 );
 		$count = LogsModel::instance()->prune( $days );
 
 		WP_CLI::success(

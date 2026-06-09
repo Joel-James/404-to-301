@@ -45,7 +45,7 @@ abstract class Command implements Runnable {
 	 * @return string One of `table`, `csv`, `json`, `yaml`.
 	 */
 	protected function format( array $assoc ): string {
-		$format  = isset( $assoc['format'] ) ? (string) $assoc['format'] : 'table';
+		$format  = (string) ( $assoc['format'] ?? 'table' );
 		$allowed = array( 'table', 'csv', 'json', 'yaml' );
 
 		return in_array( $format, $allowed, true ) ? $format : 'table';

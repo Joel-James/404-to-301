@@ -342,7 +342,7 @@ class Settings extends Singleton {
 
 		foreach ( $defaults as $key => $default ) {
 			// Keep the current value for any key not in this request.
-			$raw = array_key_exists( $key, $values ) ? $values[ $key ] : $current[ $key ];
+			$raw = $values[ $key ] ?? $current[ $key ];
 
 			switch ( $key ) {
 				case 'disable_guessing':

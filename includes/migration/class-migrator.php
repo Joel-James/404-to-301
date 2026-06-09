@@ -221,7 +221,7 @@ class Migrator extends Singleton {
 			}
 
 			$options = $row->options ? maybe_unserialize( $row->options ) : array();
-			$type    = isset( $options['type'] ) ? (int) $options['type'] : 301;
+			$type    = (int) ( $options['type'] ?? 301 );
 
 			$id = $model->create(
 				array(

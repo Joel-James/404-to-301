@@ -293,8 +293,8 @@ class Redirects extends Model {
 		// row so the hash stays consistent with what's stored.
 		if ( isset( $data['source'] ) || isset( $data['query_handling'] ) ) {
 			$current = $this->find( $id );
-			$source  = isset( $data['source'] ) ? (string) $data['source'] : (string) ( $current->source ?? '' );
-			$mode    = isset( $data['query_handling'] ) ? (string) $data['query_handling'] : (string) ( $current->query_handling ?? 'ignore' );
+			$source  = (string) ( $data['source'] ?? $current->source ?? '' );
+			$mode    = (string) ( $data['query_handling'] ?? $current->query_handling ?? 'ignore' );
 
 			if ( '' !== $source ) {
 				$data['source_hash'] = $this->hash_for_mode( $source, $mode );
@@ -392,7 +392,7 @@ class Redirects extends Model {
 	 * @return void
 	 */
 	private function dispatch_audit( string $action, int $id, array $data ): void {
-		$user_id = isset( $data['modified_by'] ) ? (int) $data['modified_by'] : get_current_user_id();
+		$user_id = (int) ( $data['modified_by'] ?? get_current_user_id() );
 
 		/**
 		 * Fires after a redirect row is created, updated, or deleted.
