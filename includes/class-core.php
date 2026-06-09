@@ -155,6 +155,9 @@ final class Core extends Singleton {
 		if ( class_exists( __NAMESPACE__ . '\\Admin\\Links' ) ) {
 			Admin\Links::instance();
 		}
+		if ( class_exists( __NAMESPACE__ . '\\Admin\\Site_Health' ) ) {
+			Admin\Site_Health::instance();
+		}
 	}
 
 	/**
