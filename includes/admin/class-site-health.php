@@ -114,84 +114,84 @@ class Site_Health extends Singleton {
 		$values   = $settings ? $settings->all() : array();
 
 		$fields = array(
-			'plugin_version'    => array(
+			'plugin_version'   => array(
 				'label' => __( 'Plugin version', '404-to-301' ),
 				'value' => defined( 'D404_VERSION' ) ? D404_VERSION : '',
 			),
-			'db_version'        => array(
+			'db_version'       => array(
 				'label' => __( 'Database schema version', '404-to-301' ),
 				'value' => defined( 'D404_DB_VERSION' ) ? D404_DB_VERSION : '',
 			),
-			'redirect_enabled'  => array(
+			'redirect_enabled' => array(
 				'label' => __( 'Redirect 404s', '404-to-301' ),
 				'value' => $this->yes_no( ! empty( $values['redirect_enabled'] ) ),
 			),
-			'redirect_type'     => array(
+			'redirect_type'    => array(
 				'label' => __( 'Default redirect type', '404-to-301' ),
 				'value' => (string) ( $values['redirect_type'] ?? '' ),
 			),
-			'redirect_target'   => array(
+			'redirect_target'  => array(
 				'label' => __( 'Default redirect target', '404-to-301' ),
 				'value' => (string) ( $values['redirect_target'] ?? '' ),
 			),
-			'redirect_link'     => array(
+			'redirect_link'    => array(
 				'label'   => __( 'Default redirect URL', '404-to-301' ),
 				'value'   => (string) ( $values['redirect_link'] ?? '' ),
 				'private' => true,
 			),
-			'disable_guessing'  => array(
+			'disable_guessing' => array(
 				'label' => __( 'Disable URL guessing', '404-to-301' ),
 				'value' => (string) ( $values['disable_guessing'] ?? '' ),
 			),
-			'logs_enabled'      => array(
+			'logs_enabled'     => array(
 				'label' => __( 'Log 404 errors', '404-to-301' ),
 				'value' => $this->yes_no( ! empty( $values['logs_enabled'] ) ),
 			),
-			'logs_skip_bots'    => array(
+			'logs_skip_bots'   => array(
 				'label' => __( 'Skip bot 404s', '404-to-301' ),
 				'value' => $this->yes_no( ! empty( $values['logs_skip_bots'] ) ),
 			),
-			'logs_rows'         => array(
+			'logs_rows'        => array(
 				'label' => __( 'Logged 404 rows', '404-to-301' ),
 				'value' => number_format_i18n( (float) $this->logs_row_count() ),
 			),
-			'logs_size'         => array(
+			'logs_size'        => array(
 				'label' => __( 'Logs table size', '404-to-301' ),
 				'value' => size_format( (int) $this->table_size_bytes( LogsTable::class ) ),
 			),
-			'redirect_rows'     => array(
+			'redirect_rows'    => array(
 				'label' => __( 'Redirect rules', '404-to-301' ),
 				'value' => number_format_i18n( (float) $this->redirects_row_count() ),
 			),
-			'email_enabled'     => array(
+			'email_enabled'    => array(
 				'label' => __( 'Email notifications', '404-to-301' ),
 				'value' => $this->yes_no( ! empty( $values['email_enabled'] ) ),
 			),
-			'email_recipients'  => array(
+			'email_recipients' => array(
 				'label' => __( 'Email recipients', '404-to-301' ),
 				'value' => (string) count( (array) ( $values['email_recipient'] ?? array() ) ),
 			),
-			'track_admin_404'   => array(
+			'track_admin_404'  => array(
 				'label' => __( 'Track admin 404s', '404-to-301' ),
 				'value' => $this->yes_no( ! empty( $values['track_admin_404'] ) ),
 			),
-			'mask_ip'           => array(
+			'mask_ip'          => array(
 				'label' => __( 'Mask logged IPs', '404-to-301' ),
 				'value' => $this->yes_no( ! empty( $values['mask_ip'] ) ),
 			),
-			'cleaner_active'    => array(
+			'cleaner_active'   => array(
 				'label' => __( 'Logs Cleaner addon', '404-to-301' ),
 				'value' => $this->yes_no( $this->is_cleaner_active() ),
 			),
-			'cleaner_next_run'  => array(
+			'cleaner_next_run' => array(
 				'label' => __( 'Logs Cleaner next run', '404-to-301' ),
 				'value' => $this->format_next_run( self::CLEANER_CRON ),
 			),
-			'reports_next_run'  => array(
+			'reports_next_run' => array(
 				'label' => __( 'Email Reports next run', '404-to-301' ),
 				'value' => $this->format_next_run( self::EMAIL_REPORTS_CRON ),
 			),
-			'conflicting'       => array(
+			'conflicting'      => array(
 				'label' => __( 'Conflicting redirect plugins', '404-to-301' ),
 				'value' => $this->conflicting_plugins_label(),
 			),
@@ -553,10 +553,10 @@ class Site_Health extends Singleton {
 	 */
 	private function detect_conflicting_plugins(): array {
 		$candidates = array(
-			'redirection/redirection.php'                       => 'Redirection',
-			'safe-redirect-manager/safe-redirect-manager.php'   => 'Safe Redirect Manager',
-			'simple-301-redirects/wpsimple301redirects.php'     => 'Simple 301 Redirects',
-			'eps-301-redirects/eps-301-redirects.php'           => '301 Redirects',
+			'redirection/redirection.php'             => 'Redirection',
+			'safe-redirect-manager/safe-redirect-manager.php' => 'Safe Redirect Manager',
+			'simple-301-redirects/wpsimple301redirects.php' => 'Simple 301 Redirects',
+			'eps-301-redirects/eps-301-redirects.php' => '301 Redirects',
 			'quick-pagepost-redirect-plugin/page_post_redirect_plugin.php' => 'Quick Page/Post Redirect',
 		);
 
@@ -614,7 +614,7 @@ class Site_Health extends Singleton {
 
 		$table = $wpdb->prefix . '404_to_301_logs';
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name cannot be parameterised; it is built from a hard-coded literal plus `$wpdb->prefix`.
 		$count = $wpdb->get_var( "SELECT COUNT(*) FROM `{$table}`" );
 
 		return null === $count ? 0 : (int) $count;
@@ -632,7 +632,7 @@ class Site_Health extends Singleton {
 
 		$table = $wpdb->prefix . '404_to_301_redirects';
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name cannot be parameterised; it is built from a hard-coded literal plus `$wpdb->prefix`.
 		$count = $wpdb->get_var( "SELECT COUNT(*) FROM `{$table}`" );
 
 		return null === $count ? 0 : (int) $count;
@@ -712,12 +712,12 @@ class Site_Health extends Singleton {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param bool $bool Boolean to render.
+	 * @param bool $flag Boolean to render.
 	 *
 	 * @return string
 	 */
-	private function yes_no( bool $bool ): string {
-		return $bool ? __( 'Yes', '404-to-301' ) : __( 'No', '404-to-301' );
+	private function yes_no( bool $flag ): string {
+		return $flag ? __( 'Yes', '404-to-301' ) : __( 'No', '404-to-301' );
 	}
 
 	/**
