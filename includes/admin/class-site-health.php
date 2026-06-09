@@ -20,8 +20,6 @@ namespace DuckDev\FourNotFour\Admin;
 defined( 'ABSPATH' ) || exit;
 
 use DuckDev\FourNotFour\Core;
-use DuckDev\FourNotFour\Database\Tables\Logs as LogsTable;
-use DuckDev\FourNotFour\Database\Tables\Redirects as RedirectsTable;
 use DuckDev\FourNotFour\Plugin;
 use DuckDev\FourNotFour\Utils\Singleton;
 
@@ -39,7 +37,7 @@ class Site_Health extends Singleton {
 	 *
 	 * @since 4.0.0
 	 */
-	const LOGS_LARGE_ROWS = 50000;
+	const LOGS_LARGE_ROWS = 50_000;
 
 	/**
 	 * Cron-overdue grace multiplier.
@@ -153,15 +151,15 @@ class Site_Health extends Singleton {
 			),
 			'logs_rows'        => array(
 				'label' => __( 'Logged 404 rows', '404-to-301' ),
-				'value' => number_format_i18n( (float) $this->logs_row_count() ),
+				'value' => number_format_i18n( (float) $this->row_count( '404_to_301_logs' ) ),
 			),
 			'logs_size'        => array(
 				'label' => __( 'Logs table size', '404-to-301' ),
-				'value' => size_format( (int) $this->table_size_bytes( LogsTable::class ) ),
+				'value' => size_format( $this->table_size_bytes( '404_to_301_logs' ) ),
 			),
 			'redirect_rows'    => array(
 				'label' => __( 'Redirect rules', '404-to-301' ),
-				'value' => number_format_i18n( (float) $this->redirects_row_count() ),
+				'value' => number_format_i18n( (float) $this->row_count( '404_to_301_redirects' ) ),
 			),
 			'email_enabled'    => array(
 				'label' => __( 'Email notifications', '404-to-301' ),
@@ -226,30 +224,21 @@ class Site_Health extends Singleton {
 	public function register_tests( $tests ): array {
 		$tests = is_array( $tests ) ? $tests : array();
 
-		$tests['direct']['d404_logs_table_size']    = array(
-			'label' => __( '404 to 301 logs table size', '404-to-301' ),
-			'test'  => array( $this, 'test_logs_table_size' ),
+		$ours = array(
+			'd404_logs_table_size'    => array( __( '404 to 301 logs table size', '404-to-301' ), 'test_logs_table_size' ),
+			'd404_cleaner_cron'       => array( __( '404 to 301 Logs Cleaner cron', '404-to-301' ), 'test_cleaner_cron' ),
+			'd404_email_reports_cron' => array( __( '404 to 301 Email Reports cron', '404-to-301' ), 'test_email_reports_cron' ),
+			'd404_conflicting_plugin' => array( __( '404 to 301 conflicting plugins', '404-to-301' ), 'test_conflicting_plugins' ),
+			'd404_logging_state'      => array( __( '404 to 301 logging state', '404-to-301' ), 'test_logging_state' ),
+			'd404_db_version'         => array( __( '404 to 301 database schema', '404-to-301' ), 'test_db_version' ),
 		);
-		$tests['direct']['d404_cleaner_cron']       = array(
-			'label' => __( '404 to 301 Logs Cleaner cron', '404-to-301' ),
-			'test'  => array( $this, 'test_cleaner_cron' ),
-		);
-		$tests['direct']['d404_email_reports_cron'] = array(
-			'label' => __( '404 to 301 Email Reports cron', '404-to-301' ),
-			'test'  => array( $this, 'test_email_reports_cron' ),
-		);
-		$tests['direct']['d404_conflicting_plugin'] = array(
-			'label' => __( '404 to 301 conflicting plugins', '404-to-301' ),
-			'test'  => array( $this, 'test_conflicting_plugins' ),
-		);
-		$tests['direct']['d404_logging_state']      = array(
-			'label' => __( '404 to 301 logging state', '404-to-301' ),
-			'test'  => array( $this, 'test_logging_state' ),
-		);
-		$tests['direct']['d404_db_version']         = array(
-			'label' => __( '404 to 301 database schema', '404-to-301' ),
-			'test'  => array( $this, 'test_db_version' ),
-		);
+
+		foreach ( $ours as $id => list( $label, $method ) ) {
+			$tests['direct'][ $id ] = array(
+				'label' => $label,
+				'test'  => array( $this, $method ),
+			);
+		}
 
 		return $tests;
 	}
@@ -267,17 +256,16 @@ class Site_Health extends Singleton {
 	 * @return array
 	 */
 	public function test_logs_table_size(): array {
-		$rows = $this->logs_row_count();
+		$rows = $this->row_count( '404_to_301_logs' );
 
 		if ( $rows < self::LOGS_LARGE_ROWS ) {
-			return $this->result_good(
+			return $this->build_result(
+				'good',
 				'd404_logs_table_size',
 				__( 'Your 404 logs table is a healthy size', '404-to-301' ),
 				__( 'The 404 to 301 logs table is well within recommended limits.', '404-to-301' )
 			);
 		}
-
-		$cleaner_active = $this->is_cleaner_active();
 
 		$description = sprintf(
 			/* translators: %s: number of rows in the logs table. */
@@ -285,17 +273,18 @@ class Site_Health extends Singleton {
 			number_format_i18n( (float) $rows )
 		);
 
-		if ( $cleaner_active ) {
+		if ( $this->is_cleaner_active() ) {
+			$description .= ' ' . __( 'The Logs Cleaner addon is active — set a cleanup policy to keep the table trimmed automatically.', '404-to-301' );
 			$action_label = __( 'Configure Auto Cleanup', '404-to-301' );
 			$action_url   = Plugin::get_url( 'settings' );
-			$description .= ' ' . __( 'The Logs Cleaner addon is active — set a cleanup policy to keep the table trimmed automatically.', '404-to-301' );
 		} else {
+			$description .= ' ' . __( 'The Logs Cleaner addon can prune old entries automatically on a schedule you choose.', '404-to-301' );
 			$action_label = __( 'Get the Logs Cleaner addon', '404-to-301' );
 			$action_url   = Plugin::get_url( 'addons' );
-			$description .= ' ' . __( 'The Logs Cleaner addon can prune old entries automatically on a schedule you choose.', '404-to-301' );
 		}
 
-		return $this->result_recommended(
+		return $this->build_result(
+			'recommended',
 			'd404_logs_table_size',
 			__( 'Your 404 logs table is getting large', '404-to-301' ),
 			$description,
@@ -314,7 +303,8 @@ class Site_Health extends Singleton {
 	 */
 	public function test_cleaner_cron(): array {
 		if ( ! $this->is_cleaner_active() ) {
-			return $this->result_good(
+			return $this->build_result(
+				'good',
 				'd404_cleaner_cron',
 				__( 'Logs Cleaner is not installed', '404-to-301' ),
 				__( 'No cron health check needed — the Logs Cleaner addon is not active.', '404-to-301' )
@@ -338,7 +328,8 @@ class Site_Health extends Singleton {
 	 */
 	public function test_email_reports_cron(): array {
 		if ( ! wp_next_scheduled( self::EMAIL_REPORTS_CRON ) ) {
-			return $this->result_good(
+			return $this->build_result(
+				'good',
 				'd404_email_reports_cron',
 				__( 'Email Reports cron is not scheduled', '404-to-301' ),
 				__( 'No cron health check needed — the Email Reports addon is not active or not configured to send reports.', '404-to-301' )
@@ -368,14 +359,16 @@ class Site_Health extends Singleton {
 		$conflicts = $this->detect_conflicting_plugins();
 
 		if ( empty( $conflicts ) ) {
-			return $this->result_good(
+			return $this->build_result(
+				'good',
 				'd404_conflicting_plugin',
 				__( 'No conflicting redirect plugins detected', '404-to-301' ),
 				__( 'Nothing else on this site is fighting 404 to 301 for control of redirects.', '404-to-301' )
 			);
 		}
 
-		return $this->result_recommended(
+		return $this->build_result(
+			'recommended',
 			'd404_conflicting_plugin',
 			__( 'Another redirect plugin is active', '404-to-301' ),
 			sprintf(
@@ -398,7 +391,8 @@ class Site_Health extends Singleton {
 		$settings = Core::instance()->settings();
 
 		if ( ! $settings ) {
-			return $this->result_good(
+			return $this->build_result(
+				'good',
 				'd404_logging_state',
 				__( '404 to 301 logging state', '404-to-301' ),
 				__( 'Settings are not yet initialised.', '404-to-301' )
@@ -409,7 +403,8 @@ class Site_Health extends Singleton {
 		$redirect_on = (bool) $settings->get( 'redirect_enabled', true );
 
 		if ( $redirect_on && ! $logs_on ) {
-			return $this->result_recommended(
+			return $this->build_result(
+				'recommended',
 				'd404_logging_state',
 				__( '404 logging is disabled', '404-to-301' ),
 				__( '404 to 301 is actively redirecting visitors away from broken URLs, but logging is turned off — you have no visibility into which URLs are 404ing. Re-enable logging on the Settings page if you want to see what is breaking.', '404-to-301' ),
@@ -418,7 +413,8 @@ class Site_Health extends Singleton {
 			);
 		}
 
-		return $this->result_good(
+		return $this->build_result(
+			'good',
 			'd404_logging_state',
 			__( '404 to 301 logging is healthy', '404-to-301' ),
 			__( 'Logging and redirect settings are consistent.', '404-to-301' )
@@ -441,25 +437,24 @@ class Site_Health extends Singleton {
 		$expected   = defined( 'D404_DB_VERSION' ) ? D404_DB_VERSION : '';
 
 		if ( '' === $stored_ver || '' === $expected || version_compare( $stored_ver, $expected, '>=' ) ) {
-			return $this->result_good(
+			return $this->build_result(
+				'good',
 				'd404_db_version',
 				__( '404 to 301 database schema is up to date', '404-to-301' ),
 				__( 'The plugin database tables match the expected schema version.', '404-to-301' )
 			);
 		}
 
-		return array_merge(
-			$this->result_recommended(
-				'd404_db_version',
-				__( '404 to 301 database schema is out of date', '404-to-301' ),
-				sprintf(
-					/* translators: 1: stored DB version, 2: expected DB version. */
-					__( 'The stored database schema version (%1$s) is older than the version this plugin expects (%2$s). A previous upgrade may have been interrupted. Visit any 404 to 301 admin page to trigger the upgrader again.', '404-to-301' ),
-					esc_html( $stored_ver ),
-					esc_html( $expected )
-				)
-			),
-			array( 'status' => 'critical' )
+		return $this->build_result(
+			'critical',
+			'd404_db_version',
+			__( '404 to 301 database schema is out of date', '404-to-301' ),
+			sprintf(
+				/* translators: 1: stored DB version, 2: expected DB version. */
+				__( 'The stored database schema version (%1$s) is older than the version this plugin expects (%2$s). A previous upgrade may have been interrupted. Visit any 404 to 301 admin page to trigger the upgrader again.', '404-to-301' ),
+				esc_html( $stored_ver ),
+				esc_html( $expected )
+			)
 		);
 	}
 
@@ -483,7 +478,8 @@ class Site_Health extends Singleton {
 		$next = wp_next_scheduled( $hook );
 
 		if ( ! $next ) {
-			return $this->result_recommended(
+			return $this->build_result(
+				'recommended',
 				$test_id,
 				sprintf(
 					/* translators: %s: addon name. */
@@ -500,13 +496,13 @@ class Site_Health extends Singleton {
 			);
 		}
 
-		$schedule  = wp_get_schedule( $hook );
 		$schedules = wp_get_schedules();
-		$interval  = isset( $schedules[ $schedule ]['interval'] ) ? (int) $schedules[ $schedule ]['interval'] : 0;
+		$interval  = (int) ( $schedules[ wp_get_schedule( $hook ) ]['interval'] ?? 0 );
 		$overdue   = $interval > 0 && ( time() - $next ) > ( $interval * self::CRON_OVERDUE_MULTIPLIER );
 
 		if ( ! $overdue ) {
-			return $this->result_good(
+			return $this->build_result(
+				'good',
 				$test_id,
 				sprintf(
 					/* translators: %s: addon name. */
@@ -522,7 +518,8 @@ class Site_Health extends Singleton {
 			);
 		}
 
-		$result = $this->result_recommended(
+		return $this->build_result(
+			'critical',
 			$test_id,
 			sprintf(
 				/* translators: %s: addon name. */
@@ -538,10 +535,6 @@ class Site_Health extends Singleton {
 			__( 'Open Settings', '404-to-301' ),
 			$settings_url
 		);
-
-		$result['status'] = 'critical';
-
-		return $result;
 	}
 
 	/**
@@ -560,14 +553,15 @@ class Site_Health extends Singleton {
 			'quick-pagepost-redirect-plugin/page_post_redirect_plugin.php' => 'Quick Page/Post Redirect',
 		);
 
-		$conflicts = array();
-		foreach ( $candidates as $basename => $name ) {
-			if ( is_plugin_active( $basename ) ) {
-				$conflicts[] = $name;
-			}
-		}
+		$this->ensure_plugin_api();
 
-		return $conflicts;
+		return array_values(
+			array_filter(
+				$candidates,
+				fn( string $basename ): bool => is_plugin_active( $basename ),
+				ARRAY_FILTER_USE_KEY
+			)
+		);
 	}
 
 	/**
@@ -595,86 +589,71 @@ class Site_Health extends Singleton {
 	 * @return bool
 	 */
 	private function is_cleaner_active(): bool {
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
+		$this->ensure_plugin_api();
 
 		return is_plugin_active( self::CLEANER_BASENAME );
 	}
 
 	/**
-	 * Row count for the logs table.
+	 * Make sure `is_plugin_active()` is loaded.
+	 *
+	 * The Plugin API is only auto-loaded on `wp-admin/plugins.php`; Site
+	 * Health renders from every admin screen, so we may hit this code
+	 * path before WP has pulled the file in.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return int
+	 * @return void
 	 */
-	private function logs_row_count(): int {
-		global $wpdb;
-
-		$table = $wpdb->prefix . '404_to_301_logs';
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name cannot be parameterised; it is built from a hard-coded literal plus `$wpdb->prefix`.
-		$count = $wpdb->get_var( "SELECT COUNT(*) FROM `{$table}`" );
-
-		return null === $count ? 0 : (int) $count;
+	private function ensure_plugin_api(): void {
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
 	}
 
 	/**
-	 * Row count for the redirects table.
+	 * Row count for one of our tables.
 	 *
 	 * @since 4.0.0
 	 *
+	 * @param string $unprefixed Unprefixed table name, e.g. `404_to_301_logs`.
+	 *
 	 * @return int
 	 */
-	private function redirects_row_count(): int {
+	private function row_count( string $unprefixed ): int {
 		global $wpdb;
 
-		$table = $wpdb->prefix . '404_to_301_redirects';
+		$table = $wpdb->prefix . $unprefixed;
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name cannot be parameterised; it is built from a hard-coded literal plus `$wpdb->prefix`.
-		$count = $wpdb->get_var( "SELECT COUNT(*) FROM `{$table}`" );
-
-		return null === $count ? 0 : (int) $count;
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM `{$table}`" );
 	}
 
 	/**
 	 * Total disk size (data + indexes) of one of our tables, in bytes.
 	 *
-	 * Queries `information_schema.TABLES`; falls back to 0 on hosts
-	 * that restrict access to it.
+	 * Queries `information_schema.TABLES`; returns 0 on hosts that
+	 * restrict access to the schema.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $table_class FQCN of the BerlinDB table class.
+	 * @param string $unprefixed Unprefixed table name.
 	 *
 	 * @return int
 	 */
-	private function table_size_bytes( string $table_class ): int {
+	private function table_size_bytes( string $unprefixed ): int {
 		global $wpdb;
 
-		// Map the table class to the unprefixed name we declared on it.
-		$name_map = array(
-			LogsTable::class      => '404_to_301_logs',
-			RedirectsTable::class => '404_to_301_redirects',
-		);
-
-		if ( ! isset( $name_map[ $table_class ] ) ) {
-			return 0;
-		}
-
-		$table = $wpdb->prefix . $name_map[ $table_class ];
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$row = $wpdb->get_row(
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$size = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT (data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = %s AND table_name = %s',
+				'SELECT (data_length + index_length) FROM information_schema.TABLES WHERE table_schema = %s AND table_name = %s',
 				DB_NAME,
-				$table
+				$wpdb->prefix . $unprefixed
 			)
 		);
 
-		return ( $row && isset( $row->size ) ) ? (int) $row->size : 0;
+		return (int) $size;
 	}
 
 	/**
@@ -721,34 +700,15 @@ class Site_Health extends Singleton {
 	}
 
 	/**
-	 * Build a "good" (green) test result array.
+	 * Build a Site Health test result array.
+	 *
+	 * The badge colour is derived from the status — Site Health uses
+	 * blue for healthy results, orange for warnings, red for critical —
+	 * so callers only ever pick the status, never the colour.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $test_id     Test identifier.
-	 * @param string $label       Short label.
-	 * @param string $description Long description (plain text).
-	 *
-	 * @return array
-	 */
-	private function result_good( string $test_id, string $label, string $description ): array {
-		return array(
-			'label'       => $label,
-			'status'      => 'good',
-			'badge'       => array(
-				'label' => __( '404 to 301', '404-to-301' ),
-				'color' => 'blue',
-			),
-			'description' => sprintf( '<p>%s</p>', esc_html( $description ) ),
-			'test'        => $test_id,
-		);
-	}
-
-	/**
-	 * Build a "recommended" (orange) test result array.
-	 *
-	 * @since 4.0.0
-	 *
+	 * @param string $status       One of `good`, `recommended`, `critical`.
 	 * @param string $test_id      Test identifier.
 	 * @param string $label        Short label.
 	 * @param string $description  Long description (plain text — will be escaped).
@@ -757,13 +717,19 @@ class Site_Health extends Singleton {
 	 *
 	 * @return array
 	 */
-	private function result_recommended( string $test_id, string $label, string $description, string $action_label = '', string $action_url = '' ): array {
+	private function build_result( string $status, string $test_id, string $label, string $description, string $action_label = '', string $action_url = '' ): array {
+		$colors = array(
+			'good'        => 'blue',
+			'recommended' => 'orange',
+			'critical'    => 'red',
+		);
+
 		$result = array(
 			'label'       => $label,
-			'status'      => 'recommended',
+			'status'      => $status,
 			'badge'       => array(
 				'label' => __( '404 to 301', '404-to-301' ),
-				'color' => 'orange',
+				'color' => $colors[ $status ] ?? 'blue',
 			),
 			'description' => sprintf( '<p>%s</p>', esc_html( $description ) ),
 			'test'        => $test_id,
