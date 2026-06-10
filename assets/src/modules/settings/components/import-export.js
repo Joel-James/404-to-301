@@ -119,7 +119,7 @@ const ImportExport = () => {
 	}
 
 	return (
-		<PanelBody title={__('Import / Export', '404-to-301')}>
+		<PanelBody title={__('Import/Export Settings', '404-to-301')}>
 			<PanelRow>
 				<p className="components-base-control__help">
 					{__(

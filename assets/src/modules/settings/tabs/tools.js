@@ -27,7 +27,7 @@ const Tools = () => {
 
 	return (
 		<>
-			<PanelBody title={__('Exclude paths', '404-to-301')}>
+			<PanelBody title={__('Exclude Paths', '404-to-301')}>
 				<PanelRow>
 					<div className="d404-repeater-field">
 						<div className="d404-repeater-field__label">

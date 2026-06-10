@@ -45,7 +45,7 @@ const RedirectsTab = () => {
 	const crossSell = applyFilters('d404.settings.redirects.cross_sell', null)
 
 	return (
-		<PanelBody title={__('Redirect', '404-to-301')}>
+		<PanelBody title={__('404 Redirects', '404-to-301')}>
 			<PanelRow>
 				<ToggleControl
 					__nextHasNoMarginBottom
