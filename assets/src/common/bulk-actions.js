@@ -5,7 +5,7 @@ import {
 	useState,
 } from '@wordpress/element'
 import { createPortal } from 'react-dom'
-import { DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components'
+import { DropdownMenu, MenuGroup, MenuItem, Modal } from '@wordpress/components'
 import { cog } from '@wordpress/icons'
 
 /**
@@ -61,14 +61,28 @@ const BulkActions = ({
 		return null
 	}
 
-	const bulkActions = actions.filter((a) => a.supportsBulk)
-	if (bulkActions.length === 0) {
-		return null
-	}
-
 	const resolveSelectedItems = () => {
 		const ids = new Set(selectionRef.current.map(String))
 		return itemsRef.current.filter((item) => ids.has(getItemId(item)))
+	}
+
+	// Items that pass an action's isEligible — defaults to all selected
+	// items when the action doesn't define one. Matches DataViews'
+	// per-row dropdown: an action shows only when at least one row
+	// qualifies, and the callback receives only those rows.
+	const eligibleItemsFor = (action) => {
+		const selected = resolveSelectedItems()
+		if (typeof action.isEligible !== 'function') {
+			return selected
+		}
+		return selected.filter((item) => action.isEligible(item))
+	}
+
+	const bulkActions = actions.filter(
+		(a) => a.supportsBulk && eligibleItemsFor(a).length > 0,
+	)
+	if (bulkActions.length === 0) {
+		return null
 	}
 
 	const handleAction = (action, onClose) => {
@@ -80,7 +94,7 @@ const BulkActions = ({
 		}
 
 		if (typeof action.callback === 'function') {
-			action.callback(resolveSelectedItems())
+			action.callback(eligibleItemsFor(action))
 			if (typeof onClear === 'function') {
 				onClear()
 			}
@@ -96,50 +110,74 @@ const BulkActions = ({
 
 	const ActiveModal = activeModal?.RenderModal
 
-	return createPortal(
-		<>
-			<DropdownMenu
-				icon={cog}
-				label={__('Bulk actions', '404-to-301')}
-				toggleProps={{
-					/* Match the filter button's icon-only look. The
-					 * `label` above doubles as the accessible name and
-					 * the hover tooltip. */
-					size: 'small',
-					showTooltip: true,
-					tooltipPosition: 'top center',
-				}}
-				popoverProps={{ placement: 'top-start' }}
-				className="d404-bulk-actions"
-			>
-				{({ onClose }) => (
-					<MenuGroup>
-						{bulkActions.map((action) => (
-							<MenuItem
-								key={action.id}
-								isDestructive={action.isDestructive}
-								onClick={() => handleAction(action, onClose)}
-							>
-								{/* Match DataViews' contract: a label
-								 * can be a string or a function that
-								 * receives the current selection. */}
-								{typeof action.label === 'function'
-									? action.label(resolveSelectedItems())
-									: action.label}
-							</MenuItem>
-						))}
-					</MenuGroup>
-				)}
-			</DropdownMenu>
-
-			{ActiveModal && (
-				<ActiveModal
-					items={resolveSelectedItems()}
-					closeModal={closeModal}
-				/>
+	// Dropdown portals into the footer container so it sits next to the
+	// native "N selected" indicator.
+	const dropdown = createPortal(
+		<DropdownMenu
+			icon={cog}
+			label={__('Bulk actions', '404-to-301')}
+			toggleProps={{
+				/* Match the filter button's icon-only look. The
+				 * `label` above doubles as the accessible name and
+				 * the hover tooltip. */
+				size: 'small',
+				showTooltip: true,
+				tooltipPosition: 'top center',
+			}}
+			popoverProps={{ placement: 'top-start' }}
+			className="d404-bulk-actions"
+		>
+			{({ onClose }) => (
+				<MenuGroup>
+					{bulkActions.map((action) => (
+						<MenuItem
+							key={action.id}
+							isDestructive={action.isDestructive}
+							onClick={() => handleAction(action, onClose)}
+						>
+							{/* Match DataViews' contract: a label
+							 * can be a string or a function that
+							 * receives the current selection. */}
+							{typeof action.label === 'function'
+								? action.label(resolveSelectedItems())
+								: action.label}
+						</MenuItem>
+					))}
+				</MenuGroup>
 			)}
-		</>,
+		</DropdownMenu>,
 		target,
+	)
+
+	// Modal renders OUTSIDE the footer portal. `<Modal>` from
+	// @wordpress/components already portals itself to <body>, draws
+	// its own overlay, traps focus, and closes on escape — nesting
+	// it inside the footer container clipped the overlay to the
+	// footer bar and rendered the confirmation as bare text. The
+	// action components (delete-modal etc.) intentionally don't
+	// wrap themselves in `<Modal>` — they expect the host
+	// (DataViews, or this component now) to supply the chrome.
+	return (
+		<>
+			{dropdown}
+			{ActiveModal && (
+				<Modal
+					title={
+						activeModal.modalHeader ||
+						(typeof activeModal.label === 'string'
+							? activeModal.label
+							: '')
+					}
+					onRequestClose={closeModal}
+					className="d404-bulk-actions-modal"
+				>
+					<ActiveModal
+						items={eligibleItemsFor(activeModal)}
+						closeModal={closeModal}
+					/>
+				</Modal>
+			)}
+		</>
 	)
 }
 

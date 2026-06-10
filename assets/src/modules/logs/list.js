@@ -90,22 +90,30 @@ const List = () => {
 				supportsBulk: false,
 				callback: ([row]) => setCustomRedirectLog(row),
 			},
+			// Status mutations hide themselves when the row is already
+			// in that status — keeps the row dropdown from listing
+			// "Mark fixed" on a Fixed row, etc. For bulk selections
+			// DataViews shows the action if at least one selected row
+			// is eligible.
 			{
 				id: 'mark-fixed',
 				label: __('Mark fixed', '404-to-301'),
 				supportsBulk: true,
+				isEligible: (item) => item.status !== 2,
 				callback: (rows) => bulkSetStatus(collectIds(rows), 2),
 			},
 			{
 				id: 'mark-ignored',
 				label: __('Mark ignored', '404-to-301'),
 				supportsBulk: true,
+				isEligible: (item) => item.status !== 1,
 				callback: (rows) => bulkSetStatus(collectIds(rows), 1),
 			},
 			{
 				id: 'mark-open',
 				label: __('Reopen', '404-to-301'),
 				supportsBulk: true,
+				isEligible: (item) => item.status !== 0,
 				callback: (rows) => bulkSetStatus(collectIds(rows), 0),
 			},
 			{
