@@ -21,6 +21,7 @@ namespace DuckDev\FourNotFour;
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) || exit;
 
+use DuckDev\FourNotFour\Utils\Helpers;
 use DuckDev\FourNotFour\Utils\Sanitizer;
 use DuckDev\FourNotFour\Utils\Singleton;
 
@@ -371,7 +372,7 @@ class Settings extends Singleton {
 					break;
 
 				case 'redirect_type':
-					$clean[ $key ] = Sanitizer::enum( $raw, array( '301', '302', '307' ), '301' );
+					$clean[ $key ] = Sanitizer::enum( $raw, self::redirect_type_values(), '301' );
 					break;
 
 				case 'redirect_target':
@@ -459,7 +460,7 @@ class Settings extends Singleton {
 				'redirect_enabled'     => array( 'type' => 'boolean' ),
 				'redirect_type'        => array(
 					'type' => 'string',
-					'enum' => array( '301', '302', '307' ),
+					'enum' => self::redirect_type_values(),
 				),
 				'redirect_target'      => array(
 					'type' => 'string',
@@ -495,6 +496,24 @@ class Settings extends Singleton {
 	}
 
 	/**
+	 * Allowed values for the global fallback `redirect_type` setting.
+	 *
+	 * The fallback always redirects every leftover 404 to a destination,
+	 * so it offers only the redirecting subset of
+	 * {@see Helpers::redirect_statuses()} — terminal codes (410/451)
+	 * have no destination and belong to per-redirect rows, not the
+	 * site-wide fallback. Codes are cast to strings to match how the
+	 * setting is stored in the option.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array<int, string> List of status codes as strings.
+	 */
+	private static function redirect_type_values(): array {
+		return array_map( 'strval', Helpers::redirect_status_codes( true ) );
+	}
+
+	/**
 	 * Map the legacy v3 option onto the v4 schema, exactly once.
 	 *
 	 * Called from {@see \DuckDev\FourNotFour\Setup\Activator::run()}.
@@ -519,7 +538,7 @@ class Settings extends Singleton {
 			if ( isset( $legacy['redirect_type'] ) ) {
 				$settings['redirect_type'] = Sanitizer::enum(
 					(string) $legacy['redirect_type'],
-					array( '301', '302', '307' ),
+					self::redirect_type_values(),
 					'301'
 				);
 			}

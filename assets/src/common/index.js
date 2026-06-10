@@ -29,3 +29,11 @@ export {
 
 // DataForm `Edit` components that aren't shipped by `@wordpress/dataviews`.
 export { EnumSelectEdit, TextareaEdit, ToggleEdit } from './form-controls'
+
+// Shared redirect-status catalogue (PHP-localised, single source of truth).
+export {
+	redirectStatuses,
+	redirectTypes,
+	terminalStatusCodes,
+	redirectingTypeOptions,
+} from './redirect-statuses'

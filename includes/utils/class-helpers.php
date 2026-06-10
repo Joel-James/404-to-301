@@ -25,29 +25,129 @@ defined( 'ABSPATH' ) || exit;
 class Helpers {
 
 	/**
-	 * Get the catalogue of HTTP redirect status codes the plugin allows.
+	 * Canonical catalogue of HTTP status codes the plugin can issue.
 	 *
-	 * Filterable so addons can introduce, say, a 308 option.
+	 * This is the single source of truth for "what redirect types do we
+	 * support?" — every other layer derives from it:
+	 *
+	 *   - the global 404-fallback setting (`redirect_type`) offers the
+	 *     {@see Helpers::redirect_status_codes()} `$redirecting_only`
+	 *     subset, since a fallback always points at a destination;
+	 *   - the per-redirect REST enum offers the full set;
+	 *   - the React UI reads the shaped list off the `d404` global
+	 *     (localised in {@see \DuckDev\FourNotFour\Admin\Assets}).
+	 *
+	 * Codes split into two kinds:
+	 *
+	 *   - **redirecting** (301/302/303/307/308) — issued via
+	 *     `wp_safe_redirect()` with a destination.
+	 *   - **terminal** (410/451) — no destination; the front controller
+	 *     emits the status header and exits. Flagged `terminal => true`.
+	 *
+	 * The set mirrors the redirect codes other plugins (Redirection,
+	 * Rank Math, Yoast) export, so imported rows map across cleanly.
+	 *
+	 * Filterable so add-ons can introduce further codes (or drop ones
+	 * they don't want offered).
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return array<int, string> Status code => translated label.
+	 * @return array<int, array{label: string, terminal: bool}>
 	 */
 	public static function redirect_statuses(): array {
 		$statuses = array(
-			301 => __( '301 — Moved Permanently (SEO)', '404-to-301' ),
-			302 => __( '302 — Found', '404-to-301' ),
-			307 => __( '307 — Temporary Redirect', '404-to-301' ),
+			301 => array(
+				'label'    => __( '301 — Moved Permanently (SEO)', '404-to-301' ),
+				'terminal' => false,
+			),
+			302 => array(
+				'label'    => __( '302 — Found', '404-to-301' ),
+				'terminal' => false,
+			),
+			303 => array(
+				'label'    => __( '303 — See Other', '404-to-301' ),
+				'terminal' => false,
+			),
+			307 => array(
+				'label'    => __( '307 — Temporary Redirect', '404-to-301' ),
+				'terminal' => false,
+			),
+			308 => array(
+				'label'    => __( '308 — Permanent Redirect', '404-to-301' ),
+				'terminal' => false,
+			),
+			410 => array(
+				'label'    => __( '410 — Gone', '404-to-301' ),
+				'terminal' => true,
+			),
+			451 => array(
+				'label'    => __( '451 — Unavailable for Legal Reasons', '404-to-301' ),
+				'terminal' => true,
+			),
 		);
 
 		/**
-		 * Filter the catalogue of allowed redirect status codes.
+		 * Filter the catalogue of supported HTTP status codes.
+		 *
+		 * Each entry is keyed by the integer status code and carries a
+		 * translated `label` plus a `terminal` flag (true for codes that
+		 * end the request without redirecting, eg. 410/451).
 		 *
 		 * @since 4.0.0
 		 *
-		 * @param array<int, string> $statuses Status code => label.
+		 * @param array<int, array{label: string, terminal: bool}> $statuses Code => meta.
 		 */
 		return (array) apply_filters( '404_to_301_redirect_statuses', $statuses );
+	}
+
+	/**
+	 * Flat list of supported status codes, derived from
+	 * {@see Helpers::redirect_statuses()}.
+	 *
+	 * Used for REST `enum` validation and setting sanitisation so the
+	 * allowed values never drift from the catalogue.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param bool $redirecting_only Exclude terminal codes (410/451).
+	 *                               Used by the global fallback, which
+	 *                               always redirects to a destination.
+	 *
+	 * @return array<int, int> List of integer status codes.
+	 */
+	public static function redirect_status_codes( bool $redirecting_only = false ): array {
+		$codes = array();
+
+		foreach ( self::redirect_statuses() as $code => $meta ) {
+			if ( $redirecting_only && ! empty( $meta['terminal'] ) ) {
+				continue;
+			}
+
+			$codes[] = (int) $code;
+		}
+
+		return $codes;
+	}
+
+	/**
+	 * Whether a status code is terminal — emitted as a status header
+	 * with no redirect (eg. 410 Gone, 451 Unavailable for Legal
+	 * Reasons).
+	 *
+	 * Reads the `terminal` flag off {@see Helpers::redirect_statuses()},
+	 * so add-ons that register new terminal codes via the filter are
+	 * honoured at runtime without touching the front controller.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int $status HTTP status code.
+	 *
+	 * @return bool
+	 */
+	public static function is_terminal_status( int $status ): bool {
+		$statuses = self::redirect_statuses();
+
+		return ! empty( $statuses[ $status ]['terminal'] );
 	}
 
 	/**

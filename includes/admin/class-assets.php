@@ -20,6 +20,7 @@ defined( 'ABSPATH' ) || exit;
 use DuckDev\FourNotFour\Api\Endpoint;
 use DuckDev\FourNotFour\Plugin;
 use DuckDev\FourNotFour\Utils\Assets as AssetManifest;
+use DuckDev\FourNotFour\Utils\Helpers;
 use DuckDev\FourNotFour\Utils\Singleton;
 
 /**
@@ -138,6 +139,17 @@ class Assets extends Singleton {
 			'adminUrl'         => admin_url(),
 
 			/*
+			 * The canonical redirect-status catalogue, shaped for the
+			 * React selects. The Redirects form and the global-fallback
+			 * setting both build their dropdowns off this list instead
+			 * of hardcoding codes, so PHP stays the single source of
+			 * truth (see `Helpers::redirect_statuses()`). Each entry is
+			 * `{ value, label, terminal }`; `terminal` rows (410/451)
+			 * hide the destination fields in the editor.
+			 */
+			'redirectStatuses' => $this->redirect_statuses_payload(),
+
+			/*
 			 * Hint for the React layer: is the v3 → v4 migration
 			 * still in play on this site? When false, the Logs page
 			 * skips mounting the migration banner entirely and the
@@ -162,5 +174,30 @@ class Assets extends Singleton {
 		 * @param string $entry Entry handle.
 		 */
 		return (array) apply_filters( '404_to_301_admin_script_vars', $vars, $entry );
+	}
+
+	/**
+	 * Shape {@see Helpers::redirect_statuses()} for the React selects.
+	 *
+	 * Flattens the code-keyed catalogue into an ordered list of
+	 * `{ value, label, terminal }` objects — the shape the
+	 * `EnumSelectEdit` controls and the settings dropdown consume.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array<int, array{value: int, label: string, terminal: bool}>
+	 */
+	private function redirect_statuses_payload(): array {
+		$payload = array();
+
+		foreach ( Helpers::redirect_statuses() as $code => $meta ) {
+			$payload[] = array(
+				'value'    => (int) $code,
+				'label'    => (string) ( $meta['label'] ?? $code ),
+				'terminal' => ! empty( $meta['terminal'] ),
+			);
+		}
+
+		return $payload;
 	}
 }

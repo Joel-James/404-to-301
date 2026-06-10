@@ -12,6 +12,7 @@ import {
 import { Icon, link } from '@wordpress/icons'
 import { applyFilters } from '@wordpress/hooks'
 import useSettings from '../../../hooks/use-settings'
+import { redirectingTypeOptions } from '../../../common'
 
 const RedirectsTab = () => {
 	const { getSetting, setSetting } = useSettings()
@@ -31,11 +32,10 @@ const RedirectsTab = () => {
 	 * rejects names that lead with a digit, so we use the `d404` prefix
 	 * here instead of `404_to_301`.
 	 */
-	const extra = applyFilters(
-		'd404.settings.redirects.fields',
-		null,
-		{ getSetting, setSetting },
-	)
+	const extra = applyFilters('d404.settings.redirects.fields', null, {
+		getSetting,
+		setSetting,
+	})
 
 	/*
 	 * Cross-sell slot. No default promo today, but the filter exists so
@@ -80,26 +80,10 @@ const RedirectsTab = () => {
 						'404-to-301',
 					)}
 					value={getSetting('redirect_type', '301')}
-					options={[
-						{
-							label: __(
-								'301 — Moved Permanently (SEO)',
-								'404-to-301',
-							),
-							value: '301',
-						},
-						{
-							label: __('302 — Found', '404-to-301'),
-							value: '302',
-						},
-						{
-							label: __(
-								'307 — Temporary Redirect',
-								'404-to-301',
-							),
-							value: '307',
-						},
-					]}
+					// Non-terminal codes only — the fallback always points
+					// at a destination. Sourced from the shared PHP catalogue
+					// so it matches the `redirect_type` setting's REST enum.
+					options={redirectingTypeOptions}
 					onChange={(v) => setSetting('redirect_type', v)}
 				/>
 			</PanelRow>

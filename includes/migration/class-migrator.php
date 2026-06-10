@@ -229,7 +229,7 @@ class Migrator extends Singleton {
 					'match_type'    => 'exact',
 					'target_type'   => 'link',
 					'target_url'    => $target,
-					'redirect_type' => in_array( $type, array( 301, 302, 307 ), true ) ? $type : 301,
+					'redirect_type' => in_array( $type, Helpers::redirect_status_codes(), true ) ? $type : 301,
 					'is_active'     => 1,
 				)
 			);

@@ -20,6 +20,7 @@ use DuckDev\FourNotFour\Database\Rows\Redirect as RedirectRow;
 use DuckDev\FourNotFour\Front\Request;
 use DuckDev\FourNotFour\Models\Logs;
 use DuckDev\FourNotFour\Models\Redirects;
+use DuckDev\FourNotFour\Utils\Helpers;
 
 /**
  * Class Redirect
@@ -191,7 +192,10 @@ class Redirect extends Action {
 	 * disposition (Gone, Unavailable for Legal Reasons) and end the
 	 * request without a `Location` header.
 	 *
-	 * Mirrors `terminalStatusCodes` in `assets/src/modules/redirects/fields.js`.
+	 * Delegates to the canonical catalogue in
+	 * {@see Helpers::is_terminal_status()}, so a code registered as
+	 * terminal via the `404_to_301_redirect_statuses` filter is honoured
+	 * here too.
 	 *
 	 * @since 4.0.0
 	 *
@@ -200,7 +204,7 @@ class Redirect extends Action {
 	 * @return bool
 	 */
 	private function is_terminal_status( int $status ): bool {
-		return in_array( $status, array( 410, 451 ), true );
+		return Helpers::is_terminal_status( $status );
 	}
 
 	/**

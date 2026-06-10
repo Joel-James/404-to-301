@@ -19,6 +19,7 @@ defined( 'ABSPATH' ) || exit;
 
 use DuckDev\FourNotFour\Database\Rows\Redirect as RedirectRow;
 use DuckDev\FourNotFour\Models\Redirects as RedirectsModel;
+use DuckDev\FourNotFour\Utils\Helpers;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -91,11 +92,11 @@ class Redirects extends Endpoint {
 						'is_active'     => array( 'type' => 'boolean' ),
 						'redirect_type' => array(
 							'type' => 'integer',
-							// Keep in sync with `assets/src/modules/redirects/fields.js`
-							// `redirectTypes`. 410 + 451 are terminal codes — they
-							// don't redirect; the front-controller emits the
-							// status header and exits.
-							'enum' => array( 301, 302, 303, 307, 308, 410, 451 ),
+							// Sourced from the canonical catalogue in
+							// `Helpers::redirect_statuses()`. Terminal codes
+							// (410/451) are included — they don't redirect; the
+							// front controller emits the status header and exits.
+							'enum' => Helpers::redirect_status_codes(),
 						),
 					),
 				),
@@ -452,11 +453,11 @@ class Redirects extends Endpoint {
 			'target_page_id' => array( 'type' => 'integer' ),
 			'redirect_type'  => array(
 				'type' => 'integer',
-				// Keep in sync with `assets/src/modules/redirects/fields.js`
-				// `redirectTypes`. 410 + 451 are terminal codes — they
-				// don't redirect; the front-controller emits the
-				// status header and exits.
-				'enum' => array( 301, 302, 303, 307, 308, 410, 451 ),
+				// Sourced from the canonical catalogue in
+				// `Helpers::redirect_statuses()`. Terminal codes (410/451)
+				// are included — they don't redirect; the front controller
+				// emits the status header and exits.
+				'enum' => Helpers::redirect_status_codes(),
 			),
 			'is_active'      => array( 'type' => 'boolean' ),
 			'notes'          => array( 'type' => 'string' ),

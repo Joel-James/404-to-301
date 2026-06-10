@@ -11,7 +11,12 @@
  * {@see \DuckDev\FourNotFour\Api\Redirects::collect_writable()}.
  */
 import { __ } from '@wordpress/i18n'
-import { EnumSelectEdit, TextareaEdit, ToggleEdit } from '../../common'
+import {
+	EnumSelectEdit,
+	TextareaEdit,
+	ToggleEdit,
+	redirectTypes,
+} from '../../common'
 
 /**
  * Accept absolute http(s) URLs or root-relative paths (e.g. `/about`).
@@ -96,19 +101,17 @@ export const redirectFormFields = [
 		type: 'integer',
 		isVisible: (data) => data.target_type === 'page',
 		isValid: (item) =>
-			item.target_type !== 'page' ||
-			Number(item.target_page_id) > 0,
+			item.target_type !== 'page' || Number(item.target_page_id) > 0,
 	},
 	{
 		id: 'redirect_type',
 		label: __('Redirect status', '404-to-301'),
 		type: 'integer',
 		Edit: EnumSelectEdit,
-		elements: [
-			{ value: 301, label: '301 — Permanent' },
-			{ value: 302, label: '302 — Found' },
-			{ value: 307, label: '307 — Temporary' },
-		],
+		// Full catalogue (301/302/303/307/308 + terminal 410/451) from
+		// the shared PHP-localised source, so the form matches the REST
+		// enum and the table's label lookup.
+		elements: redirectTypes,
 	},
 	{
 		id: 'query_handling',
@@ -120,7 +123,10 @@ export const redirectFormFields = [
 			'404-to-301',
 		),
 		elements: [
-			{ value: 'ignore', label: __('Ignore — strip on match', '404-to-301') },
+			{
+				value: 'ignore',
+				label: __('Ignore — strip on match', '404-to-301'),
+			},
 			{
 				value: 'preserve',
 				label: __('Preserve — forward to destination', '404-to-301'),
