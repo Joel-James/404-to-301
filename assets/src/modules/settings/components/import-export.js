@@ -1,11 +1,6 @@
 import { __ } from '@wordpress/i18n'
 import { useRef, useState } from '@wordpress/element'
-import {
-	Button,
-	Notice,
-	PanelBody,
-	PanelRow,
-} from '@wordpress/components'
+import { Button, Notice, PanelBody, PanelRow } from '@wordpress/components'
 import apiFetch from '@wordpress/api-fetch'
 import { useDispatch } from '@wordpress/data'
 import { store as noticesStore } from '@wordpress/notices'
@@ -162,10 +157,7 @@ const ImportExport = () => {
 			{importedSummary && (
 				<PanelRow>
 					<Notice status="success" isDismissible={false}>
-						{__(
-							'Applied %1$d setting(s) from %2$s.',
-							'404-to-301',
-						)
+						{__('Applied %1$d setting(s) from %2$s.', '404-to-301')
 							.replace('%1$d', String(importedSummary.count))
 							.replace('%2$s', importedSummary.file)}
 					</Notice>

@@ -97,10 +97,7 @@ const LiveBanner = () => {
 			<Notice status="warning" isDismissible={false}>
 				<p>
 					<strong>
-						{__(
-							'Legacy 404 to 301 data detected',
-							'404-to-301',
-						)}
+						{__('Legacy 404 to 301 data detected', '404-to-301')}
 					</strong>
 				</p>
 				<p>
@@ -152,7 +149,13 @@ const LiveBanner = () => {
 				</Flex>
 
 				{!status.has_as && (
-					<p style={{ marginTop: '1em', fontSize: '0.85em', opacity: 0.75 }}>
+					<p
+						style={{
+							marginTop: '1em',
+							fontSize: '0.85em',
+							opacity: 0.75,
+						}}
+					>
 						{__(
 							'Action Scheduler is recommended for sites with many 404 logs — it runs the migration in the background with retries. The migration still works without it, processing rows in chunks while you stay on this page.',
 							'404-to-301',

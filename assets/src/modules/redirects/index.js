@@ -31,7 +31,9 @@ const RedirectsPage = () => {
 
 	return (
 		<>
-			<PageHeader title={__('404 to 301 - Custom Redirects', '404-to-301')} />
+			<PageHeader
+				title={__('404 to 301 - Custom Redirects', '404-to-301')}
+			/>
 			<PageBody wide>
 				<Notices />
 				<div className="d404-list-actions">

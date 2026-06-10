@@ -52,8 +52,7 @@ const useRedirects = (view) => {
 	const [isLoading, setIsLoading] = useState(true)
 	const requestId = useRef(0)
 
-	const { createSuccessNotice, createErrorNotice } =
-		useDispatch(noticesStore)
+	const { createSuccessNotice, createErrorNotice } = useDispatch(noticesStore)
 
 	const queryKey = useMemo(() => buildQueryKey(view), [view])
 
@@ -80,8 +79,7 @@ const useRedirects = (view) => {
 				setTotal(0)
 				setTotalPages(1)
 				createErrorNotice(
-					e?.message ||
-						__('Failed to load redirects.', '404-to-301'),
+					e?.message || __('Failed to load redirects.', '404-to-301'),
 				)
 			}
 		} finally {

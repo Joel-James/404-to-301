@@ -1,5 +1,10 @@
 import { __ } from '@wordpress/i18n'
-import { Notice, PanelBody, PanelRow, ToggleControl } from '@wordpress/components'
+import {
+	Notice,
+	PanelBody,
+	PanelRow,
+	ToggleControl,
+} from '@wordpress/components'
 import { applyFilters } from '@wordpress/hooks'
 import useSettings from '../../../hooks/use-settings'
 
@@ -33,9 +38,7 @@ const DefaultCrossSell = () => (
 			]}
 		>
 			<p className="d404-logs-cross-sell__title">
-				<strong>
-					{__('Drowning in 404 logs?', '404-to-301')}
-				</strong>
+				<strong>{__('Drowning in 404 logs?', '404-to-301')}</strong>
 			</p>
 			<p>
 				{__(
@@ -62,11 +65,10 @@ const LogsTab = () => {
 	 * rejects names that lead with a digit, so we use the `d404`
 	 * prefix here instead of `404_to_301`.
 	 */
-	const extra = applyFilters(
-		'd404.settings.logs.fields',
-		null,
-		{ getSetting, setSetting },
-	)
+	const extra = applyFilters('d404.settings.logs.fields', null, {
+		getSetting,
+		setSetting,
+	})
 
 	/*
 	 * Sibling-panel slot. Unlike `…fields` (which injects rows *inside*
@@ -127,9 +129,7 @@ const LogsTab = () => {
 							'404-to-301',
 						)}
 						checked={!!getSetting('logs_skip_duplicates', false)}
-						onChange={(v) =>
-							setSetting('logs_skip_duplicates', v)
-						}
+						onChange={(v) => setSetting('logs_skip_duplicates', v)}
 					/>
 				</PanelRow>
 				{extra}

@@ -26,8 +26,11 @@ const useMigration = () => {
 		}
 	}, [])
 
-	const { start: dispatchStart, abort: dispatchAbort, tick } =
-		useDispatch(STORE_KEY)
+	const {
+		start: dispatchStart,
+		abort: dispatchAbort,
+		tick,
+	} = useDispatch(STORE_KEY)
 	const { createSuccessNotice } = useDispatch(noticesStore)
 
 	// Whether the tick loop is currently running. Held in a ref so
@@ -56,9 +59,7 @@ const useMigration = () => {
 				// Server signals done either by clearing the legacy
 				// table or by setting `logs_migrated=true`.
 				if (!next || !next.running || next.remaining <= 0) {
-					createSuccessNotice(
-						__('Migration complete.', '404-to-301'),
-					)
+					createSuccessNotice(__('Migration complete.', '404-to-301'))
 					break
 				}
 

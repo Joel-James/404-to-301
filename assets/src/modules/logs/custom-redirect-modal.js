@@ -26,8 +26,7 @@ import EditRedirect from '../redirects/edit-modal'
  *                                 the Logs table can refetch.
  */
 const CustomRedirectModal = ({ log, onClose, onSaved }) => {
-	const { createSuccessNotice, createErrorNotice } =
-		useDispatch(noticesStore)
+	const { createSuccessNotice, createErrorNotice } = useDispatch(noticesStore)
 
 	const handleSave = async (payload) => {
 		try {
@@ -47,9 +46,7 @@ const CustomRedirectModal = ({ log, onClose, onSaved }) => {
 				})
 			}
 
-			createSuccessNotice(
-				__('Custom redirect created.', '404-to-301'),
-			)
+			createSuccessNotice(__('Custom redirect created.', '404-to-301'))
 
 			if (typeof onSaved === 'function') {
 				await onSaved()

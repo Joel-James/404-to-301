@@ -82,10 +82,7 @@ const LicenseModal = ({ addon, onActivate, onDeactivate, onClose }) => {
 
 		setError(
 			result?.error ||
-				__(
-					'Something went wrong. Please try again.',
-					'404-to-301',
-				),
+				__('Something went wrong. Please try again.', '404-to-301'),
 		)
 	}
 

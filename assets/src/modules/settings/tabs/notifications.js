@@ -18,7 +18,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 // Normalise whatever shape the settings store hands us (legacy scalar
 // or new array) into a string[] the FormTokenField can render.
 const toRecipients = (value) => {
-	if (Array.isArray(value)) return value.map((v) => String(v).trim()).filter(Boolean)
+	if (Array.isArray(value))
+		return value.map((v) => String(v).trim()).filter(Boolean)
 	if (typeof value === 'string') {
 		return value
 			.split(',')
@@ -45,11 +46,10 @@ const Notifications = () => {
 	 * rejects names that lead with a digit, so we use the `d404`
 	 * prefix here instead of `404_to_301`.
 	 */
-	const extra = applyFilters(
-		'd404.settings.notifications.fields',
-		null,
-		{ getSetting, setSetting },
-	)
+	const extra = applyFilters('d404.settings.notifications.fields', null, {
+		getSetting,
+		setSetting,
+	})
 
 	/*
 	 * Sibling-panel slot. Unlike `…fields` (which injects rows *inside*
@@ -59,10 +59,14 @@ const Notifications = () => {
 	 * Reports addon adds its own box here. Receives the same accessors
 	 * so injected panels read/write through the same hook.
 	 */
-	const afterPanels = applyFilters('d404.settings.notifications.after', null, {
-		getSetting,
-		setSetting,
-	})
+	const afterPanels = applyFilters(
+		'd404.settings.notifications.after',
+		null,
+		{
+			getSetting,
+			setSetting,
+		},
+	)
 
 	/*
 	 * Cross-sell slot. No default promo today, but the filter exists so

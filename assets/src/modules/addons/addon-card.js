@@ -63,16 +63,16 @@ const AddonCard = ({ addon, onManageLicense }) => {
 	return (
 		<Card className="d404-addon-card" isRounded size="small">
 			{/*
-			  * Optional marketing banner. Freemius returns this as
-			  * `info.card_banner_url` and our REST layer surfaces it
-			  * as `addon.banner`. Render only when populated so cards
-			  * without a banner image still look intentional.
-			  *
-			  * When the addon is locally installed + active we also
-			  * paint an "Active" pill in the top-right corner of the
-			  * banner. The banner area itself sits on a black canvas
-			  * so the pill uses a high-contrast green-on-white look.
-			  */}
+			 * Optional marketing banner. Freemius returns this as
+			 * `info.card_banner_url` and our REST layer surfaces it
+			 * as `addon.banner`. Render only when populated so cards
+			 * without a banner image still look intentional.
+			 *
+			 * When the addon is locally installed + active we also
+			 * paint an "Active" pill in the top-right corner of the
+			 * banner. The banner area itself sits on a black canvas
+			 * so the pill uses a high-contrast green-on-white look.
+			 */}
 			{addon.banner && (
 				<CardMedia className="d404-addon-banner">
 					<BannerImage src={addon.banner} alt={addon.title} />
@@ -113,24 +113,24 @@ const AddonCard = ({ addon, onManageLicense }) => {
 			</CardHeader>
 
 			{/*
-			  * Description body. Marked `d404-addon-description` so the
-			  * SCSS can pin `flex: 1` on it specifically — that way
-			  * the description area soaks up any vertical slack
-			  * needed to equalise card heights inside the grid, while
-			  * the footer stays at its natural content height.
-			  */}
+			 * Description body. Marked `d404-addon-description` so the
+			 * SCSS can pin `flex: 1` on it specifically — that way
+			 * the description area soaks up any vertical slack
+			 * needed to equalise card heights inside the grid, while
+			 * the footer stays at its natural content height.
+			 */}
 			<CardBody className="d404-addon-description">
 				<p style={{ margin: 0 }}>{addon.description}</p>
 			</CardBody>
 
 			<CardFooter>
 				{/*
-				  * Left side — the primary control. For active addons
-				  * it's the Manage License button; otherwise it's the
-				  * Buy / Get CTA. The "Active" indicator now lives
-				  * inside the banner (top-right corner) rather than
-				  * here in the footer.
-				  */}
+				 * Left side — the primary control. For active addons
+				 * it's the Manage License button; otherwise it's the
+				 * Buy / Get CTA. The "Active" indicator now lives
+				 * inside the banner (top-right corner) rather than
+				 * here in the footer.
+				 */}
 				<FlexItem>
 					{addon.is_active ? (
 						addon.is_wporg ? (

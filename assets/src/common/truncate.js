@@ -14,10 +14,7 @@ const Truncate = ({ value, className = '', children }) => {
 	}
 
 	return (
-		<span
-			className={`d404-truncate ${className}`.trim()}
-			title={value}
-		>
+		<span className={`d404-truncate ${className}`.trim()} title={value}>
 			{children ?? value}
 		</span>
 	)

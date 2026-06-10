@@ -23,11 +23,10 @@ const General = () => {
 	 * rejects names that lead with a digit, so we use the `d404` prefix
 	 * here instead of `404_to_301`.
 	 */
-	const extra = applyFilters(
-		'd404.settings.general.fields',
-		null,
-		{ getSetting, setSetting },
-	)
+	const extra = applyFilters('d404.settings.general.fields', null, {
+		getSetting,
+		setSetting,
+	})
 
 	/*
 	 * Cross-sell slot. No default promo today, but the filter exists so
@@ -90,10 +89,7 @@ const General = () => {
 				<PanelRow>
 					<ToggleControl
 						__nextHasNoMarginBottom
-						label={__(
-							'Monitor post slug changes',
-							'404-to-301',
-						)}
+						label={__('Monitor post slug changes', '404-to-301')}
 						help={__(
 							'Automatically create a redirect from the old URL to the new one when a post or page slug is renamed.',
 							'404-to-301',

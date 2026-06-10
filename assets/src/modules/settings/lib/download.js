@@ -16,7 +16,10 @@
  * @return {string} Filename of the form `404-to-301-settings-<host>-<YYYY-MM-DD>.json`.
  */
 export const buildFilename = () => {
-	const host = (window.location?.hostname || 'site').replace(/[^a-z0-9.-]/gi, '')
+	const host = (window.location?.hostname || 'site').replace(
+		/[^a-z0-9.-]/gi,
+		'',
+	)
 	const date = new Date().toISOString().slice(0, 10)
 	return `404-to-301-settings-${host}-${date}.json`
 }

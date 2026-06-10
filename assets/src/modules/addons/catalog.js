@@ -1,11 +1,5 @@
 import { __ } from '@wordpress/i18n'
-import {
-	Button,
-	Flex,
-	FlexItem,
-	Notice,
-	Spinner,
-} from '@wordpress/components'
+import { Button, Flex, FlexItem, Notice, Spinner } from '@wordpress/components'
 import { useState } from '@wordpress/element'
 import { update as updateIcon } from '@wordpress/icons'
 import useAddons from '../../hooks/use-addons'

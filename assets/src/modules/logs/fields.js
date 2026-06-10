@@ -1,13 +1,7 @@
 import { __ } from '@wordpress/i18n'
 import { dateI18n } from '@wordpress/date'
 import { ExternalLink, Tooltip } from '@wordpress/components'
-import {
-	Icon,
-	published,
-	unseen,
-	notFound,
-	shuffle,
-} from '@wordpress/icons'
+import { Icon, published, unseen, notFound, shuffle } from '@wordpress/icons'
 import { Truncate } from '../../common'
 
 const statusElements = [
@@ -66,8 +60,7 @@ export const fields = [
 		type: 'text',
 		enableGlobalSearch: true,
 		enableSorting: true,
-		render: ({ item }) =>
-			item.ip ? <Truncate value={item.ip} /> : empty,
+		render: ({ item }) => (item.ip ? <Truncate value={item.ip} /> : empty),
 	},
 	{
 		id: 'ua',
@@ -75,8 +68,7 @@ export const fields = [
 		type: 'text',
 		enableGlobalSearch: true,
 		enableSorting: false,
-		render: ({ item }) =>
-			item.ua ? <Truncate value={item.ua} /> : empty,
+		render: ({ item }) => (item.ua ? <Truncate value={item.ua} /> : empty),
 	},
 	{
 		id: 'hits',

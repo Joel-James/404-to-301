@@ -15,7 +15,10 @@ const PageHeader = ({ title, children }) => {
 			<div className="d404-page-title">
 				<h1>{title}</h1>
 				{version && (
-					<abbr className="d404-version" title={`Version: ${version}`}>
+					<abbr
+						className="d404-version"
+						title={`Version: ${version}`}
+					>
 						{version}
 					</abbr>
 				)}

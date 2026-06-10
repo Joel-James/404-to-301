@@ -3,13 +3,7 @@ import { useState } from '@wordpress/element'
 import { Spinner } from '@wordpress/components'
 import useSettings from '../../hooks/use-settings'
 import tabs from './tabs'
-import {
-	Footer,
-	Notices,
-	PageBody,
-	PageHeader,
-	TabNav,
-} from '../../common'
+import { Footer, Notices, PageBody, PageHeader, TabNav } from '../../common'
 
 /**
  * Root settings page component.

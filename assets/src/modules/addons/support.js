@@ -1,10 +1,5 @@
 import { __ } from '@wordpress/i18n'
-import {
-	Button,
-	Flex,
-	FlexItem,
-	PanelBody,
-} from '@wordpress/components'
+import { Button, Flex, FlexItem, PanelBody } from '@wordpress/components'
 
 /**
  * Support links — top-level help resources for plugin users.

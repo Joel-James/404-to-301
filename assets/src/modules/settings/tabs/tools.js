@@ -12,11 +12,10 @@ const Tools = () => {
 	 * Addon extension point. Mirrors `d404.settings.general.fields` — add-ons
 	 * can hook in to inject controls at the end of the Tools tab.
 	 */
-	const extra = applyFilters(
-		'd404.settings.tools.fields',
-		null,
-		{ getSetting, setSetting },
-	)
+	const extra = applyFilters('d404.settings.tools.fields', null, {
+		getSetting,
+		setSetting,
+	})
 
 	/*
 	 * Cross-sell slot. No default promo today, but the filter exists so
@@ -35,9 +34,7 @@ const Tools = () => {
 						</div>
 						<PathsRepeater
 							value={getSetting('exclude_paths', [])}
-							onChange={(v) =>
-								setSetting('exclude_paths', v)
-							}
+							onChange={(v) => setSetting('exclude_paths', v)}
 							placeholder={__(
 								'e.g. /wp-json/ or /feed/',
 								'404-to-301',

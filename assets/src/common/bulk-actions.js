@@ -1,9 +1,5 @@
 import { __ } from '@wordpress/i18n'
-import {
-	useLayoutEffect,
-	useRef,
-	useState,
-} from '@wordpress/element'
+import { useLayoutEffect, useRef, useState } from '@wordpress/element'
 import { createPortal } from 'react-dom'
 import { DropdownMenu, MenuGroup, MenuItem, Modal } from '@wordpress/components'
 import { cog } from '@wordpress/icons'

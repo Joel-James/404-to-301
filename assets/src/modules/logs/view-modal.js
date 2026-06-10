@@ -96,7 +96,7 @@ const ViewDetails = ({ items, closeModal }) => {
 								/* translators: %d: redirect id. */
 								__('Linked redirect #%d', '404-to-301'),
 								log.redirect_id,
-							)
+						  )
 						: __('Not set', '404-to-301')}
 				</dd>
 

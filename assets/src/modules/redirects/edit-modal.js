@@ -111,7 +111,11 @@ const EditRedirect = ({
 					/>
 				</VStack>
 
-				<Flex justify="flex-end" gap={2} style={{ marginTop: '1.5rem' }}>
+				<Flex
+					justify="flex-end"
+					gap={2}
+					style={{ marginTop: '1.5rem' }}
+				>
 					<FlexItem>
 						<Button variant="tertiary" onClick={onClose}>
 							{__('Cancel', '404-to-301')}

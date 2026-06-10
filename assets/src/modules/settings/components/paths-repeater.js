@@ -62,9 +62,7 @@ const PathsRepeater = ({ value, onChange, placeholder }) => {
 	// view. Without this check, every onChange would round-trip back
 	// here and wipe the blank trailing row the user is typing into.
 	useEffect(() => {
-		const published = rows
-			.map((r) => r.value.trim())
-			.filter(Boolean)
+		const published = rows.map((r) => r.value.trim()).filter(Boolean)
 		const incoming = Array.isArray(value) ? value : []
 		if (!sameStrings(published, incoming)) {
 			setRows(buildRows(incoming, nextId))
@@ -102,10 +100,7 @@ const PathsRepeater = ({ value, onChange, placeholder }) => {
 
 	return (
 		<div className="d404-repeater">
-			<div
-				className="d404-repeater__meta"
-				aria-live="polite"
-			>
+			<div className="d404-repeater__meta" aria-live="polite">
 				{sprintf(
 					/* translators: %d: number of paths in the list. */
 					_n('%d path', '%d paths', filledCount, '404-to-301'),
@@ -160,9 +155,9 @@ const PathsRepeater = ({ value, onChange, placeholder }) => {
 						canAddRow
 							? undefined
 							: __(
-								'Fill in the current row before adding another.',
-								'404-to-301',
-							)
+									'Fill in the current row before adding another.',
+									'404-to-301',
+							  )
 					}
 				>
 					{__('Add path', '404-to-301')}

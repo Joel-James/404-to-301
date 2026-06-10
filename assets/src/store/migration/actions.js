@@ -51,8 +51,7 @@ export function* start() {
 		return next
 	} catch (err) {
 		dispatch(noticesStore).createErrorNotice(
-			err?.message ||
-				__('Could not start the migration.', '404-to-301'),
+			err?.message || __('Could not start the migration.', '404-to-301'),
 		)
 		yield setStarting(false)
 		return null
@@ -102,8 +101,7 @@ export function* abort() {
 		return next
 	} catch (err) {
 		dispatch(noticesStore).createErrorNotice(
-			err?.message ||
-				__('Could not abort the migration.', '404-to-301'),
+			err?.message || __('Could not abort the migration.', '404-to-301'),
 		)
 		return null
 	}

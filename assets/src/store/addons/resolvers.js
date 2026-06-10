@@ -29,8 +29,7 @@ export function* getItems() {
 		yield setItems(Array.isArray(data?.items) ? data.items : [])
 	} catch (err) {
 		dispatch(noticesStore).createErrorNotice(
-			err?.message ||
-				__('Could not load the add-on list.', '404-to-301'),
+			err?.message || __('Could not load the add-on list.', '404-to-301'),
 		)
 		yield setItems([])
 	} finally {

@@ -70,8 +70,7 @@ const useLogs = (view) => {
 	const [isLoading, setIsLoading] = useState(true)
 	const requestId = useRef(0)
 
-	const { createSuccessNotice, createErrorNotice } =
-		useDispatch(noticesStore)
+	const { createSuccessNotice, createErrorNotice } = useDispatch(noticesStore)
 
 	const queryKey = useMemo(() => buildQueryKey(view), [view])
 
@@ -167,8 +166,7 @@ const useLogs = (view) => {
 				return true
 			} catch (e) {
 				createErrorNotice(
-					e?.message ||
-						__('Failed to delete log(s).', '404-to-301'),
+					e?.message || __('Failed to delete log(s).', '404-to-301'),
 				)
 				return false
 			}
@@ -208,8 +206,7 @@ const useLogs = (view) => {
 				return true
 			} catch (e) {
 				createErrorNotice(
-					e?.message ||
-						__('Failed to update log(s).', '404-to-301'),
+					e?.message || __('Failed to update log(s).', '404-to-301'),
 				)
 				return false
 			}
