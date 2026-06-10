@@ -184,8 +184,6 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$body = $response->get_data();
 		$this->assertSame( LogsModel::OVERRIDE_ENABLE, $body['override_redirect'] );
 		$this->assertSame( LogsModel::OVERRIDE_DISABLE, $body['override_email'] );
-		// Untouched columns stay at the default.
-		$this->assertSame( LogsModel::OVERRIDE_GLOBAL, $body['override_log'] );
 	}
 
 	/**

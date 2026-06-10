@@ -206,16 +206,14 @@ class ModelsTest extends WP_UnitTestCase {
 				$id,
 				array(
 					'override_redirect' => Logs::OVERRIDE_ENABLE,
-					'override_log'      => 99,           // Unknown → falls back to GLOBAL.
-					'override_email'    => Logs::OVERRIDE_DISABLE,
+					'override_email'    => 99,           // Unknown → falls back to GLOBAL.
 				)
 			)
 		);
 
 		$row = $model->find( $id );
 		$this->assertSame( Logs::OVERRIDE_ENABLE, (int) $row->override_redirect );
-		$this->assertSame( Logs::OVERRIDE_GLOBAL, (int) $row->override_log );
-		$this->assertSame( Logs::OVERRIDE_DISABLE, (int) $row->override_email );
+		$this->assertSame( Logs::OVERRIDE_GLOBAL, (int) $row->override_email );
 	}
 
 	/**

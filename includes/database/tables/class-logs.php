@@ -74,7 +74,6 @@ final class Logs extends Table {
 			redirect_id   BIGINT(20)    UNSIGNED            DEFAULT NULL,
 			status        TINYINT(3)    UNSIGNED  NOT NULL  DEFAULT 0,
 			override_redirect TINYINT(3) UNSIGNED NOT NULL  DEFAULT 0,
-			override_log      TINYINT(3) UNSIGNED NOT NULL  DEFAULT 0,
 			override_email    TINYINT(3) UNSIGNED NOT NULL  DEFAULT 0,
 			created_at    DATETIME                NOT NULL  DEFAULT '0000-00-00 00:00:00',
 			updated_at    DATETIME                NOT NULL  DEFAULT '0000-00-00 00:00:00',

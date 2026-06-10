@@ -147,16 +147,6 @@ class Logs extends Schema {
 			'default'  => '0',
 		),
 
-		// Per-row override for the global "log 404 hits" toggle.
-		// Same value space as `override_redirect`.
-		array(
-			'name'     => 'override_log',
-			'type'     => 'tinyint',
-			'length'   => '3',
-			'unsigned' => true,
-			'default'  => '0',
-		),
-
 		// Per-row override for the global "email on 404" alert toggle.
 		// Same value space as `override_redirect`.
 		array(

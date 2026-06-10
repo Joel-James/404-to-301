@@ -103,9 +103,6 @@ const ViewDetails = ({ items, closeModal }) => {
 				<dt>{__('Override: Redirect', '404-to-301')}</dt>
 				<dd>{overrideLabel(log.override_redirect)}</dd>
 
-				<dt>{__('Override: Log', '404-to-301')}</dt>
-				<dd>{overrideLabel(log.override_log)}</dd>
-
 				<dt>{__('Override: Email', '404-to-301')}</dt>
 				<dd>{overrideLabel(log.override_email)}</dd>
 

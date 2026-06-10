@@ -120,16 +120,6 @@ class Log extends Row {
 	public $override_redirect = 0;
 
 	/**
-	 * Per-row override for the global "log 404 hits" toggle.
-	 *
-	 * Same value space as {@see self::$override_redirect}.
-	 *
-	 * @since 4.0.0
-	 * @var int
-	 */
-	public $override_log = 0;
-
-	/**
 	 * Per-row override for the global "email on 404" alert toggle.
 	 *
 	 * Same value space as {@see self::$override_redirect}.
