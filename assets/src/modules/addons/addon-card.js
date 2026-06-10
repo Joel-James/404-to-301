@@ -63,10 +63,12 @@ const AddonCard = ({ addon, onManageLicense }) => {
 	return (
 		<Card className="d404-addon-card" isRounded size="small">
 			{/*
-			 * Optional marketing banner. Freemius returns this as
-			 * `info.card_banner_url` and our REST layer surfaces it
-			 * as `addon.banner`. Render only when populated so cards
-			 * without a banner image still look intentional.
+			 * Optional marketing banner. Freemius returns a small
+			 * `info.card_banner_url` and a larger `info.banner_url`,
+			 * which our REST layer surfaces as `addon.banner` /
+			 * `addon.banner_large`; BannerImage serves the larger one on
+			 * high-DPI screens via srcset. Render only when populated so
+			 * cards without a banner image still look intentional.
 			 *
 			 * When the addon is locally installed + active we also
 			 * paint an "Active" pill in the top-right corner of the
@@ -75,7 +77,11 @@ const AddonCard = ({ addon, onManageLicense }) => {
 			 */}
 			{addon.banner && (
 				<CardMedia className="d404-addon-banner">
-					<BannerImage src={addon.banner} alt={addon.title} />
+					<BannerImage
+						src={addon.banner}
+						srcLarge={addon.banner_large}
+						alt={addon.title}
+					/>
 					{addon.is_active && (
 						<span
 							className="d404-addon-status"

@@ -8,12 +8,23 @@ import { Spinner } from '@wordpress/components'
  * aspect-ratio container (see SCSS) and overlay the spinner until
  * the browser fires `load` (or `error`).
  *
+ * The banner sits in a fixed ~3:1 card slot, so the relevant axis is
+ * pixel density, not viewport width: `src` (the smaller
+ * `card_banner_url`) covers standard displays, and `srcLarge` (the
+ * larger `banner_url`) keeps the banner crisp on high-DPI / large
+ * screens via a 1x/2x density `srcset`. When no distinct large asset
+ * is available we fall back to a plain `src`.
+ *
  * @param {Object} props
- * @param {string} props.src Image URL.
- * @param {string} props.alt Alternative text.
+ * @param {string} props.src      Image URL (standard resolution).
+ * @param {string} [props.srcLarge] High-resolution image URL.
+ * @param {string} props.alt      Alternative text.
  */
-const BannerImage = ({ src, alt }) => {
+const BannerImage = ({ src, srcLarge, alt }) => {
 	const [isLoaded, setIsLoaded] = useState(false)
+
+	const srcSet =
+		srcLarge && srcLarge !== src ? `${src} 1x, ${srcLarge} 2x` : undefined
 
 	return (
 		<>
@@ -24,6 +35,7 @@ const BannerImage = ({ src, alt }) => {
 			)}
 			<img
 				src={src}
+				srcSet={srcSet}
 				alt={alt}
 				loading="lazy"
 				className="d404-addon-banner__img"

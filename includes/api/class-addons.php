@@ -289,6 +289,7 @@ class Addons extends Endpoint {
 					'is_license_active' => (bool) ( $license['active'] ?? false ),
 					'license_key'       => (string) ( $license['key'] ?? '' ),
 					'banner'            => (string) ( $addon['info']['card_banner_url'] ?? '' ),
+					'banner_large'      => (string) ( $addon['info']['banner_url'] ?? '' ),
 				);
 			}
 		}
@@ -340,11 +341,12 @@ class Addons extends Endpoint {
 		 * Filter the raw list of wp.org free addons before shaping.
 		 *
 		 * Each entry is an associative array keyed by wp.org slug with:
-		 *   - title       (string, required)
-		 *   - description (string)
-		 *   - banner      (string URL, optional — defaults to ps.w.org)
-		 *   - icon        (string URL, optional — defaults to ps.w.org)
-		 *   - homepage    (string URL, optional — defaults to wp.org page)
+		 *   - title        (string, required)
+		 *   - description  (string)
+		 *   - banner       (string URL, optional — defaults to ps.w.org 772x250)
+		 *   - banner_large (string URL, optional — defaults to ps.w.org 1544x500)
+		 *   - icon         (string URL, optional — defaults to ps.w.org)
+		 *   - homepage     (string URL, optional — defaults to wp.org page)
 		 *
 		 * @since 4.0.0
 		 *
@@ -387,6 +389,7 @@ class Addons extends Endpoint {
 				'is_license_active' => false,
 				'license_key'       => '',
 				'banner'            => (string) ( $addon['banner'] ?? "https://ps.w.org/{$slug}/assets/banner-772x250.png" ),
+				'banner_large'      => (string) ( $addon['banner_large'] ?? "https://ps.w.org/{$slug}/assets/banner-1544x500.png" ),
 			);
 		}
 
