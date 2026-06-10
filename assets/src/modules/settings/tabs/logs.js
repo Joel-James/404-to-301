@@ -69,6 +69,18 @@ const LogsTab = () => {
 	)
 
 	/*
+	 * Sibling-panel slot. Unlike `…fields` (which injects rows *inside*
+	 * the Error-logs box above), this renders *below* it as a separate
+	 * PanelBody sibling. The Logs Cleaner addon adds its own auto-prune
+	 * box here. Receives the same accessors so injected panels read /
+	 * write through the same hook.
+	 */
+	const afterPanels = applyFilters('d404.settings.logs.after', null, {
+		getSetting,
+		setSetting,
+	})
+
+	/*
 	 * Cross-sell slot. Defaults to <DefaultCrossSell />; addons return
 	 * `null` (or their own node) to suppress / replace it. Kept as a
 	 * separate filter from `…fields` so an addon that wants to inject
@@ -80,46 +92,52 @@ const LogsTab = () => {
 	)
 
 	return (
-		<PanelBody title={__('Error logs', '404-to-301')}>
-			<PanelRow>
-				<ToggleControl
-					__nextHasNoMarginBottom
-					label={__('Log 404 errors', '404-to-301')}
-					help={__(
-						'Save every 404 hit to the database so you can review and fix them from the Logs page.',
-						'404-to-301',
-					)}
-					checked={!!getSetting('logs_enabled', true)}
-					onChange={(v) => setSetting('logs_enabled', v)}
-				/>
-			</PanelRow>
-			<PanelRow>
-				<ToggleControl
-					__nextHasNoMarginBottom
-					label={__('Skip search engine bots', '404-to-301')}
-					help={__(
-						'Skip 404s from obvious crawlers (bot, spider, slurp, …) to keep the log table small.',
-						'404-to-301',
-					)}
-					checked={!!getSetting('logs_skip_bots', true)}
-					onChange={(v) => setSetting('logs_skip_bots', v)}
-				/>
-			</PanelRow>
-			<PanelRow>
-				<ToggleControl
-					__nextHasNoMarginBottom
-					label={__('Skip duplicate URLs', '404-to-301')}
-					help={__(
-						'When on, repeat 404s on the same URL do not bump the hit counter. Useful when you only want the first occurrence.',
-						'404-to-301',
-					)}
-					checked={!!getSetting('logs_skip_duplicates', false)}
-					onChange={(v) => setSetting('logs_skip_duplicates', v)}
-				/>
-			</PanelRow>
-			{extra}
-			{crossSell}
-		</PanelBody>
+		<>
+			<PanelBody title={__('404 Logs', '404-to-301')}>
+				<PanelRow>
+					<ToggleControl
+						__nextHasNoMarginBottom
+						label={__('Log 404 errors', '404-to-301')}
+						help={__(
+							'Save every 404 hit to the database so you can review and fix them from the Logs page.',
+							'404-to-301',
+						)}
+						checked={!!getSetting('logs_enabled', true)}
+						onChange={(v) => setSetting('logs_enabled', v)}
+					/>
+				</PanelRow>
+				<PanelRow>
+					<ToggleControl
+						__nextHasNoMarginBottom
+						label={__('Skip search engine bots', '404-to-301')}
+						help={__(
+							'Skip 404s from obvious crawlers (bot, spider, slurp, …) to keep the log table small.',
+							'404-to-301',
+						)}
+						checked={!!getSetting('logs_skip_bots', true)}
+						onChange={(v) => setSetting('logs_skip_bots', v)}
+					/>
+				</PanelRow>
+				<PanelRow>
+					<ToggleControl
+						__nextHasNoMarginBottom
+						label={__('Skip duplicate URLs', '404-to-301')}
+						help={__(
+							'When on, repeat 404s on the same URL do not bump the hit counter. Useful when you only want the first occurrence.',
+							'404-to-301',
+						)}
+						checked={!!getSetting('logs_skip_duplicates', false)}
+						onChange={(v) =>
+							setSetting('logs_skip_duplicates', v)
+						}
+					/>
+				</PanelRow>
+				{extra}
+				{crossSell}
+			</PanelBody>
+
+			{afterPanels}
+		</>
 	)
 }
 

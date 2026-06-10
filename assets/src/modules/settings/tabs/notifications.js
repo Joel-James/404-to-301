@@ -52,6 +52,19 @@ const Notifications = () => {
 	)
 
 	/*
+	 * Sibling-panel slot. Unlike `…fields` (which injects rows *inside*
+	 * the Email-notifications box above), this renders *below* it as a
+	 * separate PanelBody sibling — for notification-adjacent settings
+	 * that are NOT governed by the global email toggle. The Email
+	 * Reports addon adds its own box here. Receives the same accessors
+	 * so injected panels read/write through the same hook.
+	 */
+	const afterPanels = applyFilters('d404.settings.notifications.after', null, {
+		getSetting,
+		setSetting,
+	})
+
+	/*
 	 * Cross-sell slot. No default promo today, but the filter exists so
 	 * addons (eg. Email Reports) can inject — or replace — a promo
 	 * without a future parent-side code change.
@@ -62,87 +75,95 @@ const Notifications = () => {
 	)
 
 	return (
-		<PanelBody title={__('Email notifications', '404-to-301')}>
-			<PanelRow>
-				<ToggleControl
-					__nextHasNoMarginBottom
-					label={__('Notify by email on 404 errors', '404-to-301')}
-					help={__(
-						'Send an email when a 404 fires. Honours the threshold below so the inbox does not get flooded on busy sites.',
-						'404-to-301',
-					)}
-					checked={enabled}
-					onChange={(v) => setSetting('email_enabled', v)}
-				/>
-			</PanelRow>
-
-			{!enabled && (
+		<>
+			<PanelBody title={__('Email Notifications', '404-to-301')}>
 				<PanelRow>
-					<Notice status="info" isDismissible={false}>
-						{__(
-							'Notifications are off — the threshold and recipient below are ignored until you enable them.',
+					<ToggleControl
+						__nextHasNoMarginBottom
+						label={__(
+							'Notify by email on 404 errors',
 							'404-to-301',
 						)}
-					</Notice>
+						help={__(
+							'Send an email when a 404 fires. Honours the threshold below so the inbox does not get flooded on busy sites.',
+							'404-to-301',
+						)}
+						checked={enabled}
+						onChange={(v) => setSetting('email_enabled', v)}
+					/>
 				</PanelRow>
-			)}
 
-			<PanelRow>
-				<BaseControl
-					__nextHasNoMarginBottom
-					id="d404-email-recipients"
-					label={__('Recipient emails', '404-to-301')}
-					help={__(
-						'Press Enter or comma to add an address. Add as many recipients as you need.',
-						'404-to-301',
-					)}
-				>
-					<FormTokenField
+				{!enabled && (
+					<PanelRow>
+						<Notice status="info" isDismissible={false}>
+							{__(
+								'Notifications are off — the threshold and recipient below are ignored until you enable them.',
+								'404-to-301',
+							)}
+						</Notice>
+					</PanelRow>
+				)}
+
+				<PanelRow>
+					<BaseControl
+						__nextHasNoMarginBottom
+						id="d404-email-recipients"
+						label={__('Recipient emails', '404-to-301')}
+						help={__(
+							'Press Enter or comma to add an address. Add as many recipients as you need.',
+							'404-to-301',
+						)}
+					>
+						<FormTokenField
+							__next40pxDefaultSize
+							__nextHasNoMarginBottom
+							__experimentalExpandOnFocus
+							__experimentalValidateInput={(v) =>
+								EMAIL_RE.test(String(v).trim())
+							}
+							label={null}
+							value={toRecipients(
+								getSetting('email_recipient', []),
+							)}
+							onChange={(tokens) =>
+								setSetting(
+									'email_recipient',
+									toRecipients(tokens),
+								)
+							}
+							tokenizeOnSpace
+							tokenizeOnBlur
+							placeholder={__('name@example.com', '404-to-301')}
+						/>
+					</BaseControl>
+				</PanelRow>
+
+				<PanelRow>
+					<TextControl
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
-						__experimentalExpandOnFocus
-						__experimentalValidateInput={(v) => EMAIL_RE.test(String(v).trim())}
-						label={null}
-						value={toRecipients(getSetting('email_recipient', []))}
-						onChange={(tokens) =>
-							setSetting(
-								'email_recipient',
-								toRecipients(tokens),
-							)
-						}
-						tokenizeOnSpace
-						tokenizeOnBlur
-						placeholder={__(
-							'name@example.com',
+						type="number"
+						min={1}
+						label={__('Hits threshold', '404-to-301')}
+						help={__(
+							'Only send an email once a URL has racked up at least this many 404 hits.',
 							'404-to-301',
 						)}
+						value={getSetting('email_threshold', 1)}
+						onChange={(v) =>
+							setSetting(
+								'email_threshold',
+								Math.max(1, parseInt(v, 10) || 1),
+							)
+						}
 					/>
-				</BaseControl>
-			</PanelRow>
+				</PanelRow>
+				{extra}
+				{crossSell}
+			</PanelBody>
 
-			<PanelRow>
-				<TextControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					type="number"
-					min={1}
-					label={__('Hits threshold', '404-to-301')}
-					help={__(
-						'Only send an email once a URL has racked up at least this many 404 hits.',
-						'404-to-301',
-					)}
-					value={getSetting('email_threshold', 1)}
-					onChange={(v) =>
-						setSetting(
-							'email_threshold',
-							Math.max(1, parseInt(v, 10) || 1),
-						)
-					}
-				/>
-			</PanelRow>
-			{extra}
-			{crossSell}
-		</PanelBody>
+			{afterPanels}
+		</>
 	)
 }
 
