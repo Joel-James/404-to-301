@@ -4,6 +4,7 @@ import {
 	Button,
 	Flex,
 	FlexItem,
+	Notice,
 	__experimentalVStack as VStack,
 } from '@wordpress/components'
 import { DataForm } from '@wordpress/dataviews'
@@ -12,7 +13,7 @@ import { EnumSelectEdit } from '../../common'
 /**
  * The three-option override value-space (Global / Enable / Disable)
  * mirrors the `OVERRIDE_*` constants on the server. Shared across the
- * three per-log override selects below.
+ * per-log override selects below.
  */
 const overrideOptions = [
 	{ value: 0, label: __('Global', '404-to-301') },
@@ -26,6 +27,11 @@ const overrideOptions = [
  * `EnumSelectEdit` is used directly (rather than the built-in `select`)
  * so the SelectControl renders the per-field `description` as help
  * text — DataForm's stock select drops it on the floor.
+ *
+ * The `override_redirect` field is hidden in the layout when the log
+ * is already linked to a custom redirect: that lever is owned by the
+ * redirect row's Active toggle, so showing a no-op control here would
+ * mislead the admin.
  */
 const configureFormFields = [
 	{
@@ -34,17 +40,6 @@ const configureFormFields = [
 		type: 'integer',
 		description: __(
 			'Override the global redirect setting for this URL only.',
-			'404-to-301',
-		),
-		Edit: EnumSelectEdit,
-		elements: overrideOptions,
-	},
-	{
-		id: 'override_log',
-		label: __('Log', '404-to-301'),
-		type: 'integer',
-		description: __(
-			'Override whether further hits to this URL are logged.',
 			'404-to-301',
 		),
 		Edit: EnumSelectEdit,
@@ -63,14 +58,19 @@ const configureFormFields = [
 	},
 ]
 
-const configureFormLayout = {
-	type: 'regular',
-	fields: ['override_redirect', 'override_log', 'override_email'],
+/**
+ * Resolve the admin URL for the Redirects page so the linked-redirect
+ * hint can deep-link to the row's Active toggle.
+ */
+const redirectsAdminUrl = () => {
+	const base = window?.d404?.adminUrl || ''
+	const root = base.replace(/wp-admin\/?$/, 'wp-admin/')
+	return `${root}admin.php?page=404-to-301-redirects`
 }
 
 /**
  * "Configure" modal — per-log overrides for the global Redirect /
- * Log / Email toggles.
+ * Email toggles.
  *
  * DataViews wraps the rendered tree in its own <Modal>, so this
  * component returns the contents directly (no nested Modal). The
@@ -88,7 +88,6 @@ const ConfigureLog = ({ items, closeModal, onSave }) => {
 
 	const [form, setForm] = useState({
 		override_redirect: Number(log?.override_redirect ?? 0),
-		override_log: Number(log?.override_log ?? 0),
 		override_email: Number(log?.override_email ?? 0),
 	})
 
@@ -99,7 +98,6 @@ const ConfigureLog = ({ items, closeModal, onSave }) => {
 		if (log) {
 			setForm({
 				override_redirect: Number(log.override_redirect ?? 0),
-				override_log: Number(log.override_log ?? 0),
 				override_email: Number(log.override_email ?? 0),
 			})
 		}
@@ -109,6 +107,18 @@ const ConfigureLog = ({ items, closeModal, onSave }) => {
 
 	if (!log) {
 		return null
+	}
+
+	// When a custom redirect is linked to this log, the per-row redirect
+	// always wins at runtime regardless of the override value — showing
+	// the toggle would let the admin set it and watch nothing happen.
+	// Hide the field and surface the real lever via the hint instead.
+	const hasLinkedRedirect = Boolean(log.redirect_id)
+	const layout = {
+		type: 'regular',
+		fields: hasLinkedRedirect
+			? ['override_email']
+			: ['override_redirect', 'override_email'],
 	}
 
 	const handleSubmit = async (event) => {
@@ -124,11 +134,30 @@ const ConfigureLog = ({ items, closeModal, onSave }) => {
 	return (
 		<form onSubmit={handleSubmit}>
 			<p className="d404-modal-subtitle">{log.url}</p>
+
+			{hasLinkedRedirect && (
+				<div style={{ marginBottom: '1rem' }}>
+					<Notice status="info" isDismissible={false}>
+						{__(
+							'This log has a linked custom redirect. The Redirect override is managed by the redirect row’s Active toggle.',
+							'404-to-301',
+						)}{' '}
+						<a
+							href={redirectsAdminUrl()}
+							target="_blank"
+							rel="noreferrer"
+						>
+							{__('Open Custom Redirects', '404-to-301')}
+						</a>
+					</Notice>
+				</div>
+			)}
+
 			<VStack spacing={4}>
 				<DataForm
 					data={form}
 					fields={configureFormFields}
-					form={configureFormLayout}
+					form={layout}
 					onChange={(edits) =>
 						setForm((current) => ({ ...current, ...edits }))
 					}

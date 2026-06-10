@@ -19,6 +19,7 @@ defined( 'ABSPATH' ) || exit;
 
 use DuckDev\FourNotFour\Plugin;
 use DuckDev\FourNotFour\Front\Request;
+use DuckDev\FourNotFour\Models\Logs;
 
 /**
  * Class Email
@@ -38,11 +39,31 @@ class Email extends Action {
 	 * @return bool
 	 */
 	protected function should_run( Request $request ): bool {
-		if ( ! $this->setting( 'email_enabled', false ) ) {
+		if ( $request->is_excluded() ) {
 			return false;
 		}
 
-		if ( $request->is_excluded() ) {
+		// Per-URL override beats the master toggle in both directions:
+		// DISABLE silences alerts even with `email_enabled = true`,
+		// ENABLE force-sends even with `email_enabled = false`. Without
+		// a log row (or with GLOBAL on the row), fall back to the
+		// master toggle.
+		$log      = $request->log();
+		$override = $log ? (int) $log->override_email : Logs::OVERRIDE_GLOBAL;
+
+		if ( Logs::OVERRIDE_DISABLE === $override ) {
+			return false;
+		}
+
+		if ( Logs::OVERRIDE_ENABLE !== $override && ! $this->setting( 'email_enabled', false ) ) {
+			return false;
+		}
+
+		// Standalone custom redirects suppress the alert too — the URL
+		// was routed cleanly, so it's not a broken-link signal worth
+		// emailing about. Mirrors the Log action's bail.
+		$row = $request->redirect();
+		if ( null === $log && $row && 1 === (int) $row->is_active ) {
 			return false;
 		}
 
@@ -55,7 +76,6 @@ class Email extends Action {
 		// action runs before us, so by the time we get here the
 		// `hits` column has already been bumped for this request.
 		$threshold = max( 1, (int) $this->setting( 'email_threshold', 1 ) );
-		$log       = $request->log();
 		$hits      = $log ? (int) $log->hits : 1;
 
 		if ( $hits < $threshold ) {

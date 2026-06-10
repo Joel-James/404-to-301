@@ -59,6 +59,17 @@ class Log extends Action {
 			return false;
 		}
 
+		// Standalone custom redirects "consume" the request: if there's
+		// a matching active redirect row that's NOT linked back to an
+		// existing log, the URL is treated as routed (not a 404 to
+		// catalogue). Linked redirects keep logging because the log row
+		// is the triage record — we want hit counts there.
+		$existing = $request->log();
+		$row      = $request->redirect();
+		if ( null === $existing && $row && 1 === (int) $row->is_active ) {
+			return false;
+		}
+
 		return true;
 	}
 

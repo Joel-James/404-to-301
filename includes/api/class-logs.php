@@ -109,10 +109,6 @@ class Logs extends Endpoint {
 							'type' => 'integer',
 							'enum' => array( 0, 1, 2 ),
 						),
-						'override_log'      => array(
-							'type' => 'integer',
-							'enum' => array( 0, 1, 2 ),
-						),
 						'override_email'    => array(
 							'type' => 'integer',
 							'enum' => array( 0, 1, 2 ),
@@ -230,7 +226,7 @@ class Logs extends Endpoint {
 
 		// Per-row override toggles. We accept any subset — anything not
 		// in the payload is left untouched on the row.
-		$override_keys = array( 'override_redirect', 'override_log', 'override_email' );
+		$override_keys = array( 'override_redirect', 'override_email' );
 		$overrides     = array();
 
 		foreach ( $override_keys as $key ) {
@@ -246,7 +242,6 @@ class Logs extends Endpoint {
 				$id,
 				array(
 					'override_redirect' => $overrides['override_redirect'] ?? (int) $fresh->override_redirect,
-					'override_log'      => $overrides['override_log'] ?? (int) $fresh->override_log,
 					'override_email'    => $overrides['override_email'] ?? (int) $fresh->override_email,
 				)
 			);
@@ -407,7 +402,6 @@ class Logs extends Endpoint {
 			'status_label'      => $status_label[ (int) $row->status ] ?? '',
 			'redirect_id'       => null === $row->redirect_id ? null : (int) $row->redirect_id,
 			'override_redirect' => (int) $row->override_redirect,
-			'override_log'      => (int) $row->override_log,
 			'override_email'    => (int) $row->override_email,
 			'created_at'        => $row->created_at,
 			'updated_at'        => $row->updated_at,

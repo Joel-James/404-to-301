@@ -18,6 +18,7 @@ defined( 'ABSPATH' ) || exit;
 
 use DuckDev\FourNotFour\Database\Rows\Redirect as RedirectRow;
 use DuckDev\FourNotFour\Front\Request;
+use DuckDev\FourNotFour\Models\Logs;
 use DuckDev\FourNotFour\Models\Redirects;
 
 /**
@@ -31,6 +32,13 @@ class Redirect extends Action {
 	/**
 	 * Whether this action should fire for the current request.
 	 *
+	 * Note that `redirect_enabled` is intentionally NOT checked here.
+	 * That setting gates the *global* 404 fallback only — per-row
+	 * redirects in the redirects table are explicit admin choices
+	 * (with their own `is_active` flag) and should keep working
+	 * regardless of the global toggle. The gate is applied inside
+	 * `run()` on the fallback branch instead.
+	 *
 	 * @since 4.0.0
 	 *
 	 * @param Request $request Current request.
@@ -38,10 +46,6 @@ class Redirect extends Action {
 	 * @return bool
 	 */
 	protected function should_run( Request $request ): bool {
-		if ( ! $this->setting( 'redirect_enabled', true ) ) {
-			return false;
-		}
-
 		if ( $request->is_excluded() ) {
 			return false;
 		}
@@ -102,10 +106,25 @@ class Redirect extends Action {
 				return;
 			}
 		} elseif ( $request->is_404() ) {
-			// No per-row match: only fall back to the global default
-			// when this actually is a 404 (we should never redirect a
-			// healthy page just because the action is enabled).
-			$target = $this->resolve_global_target();
+			/*
+			 * No per-row match: fall back to the global default. Two
+			 * gates: the log row's `override_redirect` (per-URL admin
+			 * decision from the Configure modal) and the global
+			 * `redirect_enabled` master toggle. DISABLE on the log
+			 * silences the fallback even when the global toggle is on.
+			 * ENABLE force-fires the fallback for this URL even when
+			 * the master toggle is off — the "this one URL I do want
+			 * redirected" lever.
+			 */
+			$override  = $this->log_override_redirect( $request );
+			$global_on = (bool) $this->setting( 'redirect_enabled', true );
+
+			$should_fire = Logs::OVERRIDE_DISABLE !== $override
+				&& ( Logs::OVERRIDE_ENABLE === $override || $global_on );
+
+			if ( $should_fire ) {
+				$target = $this->resolve_global_target();
+			}
 		}
 
 		/**
@@ -221,6 +240,25 @@ class Redirect extends Action {
 		// A blank body is valid for 410/451 and avoids any chance of a
 		// theme-rendered template leaking into the response.
 		exit;
+	}
+
+	/**
+	 * Resolve the `override_redirect` value from the (possibly absent)
+	 * log row for this URL.
+	 *
+	 * Centralised so the global-fallback gate doesn't have to peek at
+	 * the Request and Logs constants in two places. Returns
+	 * `OVERRIDE_GLOBAL` (the no-op default) when no log row exists.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param Request $request Current request.
+	 *
+	 * @return int One of the {@see Logs}::OVERRIDE_* constants.
+	 */
+	private function log_override_redirect( Request $request ): int {
+		$log = $request->log();
+		return $log ? (int) $log->override_redirect : Logs::OVERRIDE_GLOBAL;
 	}
 
 	/**

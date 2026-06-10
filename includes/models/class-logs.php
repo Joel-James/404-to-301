@@ -233,18 +233,25 @@ class Logs extends Model {
 	 * @return bool
 	 */
 	public function link_redirect( int $id, int $redirect_id ): bool {
-		return $this->update(
-			$id,
-			array(
-				'redirect_id' => $redirect_id > 0 ? $redirect_id : null,
-				// A linked redirect promotes the row to the dedicated
-				// `custom redirect` status so it surfaces with its own
-				// badge / filter on the UI. Unlinking sends it back to
-				// `open` so the admin can decide what to do next.
-				'status'      => $redirect_id > 0 ? self::STATUS_CUSTOM : self::STATUS_OPEN,
-				'updated_at'  => current_time( 'mysql', true ),
-			)
+		$data = array(
+			'redirect_id' => $redirect_id > 0 ? $redirect_id : null,
+			// A linked redirect promotes the row to the dedicated
+			// `custom redirect` status so it surfaces with its own
+			// badge / filter on the UI. Unlinking sends it back to
+			// `open` so the admin can decide what to do next.
+			'status'      => $redirect_id > 0 ? self::STATUS_CUSTOM : self::STATUS_OPEN,
+			'updated_at'  => current_time( 'mysql', true ),
 		);
+
+		// Reset the per-log redirect override on link. Once a custom
+		// redirect exists for the URL, the redirect row's `is_active`
+		// owns the on/off decision; leaving a stale DISABLE here would
+		// silently re-apply if the admin later deletes the redirect.
+		if ( $redirect_id > 0 ) {
+			$data['override_redirect'] = self::OVERRIDE_GLOBAL;
+		}
+
+		return $this->update( $id, $data );
 	}
 
 	/**
@@ -261,7 +268,6 @@ class Logs extends Model {
 	 *     Override values keyed by column.
 	 *
 	 *     @type int $override_redirect
-	 *     @type int $override_log
 	 *     @type int $override_email
 	 * }
 	 *
@@ -279,7 +285,6 @@ class Logs extends Model {
 			$id,
 			array(
 				'override_redirect' => $normalise( $overrides['override_redirect'] ?? 0 ),
-				'override_log'      => $normalise( $overrides['override_log'] ?? 0 ),
 				'override_email'    => $normalise( $overrides['override_email'] ?? 0 ),
 				'updated_at'        => current_time( 'mysql', true ),
 			)

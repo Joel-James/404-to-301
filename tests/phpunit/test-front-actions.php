@@ -459,4 +459,136 @@ class FrontActionsTest extends WP_UnitTestCase {
 			unset( $_GET['p'] );
 		}
 	}
+
+	/**
+	 * Standalone custom redirects (no existing log row) consume the
+	 * request: the URL is treated as routed, so we don't record it as
+	 * a 404 in the logs.
+	 */
+	public function test_log_skipped_when_standalone_redirect_matches(): void {
+		$this->configure( array( 'logs_enabled' => true ) );
+
+		RedirectsModel::instance()->create(
+			array(
+				'source'      => '/missing-page',
+				'target_url'  => 'https://example.com/routed',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		( new Log() )->run( new Request() );
+
+		$this->assertNull( LogsModel::instance()->get_by_url( '/missing-page' ) );
+	}
+
+	/**
+	 * A pre-existing log row means the URL is already being tracked,
+	 * so a matching redirect should NOT suppress the hit-counter bump
+	 * (admins use Logs to triage; the count is the triage signal).
+	 */
+	public function test_log_still_bumps_when_linked_redirect_matches(): void {
+		$this->configure( array( 'logs_enabled' => true ) );
+
+		LogsModel::instance()->record_hit( array( 'url' => '/missing-page' ) );
+
+		RedirectsModel::instance()->create(
+			array(
+				'source'      => '/missing-page',
+				'target_url'  => 'https://example.com/routed',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		( new Log() )->run( new Request() );
+
+		$log = LogsModel::instance()->get_by_url( '/missing-page' );
+		$this->assertNotNull( $log );
+		$this->assertSame( 2, (int) $log->hits );
+	}
+
+	/**
+	 * Email skips when a standalone custom redirect handles the URL —
+	 * a routed URL isn't a broken-link signal worth alerting on.
+	 */
+	public function test_email_skipped_when_standalone_redirect_matches(): void {
+		$this->configure(
+			array(
+				'logs_enabled'    => true,
+				'email_enabled'   => true,
+				'email_recipient' => 'admin@example.com',
+				'email_threshold' => 1,
+			)
+		);
+
+		RedirectsModel::instance()->create(
+			array(
+				'source'      => '/missing-page',
+				'target_url'  => 'https://example.com/routed',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		( new Log() )->run( $request = new Request() );
+		( new Email() )->run( $request );
+
+		$this->assertSame( array(), $this->mails );
+	}
+
+	/**
+	 * `override_email = DISABLE` silences the alert for this URL even
+	 * when the global `email_enabled` toggle is on.
+	 */
+	public function test_email_honors_log_override_disable(): void {
+		$this->configure(
+			array(
+				'logs_enabled'    => true,
+				'email_enabled'   => true,
+				'email_recipient' => 'admin@example.com',
+				'email_threshold' => 1,
+			)
+		);
+
+		$id = LogsModel::instance()->record_hit( array( 'url' => '/missing-page' ) );
+		LogsModel::instance()->set_overrides(
+			$id,
+			array( 'override_email' => LogsModel::OVERRIDE_DISABLE )
+		);
+
+		( new Log() )->run( $request = new Request() );
+		( new Email() )->run( $request );
+
+		$this->assertSame( array(), $this->mails );
+	}
+
+	/**
+	 * `override_email = ENABLE` force-sends the alert even when the
+	 * global `email_enabled` toggle is off.
+	 */
+	public function test_email_honors_log_override_enable_when_global_off(): void {
+		$this->configure(
+			array(
+				'logs_enabled'    => true,
+				'email_enabled'   => false,
+				'email_recipient' => 'admin@example.com',
+				'email_threshold' => 1,
+			)
+		);
+
+		$id = LogsModel::instance()->record_hit( array( 'url' => '/missing-page' ) );
+		LogsModel::instance()->set_overrides(
+			$id,
+			array( 'override_email' => LogsModel::OVERRIDE_ENABLE )
+		);
+
+		( new Log() )->run( $request = new Request() );
+		( new Email() )->run( $request );
+
+		$this->assertCount( 1, $this->mails );
+	}
 }

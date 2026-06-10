@@ -262,4 +262,165 @@ class CustomRedirectsTest extends WP_UnitTestCase {
 		$result = $this->run_redirect();
 		$this->assertSame( '', $result['url'] );
 	}
+
+	/**
+	 * Per-row redirects fire even when the global `redirect_enabled`
+	 * toggle is off — that setting only gates the catch-all 404
+	 * fallback, not explicit admin-configured rows.
+	 */
+	public function test_per_row_redirect_fires_when_global_toggle_off(): void {
+		Settings::instance()->update(
+			array_merge(
+				Settings::instance()->all(),
+				array( 'redirect_enabled' => false ),
+			)
+		);
+
+		RedirectsModel::instance()->create(
+			array(
+				'source'        => '/test-redirect',
+				'match_type'    => 'exact',
+				'target_type'   => 'link',
+				'target_url'    => 'https://example.com/destination',
+				'redirect_type' => 301,
+				'is_active'     => 1,
+			)
+		);
+
+		$this->set_url( '/test-redirect' );
+
+		$result = $this->run_redirect();
+		$this->assertSame( 'https://example.com/destination', $result['url'] );
+		$this->assertSame( 301, $result['status'] );
+	}
+
+	/**
+	 * Inverse of the above: when `redirect_enabled` is off and there's
+	 * no per-row match, the global fallback must NOT fire.
+	 */
+	public function test_global_fallback_skipped_when_toggle_off(): void {
+		Settings::instance()->update(
+			array_merge(
+				Settings::instance()->all(),
+				array(
+					'redirect_enabled' => false,
+					'redirect_target'  => 'link',
+					'redirect_link'    => 'https://example.com/fallback',
+				),
+			)
+		);
+
+		$this->set_url( '/no-row-here' );
+
+		$result = $this->run_redirect();
+		$this->assertSame( '', $result['url'] );
+	}
+
+	/**
+	 * Per-row redirects ignore the per-log `override_redirect` toggle.
+	 * The redirect row's `is_active` is the master kill switch; the
+	 * log override only modulates the global fallback.
+	 */
+	public function test_per_row_redirect_ignores_log_override_disable(): void {
+		RedirectsModel::instance()->create(
+			array(
+				'source'      => '/per-row',
+				'target_url'  => 'https://example.com/per-row',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		$log_id = LogsModel::instance()->record_hit( array( 'url' => '/per-row' ) );
+		LogsModel::instance()->set_overrides(
+			$log_id,
+			array( 'override_redirect' => LogsModel::OVERRIDE_DISABLE )
+		);
+
+		$this->enable_redirect();
+		$this->set_url( '/per-row' );
+
+		$result = $this->run_redirect();
+		$this->assertSame( 'https://example.com/per-row', $result['url'] );
+	}
+
+	/**
+	 * Log-level `override_redirect = DISABLE` silences the global
+	 * fallback for that URL even when `redirect_enabled` is true.
+	 */
+	public function test_global_fallback_honors_log_override_disable(): void {
+		$log_id = LogsModel::instance()->record_hit( array( 'url' => '/silenced' ) );
+		LogsModel::instance()->set_overrides(
+			$log_id,
+			array( 'override_redirect' => LogsModel::OVERRIDE_DISABLE )
+		);
+
+		$this->enable_redirect(
+			array(
+				'redirect_target' => 'link',
+				'redirect_link'   => 'https://example.com/fallback',
+			)
+		);
+		$this->set_url( '/silenced' );
+
+		$result = $this->run_redirect();
+		$this->assertSame( '', $result['url'] );
+	}
+
+	/**
+	 * Log-level `override_redirect = ENABLE` force-fires the global
+	 * fallback for that URL even when `redirect_enabled` is false —
+	 * the "this one URL I do want redirected" lever.
+	 */
+	public function test_global_fallback_force_fires_on_log_override_enable(): void {
+		$log_id = LogsModel::instance()->record_hit( array( 'url' => '/forced' ) );
+		LogsModel::instance()->set_overrides(
+			$log_id,
+			array( 'override_redirect' => LogsModel::OVERRIDE_ENABLE )
+		);
+
+		Settings::instance()->update(
+			array_merge(
+				Settings::instance()->all(),
+				array(
+					'redirect_enabled' => false,
+					'redirect_target'  => 'link',
+					'redirect_link'    => 'https://example.com/forced-target',
+				),
+			)
+		);
+		$this->set_url( '/forced' );
+
+		$result = $this->run_redirect();
+		$this->assertSame( 'https://example.com/forced-target', $result['url'] );
+	}
+
+	/**
+	 * Linking a log to a redirect resets `override_redirect` to GLOBAL.
+	 * Otherwise a stale DISABLE would silently re-apply if the admin
+	 * later deletes the redirect row.
+	 */
+	public function test_link_redirect_resets_log_override(): void {
+		$redirect_id = RedirectsModel::instance()->create(
+			array(
+				'source'      => '/reset-me',
+				'target_url'  => 'https://example.com/reset-me',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		$log_id = LogsModel::instance()->record_hit( array( 'url' => '/reset-me' ) );
+		LogsModel::instance()->set_overrides(
+			$log_id,
+			array( 'override_redirect' => LogsModel::OVERRIDE_DISABLE )
+		);
+
+		LogsModel::instance()->link_redirect( $log_id, $redirect_id );
+
+		$log = LogsModel::instance()->find( $log_id );
+		$this->assertSame( LogsModel::OVERRIDE_GLOBAL, (int) $log->override_redirect );
+	}
 }
