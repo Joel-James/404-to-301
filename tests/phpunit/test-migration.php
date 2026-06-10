@@ -249,6 +249,66 @@ class MigrationTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * v3 stored per-URL overrides in the serialised `options` blob.
+	 * Phase 2 must carry them onto the v4 logs table, mapping the
+	 * tri-state `{-1 → GLOBAL, 1 → ENABLE, 0 → DISABLE}` and silently
+	 * dropping the `log` override (no v4 equivalent).
+	 */
+	public function test_phase2_migrates_v3_overrides_to_v4_columns(): void {
+		$this->create_legacy_table();
+
+		$this->insert_legacy_row(
+			array(
+				'url'     => '/v3-disable-both',
+				'options' => maybe_serialize(
+					array(
+						'redirect' => 0,    // v3 DISABLE
+						'log'      => 0,    // dropped silently in v4
+						'alert'    => 0,    // v3 DISABLE
+					)
+				),
+			)
+		);
+		$this->insert_legacy_row(
+			array(
+				'url'     => '/v3-enable-redirect',
+				'options' => maybe_serialize(
+					array(
+						'redirect' => 1,    // v3 ENABLE
+						'alert'    => -1,   // v3 sentinel for GLOBAL
+					)
+				),
+			)
+		);
+		$this->insert_legacy_row(
+			array(
+				'url'     => '/v3-no-options',
+				'options' => null,
+			)
+		);
+
+		Migrator::instance()->tick();
+
+		$logs = LogsModel::instance();
+
+		$disabled = $logs->get_by_url( '/v3-disable-both' );
+		$this->assertNotNull( $disabled );
+		$this->assertSame( LogsModel::OVERRIDE_DISABLE, (int) $disabled->override_redirect );
+		$this->assertSame( LogsModel::OVERRIDE_DISABLE, (int) $disabled->override_email );
+
+		$enable = $logs->get_by_url( '/v3-enable-redirect' );
+		$this->assertNotNull( $enable );
+		$this->assertSame( LogsModel::OVERRIDE_ENABLE, (int) $enable->override_redirect );
+		$this->assertSame( LogsModel::OVERRIDE_GLOBAL, (int) $enable->override_email );
+
+		// Missing options blob → both columns stay at the default.
+		$plain = $logs->get_by_url( '/v3-no-options' );
+		$this->assertNotNull( $plain );
+		$this->assertSame( LogsModel::OVERRIDE_GLOBAL, (int) $plain->override_redirect );
+		$this->assertSame( LogsModel::OVERRIDE_GLOBAL, (int) $plain->override_email );
+	}
+
+	/**
 	 * `abort()` cancels the migration in flight — the table stays put
 	 * for forensics, but `logs_migrated` flips to true so we stop.
 	 */

@@ -338,7 +338,7 @@ class Migrator extends Singleton {
 		// Table name is built from `$wpdb->prefix` + a fixed literal — the
 		// LIMIT placeholder is prepared, no user input lands in the SQL.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT id, url, ref, ip, ua, date FROM {$table} ORDER BY id ASC LIMIT %d", self::CHUNK_SIZE ) );
+		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT id, url, ref, ip, ua, date, options FROM {$table} ORDER BY id ASC LIMIT %d", self::CHUNK_SIZE ) );
 
 		if ( empty( $rows ) ) {
 			$this->finalise();
@@ -358,14 +358,24 @@ class Migrator extends Singleton {
 				$ref = '';
 			}
 
+			// v3 persisted per-log overrides in a serialised `options`
+			// blob with keys `redirect` / `log` / `alert` and tri-state
+			// values `-1` (use global), `1` (enable), `0` (disable). v4
+			// only carries `redirect` and `email` overrides — the `log`
+			// override is dropped in v4, so we silently discard it.
+			$overrides = $this->map_legacy_overrides( $row->options ?? null );
+
 			$logs->record_hit(
-				array(
-					'url'        => (string) $row->url,
-					'ref'        => $ref,
-					'ip'         => Helpers::pack_ip( (string) $row->ip ),
-					'ua'         => (string) $row->ua,
-					'method'     => 'GET',
-					'created_at' => $row->date ? $row->date : current_time( 'mysql', true ),
+				array_merge(
+					array(
+						'url'        => (string) $row->url,
+						'ref'        => $ref,
+						'ip'         => Helpers::pack_ip( (string) $row->ip ),
+						'ua'         => (string) $row->ua,
+						'method'     => 'GET',
+						'created_at' => $row->date ? $row->date : current_time( 'mysql', true ),
+					),
+					$overrides
 				)
 			);
 
@@ -475,6 +485,66 @@ class Migrator extends Singleton {
 		$table = $wpdb->prefix . '404_to_301';
 
 		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	}
+
+	/**
+	 * Map a v3 `options` blob onto v4's `override_*` columns.
+	 *
+	 * V3 stored `redirect` / `log` / `alert` keys with tri-state values
+	 * `-1` (use global / unset sentinel), `1` (enable), `0` (disable).
+	 * V4 keeps `redirect` (→ `override_redirect`) and `alert`
+	 * (→ `override_email`) and drops `log` entirely (the per-log "stop
+	 * logging" override is gone in v4 — `exclude_paths` covers that
+	 * use case, and the override was never wired to anything at
+	 * runtime in v4 pre-release).
+	 *
+	 * Anything outside `{-1, 0, 1}` collapses to GLOBAL — matches v3's
+	 * own runtime check (`in_array($val, [0, 1])`) and keeps unknown
+	 * future values from persisting as garbage.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $raw Raw value from the legacy `options` column —
+	 *                   typically a serialised PHP array, possibly
+	 *                   already unserialised, or null/empty.
+	 *
+	 * @return array Subset of `override_redirect` / `override_email`
+	 *               keys, omitted entirely when the input is empty so
+	 *               the row falls back to the column defaults.
+	 */
+	private function map_legacy_overrides( $raw ): array {
+		if ( empty( $raw ) ) {
+			return array();
+		}
+
+		$options = is_array( $raw ) ? $raw : maybe_unserialize( $raw );
+
+		if ( ! is_array( $options ) ) {
+			return array();
+		}
+
+		$map = static function ( $value ): int {
+			$value = (int) $value;
+			if ( 1 === $value ) {
+				return LogsModel::OVERRIDE_ENABLE;
+			}
+			if ( 0 === $value ) {
+				return LogsModel::OVERRIDE_DISABLE;
+			}
+			return LogsModel::OVERRIDE_GLOBAL;
+		};
+
+		$mapped = array();
+
+		if ( array_key_exists( 'redirect', $options ) ) {
+			$mapped['override_redirect'] = $map( $options['redirect'] );
+		}
+
+		if ( array_key_exists( 'alert', $options ) ) {
+			$mapped['override_email'] = $map( $options['alert'] );
+		}
+
+		return $mapped;
 	}
 
 	/**
