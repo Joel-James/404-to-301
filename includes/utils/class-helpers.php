@@ -151,6 +151,43 @@ class Helpers {
 	}
 
 	/**
+	 * Catalogue of global 404-fallback target modes.
+	 *
+	 * Drives the `redirect_target` setting: what the plugin does with a
+	 * 404 that has no matching custom redirect. Core ships three modes:
+	 *
+	 *   - `link` — redirect to a custom URL.
+	 *   - `page` — redirect to an existing page (a 3xx to a 200 page).
+	 *   - `none` — do nothing; the theme renders its own 404.
+	 *
+	 * Add-ons register further modes through the filter. Any value
+	 * beyond the core three is treated by the Redirect action as a
+	 * "serve in place" disposition: instead of redirecting, it fires
+	 * `404_to_301_serve_404` and lets the handler render a response
+	 * while keeping the 404 status (see {@see \DuckDev\FourNotFour\Front\Actions\Redirect}).
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array<string, string> Stored value => translated label.
+	 */
+	public static function redirect_targets(): array {
+		$targets = array(
+			'link' => __( 'A custom URL', '404-to-301' ),
+			'page' => __( 'An existing page', '404-to-301' ),
+			'none' => __( 'No redirect', '404-to-301' ),
+		);
+
+		/**
+		 * Filter the catalogue of global 404-fallback target modes.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array<string, string> $targets Stored value => label.
+		 */
+		return (array) apply_filters( '404_to_301_redirect_targets', $targets );
+	}
+
+	/**
 	 * Normalise a URL/path for hashing and exact-match lookup.
 	 *
 	 * The 404 logging path and the custom-redirect lookup both need to

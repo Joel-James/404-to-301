@@ -376,7 +376,7 @@ class Settings extends Singleton {
 					break;
 
 				case 'redirect_target':
-					$clean[ $key ] = Sanitizer::enum( $raw, array( 'link', 'page', 'none' ), 'link' );
+					$clean[ $key ] = Sanitizer::enum( $raw, self::redirect_target_values(), 'link' );
 					break;
 
 				case 'redirect_link':
@@ -464,7 +464,7 @@ class Settings extends Singleton {
 				),
 				'redirect_target'      => array(
 					'type' => 'string',
-					'enum' => array( 'link', 'page', 'none' ),
+					'enum' => self::redirect_target_values(),
 				),
 				'redirect_link'        => array(
 					'type'   => 'string',
@@ -511,6 +511,22 @@ class Settings extends Singleton {
 	 */
 	private static function redirect_type_values(): array {
 		return array_map( 'strval', Helpers::redirect_status_codes( true ) );
+	}
+
+	/**
+	 * Allowed values for the global `redirect_target` setting.
+	 *
+	 * The keys of {@see Helpers::redirect_targets()}, so an add-on that
+	 * registers a new fallback mode (eg. a "serve a page with a 404
+	 * status" disposition) has its value accepted by both the option
+	 * sanitiser and the REST schema.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array<int, string> List of target mode values.
+	 */
+	private static function redirect_target_values(): array {
+		return array_keys( Helpers::redirect_targets() );
 	}
 
 	/**

@@ -112,6 +112,9 @@ class FrontActionsTest extends WP_UnitTestCase {
 		remove_all_filters( 'pre_wp_mail' );
 		remove_all_filters( 'wp_redirect' );
 		remove_all_filters( 'allowed_redirect_hosts' );
+		remove_all_filters( '404_to_301_redirect_targets' );
+		remove_all_actions( '404_to_301_serve_404' );
+		remove_all_actions( '404_to_301_pre_serve_404' );
 
 		// Don't unset `$_SERVER['REQUEST_URI']` etc. — `wp-cron` reads
 		// from it on later teardown steps and emits a deprecation when
@@ -351,6 +354,164 @@ class FrontActionsTest extends WP_UnitTestCase {
 		( new Redirect() )->run( new Request() );
 
 		$this->addToAssertionCount( 1 );
+	}
+
+	/* ---------------------------------------------------------------- *
+	 * Serve-in-place disposition — the "Custom 404 Page" seam
+	 * ---------------------------------------------------------------- */
+
+	/**
+	 * Register an add-on style `page_404` fallback mode so the option
+	 * sanitiser and REST schema accept it.
+	 */
+	private function register_serve_target(): void {
+		add_filter(
+			'404_to_301_redirect_targets',
+			static function ( $targets ) {
+				$targets['page_404'] = 'Show a page (404)';
+				return $targets;
+			}
+		);
+	}
+
+	/**
+	 * A non-core fallback mode fires `404_to_301_pre_serve_404` and
+	 * `404_to_301_serve_404` with the request and mode, and does NOT
+	 * redirect. This also proves the `redirect_target` enum accepts a
+	 * filtered-in value end to end (sanitiser would otherwise reset it
+	 * to `link` and no serve action would fire).
+	 */
+	public function test_serve_disposition_fires_action_without_redirecting(): void {
+		$this->register_serve_target();
+		$this->configure(
+			array(
+				'redirect_enabled' => true,
+				'redirect_target'  => 'page_404',
+			)
+		);
+
+		$pre    = array();
+		$served = array();
+		add_action(
+			'404_to_301_pre_serve_404',
+			static function ( $request, $type ) use ( &$pre ) {
+				$pre[] = $type;
+			},
+			10,
+			2
+		);
+		add_action(
+			'404_to_301_serve_404',
+			static function ( $request, $type ) use ( &$served ) {
+				$served[] = $type;
+			},
+			10,
+			2
+		);
+
+		// Must NOT throw the redirect-fired exception.
+		( new Redirect() )->run( new Request() );
+
+		$this->assertSame( array( 'page_404' ), $pre );
+		$this->assertSame( array( 'page_404' ), $served );
+	}
+
+	/**
+	 * A matching per-row redirect still wins over the serve
+	 * disposition — the row redirects and the serve action never fires.
+	 */
+	public function test_per_row_redirect_wins_over_serve_disposition(): void {
+		$this->register_serve_target();
+		$this->configure(
+			array(
+				'redirect_enabled' => true,
+				'redirect_target'  => 'page_404',
+			)
+		);
+
+		RedirectsModel::instance()->create(
+			array(
+				'source'        => '/missing-page',
+				'target_url'    => 'https://example.com/per-row',
+				'target_type'   => 'link',
+				'match_type'    => 'exact',
+				'redirect_type' => 301,
+				'is_active'     => 1,
+			)
+		);
+
+		$served = false;
+		add_action(
+			'404_to_301_serve_404',
+			static function () use ( &$served ) {
+				$served = true;
+			}
+		);
+
+		$thrown = null;
+		try {
+			( new Redirect() )->run( new Request() );
+		} catch ( FrontActionsRedirectFired $e ) {
+			$thrown = $e;
+		}
+
+		$this->assertNotNull( $thrown );
+		$this->assertSame( 'https://example.com/per-row', $thrown->url );
+		$this->assertFalse( $served, 'Serve action must not fire when a per-row redirect matches.' );
+	}
+
+	/**
+	 * With no handler hooked, the serve disposition returns without
+	 * redirecting — the request degrades to the theme's own 404.
+	 */
+	public function test_serve_disposition_degrades_when_unhandled(): void {
+		$this->register_serve_target();
+		$this->configure(
+			array(
+				'redirect_enabled' => true,
+				'redirect_target'  => 'page_404',
+			)
+		);
+
+		// No handler hooked: `run()` must neither throw nor redirect.
+		( new Redirect() )->run( new Request() );
+
+		$this->addToAssertionCount( 1 );
+	}
+
+	/**
+	 * A per-URL `override_redirect = DISABLE` silences the serve
+	 * disposition just as it silences a redirect — the theme's 404 wins.
+	 */
+	public function test_serve_disposition_respects_per_url_disable(): void {
+		$this->register_serve_target();
+		$this->configure(
+			array(
+				'redirect_enabled' => true,
+				'redirect_target'  => 'page_404',
+			)
+		);
+
+		// Log the URL, then flip its per-row override to DISABLE.
+		( new Log() )->run( new Request() );
+		$log = LogsModel::instance()->get_by_url( '/missing-page' );
+		$this->assertNotNull( $log );
+		LogsModel::instance()->set_overrides(
+			(int) $log->id,
+			array( 'override_redirect' => LogsModel::OVERRIDE_DISABLE )
+		);
+
+		$served = false;
+		add_action(
+			'404_to_301_serve_404',
+			static function () use ( &$served ) {
+				$served = true;
+			}
+		);
+
+		( new Redirect() )->run( new Request() );
+
+		$this->assertFalse( $served, 'Per-URL DISABLE must suppress the serve disposition.' );
 	}
 
 	/* ---------------------------------------------------------------- *

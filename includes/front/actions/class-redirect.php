@@ -124,6 +124,20 @@ class Redirect extends Action {
 				&& ( Logs::OVERRIDE_ENABLE === $override || $global_on );
 
 			if ( $should_fire ) {
+				$type = (string) $this->setting( 'redirect_target', 'link' );
+
+				// A target mode core can't turn into a redirect URL (eg.
+				// an add-on's `page_404`) is a "serve in place"
+				// disposition: don't redirect — announce the decision and
+				// let a handler render the response while WordPress
+				// carries on to template loading. Mirrors how 410/451
+				// branch away from `wp_safe_redirect()`, except this path
+				// keeps the request alive instead of calling `exit`.
+				if ( $this->is_serve_target( $type ) ) {
+					$this->serve_in_place( $request, $type );
+					return;
+				}
+
 				$target = $this->resolve_global_target();
 			}
 		}
@@ -244,6 +258,81 @@ class Redirect extends Action {
 		// A blank body is valid for 410/451 and avoids any chance of a
 		// theme-rendered template leaking into the response.
 		exit;
+	}
+
+	/**
+	 * Whether a global target mode is a "serve in place" disposition.
+	 *
+	 * Core knows how to turn `link` and `page` into a redirect URL and
+	 * `none` into a no-op. Any other registered mode (see
+	 * {@see Helpers::redirect_targets()}) means "don't redirect — render
+	 * the response in place and keep the 404 status", which core hands
+	 * off to a handler via {@see Redirect::serve_in_place()}.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $type Configured `redirect_target` value.
+	 *
+	 * @return bool
+	 */
+	private function is_serve_target( string $type ): bool {
+		return ! in_array( $type, array( 'link', 'page', 'none' ), true );
+	}
+
+	/**
+	 * Hand a "serve in place" 404 disposition off to its handler.
+	 *
+	 * Unlike the redirect and terminal paths, this does NOT call `exit`:
+	 * control returns to WordPress so normal template loading proceeds.
+	 * The intended handler (an add-on, eg. "Custom 404 Page") hooks
+	 * `404_to_301_serve_404`, swaps `template_include` to load its
+	 * chosen content, and re-asserts the 404 status header.
+	 *
+	 * When nothing handles the action the request simply falls through
+	 * to the theme's own 404 template — still with a 404 status — so the
+	 * disposition degrades safely if the handler is deactivated.
+	 *
+	 * The Log and Email actions have already run by this point (the
+	 * Controller orders Redirect last), so the broken URL is logged and
+	 * any threshold email has fired regardless of how the response is
+	 * ultimately rendered.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param Request $request Current request.
+	 * @param string  $type    Configured global target mode (eg. `page_404`).
+	 *
+	 * @return void
+	 */
+	private function serve_in_place( Request $request, string $type ): void {
+		/**
+		 * Fires immediately before a "serve in place" disposition is
+		 * handed off — the audit-trail twin of `404_to_301_pre_redirect`
+		 * and `404_to_301_pre_terminal_status`.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param Request $request Current request.
+		 * @param string  $type    Configured global target mode.
+		 */
+		do_action( '404_to_301_pre_serve_404', $request, $type );
+
+		/**
+		 * Fires when the global 404 fallback should be rendered in place
+		 * rather than redirected.
+		 *
+		 * Handlers should swap `template_include` to load their content
+		 * and re-assert `status_header( 404 )` (rendering a published
+		 * page would otherwise reset the status to 200). This action
+		 * does not `exit`; WordPress proceeds to template loading after
+		 * it returns.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param Request $request Current request.
+		 * @param string  $type    Configured global target mode (eg. `page_404`).
+		 */
+		do_action( '404_to_301_serve_404', $request, $type );
 	}
 
 	/**
