@@ -1,13 +1,7 @@
 /* global d404 */
 
 import { __ } from '@wordpress/i18n'
-import {
-	Button,
-	Flex,
-	FlexItem,
-	Notice,
-	__experimentalText as Text,
-} from '@wordpress/components'
+import { Button, Flex, FlexItem, Notice } from '@wordpress/components'
 import useMigration from '../../hooks/use-migration'
 
 /**
@@ -64,7 +58,7 @@ const LiveBanner = () => {
 				<Notice status="info" isDismissible={false}>
 					<Flex justify="space-between" gap={3}>
 						<FlexItem>
-							<Text>
+							<span>
 								{__(
 									'Migrating old 404 logs in the background…',
 									'404-to-301',
@@ -78,7 +72,7 @@ const LiveBanner = () => {
 										'Using Action Scheduler',
 										'404-to-301',
 									)}`}
-							</Text>
+							</span>
 						</FlexItem>
 						<FlexItem>
 							<Button variant="secondary" onClick={abort}>

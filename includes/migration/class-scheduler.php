@@ -113,9 +113,19 @@ class Scheduler {
 			return '';
 		}
 
-		return wp_nonce_url(
-			self_admin_url( 'update.php?action=install-plugin&plugin=action-scheduler' ),
-			'install-plugin_action-scheduler'
+		// Build the URL with raw `&` separators. `wp_nonce_url()` would
+		// run the result through `esc_html()` (turning `&` into `&amp;`),
+		// which is right for a PHP-echoed HTML attribute but wrong here:
+		// this URL is serialised into JSON and assigned to a React `href`,
+		// where the entities are NOT decoded and the link breaks. Assemble
+		// it with `add_query_arg()` so the separators stay literal.
+		return add_query_arg(
+			array(
+				'action'   => 'install-plugin',
+				'plugin'   => 'action-scheduler',
+				'_wpnonce' => wp_create_nonce( 'install-plugin_action-scheduler' ),
+			),
+			self_admin_url( 'update.php' )
 		);
 	}
 }

@@ -1,4 +1,5 @@
 import { Popover, SlotFillProvider } from '@wordpress/components'
+import ErrorBoundary from './error-boundary'
 
 /**
  * Root wrapper every admin page mounts inside.
@@ -11,12 +12,16 @@ import { Popover, SlotFillProvider } from '@wordpress/components'
  * is why filter / per-column menus on DataViews look blurred or
  * ghosted.
  *
+ * The page tree is wrapped in an {@see ErrorBoundary} so a render-time
+ * throw degrades to an inline error notice instead of unmounting the
+ * whole root to a blank page.
+ *
  * @param {Object} props
  * @param {Object} props.children The page's React tree.
  */
 const AppShell = ({ children }) => (
 	<SlotFillProvider>
-		{children}
+		<ErrorBoundary>{children}</ErrorBoundary>
 		<Popover.Slot />
 	</SlotFillProvider>
 )
