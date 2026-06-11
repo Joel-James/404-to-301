@@ -13,6 +13,7 @@
     "build": "wp-scripts build assets/src/settings.js assets/src/logs.js assets/src/redirects.js assets/src/addons.js --output-path=build",
     "start": "wp-scripts start assets/src/settings.js assets/src/logs.js assets/src/redirects.js assets/src/addons.js --output-path=build",
     "lint:js": "wp-scripts lint-js assets/src",
+    "lint:experimental": "bash bin/check-experimental-imports.sh",
     "format": "wp-scripts format assets/src",
     "pack": "bash bin/pack.sh"
   },

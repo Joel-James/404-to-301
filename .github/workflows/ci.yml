@@ -114,6 +114,9 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
+      - name: Guard experimental @wordpress imports
+        run: bash bin/check-experimental-imports.sh
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
