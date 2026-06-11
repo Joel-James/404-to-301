@@ -133,6 +133,7 @@ class Settings extends Singleton {
 				'plugin_version'       => '',
 				'db_version'           => '',
 				'logs_migrated'        => false,
+				'migration_started'    => false,
 				'phase1_done'          => false,
 				'legacy_table_dropped' => false,
 			)
@@ -366,6 +367,7 @@ class Settings extends Singleton {
 				case 'logs_skip_duplicates':
 				case 'email_enabled':
 				case 'logs_migrated':
+				case 'migration_started':
 				case 'phase1_done':
 				case 'legacy_table_dropped':
 					$clean[ $key ] = Sanitizer::boolean( $raw );
@@ -489,6 +491,7 @@ class Settings extends Singleton {
 				'plugin_version'       => array( 'type' => 'string' ),
 				'db_version'           => array( 'type' => 'string' ),
 				'logs_migrated'        => array( 'type' => 'boolean' ),
+				'migration_started'    => array( 'type' => 'boolean' ),
 				'phase1_done'          => array( 'type' => 'boolean' ),
 				'legacy_table_dropped' => array( 'type' => 'boolean' ),
 			)

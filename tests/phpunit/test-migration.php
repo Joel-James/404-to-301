@@ -324,16 +324,36 @@ class MigrationTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * `status()` snapshot reports a not-yet-started migration accurately.
+	 * A not-yet-started migration is NOT reported as running, even when
+	 * legacy data is present — `running` tracks an in-flight migration,
+	 * not the mere presence of unmigrated data. This keeps the banner in
+	 * its idle "Start migration" state (where the optional Action
+	 * Scheduler install offer lives).
 	 */
-	public function test_status_reports_running_when_legacy_present(): void {
+	public function test_status_not_running_until_started(): void {
 		$this->create_legacy_table();
 		$this->insert_legacy_row( array( 'url' => '/x' ) );
 
 		$status = Migrator::instance()->status();
 
 		$this->assertTrue( $status['legacy_present'] );
-		$this->assertTrue( $status['running'] );
+		$this->assertFalse( $status['running'] );
 		$this->assertSame( 1, $status['remaining'] );
+	}
+
+	/**
+	 * Once a migration has been started (the `migration_started` flag is
+	 * set) and the logs aren't migrated yet, `status()` reports running.
+	 */
+	public function test_status_running_once_started(): void {
+		$this->create_legacy_table();
+		$this->insert_legacy_row( array( 'url' => '/x' ) );
+
+		Settings::instance()->set( 'migration_started', true );
+
+		$status = Migrator::instance()->status();
+
+		$this->assertTrue( $status['legacy_present'] );
+		$this->assertTrue( $status['running'] );
 	}
 }

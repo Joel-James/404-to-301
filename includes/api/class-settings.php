@@ -58,6 +58,7 @@ class Settings extends Endpoint {
 		'plugin_version',
 		'db_version',
 		'logs_migrated',
+		'migration_started',
 		'phase1_done',
 		'legacy_table_dropped',
 	);

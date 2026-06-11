@@ -261,6 +261,14 @@ class Migrator extends Singleton {
 			return $this->status();
 		}
 
+		// Mark the migration as actively in progress. `status()` reads
+		// this to report `running` — until it's set, the banner stays in
+		// its idle "Start migration" state (which is where the optional
+		// "Install Action Scheduler" offer lives). This is the single
+		// place a phase-2 run is ever kicked off, so it's the canonical
+		// point to flip the flag.
+		Settings::instance()->set( 'migration_started', true );
+
 		// Best-effort: schedule a background continuation so the
 		// migration completes even if the admin closes the tab.
 		Scheduler::queue_next_chunk();
@@ -413,7 +421,14 @@ class Migrator extends Singleton {
 	 */
 	public function status(): array {
 		$settings = Settings::instance();
-		$running  = $this->legacy_table_exists() && ! $settings->get( 'logs_migrated', false );
+		// `running` means a phase-2 migration has actually been started
+		// and hasn't finished yet — NOT merely that legacy data is
+		// present. Conflating the two (the old behaviour) made the idle
+		// banner state unreachable, hiding the "Start migration" /
+		// "Install Action Scheduler" offer, because the banner only
+		// shows at all when legacy data is present and unmigrated.
+		$running = (bool) $settings->get( 'migration_started', false )
+			&& ! $settings->get( 'logs_migrated', false );
 
 		return array(
 			'phase1_done'    => (bool) $settings->get( 'phase1_done', false ),
