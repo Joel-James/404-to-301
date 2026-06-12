@@ -54,8 +54,25 @@ const LiveBanner = () => {
 	// In-flight: progress + abort.
 	if (status.running) {
 		return (
-			<div className="d404-migration-banner">
-				<Notice status="info" isDismissible={false}>
+			// `key` keeps this branch a distinct element from the idle
+			// one below: when the banner flips idle → running, React
+			// remounts the <Notice> instead of updating it in place.
+			// Updating a @wordpress/components <Notice> across that
+			// change throws inside its render (it serialises the element
+			// children for the screen-reader announcement, and the
+			// in-place update trips a `.length` read on undefined). A
+			// remount takes the same code path as a fresh page load,
+			// which renders cleanly. The explicit string `spokenMessage`
+			// also stops Notice from serialising the child tree at all.
+			<div className="d404-migration-banner" key="migration-running">
+				<Notice
+					status="info"
+					isDismissible={false}
+					spokenMessage={__(
+						'Migrating old 404 logs in the background…',
+						'404-to-301',
+					)}
+				>
 					<Flex justify="space-between" gap={3}>
 						<FlexItem>
 							<span>
@@ -87,8 +104,18 @@ const LiveBanner = () => {
 
 	// Idle but legacy table present — invite the admin to start.
 	return (
-		<div className="d404-migration-banner">
-			<Notice status="warning" isDismissible={false}>
+		// Distinct `key` from the running branch above — see the note
+		// there. Forces a remount (not an in-place update) on the
+		// idle → running flip, sidestepping the Notice render crash.
+		<div className="d404-migration-banner" key="migration-idle">
+			<Notice
+				status="warning"
+				isDismissible={false}
+				spokenMessage={__(
+					'Legacy 404 to 301 data detected',
+					'404-to-301',
+				)}
+			>
 				<p>
 					<strong>
 						{__('Legacy 404 to 301 data detected', '404-to-301')}
