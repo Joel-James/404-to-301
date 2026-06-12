@@ -40,10 +40,49 @@ const MigrationBanner = () => {
  * same call order whenever this tree mounts.
  */
 const LiveBanner = () => {
-	const { status, isStarting, start, abort } = useMigration()
+	const { status, isStarting, justCompleted, start, abort } = useMigration()
 
 	if (!status) {
 		return null
+	}
+
+	// Just finished in this session — confirm success and point the
+	// admin at a reload, since the logs table won't show the migrated
+	// rows until the page is fetched again. Checked before the
+	// "nothing to migrate" guard below because completion flips
+	// `logs_migrated` true, which that guard would otherwise swallow.
+	if (justCompleted) {
+		return (
+			<div className="d404-migration-banner" key="migration-done">
+				<Notice
+					status="success"
+					isDismissible={false}
+					spokenMessage={__('Migration complete.', '404-to-301')}
+				>
+					<Flex justify="space-between" gap={3}>
+						<FlexItem>
+							<span>
+								<strong>
+									{__('Migration complete.', '404-to-301')}
+								</strong>{' '}
+								{__(
+									'Your old 404 logs have been moved. Reload the page to see them.',
+									'404-to-301',
+								)}
+							</span>
+						</FlexItem>
+						<FlexItem>
+							<Button
+								variant="primary"
+								onClick={() => window.location.reload()}
+							>
+								{__('Reload page', '404-to-301')}
+							</Button>
+						</FlexItem>
+					</Flex>
+				</Notice>
+			</div>
+		)
 	}
 
 	// Nothing to migrate — no banner.

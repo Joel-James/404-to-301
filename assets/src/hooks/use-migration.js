@@ -1,7 +1,5 @@
-import { __ } from '@wordpress/i18n'
-import { useCallback, useEffect, useRef } from '@wordpress/element'
+import { useCallback, useEffect, useRef, useState } from '@wordpress/element'
 import { useDispatch, useSelect } from '@wordpress/data'
-import { store as noticesStore } from '@wordpress/notices'
 import { STORE_KEY } from '../store/migration'
 
 /**
@@ -31,7 +29,13 @@ const useMigration = () => {
 		abort: dispatchAbort,
 		tick,
 	} = useDispatch(STORE_KEY)
-	const { createSuccessNotice } = useDispatch(noticesStore)
+
+	// Set once the migration we kicked off in this session finishes.
+	// Drives the banner's "complete — reload to see your logs" state.
+	// Local (not server) state on purpose: it should appear only for
+	// the admin who ran the migration, and only until they reload —
+	// after which `logs_migrated` keeps the banner hidden for good.
+	const [justCompleted, setJustCompleted] = useState(false)
 
 	// Whether the tick loop is currently running. Held in a ref so
 	// the loop body can `loopActive.current` to check liveness
@@ -59,7 +63,7 @@ const useMigration = () => {
 				// Server signals done either by clearing the legacy
 				// table or by setting `logs_migrated=true`.
 				if (!next || !next.running || next.remaining <= 0) {
-					createSuccessNotice(__('Migration complete.', '404-to-301'))
+					setJustCompleted(true)
 					break
 				}
 
@@ -69,7 +73,7 @@ const useMigration = () => {
 		} finally {
 			loopActive.current = false
 		}
-	}, [tick, createSuccessNotice])
+	}, [tick])
 
 	/**
 	 * Start handler used by the banner — dispatches the store's
@@ -78,8 +82,16 @@ const useMigration = () => {
 	const start = useCallback(async () => {
 		const next = await dispatchStart()
 
-		if (next && next.running && next.remaining > 0) {
+		if (!next) {
+			return
+		}
+
+		if (next.running && next.remaining > 0) {
 			runLoop()
+		} else {
+			// Small datasets finish inside the initial inline chunk, so
+			// no poll loop ever runs — surface completion here instead.
+			setJustCompleted(true)
 		}
 	}, [dispatchStart, runLoop])
 
@@ -117,7 +129,7 @@ const useMigration = () => {
 		[],
 	)
 
-	return { status, isStarting, start, abort }
+	return { status, isStarting, justCompleted, start, abort }
 }
 
 export default useMigration
