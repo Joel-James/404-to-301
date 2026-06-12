@@ -142,7 +142,15 @@ const List = () => {
 
 	// Addon slot for extra toolbar UI (eg. an Export-CSV button). Returns
 	// `null` by default; the Logs Exporter addon swaps in its button.
-	const toolbar = applyFilters('d404.logs.toolbar', null, { view, selection })
+	// `total` is the row count for the *current filtered view* (the
+	// X-WP-Total header), so an addon can disable itself when the view
+	// is empty; `isLoading` lets it wait out an in-flight fetch.
+	const toolbar = applyFilters('d404.logs.toolbar', null, {
+		view,
+		selection,
+		total,
+		isLoading,
+	})
 
 	return (
 		<>
