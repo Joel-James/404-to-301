@@ -1,6 +1,6 @@
-=== 404 to 301 - Redirect, Log and Notify 404 Errors ===
+=== 404 to 301 – Redirect Manager, 404 Error Logs & Notifications ===
 Contributors: joelcj91, duckdev
-Tags: redirect, redirection, 301 redirect, redirect manager, 404
+Tags: redirect, redirection, 301 redirect, 404, 404 error logs
 Donate link: https://www.paypal.me/JoelCJ
 Requires at least: 6.4
 Tested up to: 6.5
@@ -9,81 +9,128 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Manage custom redirects, automatically redirect every 404 error to any page, log broken links and get email alerts when they happen. Built for SEO.
+Custom redirects (301, 302, 307), automatic 404 redirection, full 404 error logs and email alerts — a complete redirect & 404 toolkit.
 
 == Description ==
 
-404 to 301 is a complete redirection toolkit for WordPress. Create and manage custom redirects with exact, prefix or regex matching and your choice of redirect type, then let the plugin automatically redirect every remaining 404 error to any page of your choice. Every broken-link hit is logged so you can fix the real problem rather than just papering over it, and an optional email alert tells you when the same URL keeps getting hit.
+**404 to 301** is a complete redirect manager and 404 error monitor for WordPress. Build your own custom redirects (301, 302, 307 and more) with exact, prefix or regex matching, automatically redirect every remaining 404 error to any page you choose, and keep a full log of every broken link that hits your site — so you can fix the real problem instead of just hiding it. An optional email alert lets you know the moment a URL starts getting hit.
 
-Whether you are migrating a site, cleaning up old URLs after a redesign, or just keeping your SEO and visitor experience tidy, 404 to 301 gives you fine-grained redirect management plus a safety net for everything you miss.
+Whether you are managing redirects after a site migration, cleaning up old URLs following a redesign, or simply protecting your SEO and visitor experience from dead links, 404 to 301 gives you precise redirect management **and** a 404 logging safety net for everything you miss — all from a fast, modern admin.
 
-= What's new in v4 =
+= Custom redirects =
 
-v4 is a ground-up rewrite focused on three things:
+Take full control of your URLs with a built-in redirect manager:
 
-* **A modern admin** — built on the React components and DataView library that ship with WordPress core, the same toolkit Gutenberg uses. Logs and Redirects get full-feature tables with filters, bulk actions, pagination and live search.
-* **A proper data model** — error logs and custom redirects now live in two dedicated, indexed database tables instead of one big shared one. URLs are hashed for instant lookup; IPs are stored compactly via `inet_pton`; redirects support exact, prefix and regex matching.
-* **Hooks, REST and WP-CLI** — every action runs through a filterable pipeline, every admin operation has a matching REST endpoint at `/404-to-301/v1/`, and there's a full `wp 404-to-301 ...` command set for automation.
+* Create unlimited **custom redirects** with your choice of redirect type (301, 302, 307 and more).
+* Match URLs by **exact path, prefix or regular expression (regex)** for precise or pattern-based rules.
+* Enable or disable individual redirects without deleting them.
+* See a **hit counter and last-hit timestamp** on every redirect so you know what's actually being used.
+* Manage everything from a full-featured table with search, filters, bulk actions and pagination.
 
-= Features =
+= Automatic 404 redirection =
 
-* **Custom redirects** with exact, prefix or regex matching, per-row redirect type, active/inactive flag, hit counter, last-hit timestamp.
-* **404 logs** with deduplication, hit counter, lifecycle status (open / ignored / fixed) and date filters.
-* **Email notifications** with a configurable hit threshold so busy sites don't flood the inbox.
-* **Site Health-friendly** — `redirect_canonical` is opt-in disabled, IP can be masked for GDPR.
-* **Exclude paths** — skip 404s on paths you don't care about.
-* **WP-CLI commands** for logs, redirects, settings and migration.
-* **REST API** at `/404-to-301/v1/`.
-* **Add-on catalogue** listing both free wordpress.org companions and premium add-ons, with one-screen license activation for the premium ones.
-* **Background migration** from v3 — runs in chunks, opportunistically uses Action Scheduler when available.
+Don't have a custom rule for a broken URL? Set a **global fallback** and automatically redirect every leftover 404 error to your homepage, a custom page, or any URL — with the redirect type of your choice. No more dead-end 404 pages costing you visitors and link equity.
+
+= 404 error logs =
+
+Know exactly which links are breaking on your site:
+
+* **Log every 404 error** with the requested URL, referrer, IP address, user agent and timestamp.
+* Duplicate hits are **deduplicated and counted**, so a busy broken URL is one row with a hit count — not thousands.
+* Track each error through a **lifecycle status** (open / ignored / fixed) and filter logs by date.
+* Turn any logged 404 into a redirect in a couple of clicks.
+* **GDPR-friendly:** IP addresses can be masked, and you can exclude paths you don't care about from logging.
+
+= Email notifications =
+
+Get an **email alert** when broken links appear, with a configurable hit threshold so busy sites don't flood your inbox. Stay on top of new 404s without living in the dashboard.
+
+= Built for performance and developers =
+
+* The plugin does work **only on a 404 request** — healthy page loads are never touched.
+* Custom redirects are matched by a hashed, indexed lookup for near-instant resolution.
+* **REST API** at `/404-to-301/v1/` for every admin operation.
+* Full **WP-CLI** command set: `wp 404-to-301 logs|redirects|settings`.
+* A filterable action pipeline so developers can hook in their own logic.
+* **Multisite compatible** — each site keeps its own redirects and logs.
+
+== Add-ons ==
+
+Extend 404 to 301 with official add-ons. Browse the full catalogue at [https://duckdev.com/addons/404-to-301/](https://duckdev.com/addons/404-to-301/), or open the **Add-ons** tab inside the plugin.
+
+= Free add-ons =
+
+* **Redirects Importer** — Bulk import custom redirects into 404 to 301 from CSV files, or migrate them in from other redirect plugins like Redirection, Rank Math and Yoast — no manual re-entry.
+
+= Premium add-ons =
+
+* **Logs Cleaner** — Auto-prune the 404 log table by age, by row count, or on a periodic schedule to keep your database lean.
+* **Logs Exporter** — Export the 404 error log table as a downloadable CSV file directly from the Logs page.
+* **Email Reports** — Periodic email reports — daily, weekly or monthly digests of your 404 activity, each with an attached CSV.
+
+== Documentation & Support ==
+
+* **Documentation:** [https://docs.duckdev.com/404-to-301/](https://docs.duckdev.com/404-to-301/)
+* **Support forum:** [https://wordpress.org/support/plugin/404-to-301/](https://wordpress.org/support/plugin/404-to-301/)
+* **Add-ons:** [https://duckdev.com/addons/404-to-301/](https://duckdev.com/addons/404-to-301/)
 
 == Installation ==
 
-1. Upload the plugin folder to `/wp-content/plugins/` (or install it from the WordPress.org directory).
+1. Upload the plugin folder to `/wp-content/plugins/`, or install **404 to 301** directly from the WordPress.org plugin directory.
 2. Activate it from the **Plugins** screen.
-3. Open **404 to 301** in the admin sidebar — Logs, Redirects, Settings and Add-ons live there.
-
-= Upgrading from v3 =
-
-The first time v4 boots on an existing install, any custom redirects you had configured on the old logs table are migrated automatically. A banner on the Logs page then lets you start a chunked migration of the remaining log rows. The legacy table is dropped once the migration completes.
+3. Open **404 to 301** in the admin sidebar — Logs, Redirects, Settings and Add-ons all live there.
+4. Add your first custom redirect, or set a global 404 fallback under Settings, and you're done.
 
 == Frequently Asked Questions ==
 
+= Can I create my own custom redirects? =
+
+Yes. The Redirects page lets you create unlimited custom redirects with exact, prefix or regex matching and your choice of redirect type (301, 302, 307 and more). Each redirect can be toggled active/inactive and shows a hit counter.
+
+= What happens to 404 errors I don't have a redirect for? =
+
+You can set a global fallback that automatically redirects every remaining 404 error to your homepage, a chosen page, or any URL — using the redirect type you prefer. If you'd rather leave them, every 404 is still logged so you can review and fix it.
+
 = Does this slow down my site? =
 
-No. The plugin only does any work on a 404 request — healthy page loads aren't touched at all.
+No. The plugin only does work on a 404 request — normal, healthy page loads aren't touched at all. Custom redirects use a hashed, indexed lookup for near-instant matching.
 
-= How does the redirect lookup work? =
+= Can I import or export my redirects and logs? =
 
-The 404 URL is normalised (lowercased, trailing slash + query string stripped), hashed via SHA1, and matched against a unique-keyed column. That's an O(1) lookup per request. Prefix and regex rules are walked in memory after the hash check misses.
+Yes, via add-ons. The free **Redirects Importer** bulk-imports redirects from CSV or other redirect plugins, while the premium **Logs Exporter** and **Email Reports** add-ons export your 404 logs as CSV. See [the add-ons page](https://duckdev.com/addons/404-to-301/).
 
-= Can I add my own actions to the 404 pipeline? =
+= Is it GDPR friendly? =
 
-Yes — every action class implements the `Actionable` interface and the chain is filterable via `404_to_301_actions`. Your action just needs a `run(Request $request)` method.
+Yes. IP addresses in the 404 logs can be masked, and you can exclude specific paths from being logged altogether.
 
-= Does this support multisite? =
+= Does it support multisite? =
 
-Yes — the BerlinDB-backed tables are per-site, so each site keeps its own logs and redirects.
+Yes. Each site in the network keeps its own redirects and 404 logs.
+
+= Where can I get help? =
+
+Read the [documentation](https://docs.duckdev.com/404-to-301/) or post on the [support forum](https://wordpress.org/support/plugin/404-to-301/).
 
 == Screenshots ==
 
-1. 404 logs page with filters, bulk actions and lifecycle status.
-2. Custom redirects with exact / prefix / regex matching.
-3. Settings page split across General, Redirects, Logs, Notifications and Tools tabs.
+1. 404 error logs page with filters, bulk actions, hit counts and lifecycle status.
+2. Custom redirects manager with exact / prefix / regex matching and redirect types.
+3. Settings split across General, Redirects, Logs, Notifications and Tools tabs.
+4. Add-ons page for installing free and premium extensions.
 
 == Changelog ==
 
 = 4.0.0 =
-* Ground-up rewrite with OOP architecture under the `DuckDev\FourNotFour` namespace.
-* React-powered admin UI on `@wordpress/dataviews` and `@wordpress/components`.
-* New BerlinDB-backed `404_to_301_logs` and `404_to_301_redirects` tables, with automatic migration from the v3 schema.
-* New REST API at `/404-to-301/v1/`.
-* New WP-CLI command set: `wp 404-to-301 logs|redirects|settings|migrate`.
-* Per-redirect lifecycle (active/inactive, exact/prefix/regex match) and hit counter.
-* Email threshold setting so busy sites don't get flooded.
-* Optional Action Scheduler integration for background migration.
-* Add-on catalogue listing both free wordpress.org add-ons and premium ones, with Freemius licensing for the premium tier.
-* Drops Symfony HttpFoundation, jQuery / thickbox modals and the legacy `JJ4T3_*` class surface.
+* New: Custom redirect manager with exact, prefix and regex matching and per-redirect redirect type.
+* New: Active/inactive toggle, hit counter and last-hit timestamp on every redirect.
+* New: Dedicated, indexed database tables for 404 logs and custom redirects.
+* New: Modern React-powered admin with full-featured Logs and Redirects tables (search, filters, bulk actions, pagination).
+* New: Per-log lifecycle status (open / ignored / fixed) and date filters.
+* New: Email notifications with a configurable hit threshold.
+* New: REST API at `/404-to-301/v1/`.
+* New: WP-CLI command set — `wp 404-to-301 logs|redirects|settings`.
+* New: Add-ons catalogue for free and premium extensions.
+* Improve: IP masking and path exclusions for GDPR-friendly logging.
 
 = 3.1.3 =
 * Compatibility update for WP 5.8.
@@ -91,4 +138,4 @@ Yes — the BerlinDB-backed tables are per-site, so each site keeps its own logs
 == Upgrade Notice ==
 
 = 4.0.0 =
-Major rewrite — back up your database before upgrading. The plugin migrates your existing custom redirects automatically and offers a one-click background migration for your existing log rows. The v3 `JJ4T3_*` class surface and `jj4t3_*` hook prefix have been retired; if you wrote custom add-ons against them, see README.md for the new equivalents.
+A major release with a brand-new redirect manager, modern admin, faster 404 logging, REST API and WP-CLI support. Back up your database before updating.
