@@ -1,6 +1,6 @@
 {
     "name": "duckdev/404-to-301",
-    "description": "Automatically redirect every 404 error to any page using a 301 redirect, log every 404 request, and get email notifications when broken links are hit.",
+    "description": "Custom redirects (301, 302, 307), automatic 404 redirection, full 404 error logs and email alerts — a complete redirect & 404 toolkit.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "homepage": "https://wordpress.org/plugins/404-to-301/",
