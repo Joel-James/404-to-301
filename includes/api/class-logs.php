@@ -134,15 +134,7 @@ class Logs extends Endpoint {
 	 * @return WP_REST_Response
 	 */
 	public function list( WP_REST_Request $request ): WP_REST_Response {
-		$page     = max( 1, (int) $request->get_param( 'page' ) );
-		$per_page = max( 1, min( 100, (int) $request->get_param( 'per_page' ) ) );
-
-		$args = array(
-			'number'  => $per_page,
-			'offset'  => ( $page - 1 ) * $per_page,
-			'orderby' => (string) ( $request->get_param( 'orderby' ) ? $request->get_param( 'orderby' ) : 'updated_at' ),
-			'order'   => strtoupper( (string) ( $request->get_param( 'order' ) ? $request->get_param( 'order' ) : 'DESC' ) ),
-		);
+		$args = $this->paging( $request, 'updated_at' );
 
 		$status = $request->get_param( 'status' );
 		if ( null !== $status && '' !== $status ) {
@@ -172,7 +164,7 @@ class Logs extends Endpoint {
 		return $this->collection(
 			array_map( array( $this, 'shape' ), $result['items'] ),
 			(int) $result['total'],
-			$per_page
+			$args['number']
 		);
 	}
 
@@ -189,7 +181,7 @@ class Logs extends Endpoint {
 		$row = LogsModel::instance()->find( (int) $request['id'] );
 
 		if ( ! $row instanceof LogRow ) {
-			return new WP_Error( 'rest_not_found', __( 'Log not found.', '404-to-301' ), array( 'status' => 404 ) );
+			return $this->not_found( __( 'Log not found.', '404-to-301' ) );
 		}
 
 		return $this->respond( $this->shape( $row ) );
@@ -210,7 +202,7 @@ class Logs extends Endpoint {
 		$row   = $model->find( $id );
 
 		if ( ! $row instanceof LogRow ) {
-			return new WP_Error( 'rest_not_found', __( 'Log not found.', '404-to-301' ), array( 'status' => 404 ) );
+			return $this->not_found( __( 'Log not found.', '404-to-301' ) );
 		}
 
 		$status      = $request->get_param( 'status' );
@@ -264,7 +256,7 @@ class Logs extends Endpoint {
 		$deleted = LogsModel::instance()->delete( $id );
 
 		if ( ! $deleted ) {
-			return new WP_Error( 'rest_delete_failed', __( 'Could not delete the log.', '404-to-301' ), array( 'status' => 500 ) );
+			return $this->error( 'rest_delete_failed', __( 'Could not delete the log.', '404-to-301' ), 500 );
 		}
 
 		return $this->respond(

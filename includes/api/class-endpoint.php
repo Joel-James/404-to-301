@@ -19,6 +19,7 @@ defined( 'ABSPATH' ) || exit;
 
 use DuckDev\FourNotFour\Contracts\Routable;
 use DuckDev\FourNotFour\Utils\Permission;
+use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -114,5 +115,66 @@ abstract class Endpoint implements Routable {
 		$response->header( 'X-WP-TotalPages', (string) max( 1, (int) ceil( $total / max( 1, $per_page ) ) ) );
 
 		return $response;
+	}
+
+	/**
+	 * Build a REST error carrying an HTTP status code.
+	 *
+	 * Centralises the `new WP_Error( …, array( 'status' => … ) )` shape
+	 * every endpoint repeats, so failures return a consistent body and
+	 * the right status reaches `apiFetch` on the React side.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $code    Machine error code (e.g. `rest_not_found`).
+	 * @param string $message Human-readable message.
+	 * @param int    $status  HTTP status code.
+	 *
+	 * @return WP_Error
+	 */
+	protected function error( string $code, string $message, int $status ): WP_Error {
+		return new WP_Error( $code, $message, array( 'status' => $status ) );
+	}
+
+	/**
+	 * Shorthand for the common 404 "resource not found" error.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $message Human-readable message.
+	 *
+	 * @return WP_Error
+	 */
+	protected function not_found( string $message ): WP_Error {
+		return $this->error( 'rest_not_found', $message, 404 );
+	}
+
+	/**
+	 * Translate paging / ordering request params into model query args.
+	 *
+	 * Clamps `page` to a minimum of 1 and `per_page` to the 1–100
+	 * range, then derives the offset and normalises ordering. The
+	 * shared shape (`number` / `offset` / `orderby` / `order`) matches
+	 * what the BerlinDB-backed models' `paginate()` expects, so list
+	 * endpoints only have to layer their own filters on top.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param WP_REST_Request $request         REST request.
+	 * @param string          $default_orderby Column to sort by when the
+	 *                                         request doesn't specify one.
+	 *
+	 * @return array Base query args: `number`, `offset`, `orderby`, `order`.
+	 */
+	protected function paging( WP_REST_Request $request, string $default_orderby ): array {
+		$page     = max( 1, (int) $request->get_param( 'page' ) );
+		$per_page = max( 1, min( 100, (int) $request->get_param( 'per_page' ) ) );
+
+		return array(
+			'number'  => $per_page,
+			'offset'  => ( $page - 1 ) * $per_page,
+			'orderby' => (string) ( $request->get_param( 'orderby' ) ? $request->get_param( 'orderby' ) : $default_orderby ),
+			'order'   => strtoupper( (string) ( $request->get_param( 'order' ) ? $request->get_param( 'order' ) : 'DESC' ) ),
+		);
 	}
 }

@@ -137,15 +137,7 @@ class Redirects extends Endpoint {
 	 * @return WP_REST_Response
 	 */
 	public function list( WP_REST_Request $request ): WP_REST_Response {
-		$page     = max( 1, (int) $request->get_param( 'page' ) );
-		$per_page = max( 1, min( 100, (int) $request->get_param( 'per_page' ) ) );
-
-		$args = array(
-			'number'  => $per_page,
-			'offset'  => ( $page - 1 ) * $per_page,
-			'orderby' => (string) ( $request->get_param( 'orderby' ) ? $request->get_param( 'orderby' ) : 'id' ),
-			'order'   => strtoupper( (string) ( $request->get_param( 'order' ) ? $request->get_param( 'order' ) : 'DESC' ) ),
-		);
+		$args = $this->paging( $request, 'id' );
 
 		// Optional filters.
 		foreach ( array( 'match_type', 'target_type', 'redirect_type' ) as $key ) {
@@ -170,7 +162,7 @@ class Redirects extends Endpoint {
 		return $this->collection(
 			array_map( array( $this, 'shape' ), $result['items'] ),
 			(int) $result['total'],
-			$per_page
+			$args['number']
 		);
 	}
 
@@ -187,7 +179,7 @@ class Redirects extends Endpoint {
 		$row = RedirectsModel::instance()->find( (int) $request['id'] );
 
 		if ( ! $row instanceof RedirectRow ) {
-			return new WP_Error( 'rest_not_found', __( 'Redirect not found.', '404-to-301' ), array( 'status' => 404 ) );
+			return $this->not_found( __( 'Redirect not found.', '404-to-301' ) );
 		}
 
 		return $this->respond( $this->shape( $row ) );
@@ -208,7 +200,7 @@ class Redirects extends Endpoint {
 		$id = RedirectsModel::instance()->create( $data );
 
 		if ( $id <= 0 ) {
-			return new WP_Error( 'rest_create_failed', __( 'Could not create the redirect.', '404-to-301' ), array( 'status' => 500 ) );
+			return $this->error( 'rest_create_failed', __( 'Could not create the redirect.', '404-to-301' ), 500 );
 		}
 
 		$row = RedirectsModel::instance()->find( $id );
@@ -230,7 +222,7 @@ class Redirects extends Endpoint {
 		$row = RedirectsModel::instance()->find( $id );
 
 		if ( ! $row instanceof RedirectRow ) {
-			return new WP_Error( 'rest_not_found', __( 'Redirect not found.', '404-to-301' ), array( 'status' => 404 ) );
+			return $this->not_found( __( 'Redirect not found.', '404-to-301' ) );
 		}
 
 		$data = $this->collect_writable( $request, false );
@@ -258,7 +250,7 @@ class Redirects extends Endpoint {
 		$deleted = RedirectsModel::instance()->delete( $id );
 
 		if ( ! $deleted ) {
-			return new WP_Error( 'rest_delete_failed', __( 'Could not delete the redirect.', '404-to-301' ), array( 'status' => 500 ) );
+			return $this->error( 'rest_delete_failed', __( 'Could not delete the redirect.', '404-to-301' ), 500 );
 		}
 
 		return $this->respond(

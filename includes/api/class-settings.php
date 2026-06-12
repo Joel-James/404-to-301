@@ -176,10 +176,10 @@ class Settings extends Endpoint {
 		$body = $request->get_param( 'settings' );
 
 		if ( ! is_array( $body ) ) {
-			return new WP_Error(
+			return $this->error(
 				'rest_invalid_payload',
 				__( 'Invalid import payload — expected an object.', '404-to-301' ),
-				array( 'status' => 400 )
+				400
 			);
 		}
 
@@ -206,10 +206,10 @@ class Settings extends Endpoint {
 		$incoming = (array) apply_filters( '404_to_301_settings_import', $incoming, $body );
 
 		if ( empty( $incoming ) ) {
-			return new WP_Error(
+			return $this->error(
 				'rest_empty_payload',
 				__( 'Import payload contained no usable settings.', '404-to-301' ),
-				array( 'status' => 400 )
+				400
 			);
 		}
 
@@ -227,10 +227,10 @@ class Settings extends Endpoint {
 		$result = $store->update( $merged );
 
 		if ( ! $result ) {
-			return new WP_Error(
+			return $this->error(
 				'rest_import_failed',
 				__( 'No settings changed — the imported values matched what was already on this site.', '404-to-301' ),
-				array( 'status' => 200 )
+				200
 			);
 		}
 
