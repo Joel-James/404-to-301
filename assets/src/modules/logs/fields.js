@@ -18,6 +18,18 @@ const statusMeta = {
 	3: { slug: 'custom', icon: shuffle },
 }
 
+// Preset ranges for the "First seen" filter. DataViews has no date
+// operator, so the range is offered as a single-select of relative
+// windows — each value is a day count that `useLogs` turns into the
+// endpoint's `date_from` (0 = today).
+const dateRanges = [
+	{ value: '0', label: __('Today', '404-to-301') },
+	{ value: '7', label: __('Last 7 days', '404-to-301') },
+	{ value: '30', label: __('Last 30 days', '404-to-301') },
+	{ value: '90', label: __('Last 90 days', '404-to-301') },
+	{ value: '365', label: __('Last 12 months', '404-to-301') },
+]
+
 const empty = <span className="d404-empty">{'—'}</span>
 
 /**
@@ -106,6 +118,10 @@ export const fields = [
 		label: __('First seen', '404-to-301'),
 		type: 'datetime',
 		enableSorting: true,
+		// Preset relative-window filter (Today / Last 7 days / …).
+		// `useLogs` maps the chosen day count to `date_from`.
+		elements: dateRanges,
+		filterBy: { operators: ['is'] },
 		render: ({ item }) =>
 			item.created_at ? (
 				<time dateTime={item.created_at}>

@@ -15,6 +15,22 @@ import { buildQueryKey } from './persisted-view'
 const BASE = '/404-to-301/v1/logs'
 
 /**
+ * Local-time `YYYY-MM-DD` for `days` ago (0 = today). Backs the
+ * "First seen" preset-range filter — the endpoint's `date_from`
+ * expects a plain date string.
+ *
+ * @param {number} days Days to subtract from today.
+ * @return {string} Date in `YYYY-MM-DD`.
+ */
+const daysAgoISO = (days) => {
+	const d = new Date()
+	d.setDate(d.getDate() - days)
+	const mm = String(d.getMonth() + 1).padStart(2, '0')
+	const dd = String(d.getDate()).padStart(2, '0')
+	return `${d.getFullYear()}-${mm}-${dd}`
+}
+
+/**
  * Translate a DataViews `view` object into REST query parameters.
  *
  * @param {Object} view DataViews view state.
@@ -40,13 +56,24 @@ const viewToQuery = (view) => {
 	if (Array.isArray(view.filters)) {
 		view.filters.forEach((filter) => {
 			if (
-				filter &&
-				filter.field &&
-				filter.value !== undefined &&
-				filter.value !== ''
+				!filter ||
+				!filter.field ||
+				filter.value === undefined ||
+				filter.value === ''
 			) {
-				query[filter.field] = filter.value
+				return
 			}
+
+			// "First seen" is a preset-range filter (its value is a
+			// number of days, see `dateRanges`). DataViews has no date
+			// operator, so we translate the preset into the endpoint's
+			// `date_from` rather than forwarding `created_at` verbatim.
+			if (filter.field === 'created_at') {
+				query.date_from = daysAgoISO(Number(filter.value) || 0)
+				return
+			}
+
+			query[filter.field] = filter.value
 		})
 	}
 

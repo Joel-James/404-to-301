@@ -354,7 +354,9 @@ class Logs extends Endpoint {
 			'search'    => array( 'type' => 'string' ),
 			'status'    => array(
 				'type' => 'integer',
-				'enum' => array( 0, 1, 2 ),
+				// Includes 3 (custom redirect) so the Logs list can filter
+				// by it — the table exposes all four statuses as a filter.
+				'enum' => array( 0, 1, 2, 3 ),
 			),
 			'date_from' => array( 'type' => 'string' ),
 			'date_to'   => array( 'type' => 'string' ),

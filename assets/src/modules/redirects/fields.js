@@ -17,6 +17,12 @@ export const matchTypes = [
 	{ value: 'regex', label: __('Regex', '404-to-301') },
 ]
 
+export const targetTypes = [
+	{ value: 'link', label: __('Link', '404-to-301') },
+	{ value: 'page', label: __('Page', '404-to-301') },
+	{ value: 'none', label: __('None', '404-to-301') },
+]
+
 export const activeStates = [
 	{ value: true, label: __('Active', '404-to-301') },
 	{ value: false, label: __('Disabled', '404-to-301') },
@@ -89,6 +95,17 @@ export const fields = [
 		elements: matchTypes,
 		filterBy: { operators: ['is', 'isNot'] },
 		render: ({ item }) => findLabel(matchTypes, item.match_type),
+	},
+	{
+		// Filter-only by default (not in `defaultView.fields`), so it
+		// adds a "Destination type" filter without forcing the column
+		// on — the Destination column already shows link vs. page.
+		id: 'target_type',
+		label: __('Destination type', '404-to-301'),
+		type: 'text',
+		elements: targetTypes,
+		filterBy: { operators: ['is', 'isNot'] },
+		render: ({ item }) => findLabel(targetTypes, item.target_type),
 	},
 	{
 		id: 'is_active',
