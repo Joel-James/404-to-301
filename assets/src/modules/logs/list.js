@@ -1,7 +1,9 @@
 import { __ } from '@wordpress/i18n'
 import { applyFilters } from '@wordpress/hooks'
+import { Button } from '@wordpress/components'
 import { DataViews } from '@wordpress/dataviews'
 import { useCallback, useMemo, useState } from '@wordpress/element'
+import { published, search } from '@wordpress/icons'
 import { fields } from './fields'
 import { defaultView } from './view'
 import DeleteConfirmation from './delete-modal'
@@ -10,7 +12,7 @@ import ConfigureLog from './configure-modal'
 import CustomRedirectModal from './custom-redirect-modal'
 import useLogs from '../../hooks/use-logs'
 import usePersistedView from '../../hooks/persisted-view'
-import { BulkActions } from '../../common'
+import { BulkActions, EmptyState, isViewFiltered } from '../../common'
 
 const STORAGE_KEY = '404_to_301_logs_view'
 const getItemId = (item) => String(item.id)
@@ -43,6 +45,17 @@ const List = () => {
 	} = useLogs(view)
 
 	const clearSelection = useCallback(() => setSelection([]), [])
+
+	// Empty-state handling — we render our own panel (see EmptyState) in
+	// place of DataViews' bare "No results" line, with copy that depends
+	// on whether the user has filtered the table down to nothing.
+	const isEmpty = !isLoading && items.length === 0
+	const isFiltered = isViewFiltered(view)
+	const clearFilters = useCallback(
+		() =>
+			setView((prev) => ({ ...prev, search: '', filters: [], page: 1 })),
+		[setView],
+	)
 
 	// Every log action lives inside the row's ⋮ dropdown menu — no
 	// `isPrimary` / `icon` so nothing renders as an inline icon button
@@ -174,6 +187,32 @@ const List = () => {
 					perPageSizes: [10, 25, 50, 100],
 				}}
 			/>
+
+			{isEmpty &&
+				(isFiltered ? (
+					<EmptyState
+						icon={search}
+						title={__('No logs match your filters', '404-to-301')}
+						description={__(
+							'Try a different search or date range, or clear your filters to see every logged 404.',
+							'404-to-301',
+						)}
+						action={
+							<Button variant="secondary" onClick={clearFilters}>
+								{__('Clear filters', '404-to-301')}
+							</Button>
+						}
+					/>
+				) : (
+					<EmptyState
+						icon={published}
+						title={__('No 404 errors logged yet', '404-to-301')}
+						description={__(
+							"Nice — nothing's broken. When a visitor hits a missing URL, it'll show up here automatically.",
+							'404-to-301',
+						)}
+					/>
+				))}
 
 			<BulkActions
 				selection={selection}

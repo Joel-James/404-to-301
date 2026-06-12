@@ -237,3 +237,65 @@ $prefix: '#{variables.$prefix}';
 		margin-top: 16px;
 	}
 }
+
+// DataViews renders a hardcoded "No results" line with no prop to
+// override it. The Logs and Redirects lists render their own
+// <EmptyState> panel instead, so hide the default to avoid showing both.
+// The loading spinner uses a separate `dataviews-loading` class, so it
+// is unaffected.
+.#{$prefix}-wrap .dataviews-no-results {
+	display: none !important;
+}
+
+// Empty-state panel — a full-width card beneath the table, styled to
+// match the DataViews card so it reads like the table's own empty row.
+.#{$prefix}-empty-state {
+	display: flex;
+	justify-content: center;
+	// Tighten the gap to the table card above (which has a 32px bottom
+	// margin) so the two read as one unit rather than drifting apart.
+	margin: -16px 0 32px;
+	padding: 48px 24px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+
+	&__inner {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 6px;
+		max-width: 420px;
+		text-align: center;
+	}
+
+	&__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 48px;
+		height: 48px;
+		margin-bottom: 6px;
+		color: #757575;
+		background: #f0f0f1;
+		border-radius: 50%;
+	}
+
+	&__title {
+		margin: 0;
+		font-size: 15px;
+		font-weight: 600;
+		color: #1e1e1e;
+	}
+
+	&__description {
+		margin: 0;
+		font-size: 13px;
+		line-height: 1.5;
+		color: #757575;
+	}
+
+	&__action {
+		margin-top: 14px;
+	}
+}

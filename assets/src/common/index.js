@@ -9,7 +9,9 @@
  */
 import AppShell from './app-shell'
 import BulkActions from './bulk-actions'
+import EmptyState from './empty-state'
 import Footer from './footer'
+import isViewFiltered from './is-view-filtered'
 import Notices from './notices'
 import PageBody from './page-body'
 import PageHeader from './page-header'
@@ -19,7 +21,9 @@ import Truncate from './truncate'
 export {
 	AppShell,
 	BulkActions,
+	EmptyState,
 	Footer,
+	isViewFiltered,
 	Notices,
 	PageBody,
 	PageHeader,

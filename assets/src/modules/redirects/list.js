@@ -1,10 +1,12 @@
 import { __ } from '@wordpress/i18n'
+import { Button } from '@wordpress/components'
 import { DataViews } from '@wordpress/dataviews'
 import { useCallback, useMemo, useState } from '@wordpress/element'
+import { arrowRight, search } from '@wordpress/icons'
 import { fields } from './fields'
 import DeleteConfirmation from './delete-modal'
 import EditRedirect from './edit-modal'
-import { BulkActions } from '../../common'
+import { BulkActions, EmptyState, isViewFiltered } from '../../common'
 
 const getItemId = (item) => String(item.id)
 
@@ -33,6 +35,16 @@ const List = ({
 	const [selection, setSelection] = useState([])
 
 	const clearSelection = useCallback(() => setSelection([]), [])
+
+	// Our own empty-state panel replaces DataViews' bare "No results"
+	// line; copy depends on whether the table is filtered down to zero.
+	const isEmpty = !isLoading && items.length === 0
+	const isFiltered = isViewFiltered(view)
+	const clearFilters = useCallback(
+		() =>
+			setView((prev) => ({ ...prev, search: '', filters: [], page: 1 })),
+		[setView],
+	)
 
 	const actions = useMemo(
 		() => [
@@ -109,6 +121,35 @@ const List = ({
 					perPageSizes: [10, 25, 50, 100],
 				}}
 			/>
+
+			{isEmpty &&
+				(isFiltered ? (
+					<EmptyState
+						icon={search}
+						title={__(
+							'No redirects match your filters',
+							'404-to-301',
+						)}
+						description={__(
+							'Try a different search, or clear your filters to see all your redirects.',
+							'404-to-301',
+						)}
+						action={
+							<Button variant="secondary" onClick={clearFilters}>
+								{__('Clear filters', '404-to-301')}
+							</Button>
+						}
+					/>
+				) : (
+					<EmptyState
+						icon={arrowRight}
+						title={__('No redirects yet', '404-to-301')}
+						description={__(
+							'Use "Add redirect" above to send an old or broken URL to a new destination.',
+							'404-to-301',
+						)}
+					/>
+				))}
 
 			<BulkActions
 				selection={selection}
