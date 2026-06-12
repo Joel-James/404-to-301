@@ -4,7 +4,6 @@ import {
 	PanelBody,
 	PanelRow,
 	SelectControl,
-	TextControl,
 	ToggleControl,
 	__experimentalInputControl as InputControl,
 	__experimentalInputControlPrefixWrapper as InputControlPrefixWrapper,
@@ -12,7 +11,7 @@ import {
 import { Icon, link } from '@wordpress/icons'
 import { applyFilters } from '@wordpress/hooks'
 import useSettings from '../../../hooks/use-settings'
-import { redirectingTypeOptions } from '../../../common'
+import { redirectingTypeOptions, PageSelect } from '../../../common'
 
 const RedirectsTab = () => {
 	const { getSetting, setSetting } = useSettings()
@@ -139,22 +138,14 @@ const RedirectsTab = () => {
 
 			{target === 'page' && (
 				<PanelRow>
-					<TextControl
-						__next40pxDefaultSize
-						__nextHasNoMarginBottom
-						type="number"
-						label={__('Destination page ID', '404-to-301')}
+					<PageSelect
+						label={__('Destination page', '404-to-301')}
 						help={__(
-							'Numeric ID of the page that should serve as the 404 destination.',
+							'Search and pick the page that should serve as the 404 destination.',
 							'404-to-301',
 						)}
 						value={getSetting('redirect_page', 0)}
-						onChange={(v) =>
-							setSetting(
-								'redirect_page',
-								Math.max(0, parseInt(v, 10) || 0),
-							)
-						}
+						onChange={(v) => setSetting('redirect_page', v)}
 					/>
 				</PanelRow>
 			)}

@@ -31,8 +31,16 @@ export {
 	Truncate,
 }
 
+// Searchable "existing page" picker (standalone + DataForm Edit wrapper).
+export { default as PageSelect } from './page-select'
+
 // DataForm `Edit` components that aren't shipped by `@wordpress/dataviews`.
-export { EnumSelectEdit, TextareaEdit, ToggleEdit } from './form-controls'
+export {
+	EnumSelectEdit,
+	PageSelectEdit,
+	TextareaEdit,
+	ToggleEdit,
+} from './form-controls'
 
 // Shared redirect-status catalogue (PHP-localised, single source of truth).
 export {

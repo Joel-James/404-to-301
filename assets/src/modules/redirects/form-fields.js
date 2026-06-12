@@ -13,6 +13,7 @@
 import { __ } from '@wordpress/i18n'
 import {
 	EnumSelectEdit,
+	PageSelectEdit,
 	TextareaEdit,
 	ToggleEdit,
 	redirectTypes,
@@ -97,8 +98,11 @@ export const redirectFormFields = [
 	},
 	{
 		id: 'target_page_id',
-		label: __('Target page ID', '404-to-301'),
+		label: __('Target page', '404-to-301'),
 		type: 'integer',
+		// Searchable page picker (stores the page ID) instead of a bare
+		// numeric input — see PageSelectEdit.
+		Edit: PageSelectEdit,
 		isVisible: (data) => data.target_type === 'page',
 		isValid: (item) =>
 			item.target_type !== 'page' || Number(item.target_page_id) > 0,

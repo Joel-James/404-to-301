@@ -5,6 +5,7 @@
 @use 'ui/page-content';
 @use 'ui/page-loader';
 @use 'utils/notices';
+@use 'utils/forms';
 @use 'utils/variables';
 
 $prefix: '#{variables.$prefix}';

@@ -27,6 +27,7 @@ import {
 	TextareaControl,
 	ToggleControl,
 } from '@wordpress/components'
+import PageSelect from './page-select'
 
 /**
  * Boolean toggle. Coerces incoming values with `!!` so a stored `1` /
@@ -109,3 +110,24 @@ export const EnumSelectEdit = ({
 		/>
 	)
 }
+
+/**
+ * Searchable "existing page" picker for an `integer` page-ID field —
+ * wraps {@see PageSelect} in the DataForm Edit contract so a field can
+ * opt in with `Edit: PageSelectEdit`. Stores the chosen page ID, same
+ * as the plain number input it replaces.
+ */
+export const PageSelectEdit = ({
+	data,
+	field,
+	onChange,
+	hideLabelFromVision,
+}) => (
+	<PageSelect
+		label={field.label}
+		help={field.description}
+		hideLabelFromVision={hideLabelFromVision}
+		value={field.getValue({ item: data })}
+		onChange={(v) => onChange({ [field.id]: v })}
+	/>
+)

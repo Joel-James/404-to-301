@@ -6,6 +6,7 @@
 @use 'ui/page-loader';
 @use 'modules/list';
 @use 'utils/notices';
+@use 'utils/forms';
 
 // DataViews ships its own stylesheet; without this import the table is
 // completely unstyled (no card, no header strip, no pagination chrome).
