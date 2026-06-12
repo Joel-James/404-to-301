@@ -42,17 +42,17 @@ const List = ({
 				supportsBulk: false,
 				callback: ([item]) => setEditing(item),
 			},
-			{
-				id: 'toggle',
-				label: __('Toggle active', '404-to-301'),
-				supportsBulk: false,
-				callback: ([item]) =>
-					updateRedirect(item.id, { is_active: !item.is_active }),
-			},
+			// Activate / Deactivate hide themselves when the row is
+			// already in that state — an active redirect only offers
+			// "Deactivate", and vice versa. For bulk selections DataViews
+			// keeps the action if at least one selected row is eligible.
+			// This replaces the old standalone "Toggle active" action,
+			// which duplicated these two.
 			{
 				id: 'activate',
 				label: __('Activate', '404-to-301'),
 				supportsBulk: true,
+				isEligible: (item) => !item.is_active,
 				callback: (rows) =>
 					bulkUpdateRedirects(collectIds(rows), { is_active: true }),
 			},
@@ -60,6 +60,7 @@ const List = ({
 				id: 'deactivate',
 				label: __('Deactivate', '404-to-301'),
 				supportsBulk: true,
+				isEligible: (item) => item.is_active,
 				callback: (rows) =>
 					bulkUpdateRedirects(collectIds(rows), { is_active: false }),
 			},
@@ -84,7 +85,7 @@ const List = ({
 				),
 			},
 		],
-		[updateRedirect, deleteRedirects, bulkUpdateRedirects],
+		[deleteRedirects, bulkUpdateRedirects],
 	)
 
 	return (
