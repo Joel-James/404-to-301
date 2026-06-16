@@ -54,6 +54,31 @@ class UrlNormalisationTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A source typed without a leading slash still matches the
+	 * slash-prefixed request path. A redirect entered as `old-page`
+	 * must resolve the same as the incoming `/old-page`.
+	 */
+	public function test_normalise_url_guarantees_leading_slash(): void {
+		$this->assertSame( '/old-page', Helpers::normalise_url( 'old-page' ) );
+		$this->assertSame(
+			Helpers::url_hash( '/old-page' ),
+			Helpers::url_hash( 'old-page' ),
+			'A source without a leading slash should hash like the request path.'
+		);
+	}
+
+	/**
+	 * A full URL pasted as the source collapses to its path, so the
+	 * host / scheme don't fragment the match.
+	 */
+	public function test_normalise_url_reduces_full_url_to_path(): void {
+		$this->assertSame(
+			'/old-page',
+			Helpers::normalise_url( 'https://example.com/old-page/' )
+		);
+	}
+
+	/**
 	 * Percent-decoding collapses encoded URLs onto a single hash so a
 	 * row stored under the decoded form still matches an encoded
 	 * request.
