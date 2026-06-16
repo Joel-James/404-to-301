@@ -79,13 +79,15 @@ class JJ4T3_404_Logging {
 	 */
 	private function get_data() {
 
-		// Set error data fields.
+		// Set error data fields. 
 		$data = array(
 			'date' => $this->data->time,
 			'ip' => $this->data->ip,
 			'url' => $this->data->url,
 			'ref' => $this->data->ref,
 			'ua' => $this->data->ua,
+			// New geo_country field
+			'geo_country' => $this->data->geo_country,
 		);
 
 		// If a custom redirect is set.
