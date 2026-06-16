@@ -1,6 +1,6 @@
 === 404 to 301 – Redirect Manager, 404 Error Logs & Notifications ===
 Contributors: joelcj91, duckdev
-Tags: redirect, redirection, 301 redirect, 404, 404 error logs
+Tags: redirect, redirection, redirect manager, 404, 404 error logs
 Donate link: https://www.paypal.me/JoelCJ
 Requires at least: 6.4
 Tested up to: 6.5
@@ -60,7 +60,7 @@ Extend 404 to 301 with official add-ons. Browse the full catalogue at [https://d
 
 = Free add-ons =
 
-* **Redirects Importer** — Bulk import custom redirects into 404 to 301 from CSV files, or migrate them in from other redirect plugins like Redirection, Rank Math and Yoast — no manual re-entry.
+* **Redirects Importer** — Bulk import custom redirects into 404 to 301 from CSV files, or migrate them in from other redirect plugins like Redirection and 301 Redirects — no manual re-entry.
 
 = Premium add-ons =
 
