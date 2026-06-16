@@ -44,8 +44,9 @@ class Helpers {
 	 *   - **terminal** (410/451) — no destination; the front controller
 	 *     emits the status header and exits. Flagged `terminal => true`.
 	 *
-	 * The set mirrors the redirect codes other plugins (Redirection,
-	 * 301 Redirects) export, so imported rows map across cleanly.
+	 * The set mirrors the redirect codes other plugins (Redirection by
+	 * John Godley, 301 Redirects – Redirect Manager by WebFactory)
+	 * export, so imported rows map across cleanly.
 	 *
 	 * Filterable so add-ons can introduce further codes (or drop ones
 	 * they don't want offered).

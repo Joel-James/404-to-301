@@ -60,7 +60,7 @@ Extend 404 to 301 with official add-ons. Browse the full catalogue at [https://d
 
 = Free add-ons =
 
-* **Redirects Importer** — Bulk import custom redirects into 404 to 301 from CSV files, or migrate them in from other redirect plugins like Redirection and 301 Redirects — no manual re-entry.
+* **Redirects Importer** — Bulk import custom redirects into 404 to 301 from CSV files, or migrate them in from other redirect plugins like Redirection by John Godley and 301 Redirects – Redirect Manager by WebFactory — no manual re-entry.
 
 = Premium add-ons =
 

@@ -177,11 +177,11 @@ class Catalog extends Singleton {
 			array(
 				'404-to-301'             => array( // @todo Update this slug to match the plugin slug.
 					'title'       => __( 'Logs Exporter', '404-to-301' ),
-					'description' => __( 'Bulk import custom redirects into 404 to 301 from CSV files or migrate them in from other redirect plugins like Redirection and 301 Redirects — no manual re-entry.', '404-to-301' ),
+					'description' => __( 'Bulk import custom redirects into 404 to 301 from CSV files or migrate them in from other redirect plugins like Redirection by John Godley and 301 Redirects – Redirect Manager by WebFactory — no manual re-entry.', '404-to-301' ),
 				),
 				'lazy-load-for-comments' => array( // @todo Update this slug to match the plugin slug.
 					'title'       => __( 'Redirects Importer', '404-to-301' ),
-					'description' => __( 'Bulk import custom redirects into 404 to 301 from CSV files or migrate them in from other redirect plugins like Redirection and 301 Redirects — no manual re-entry.', '404-to-301' ),
+					'description' => __( 'Bulk import custom redirects into 404 to 301 from CSV files or migrate them in from other redirect plugins like Redirection by John Godley and 301 Redirects – Redirect Manager by WebFactory — no manual re-entry.', '404-to-301' ),
 				),
 			)
 		);
