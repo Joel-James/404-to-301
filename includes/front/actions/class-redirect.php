@@ -194,10 +194,36 @@ class Redirect extends Action {
 			}
 		}
 
-		// `wp_safe_redirect()` ignores any status outside the 3xx
-		// range, so we never reach here with 410/451 — those are
-		// short-circuited above via `emit_terminal_status()`.
-		wp_safe_redirect( $url, $status );
+		// Redirect destinations here are admin-configured (a redirect
+		// row's target, or the global fallback) — not visitor-supplied —
+		// so we use `wp_redirect()` rather than `wp_safe_redirect()`.
+		// `wp_safe_redirect()` restricts the destination to the site's
+		// own host and silently rewrites anything external to wp-admin,
+		// which would break the (very common) "send this old URL to an
+		// external site" use case. Security-conscious sites can opt back
+		// into host-restricted redirects via the filter below.
+		//
+		// 410/451 never reach here — they're short-circuited above via
+		// `emit_terminal_status()`.
+		$url = esc_url_raw( $url );
+
+		/**
+		 * Whether to restrict redirects to the site's own host.
+		 *
+		 * Defaults to `false` so admin-configured external targets work.
+		 * Return `true` to fall back to `wp_safe_redirect()` semantics.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param bool    $safe    Whether to use host-restricted redirects.
+		 * @param string  $url     Resolved destination URL.
+		 * @param Request $request Current request.
+		 */
+		if ( apply_filters( '404_to_301_use_safe_redirect', false, $url, $request ) ) {
+			wp_safe_redirect( $url, $status );
+		} else {
+			wp_redirect( $url, $status ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+		}
 		exit;
 	}
 

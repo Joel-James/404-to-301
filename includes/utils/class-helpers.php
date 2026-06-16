@@ -215,6 +215,14 @@ class Helpers {
 		$raw = $url;
 		$url = trim( $url );
 
+		// If a full URL was passed (an admin pasting `https://site.com/old`
+		// rather than `/old`), reduce it to just the path so the host /
+		// scheme don't fragment the match.
+		if ( false !== strpos( $url, '://' ) ) {
+			$path = (string) wp_parse_url( $url, PHP_URL_PATH );
+			$url  = '' === $path ? '/' : $path;
+		}
+
 		// Strip the query string entirely.
 		$qpos = strpos( $url, '?' );
 		if ( false !== $qpos ) {
@@ -233,6 +241,21 @@ class Helpers {
 		}
 
 		$normalised = strtolower( $url );
+
+		// Guarantee a leading slash so a source typed as `old-page`
+		// matches the request path `/old-page`. `REQUEST_URI` always
+		// arrives slash-prefixed; admin-entered sources may not.
+		$normalised = '/' . ltrim( $normalised, '/' );
+
+		// Make the path relative to the site's home path. On a
+		// subdirectory install (eg. home at `/blog`) the incoming
+		// `REQUEST_URI` is `/blog/old-page`, while an admin naturally
+		// enters the source as `/old-page`. Stripping the home prefix
+		// here — the single chokepoint both storage (`url_hash()`) and
+		// lookup (`find_match()`) run through — keeps the two in sync so
+		// redirects match regardless of how the source was typed. Root
+		// installs have an empty home path, so this is a no-op for them.
+		$normalised = self::strip_home_path( $normalised );
 
 		/**
 		 * Filter the normalised form of a URL before it's hashed or
@@ -255,6 +278,39 @@ class Helpers {
 		$filtered = apply_filters( '404_to_301_normalize_url', $normalised, $raw );
 
 		return is_string( $filtered ) ? $filtered : $normalised;
+	}
+
+	/**
+	 * Strip the site's home path prefix from an already-normalised path.
+	 *
+	 * Returns the path made relative to `home_url()`'s path component:
+	 * `/blog/old-page` becomes `/old-page` when the site lives at
+	 * `/blog`. A path that is exactly the home path collapses to `/`.
+	 * Root installs (home path empty or `/`) are returned unchanged.
+	 *
+	 * The home path is lowercased to match the already-lowercased input.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $path Normalised, lowercased path.
+	 *
+	 * @return string
+	 */
+	private static function strip_home_path( string $path ): string {
+		$home = (string) wp_parse_url( home_url(), PHP_URL_PATH );
+		$home = strtolower( rtrim( $home, '/' ) );
+
+		if ( '' === $home ) {
+			return $path;
+		}
+
+		if ( 0 === strpos( $path, $home . '/' ) ) {
+			$path = substr( $path, strlen( $home ) );
+		} elseif ( $path === $home ) {
+			$path = '/';
+		}
+
+		return '' === $path ? '/' : $path;
 	}
 
 	/**
