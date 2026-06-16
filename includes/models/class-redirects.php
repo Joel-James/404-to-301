@@ -423,6 +423,36 @@ class Redirects extends Model {
 	}
 
 	/**
+	 * Whether the site has at least one active redirect rule.
+	 *
+	 * Cached in the redirects group (flushed on any mutation) so the
+	 * front controller can cheaply decide whether to attempt a per-row
+	 * match on healthy (non-404) page views. On a site with no redirects
+	 * this stays a single warm cache read — no per-request query.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public function has_active(): bool {
+		return (bool) $this->cache()->remember(
+			'has_active',
+			static function () {
+				$query = new RedirectQuery(
+					array(
+						'is_active' => 1,
+						'number'    => 1,
+						'fields'    => 'ids',
+					)
+				);
+
+				return ! empty( $query->items );
+			},
+			self::CACHE_GROUP
+		);
+	}
+
+	/**
 	 * Container for the redirect-table cache group.
 	 *
 	 * Scoped under `404_to_301` so other consumers on the site can't

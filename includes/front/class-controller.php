@@ -32,6 +32,7 @@ use DuckDev\FourNotFour\Core;
 use DuckDev\FourNotFour\Front\Actions\Email;
 use DuckDev\FourNotFour\Front\Actions\Log;
 use DuckDev\FourNotFour\Front\Actions\Redirect;
+use DuckDev\FourNotFour\Models\Redirects;
 use DuckDev\FourNotFour\Utils\Singleton;
 
 /**
@@ -90,13 +91,28 @@ class Controller extends Singleton {
 			}
 		}
 
-		// The whole pipeline is 404-centric: per-row redirects only make
-		// sense as a destination for URLs WordPress couldn't resolve, and
-		// logging a healthy page as a 404 is just wrong. Bail before any
-		// of the redirect-table lookups (3+ queries) fire on healthy
-		// pages. `is_404()` runs through `$request` so the test filter
+		// `is_404()` runs through `$request` so the test filter
 		// (`404_to_301_request_is_404`) still works.
-		if ( ! $request->is_404() ) {
+		$is_404 = $request->is_404();
+
+		// Healthy (non-404) page: the only thing we do is honour an
+		// explicit per-row redirect the admin created for this URL —
+		// they're deliberate rules and should fire even for a still-live
+		// page the admin has chosen to retire (eg. `/sample-page` -> home).
+		// Logging and the global 404 fallback stay reserved for genuine
+		// 404s, handled by the action chain below.
+		//
+		// Guarded by the cached `has_active()` flag so a site with no
+		// redirects pays only a single warm cache read here — no
+		// per-request redirect-table query on healthy pages, preserving
+		// the original "don't touch the redirect table on healthy pages"
+		// optimisation. `Redirect::run()` exits when it actually fires; if
+		// it doesn't (no match, or an unresolvable target), we simply
+		// return — there's nothing to log for a page that resolved fine.
+		if ( ! $is_404 ) {
+			if ( Redirects::instance()->has_active() && null !== $request->redirect() ) {
+				( new Redirect() )->run( $request );
+			}
 			return;
 		}
 
