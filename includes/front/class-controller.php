@@ -72,7 +72,16 @@ class Controller extends Singleton {
 			return;
 		}
 
-		if ( is_admin() ) {
+		$request = new Request();
+
+		// Honour "Track admin 404s". `is_admin()` alone is not enough:
+		// a request to a non-existent path under `/wp-admin/` (eg.
+		// `/wp-admin/broken`) doesn't resolve to an admin PHP file, so it
+		// falls through to the front controller where `is_admin()` is
+		// false — and would otherwise be logged regardless of the
+		// setting. We therefore also match the request path against the
+		// admin base path. See `is_admin_request()`.
+		if ( is_admin() || $this->is_admin_request( $request ) ) {
 			$settings = Core::instance()->settings();
 			$track    = $settings && $settings->get( 'track_admin_404', false );
 
@@ -80,8 +89,6 @@ class Controller extends Singleton {
 				return;
 			}
 		}
-
-		$request = new Request();
 
 		// The whole pipeline is 404-centric: per-row redirects only make
 		// sense as a destination for URLs WordPress couldn't resolve, and
@@ -268,5 +275,37 @@ class Controller extends Singleton {
 		$mode = is_string( $mode ) ? $mode : 'light';
 
 		return in_array( $mode, array( 'off', 'light', 'strict' ), true ) ? $mode : 'light';
+	}
+
+	/**
+	 * Whether the current request targets the WordPress admin area by
+	 * path, even when `is_admin()` is false.
+	 *
+	 * A 404 for a non-existent path under `/wp-admin/` is served by the
+	 * front controller (the file doesn't exist, so WordPress handles the
+	 * request as a normal 404), and `is_admin()` returns false there.
+	 * Comparing the request path against the admin base path lets the
+	 * "Track admin 404s" gate cover those requests too.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param Request $request Current request.
+	 *
+	 * @return bool
+	 */
+	private function is_admin_request( Request $request ): bool {
+		$admin_path = (string) wp_parse_url( admin_url(), PHP_URL_PATH );
+		if ( '' === $admin_path ) {
+			return false;
+		}
+
+		$request_path = (string) wp_parse_url( $request->url(), PHP_URL_PATH );
+		if ( '' === $request_path ) {
+			return false;
+		}
+
+		// Case-insensitive prefix match — `/wp-admin/` is canonical, but
+		// a path can arrive case-folded by an upstream proxy.
+		return 0 === stripos( $request_path, rtrim( $admin_path, '/' ) . '/' );
 	}
 }
