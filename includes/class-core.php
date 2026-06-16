@@ -113,6 +113,14 @@ final class Core extends Singleton {
 			Migration\Migrator::instance();
 		}
 
+		// Slug monitor — auto-creates a 301 when a published post's
+		// permalink changes. Runs on every request so it catches edits
+		// from the block editor (REST), classic editor and WP-CLI; it
+		// self-gates on the `monitor_post_slug` setting.
+		if ( class_exists( __NAMESPACE__ . '\\Slug_Monitor' ) ) {
+			Slug_Monitor::instance();
+		}
+
 		// Freemius — addon catalog + license + update channel.
 		if ( class_exists( __NAMESPACE__ . '\\Freemius' ) ) {
 			Freemius::instance();
