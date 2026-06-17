@@ -134,19 +134,18 @@ class Catalog extends Singleton {
 	}
 
 	/**
-	 * Free addons hosted on the wordpress.org plugin repository.
+	 * Free addons distributed outside the Freemius catalog.
 	 *
 	 * Returns rows in the same shape as Freemius addons so the React
 	 * layer can render them in the same grid. Each entry only carries
-	 * presentational data — there's no license, no remote update flow,
-	 * and no Freemius registration. WordPress itself handles install
-	 * and updates once the user clicks through.
+	 * presentational data — there's no license and no Freemius
+	 * registration.
 	 *
-	 * The list is keyed by wp.org slug. To add a real addon, append a
-	 * row here (or use the `404_to_301_wporg_addons` filter from a
-	 * site-specific plugin). Banner / icon URLs follow the predictable
-	 * `ps.w.org` asset path so most entries need nothing more than a
-	 * slug, title, and description.
+	 * Until the wp.org plugin review team approves the addons, the
+	 * rows below point at their GitHub repos (download = Releases
+	 * page, icon/banner = `.wporg` folder in the repo). Once an addon
+	 * lands on wp.org, swap its row back to the `ps.w.org` asset URLs
+	 * and the wp.org install/update flow.
 	 *
 	 * `id` is a negative integer derived from a CRC32 of the slug so
 	 * it can't collide with a Freemius project id (those are positive).
@@ -158,15 +157,16 @@ class Catalog extends Singleton {
 	 */
 	private function wporg_addons(): array {
 		/**
-		 * Filter the raw list of wp.org free addons before shaping.
+		 * Filter the raw list of free addons before shaping.
 		 *
-		 * Each entry is an associative array keyed by wp.org slug with:
+		 * Each entry is an associative array keyed by plugin slug with:
 		 *   - title        (string, required)
 		 *   - description  (string)
-		 *   - banner       (string URL, optional — defaults to ps.w.org 772x250)
-		 *   - banner_large (string URL, optional — defaults to ps.w.org 1544x500)
-		 *   - icon         (string URL, optional — defaults to ps.w.org)
-		 *   - homepage     (string URL, optional — defaults to wp.org page)
+		 *   - banner       (string URL, optional)
+		 *   - banner_large (string URL, optional)
+		 *   - icon         (string URL, optional)
+		 *   - homepage     (string URL, optional)
+		 *   - link         (string URL, optional — download / releases page)
 		 *
 		 * @since 4.0.0
 		 *
@@ -175,11 +175,11 @@ class Catalog extends Singleton {
 		$raw = (array) apply_filters(
 			'404_to_301_wporg_addons',
 			array(
-				'404-to-301'             => array( // @todo Update this slug to match the plugin slug.
+				'404-to-301-logs-exporter'     => array(
 					'title'       => __( 'Logs Exporter', '404-to-301' ),
-					'description' => __( 'Bulk import custom redirects into 404 to 301 from CSV files or migrate them in from other redirect plugins like Redirection by John Godley and 301 Redirects – Redirect Manager by WebFactory — no manual re-entry.', '404-to-301' ),
+					'description' => __( 'One-click CSV export for the 404 to 301 plugin\'s error log — filter-aware, streamed, and ready for Excel, Sheets or Numbers.', '404-to-301' ),
 				),
-				'lazy-load-for-comments' => array( // @todo Update this slug to match the plugin slug.
+				'404-to-301-redirects-importer' => array(
 					'title'       => __( 'Redirects Importer', '404-to-301' ),
 					'description' => __( 'Bulk import custom redirects into 404 to 301 from CSV files or migrate them in from other redirect plugins like Redirection by John Godley and 301 Redirects – Redirect Manager by WebFactory — no manual re-entry.', '404-to-301' ),
 				),
@@ -198,22 +198,24 @@ class Catalog extends Singleton {
 				continue;
 			}
 
+			$repo = "https://raw.githubusercontent.com/duckdev/{$slug}/main/.wporg";
+
 			$items[] = array(
 				'id'                => -abs( (int) sprintf( '%u', crc32( $slug ) ) % PHP_INT_MAX ),
 				'source'            => 'wporg',
 				'slug'              => $slug,
 				'title'             => (string) $addon['title'],
-				'icon'              => (string) ( $addon['icon'] ?? "https://ps.w.org/{$slug}/assets/icon-128x128.png" ),
-				'link'              => "https://downloads.wordpress.org/plugin/{$slug}.latest-stable.zip",
+				'icon'              => (string) ( $addon['icon'] ?? "{$repo}/icon.png" ),
+				'link'              => (string) ( $addon['link'] ?? "https://github.com/duckdev/{$slug}/releases" ),
 				'description'       => (string) ( $addon['description'] ?? '' ),
-				'homepage'          => (string) ( $addon['homepage'] ?? "https://wordpress.org/plugins/{$slug}/" ),
+				'homepage'          => (string) ( $addon['homepage'] ?? "https://duckdev.com/addon/{$slug}/" ),
 				'is_premium'        => false,
 				'is_wporg'          => true,
 				'is_active'         => $this->is_wporg_addon_active( $slug ),
 				'is_license_active' => false,
 				'license_key'       => '',
-				'banner'            => (string) ( $addon['banner'] ?? "https://ps.w.org/{$slug}/assets/banner-772x250.png" ),
-				'banner_large'      => (string) ( $addon['banner_large'] ?? "https://ps.w.org/{$slug}/assets/banner-1544x500.png" ),
+				'banner'            => (string) ( $addon['banner'] ?? "{$repo}/banner.png" ),
+				'banner_large'      => (string) ( $addon['banner_large'] ?? "{$repo}/banner-large.png" ),
 			);
 		}
 
