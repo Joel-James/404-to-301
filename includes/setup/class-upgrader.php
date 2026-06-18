@@ -69,6 +69,17 @@ class Upgrader extends Singleton {
 			return;
 		}
 
+		// First boot after an in-place upgrade: the activation hook
+		// doesn't fire for the WP one-click updater, automatic
+		// background updates, or `wp plugin update`, so the same setup
+		// the activator does has to be re-run here. Every step is
+		// idempotent — `install_now()` is a no-op when the tables are
+		// current, `maybe_migrate_legacy()` returns early once the v4
+		// option exists, and `bootstrap_on_activation()` is gated on
+		// the `phase1_done` flag — so this is safe to call on every
+		// version bump, not just on the v3 → v4 transition.
+		$this->run_first_boot_setup();
+
 		// Per-version upgrade callbacks land here as we ship them; the
 		// first entry will look like `'4.1.0' => array( $this, 'to_4_1_0' )`.
 		$steps = array();
@@ -90,5 +101,32 @@ class Upgrader extends Singleton {
 		 * @param string $current Version the DB has just been stamped with.
 		 */
 		do_action( '404_to_301_upgraded', $stored, $current );
+	}
+
+	/**
+	 * Mirror the activator's setup so the in-place upgrade path (where
+	 * the activation hook never fires) still installs tables and
+	 * migrates v3 options.
+	 *
+	 * Deliberately omits the `404_to_301_activated` action — addons
+	 * that care about "the plugin just changed version" should listen
+	 * for `404_to_301_upgraded` (fired above) instead.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	private function run_first_boot_setup(): void {
+		if ( class_exists( '\\DuckDev\\FourNotFour\\Database\\Database' ) ) {
+			\DuckDev\FourNotFour\Database\Database::instance()->install_now();
+		}
+
+		if ( class_exists( '\\DuckDev\\FourNotFour\\Settings' ) ) {
+			\DuckDev\FourNotFour\Settings::instance()->maybe_migrate_legacy();
+		}
+
+		if ( class_exists( '\\DuckDev\\FourNotFour\\Migration\\Migrator' ) ) {
+			\DuckDev\FourNotFour\Migration\Migrator::instance()->bootstrap_on_activation();
+		}
 	}
 }
