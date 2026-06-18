@@ -91,6 +91,17 @@ $prefix: '#{variables.$prefix}';
 			overflow: hidden;
 		}
 
+		// Give the primary (titleField) column a quarter of the table
+		// width. DataViews renders it as the first `<th>`/`<td>` after
+		// the checkbox column and — unlike data columns — it doesn't
+		// receive the inline `style` from `view.layout.styles`, so its
+		// width has to be set in CSS. Applies to both the Redirects
+		// table (Source URL) and the Logs table (URL).
+		.dataviews-view-table__checkbox-column + th,
+		.dataviews-view-table__checkbox-column + td {
+			width: 25%;
+		}
+
 		// Inner content wrapper from DataViews — apply the ellipsis here so
 		// we can still allow inline children (links, badges) to render normally.
 		.dataviews-view-table__cell-content {

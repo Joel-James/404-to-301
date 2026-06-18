@@ -17,7 +17,6 @@ export const defaultView = {
 	layout: {
 		density: 'comfortable',
 		styles: {
-			url: { maxWidth: '320px' },
 			ref: { maxWidth: '260px' },
 			ip: { maxWidth: '160px' },
 			ua: { maxWidth: '260px' },

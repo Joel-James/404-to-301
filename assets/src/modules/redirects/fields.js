@@ -86,7 +86,19 @@ export const fields = [
 		elements: redirectTypes,
 		enableSorting: true,
 		filterBy: { operators: ['is', 'isNot'] },
-		render: ({ item }) => findLabel(redirectTypes, item.redirect_type),
+		// Show the bare status code in the column so it fits the narrow
+		// width; the full label (e.g. "301 — Moved Permanently (SEO)")
+		// stays available on hover.
+		render: ({ item }) => {
+			const label = findLabel(redirectTypes, item.redirect_type)
+			return (
+				<Tooltip text={label}>
+					<span className="d404-status-code">
+						{item.redirect_type}
+					</span>
+				</Tooltip>
+			)
+		},
 	},
 	{
 		id: 'match_type',

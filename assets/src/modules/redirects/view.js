@@ -10,7 +10,6 @@ export const defaultView = {
 	layout: {
 		density: 'comfortable',
 		styles: {
-			source: { maxWidth: '300px' },
 			target_url: { maxWidth: '300px' },
 		},
 	},
