@@ -393,6 +393,20 @@ class Redirects extends Endpoint {
 		);
 	}
 
+	/**
+	 * Shape a RedirectRow into the REST response payload.
+	 *
+	 * Casts each column to the type the React client expects and resolves
+	 * the modifying user's display name so the UI can render it without a
+	 * follow-up request.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $row Row instance from the data store. Anything other
+	 *                   than a {@see RedirectRow} returns an empty array.
+	 *
+	 * @return array
+	 */
 	private function shape( $row ): array {
 		if ( ! $row instanceof RedirectRow ) {
 			return array();

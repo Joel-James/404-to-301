@@ -175,7 +175,7 @@ class Catalog extends Singleton {
 		$raw = (array) apply_filters(
 			'404_to_301_wporg_addons',
 			array(
-				'404-to-301-logs-exporter'     => array(
+				'404-to-301-logs-exporter'      => array(
 					'title'       => __( 'Logs Exporter', '404-to-301' ),
 					'description' => __( 'One-click CSV export for the 404 to 301 plugin\'s error log — filter-aware, streamed, and ready for Excel, Sheets or Numbers.', '404-to-301' ),
 				),
