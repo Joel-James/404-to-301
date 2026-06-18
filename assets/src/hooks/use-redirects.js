@@ -104,13 +104,20 @@ const useRedirects = (view) => {
 				})
 				createSuccessNotice(__('Redirect created.', '404-to-301'))
 				await fetchRedirects()
-				return true
+				return { ok: true }
 			} catch (e) {
-				createErrorNotice(
+				const message =
 					e?.message ||
-						__('Failed to create redirect.', '404-to-301'),
-				)
-				return false
+					__('Failed to create redirect.', '404-to-301')
+				createErrorNotice(message)
+				return {
+					ok: false,
+					error: {
+						code: e?.code || 'rest_create_failed',
+						message,
+						field: e?.data?.field,
+					},
+				}
 			}
 		},
 		[fetchRedirects, createSuccessNotice, createErrorNotice],
@@ -126,13 +133,20 @@ const useRedirects = (view) => {
 				})
 				createSuccessNotice(__('Redirect updated.', '404-to-301'))
 				await fetchRedirects()
-				return true
+				return { ok: true }
 			} catch (e) {
-				createErrorNotice(
+				const message =
 					e?.message ||
-						__('Failed to update redirect.', '404-to-301'),
-				)
-				return false
+					__('Failed to update redirect.', '404-to-301')
+				createErrorNotice(message)
+				return {
+					ok: false,
+					error: {
+						code: e?.code || 'rest_update_failed',
+						message,
+						field: e?.data?.field,
+					},
+				}
 			}
 		},
 		[fetchRedirects, createSuccessNotice, createErrorNotice],

@@ -250,6 +250,47 @@ class Redirects extends Model {
 	}
 
 	/**
+	 * Find an existing row that would collide with the given source +
+	 * query-handling combination.
+	 *
+	 * The table has a UNIQUE index on `source_hash`, so two rows with
+	 * the same normalised source (in the same query-handling mode)
+	 * can't co-exist. Used by the API layer to reject duplicates with
+	 * a specific message instead of letting the insert silently fail.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $source         Raw source URL/path.
+	 * @param string $query_handling `ignore` | `preserve` | `require`.
+	 * @param int    $exclude_id     Optional row id to ignore (used by
+	 *                               the update path so a row doesn't
+	 *                               collide with itself).
+	 *
+	 * @return RedirectRow|null
+	 */
+	public function find_by_source( string $source, string $query_handling = 'ignore', int $exclude_id = 0 ) {
+		if ( '' === $source ) {
+			return null;
+		}
+
+		$query = new RedirectQuery(
+			array(
+				'source_hash' => $this->hash_for_mode( $source, $query_handling ),
+				'number'      => 1,
+			)
+		);
+
+		$items = (array) $query->items;
+		$row   = ! empty( $items ) ? $items[0] : null;
+
+		if ( $row instanceof RedirectRow && $exclude_id > 0 && (int) $row->id === $exclude_id ) {
+			return null;
+		}
+
+		return $row instanceof RedirectRow ? $row : null;
+	}
+
+	/**
 	 * Insert a new redirect, hashing the source as we go.
 	 *
 	 * @since 4.0.0

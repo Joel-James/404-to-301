@@ -197,6 +197,15 @@ class Redirects extends Endpoint {
 	public function create( WP_REST_Request $request ) {
 		$data = $this->collect_writable( $request, true );
 
+		$duplicate = RedirectsModel::instance()->find_by_source(
+			(string) ( $data['source'] ?? '' ),
+			(string) ( $data['query_handling'] ?? 'ignore' )
+		);
+
+		if ( $duplicate instanceof RedirectRow ) {
+			return $this->duplicate_error( $duplicate );
+		}
+
 		$id = RedirectsModel::instance()->create( $data );
 
 		if ( $id <= 0 ) {
@@ -226,6 +235,18 @@ class Redirects extends Endpoint {
 		}
 
 		$data = $this->collect_writable( $request, false );
+
+		// When the user is changing the source / query handling, make
+		// sure the new combination doesn't collide with another row.
+		if ( isset( $data['source'] ) || isset( $data['query_handling'] ) ) {
+			$source         = (string) ( $data['source'] ?? $row->source );
+			$query_handling = (string) ( $data['query_handling'] ?? $row->query_handling );
+			$duplicate      = RedirectsModel::instance()->find_by_source( $source, $query_handling, $id );
+
+			if ( $duplicate instanceof RedirectRow ) {
+				return $this->duplicate_error( $duplicate );
+			}
+		}
 
 		if ( ! empty( $data ) ) {
 			RedirectsModel::instance()->update( $id, $data );
@@ -341,6 +362,37 @@ class Redirects extends Endpoint {
 	 *
 	 * @return array
 	 */
+	/**
+	 * Build the 409 response returned when a create / update would
+	 * collide with an existing row.
+	 *
+	 * Carries the conflicting row's id and source in the `data` bag so
+	 * the React form can attach the message to the right field (and a
+	 * future revision could add an "Edit existing" shortcut).
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param RedirectRow $existing The row already using this source.
+	 *
+	 * @return WP_Error
+	 */
+	private function duplicate_error( RedirectRow $existing ): WP_Error {
+		return new WP_Error(
+			'rest_duplicate_source',
+			sprintf(
+				/* translators: %s: source URL/path of the existing redirect. */
+				__( 'A redirect for "%s" already exists. Edit the existing rule instead of creating a duplicate.', '404-to-301' ),
+				$existing->source
+			),
+			array(
+				'status'      => 409,
+				'field'       => 'source',
+				'existing_id' => (int) $existing->id,
+				'source'      => (string) $existing->source,
+			)
+		);
+	}
+
 	private function shape( $row ): array {
 		if ( ! $row instanceof RedirectRow ) {
 			return array();

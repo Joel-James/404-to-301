@@ -5,6 +5,7 @@ import {
 	Flex,
 	FlexItem,
 	Modal,
+	Notice,
 	__experimentalVStack as VStack,
 } from '@wordpress/components'
 import { DataForm, isItemValid } from '@wordpress/dataviews'
@@ -56,6 +57,7 @@ const EditRedirect = ({
 		buildSeed(redirect || initialValues || {}),
 	)
 	const [isWorking, setIsWorking] = useState(false)
+	const [submitError, setSubmitError] = useState(null)
 
 	// Re-seed when the edited row changes (the page-level state can
 	// swap which row is being edited without remounting the modal).
@@ -74,9 +76,14 @@ const EditRedirect = ({
 	)
 
 	// DataForm emits partial edits — merge them into the current
-	// form state so unrelated fields aren't clobbered.
-	const handleChange = (edits) =>
+	// form state so unrelated fields aren't clobbered. Clear any
+	// stale submit error the moment the user starts fixing things.
+	const handleChange = (edits) => {
 		setForm((current) => ({ ...current, ...edits }))
+		if (submitError) {
+			setSubmitError(null)
+		}
+	}
 
 	const handleSubmit = async (event) => {
 		event.preventDefault()
@@ -84,10 +91,20 @@ const EditRedirect = ({
 			return
 		}
 		setIsWorking(true)
-		const ok = await onSave(form)
+		setSubmitError(null)
+		const result = await onSave(form)
 		setIsWorking(false)
+
+		// Backwards-compat: tolerate hooks that still return a bare
+		// boolean, even though the redirects hook now hands back
+		// `{ ok, error }` so we can surface the message inline.
+		const ok = result === true || result?.ok === true
 		if (ok) {
 			onClose()
+			return
+		}
+		if (result && result.error) {
+			setSubmitError(result.error)
 		}
 	}
 
@@ -103,6 +120,15 @@ const EditRedirect = ({
 		>
 			<form onSubmit={handleSubmit}>
 				<VStack spacing={4}>
+					{submitError && (
+						<Notice
+							status="error"
+							isDismissible
+							onRemove={() => setSubmitError(null)}
+						>
+							{submitError.message}
+						</Notice>
+					)}
 					<DataForm
 						data={form}
 						fields={redirectFormFields}
