@@ -11,7 +11,7 @@ export const defaultView = {
 	perPage: 25,
 	search: '',
 	titleField: 'url',
-	descriptionField: 'updated_at',
+	descriptionField: 'created_at',
 	fields: ['ref', 'ip', 'hits', 'status', 'updated_at'],
 	filters: [],
 	layout: {
