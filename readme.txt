@@ -136,8 +136,11 @@ Read the [documentation](https://docs.duckdev.com/404-to-301/) or post on the [s
 * New: Add-ons catalogue for free and premium extensions.
 * Improve: IP masking and path exclusions for GDPR-friendly logging.
 
-= 3.1.3 =
-* Compatibility update for WP 5.8.
+= 3.1.5 =
+* Improve: Row action link.
+* Fix: Unable to delete logs.
+
+For the full release history, see the [changelog](https://docs.duckdev.com/404-to-301/changelog).
 
 == Upgrade Notice ==
 
