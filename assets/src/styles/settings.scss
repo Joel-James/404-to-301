@@ -15,11 +15,22 @@ $prefix: '#{variables.$prefix}';
 	padding-left: 0 !important;
 }
 
-// Cross-sell notice in the Logs panel — flatten the title paragraph
-// so it sits flush with the body copy below it. Scoped to the title
-// only; the body <p> keeps its default Notice spacing.
-.#{$prefix}-logs-cross-sell .components-notice__content .#{$prefix}-logs-cross-sell__title {
-	margin: 0;
+// Cross-sell notices (Logs + Notifications panels) — flatten the
+// title's top margin so it sits flush with the top of the notice, and
+// drop the trailing margin on the last content element so the notice
+// isn't padded taller than its copy needs.
+.#{$prefix}-logs-cross-sell,
+.#{$prefix}-notifications-cross-sell {
+	.components-notice__content {
+		.#{$prefix}-logs-cross-sell__title,
+		.#{$prefix}-notifications-cross-sell__title {
+			margin-top: 0;
+		}
+
+		> :last-child {
+			margin-bottom: 0;
+		}
+	}
 }
 
 // Repeater field — borderless table of rows used for list-style
