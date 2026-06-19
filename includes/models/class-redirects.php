@@ -78,17 +78,204 @@ class Redirects extends Model {
 	 * @return RedirectRow|null
 	 */
 	public function find_match( string $url ) {
-		$exact = $this->find_exact( $url );
+		$candidates = $this->candidates_for_url( $url );
+
+		// Resolution order is fixed (exact > prefix > regex) and the
+		// per-bucket walks are unchanged from the dedicated `find_*`
+		// methods — the single-query fetch above just gets all three
+		// buckets in one round-trip instead of three.
+		$exact = $this->pick_exact( $url, $candidates['exact'] );
 		if ( $exact instanceof RedirectRow ) {
 			return $exact;
 		}
 
-		$prefix = $this->find_prefix( $url );
+		$prefix = $this->pick_prefix( $url, $candidates['prefix'] );
 		if ( $prefix instanceof RedirectRow ) {
 			return $prefix;
 		}
 
-		return $this->find_regex( $url );
+		return $this->pick_regex( $url, $candidates['regex'] );
+	}
+
+	/**
+	 * Fetch every redirect row that could match this URL, in one query.
+	 *
+	 * The dispatcher walks exact → prefix → regex on every healthy
+	 * page view; without consolidation that's three separate SQL
+	 * statements (plus a prime). Folding them into a single
+	 * `WHERE (exact-hash) OR match_type IN ('prefix','regex')` cuts
+	 * cold-cache cost to one query — the same approach the Redirection
+	 * plugin uses on its `match_url` column.
+	 *
+	 * Cached per request URL: the result set varies by the URL's
+	 * `source_hash`, so two distinct URLs would otherwise duplicate the
+	 * prefix/regex set in their cache entries. wp_cache is ephemeral
+	 * without a persistent backend, so the duplication has no lasting
+	 * cost; with one (Redis/Memcached) the same-URL warm hit is free.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $url Raw request URL.
+	 *
+	 * @return array{exact:RedirectRow[],prefix:RedirectRow[],regex:RedirectRow[]}
+	 */
+	private function candidates_for_url( string $url ): array {
+		$hash_with    = Helpers::url_hash_with_query( $url );
+		$hash_without = Helpers::url_hash( $url );
+
+		return (array) $this->cache()->remember(
+			'candidates:' . $hash_with,
+			static function () use ( $hash_with, $hash_without ) {
+				global $wpdb;
+
+				$table = $wpdb->prefix . '404_to_301_redirects';
+
+				// One scan fetches:
+				//   - any active `exact` row whose hash matches either
+				//     the query-aware or query-stripped form (so a
+				//     `require` row wins over an `ignore` row for the
+				//     same path, just like the dedicated `find_exact`),
+				//   - every active `prefix` row (walked in PHP — the
+				//     natural SQL form isn't expressible cheaply),
+				//   - every active `regex` row (PCRE in PHP).
+				// `ORDER BY source DESC` keeps the "longer pattern
+				// first" semantics the prefix/regex walks rely on.
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is internal.
+						"SELECT * FROM {$table} WHERE is_active = 1 AND ( ( match_type = 'exact' AND source_hash IN (%s, %s) ) OR match_type = 'prefix' OR match_type = 'regex' ) ORDER BY source DESC",
+						$hash_with,
+						$hash_without
+					)
+				);
+
+				$buckets = array(
+					'exact'  => array(),
+					'prefix' => array(),
+					'regex'  => array(),
+				);
+
+				if ( is_array( $rows ) ) {
+					foreach ( $rows as $row ) {
+						$type = (string) ( $row->match_type ?? '' );
+						if ( ! isset( $buckets[ $type ] ) ) {
+							continue;
+						}
+						$buckets[ $type ][] = new RedirectRow( $row );
+					}
+				}
+
+				return $buckets;
+			},
+			self::CACHE_GROUP
+		);
+	}
+
+	/**
+	 * Pick the exact-match winner from a candidate list.
+	 *
+	 * Mirrors {@see find_exact()}'s "prefer the query-aware hash" rule:
+	 * a `require` row that includes the query string beats an `ignore`
+	 * row that only stores the path.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string        $url        Raw request URL.
+	 * @param RedirectRow[] $candidates Active `exact` rows whose hash
+	 *                                  matches either form.
+	 *
+	 * @return RedirectRow|null
+	 */
+	private function pick_exact( string $url, array $candidates ) {
+		if ( empty( $candidates ) ) {
+			return null;
+		}
+
+		$hash_with    = Helpers::url_hash_with_query( $url );
+		$hash_without = Helpers::url_hash( $url );
+
+		$fallback = null;
+		foreach ( $candidates as $row ) {
+			$hash = (string) ( $row->source_hash ?? '' );
+			if ( $hash === $hash_with ) {
+				return $row;
+			}
+			if ( null === $fallback && $hash === $hash_without ) {
+				$fallback = $row;
+			}
+		}
+
+		return $fallback;
+	}
+
+	/**
+	 * Pick the first prefix rule whose source is a prefix of the URL.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string        $url        Raw request URL.
+	 * @param RedirectRow[] $candidates Active `prefix` rows, longest first.
+	 *
+	 * @return RedirectRow|null
+	 */
+	private function pick_prefix( string $url, array $candidates ) {
+		if ( empty( $candidates ) ) {
+			return null;
+		}
+
+		$normalised = Helpers::normalise_url( $url );
+
+		foreach ( $candidates as $row ) {
+			$source = Helpers::normalise_url( (string) $row->source );
+
+			if ( '' !== $source && 0 === strpos( $normalised, $source ) ) {
+				return $row;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Pick the first regex rule whose pattern matches the URL.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string        $url        Raw request URL.
+	 * @param RedirectRow[] $candidates Active `regex` rows.
+	 *
+	 * @return RedirectRow|null
+	 */
+	private function pick_regex( string $url, array $candidates ) {
+		if ( empty( $candidates ) ) {
+			return null;
+		}
+
+		foreach ( $candidates as $row ) {
+			$pattern = (string) $row->source;
+			if ( '' === $pattern ) {
+				continue;
+			}
+
+			// Bare regex (`^/old/.*$`) or delimited (`#^/old/.*$#i`);
+			// wrap when bare.
+			if ( '/' === $pattern[0] || '#' === $pattern[0] ) {
+				$wrapped = $pattern;
+			} else {
+				$wrapped = '#' . $pattern . '#';
+			}
+
+			// Suppress the PCRE warning if the pattern is malformed —
+			// returning null below is the right behaviour.
+			$matched = @preg_match( $wrapped, $url ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+
+			if ( 1 === $matched ) {
+				return $row;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -428,20 +615,36 @@ class Redirects extends Model {
 		return (array) $this->cache()->remember(
 			'active:' . $match_type,
 			static function () use ( $match_type ) {
-				$query = new RedirectQuery(
-					array(
-						'match_type' => $match_type,
-						'is_active'  => 1,
-						'orderby'    => 'source',
-						'order'      => 'DESC', // Longer prefixes win.
-						// BerlinDB runs `number` through `absint()`,
-						// so `-1` silently truncates to `LIMIT 1`.
-						// Use `0` for no limit.
-						'number'     => 0,
+				global $wpdb;
+
+				$table = $wpdb->prefix . '404_to_301_redirects';
+
+				// Hand-rolled `SELECT *` instead of going through
+				// BerlinDB — its query path issues a SELECT for ids and
+				// then a follow-up SELECT to prime the row cache, which
+				// doubles the round-trips for a set we always hydrate
+				// in full anyway. Prefix/regex rules are a handful per
+				// site, so the single scan is cheap and pays no second
+				// query. `ORDER BY source DESC` so longer prefixes win.
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is internal.
+						"SELECT * FROM {$table} WHERE match_type = %s AND is_active = 1 ORDER BY source DESC",
+						$match_type
 					)
 				);
 
-				return (array) $query->items;
+				if ( ! is_array( $rows ) ) {
+					return array();
+				}
+
+				return array_map(
+					static function ( $row ) {
+						return new RedirectRow( $row );
+					},
+					$rows
+				);
 			},
 			self::CACHE_GROUP
 		);
@@ -461,36 +664,82 @@ class Redirects extends Model {
 	 */
 	public function flush_cache(): void {
 		$this->cache()->flush_group( self::CACHE_GROUP );
+
+		// Keep the autoloaded front-door flag in sync with the table
+		// — a delete that empties the active set must be observable on
+		// the very next request, even with no persistent object cache.
+		$this->refresh_has_active_flag();
 	}
+
+	/**
+	 * Autoloaded WP option holding the "any active rule?" flag.
+	 *
+	 * Stored as `'1'` / `'0'` (not bool) so `get_option()` with a
+	 * sentinel default can distinguish "never computed" from "computed
+	 * and there were no rules" — bool `false` collides with the
+	 * not-set return value.
+	 *
+	 * @since 4.0.0
+	 * @var string
+	 */
+	private const HAS_ACTIVE_OPTION = '404_to_301_has_active';
 
 	/**
 	 * Whether the site has at least one active redirect rule.
 	 *
-	 * Cached in the redirects group (flushed on any mutation) so the
-	 * front controller can cheaply decide whether to attempt a per-row
-	 * match on healthy (non-404) page views. On a site with no redirects
-	 * this stays a single warm cache read — no per-request query.
+	 * Backed by an autoloaded WP option so the read costs zero queries
+	 * on a healthy page view — WordPress already loads every autoloaded
+	 * option in one bulk fetch per request, regardless of object-cache
+	 * state. The option is rewritten by {@see flush_cache()} on every
+	 * mutation, so it stays accurate without a per-request DB check.
+	 *
+	 * Bootstrapped lazily on the first read after a plugin update —
+	 * before the option exists we still need to look at the table, but
+	 * only once.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return bool
 	 */
 	public function has_active(): bool {
-		return (bool) $this->cache()->remember(
-			'has_active',
-			static function () {
-				$query = new RedirectQuery(
-					array(
-						'is_active' => 1,
-						'number'    => 1,
-						'fields'    => 'ids',
-					)
-				);
+		$cached = get_option( self::HAS_ACTIVE_OPTION, 'unset' );
 
-				return ! empty( $query->items );
-			},
-			self::CACHE_GROUP
-		);
+		if ( 'unset' === $cached ) {
+			$cached = $this->refresh_has_active_flag();
+		}
+
+		return '1' === (string) $cached;
+	}
+
+	/**
+	 * Recompute the `has_active` flag from the table and persist it.
+	 *
+	 * Called by {@see flush_cache()} on every mutation, and lazily by
+	 * {@see has_active()} the first time it runs on a site that hasn't
+	 * computed the flag yet (eg. immediately after a plugin upgrade).
+	 *
+	 * The single `SELECT 1 ... LIMIT 1` is cheap and only ever runs in
+	 * write paths or in that one-time bootstrap.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string `'1'` if any active row exists, otherwise `'0'`.
+	 */
+	private function refresh_has_active_flag(): string {
+		global $wpdb;
+
+		$table = $wpdb->prefix . '404_to_301_redirects';
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$found = $wpdb->get_var( "SELECT 1 FROM {$table} WHERE is_active = 1 LIMIT 1" );
+
+		$value = null === $found ? '0' : '1';
+
+		// `autoload = yes` keeps subsequent reads zero-query — the
+		// option rides in on WordPress's per-request alloptions fetch.
+		update_option( self::HAS_ACTIVE_OPTION, $value, true );
+
+		return $value;
 	}
 
 	/**

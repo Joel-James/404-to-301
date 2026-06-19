@@ -25,6 +25,7 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
 // v4 settings option.
 delete_option( '404_to_301_settings' );
+delete_option( '404_to_301_has_active' );
 
 // BerlinDB schema-version markers.
 delete_option( 'wpdb_404_to_301_logs_version' );
