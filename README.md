@@ -3,9 +3,7 @@
 [![CI](https://github.com/Joel-James/404-to-301/actions/workflows/ci.yml/badge.svg)](https://github.com/Joel-James/404-to-301/actions/workflows/ci.yml)
 [![License: GPL-2.0+](https://img.shields.io/badge/license-GPL--2.0%2B-blue.svg)](LICENSE)
 
-Automatically redirect every 404 error to any page using a 301 redirect, log every 404 request, and get email notifications when broken links are hit. Built for SEO.
-
-> v4 is a ground-up rewrite — OOP-first, React-powered admin, BerlinDB-backed tables, REST API and WP-CLI commands.
+Custom redirects (301, 302, 307), automatic 404 redirection, full 404 error logs and email alerts — a complete redirect & 404 toolkit.
 
 **📖 Full documentation: [docs.duckdev.com/404-to-301](https://docs.duckdev.com/404-to-301/getting-started)**
 
