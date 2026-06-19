@@ -15,9 +15,9 @@ import useSettings from '../../../hooks/use-settings'
  * the `d404.settings.logs.cross_sell` filter so the addon — which is
  * loaded on this same screen — returns `null` to hide it once active.
  *
- * The CTA is passed via the `actions` prop (the documented Notice
- * pattern) so it picks up the component's built-in button layout
- * rather than relying on us styling a child <Button> by hand.
+ * The CTA is an inline text link in the body copy rather than the
+ * Notice `actions` button: the button forces the banner to a taller
+ * two-row layout, so a plain link keeps the notice compact.
  *
  * The Notice is non-dismissible: a dismissible CTA would persist its
  * dismissed state in component memory only (no server round-trip), so
@@ -26,17 +26,7 @@ import useSettings from '../../../hooks/use-settings'
  */
 const DefaultCrossSell = () => (
 	<PanelRow className="d404-logs-cross-sell">
-		<Notice
-			status="info"
-			isDismissible={false}
-			actions={[
-				{
-					label: __('Get Logs Cleaner', '404-to-301'),
-					url: 'https://duckdev.com/addons/loggedin/',
-					variant: 'primary',
-				},
-			]}
-		>
+		<Notice status="info" isDismissible={false}>
 			<p className="d404-logs-cross-sell__title">
 				<strong>{__('Drowning in 404 logs?', '404-to-301')}</strong>
 			</p>
@@ -44,7 +34,14 @@ const DefaultCrossSell = () => (
 				{__(
 					'Install the Logs Cleaner addon to auto-prune the 404 log table — by age, by row count, or on a fixed schedule. Set it once and the table stays small on its own.',
 					'404-to-301',
-				)}
+				)}{' '}
+				<a
+					href="https://duckdev.com/addon/404-to-301-logs-cleaner/"
+					target="_blank"
+					rel="noreferrer"
+				>
+					{__('Get Logs Cleaner', '404-to-301')}
+				</a>
 			</p>
 		</Notice>
 	</PanelRow>
