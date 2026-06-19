@@ -15,6 +15,75 @@ import useSettings from '../../../hooks/use-settings'
 // the server re-validates with `is_email()` before save.
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+/**
+ * Notification addons promoted by the default cross-sell banner.
+ *
+ * Each entry is rendered as one line in the banner with an inline link.
+ * The list is routed through the `d404.settings.notifications.cross_sell`
+ * filter so each addon, when active, removes its own entry — the banner
+ * then promotes only the addon(s) that aren't installed yet, and drops
+ * out entirely once both are active.
+ */
+const CROSS_SELL_ADDONS = [
+	{
+		key: 'email_reports',
+		label: __('Email Reports', '404-to-301'),
+		url: 'https://duckdev.com/addon/404-to-301-email-reports/',
+		text: __(
+			'scheduled email digests of your 404s',
+			'404-to-301',
+		),
+	},
+	{
+		key: 'telegram_alerts',
+		label: __('Telegram Alerts', '404-to-301'),
+		url: 'https://duckdev.com/addon/404-to-301-telegram-alerts/',
+		text: __(
+			'instant 404 alerts in Telegram',
+			'404-to-301',
+		),
+	},
+]
+
+/**
+ * Default cross-sell Notice promoting the notification addons.
+ *
+ * Renders nothing when `addons` is empty (both already active). The CTA
+ * for each addon is an inline text link rather than a Notice `actions`
+ * button so the banner stays compact.
+ */
+const DefaultCrossSell = ({ addons }) => {
+	if (!Array.isArray(addons) || addons.length === 0) {
+		return null
+	}
+
+	return (
+		<PanelRow className="d404-notifications-cross-sell">
+			<Notice status="info" isDismissible={false}>
+				<p className="d404-notifications-cross-sell__title">
+					<strong>
+						{__('Want more 404 notifications?', '404-to-301')}
+					</strong>
+				</p>
+				<ul>
+					{addons.map((addon) => (
+						<li key={addon.key}>
+							<a
+								href={addon.url}
+								target="_blank"
+								rel="noreferrer"
+							>
+								{addon.label}
+							</a>
+							{` — ${addon.text}.`}
+						</li>
+					))}
+				</ul>
+			</Notice>
+		</PanelRow>
+	)
+}
+
 // Normalise whatever shape the settings store hands us (legacy scalar
 // or new array) into a string[] the FormTokenField can render.
 const toRecipients = (value) => {
@@ -69,14 +138,16 @@ const Notifications = () => {
 	)
 
 	/*
-	 * Cross-sell slot. No default promo today, but the filter exists so
-	 * addons (eg. Email Reports) can inject — or replace — a promo
-	 * without a future parent-side code change.
+	 * Cross-sell slot. The filter receives the list of promotable
+	 * notification addons; each addon removes its own entry when active,
+	 * so the banner promotes only what isn't installed and disappears
+	 * once both are active.
 	 */
-	const crossSell = applyFilters(
+	const crossSellAddons = applyFilters(
 		'd404.settings.notifications.cross_sell',
-		null,
+		CROSS_SELL_ADDONS,
 	)
+	const crossSell = <DefaultCrossSell addons={crossSellAddons} />
 
 	return (
 		<>
