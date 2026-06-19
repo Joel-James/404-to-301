@@ -45,6 +45,11 @@ class Menu extends Singleton {
 	protected function init(): void {
 		add_action( 'admin_menu', array( $this, 'register' ) );
 		add_action( 'admin_menu', array( $this, 'rename_top_level' ), 11 );
+
+		// TEMP: "New" badge on the Add-ons submenu — remove in a future
+		// release (both the action below and `badge_addons()` / its CSS).
+		add_action( 'admin_menu', array( $this, 'badge_addons' ), 12 );
+		add_action( 'admin_head', array( $this, 'badge_addons_style' ) );
 	}
 
 	/**
@@ -135,5 +140,73 @@ class Menu extends Singleton {
 				return;
 			}
 		}
+	}
+
+	/**
+	 * Append a "New" badge to the Add-ons submenu label.
+	 *
+	 * TEMP: highlights the freshly expanded add-on catalogue. Remove this
+	 * method (and its `admin_menu` / `admin_head` hooks in {@see init()},
+	 * plus {@see badge_addons_style()}) in a future release once the
+	 * catalogue is no longer "new".
+	 *
+	 * Appends to the displayed label only — the registered page/menu
+	 * titles stay clean — mirroring how {@see rename_top_level()} edits
+	 * the menu globals, and how WP core injects its own count bubbles.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function badge_addons(): void {
+		global $submenu;
+
+		if ( empty( $submenu[ Plugin::PAGE_REDIRECTS ] ) || ! is_array( $submenu[ Plugin::PAGE_REDIRECTS ] ) ) {
+			return;
+		}
+
+		$badge = ' <span class="d404-menu-badge">' . esc_html__( 'New', '404-to-301' ) . '</span>';
+
+		foreach ( $submenu[ Plugin::PAGE_REDIRECTS ] as $index => $item ) {
+			if ( isset( $item[2] ) && Plugin::PAGE_ADDONS === $item[2] ) {
+				// Append once — guard against a re-run leaving two badges.
+				if ( false === strpos( (string) $item[0], 'd404-menu-badge' ) ) {
+					// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+					$submenu[ Plugin::PAGE_REDIRECTS ][ $index ][0] = $item[0] . $badge;
+				}
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Inline CSS for the Add-ons "New" badge.
+	 *
+	 * Emitted on `admin_head` (every screen) because the submenu is
+	 * visible site-wide, whereas the plugin's stylesheet only enqueues on
+	 * its own pages. TEMP — remove alongside {@see badge_addons()}.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function badge_addons_style(): void {
+		?>
+		<style id="d404-menu-badge-style">
+			#adminmenu .d404-menu-badge {
+				display: inline-block;
+				margin-left: 5px;
+				padding: 0 7px;
+				border-radius: 9px;
+				background: #d63638;
+				color: #fff;
+				font-size: 10px;
+				font-weight: 600;
+				line-height: 17px;
+				text-transform: uppercase;
+				letter-spacing: .3px;
+			}
+		</style>
+		<?php
 	}
 }
