@@ -130,16 +130,16 @@ class Redirects extends Model {
 
 				$table = $wpdb->prefix . '404_to_301_redirects';
 
-				// One scan fetches:
-				//   - any active `exact` row whose hash matches either
-				//     the query-aware or query-stripped form (so a
-				//     `require` row wins over an `ignore` row for the
-				//     same path, just like the dedicated `find_exact`),
-				//   - every active `prefix` row (walked in PHP — the
-				//     natural SQL form isn't expressible cheaply),
-				//   - every active `regex` row (PCRE in PHP).
-				// `ORDER BY source DESC` keeps the "longer pattern
-				// first" semantics the prefix/regex walks rely on.
+				// One scan fetches every candidate: any active `exact`
+				// row whose hash matches either the query-aware or
+				// query-stripped form (so a `require` row wins over an
+				// `ignore` row for the same path, just like the
+				// dedicated `find_exact`), plus every active `prefix`
+				// row (walked in PHP — the natural SQL form isn't
+				// expressible cheaply) and every active `regex` row
+				// (PCRE in PHP). `ORDER BY source DESC` keeps the
+				// "longer pattern first" semantics the prefix/regex
+				// walks rely on.
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$rows = $wpdb->get_results(
 					$wpdb->prepare(
