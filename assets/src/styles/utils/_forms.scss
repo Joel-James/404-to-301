@@ -1,0 +1,19 @@
+@use './variables';
+
+$prefix: '#{variables.$prefix}';
+
+// The async page picker (ComboboxControl) hides itself inside an
+// unstyled focus-outside <div>; in a settings PanelRow (a horizontal
+// flex) that wrapper collapses to content width, so the field renders
+// narrower than the SelectControl / TextControl fields beside it. This
+// wrapper div is our styleable flex child — stretch it (and its inner
+// wrapper) to full width. `width` alone covers the DataForm modals,
+// whose vertical stack already stretches children.
+.#{$prefix}-page-select {
+	width: 100%;
+	min-width: 0;
+
+	> div {
+		width: 100%;
+	}
+}

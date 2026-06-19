@@ -1,0 +1,312 @@
+@use './../utils/variables';
+
+$prefix: '#{variables.$prefix}';
+
+.#{$prefix}-wrap {
+
+	// DataViews container card.
+	.dataviews-wrapper {
+		background: #fff;
+		border: 1px solid #dcdcde;
+		border-radius: 4px;
+		margin: 16px 0 32px;
+
+		// The body checkboxes sit inside a `dataviews-view-table__cell-content-wrapper`
+		// which adds `min-height: 32px; display: flex; align-items: center`.
+		// Header cells skip that wrapper, so the select-all checkbox sits
+		// offset from the body rail. Reapply the same flex centering on the
+		// header checkbox so it lines up with the column.
+		.dataviews-view-table thead th.dataviews-view-table__checkbox-column .dataviews-view-table-selection-checkbox {
+			min-height: 32px;
+			display: flex;
+			align-items: center;
+		}
+
+		// Our React-side BulkActions component portals only its
+		// DropdownMenu into the native bulk-actions container, sitting
+		// between DataViews' own "N items selected" indicator and the
+		// close button. Force a tidy single-row flex layout so nothing
+		// wraps onto a second line. The base `gap` keeps the checkbox
+		// snug to the count text.
+		.dataviews-bulk-actions-footer__container {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			flex-wrap: nowrap;
+			min-height: 32px;
+		}
+
+		// The "N items selected" indicator is short text but wraps to
+		// two lines when the container narrows. Lock it onto one line.
+		// `flex-grow: 0` overrides DataViews' own narrow-viewport rule
+		// (`@container (max-width: 560px)`) which makes the count grow
+		// and creates the huge gap between the checkbox and the text.
+		.dataviews-bulk-actions-footer__item-count {
+			white-space: nowrap;
+			flex-shrink: 0;
+			flex-grow: 0;
+		}
+
+		// Mirror the table-header checkbox visibility logic on the
+		// footer checkbox so it only appears on hover, focus, or
+		// when the input is checked / indeterminate. DataViews ships
+		// that behaviour for the `tr` checkboxes inside the table
+		// (see `.dataviews-view-table tr .components-checkbox-control__input`)
+		// but skips the footer one — which is why it was visible all
+		// the time below an empty selection state.
+		.dataviews-bulk-actions-footer__container
+			.components-checkbox-control__input.components-checkbox-control__input {
+			opacity: 0;
+		}
+
+		.dataviews-bulk-actions-footer__container:hover
+			.components-checkbox-control__input.components-checkbox-control__input,
+		.dataviews-bulk-actions-footer__container
+			.components-checkbox-control__input.components-checkbox-control__input:focus,
+		.dataviews-bulk-actions-footer__container
+			.components-checkbox-control__input.components-checkbox-control__input:checked,
+		.dataviews-bulk-actions-footer__container
+			.components-checkbox-control__input.components-checkbox-control__input:indeterminate {
+			opacity: 1;
+		}
+
+		// Touch devices have no hover — always show.
+		@media (hover: none) {
+			.dataviews-bulk-actions-footer__container
+				.components-checkbox-control__input.components-checkbox-control__input {
+				opacity: 1;
+			}
+		}
+
+		// Breathing room above the filters toolbar so it doesn't sit
+		// flush against the wrapper's top border.
+		.dataviews__view-actions {
+			padding-top: 40px;
+		}
+
+		// Constrain each table cell so long URLs/agents truncate cleanly
+		// instead of pushing the column out and breaking the table layout.
+		.dataviews-view-table tbody td {
+			max-width: 0;
+			overflow: hidden;
+		}
+
+		// Give the primary (titleField) column a quarter of the table
+		// width. DataViews renders it as the first `<th>`/`<td>` after
+		// the checkbox column and — unlike data columns — it doesn't
+		// receive the inline `style` from `view.layout.styles`, so its
+		// width has to be set in CSS. Applies to both the Redirects
+		// table (Source URL) and the Logs table (URL).
+		.dataviews-view-table__checkbox-column + th,
+		.dataviews-view-table__checkbox-column + td {
+			width: 25%;
+		}
+
+		// Inner content wrapper from DataViews — apply the ellipsis here so
+		// we can still allow inline children (links, badges) to render normally.
+		.dataviews-view-table__cell-content {
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+
+		// Direct text wrapper used by the Truncate component.
+		.#{$prefix}-truncate {
+			display: inline-block;
+			max-width: 100%;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			vertical-align: bottom;
+		}
+	}
+
+	// Class on the portalled DropdownMenu so we can tweak its toggle
+	// if we ever need to. (No rules right now — the native button
+	// styles look right.)
+	.#{$prefix}-bulk-actions {}
+
+	// Action bar that sits above the DataViews table (Add redirect CTA).
+	.#{$prefix}-list-actions {
+		display: flex;
+		justify-content: flex-end;
+		margin: 16px 0 0;
+	}
+
+	// 404 path / source / destination — monospace treatment.
+	.#{$prefix}-log-url,
+	.#{$prefix}-redirect-source,
+	.#{$prefix}-redirect-destination {
+		font-family: Menlo, Consolas, monospace;
+		font-size: 12px;
+	}
+
+	// Hit count badge.
+	.#{$prefix}-badge {
+		display: inline-block;
+		min-width: 24px;
+		padding: 2px 8px;
+		background: #f0f0f1;
+		border-radius: 10px;
+		text-align: center;
+		font-size: 12px;
+		font-weight: 600;
+		color: #1e1e1e;
+	}
+
+	// Empty cell placeholder.
+	.#{$prefix}-empty {
+		color: #8c8f94;
+	}
+
+	// Status pill colors.
+	.#{$prefix}-status-active   { color: #008a20; font-weight: 600; }
+	.#{$prefix}-status-inactive { color: #b26200; font-weight: 600; }
+	.#{$prefix}-status-fixed    { color: #008a20; font-weight: 600; }
+	.#{$prefix}-status-ignored  { color: #8c8f94; }
+	.#{$prefix}-status-open     { color: #2271b1; }
+	.#{$prefix}-status-custom   { color: #7e3ab1; font-weight: 600; }
+
+	// Icon variant — status column renders an icon instead of text.
+	// `fill: currentColor` lets the per-status color rules above
+	// drive the icon tint.
+	.#{$prefix}-status-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+
+		svg {
+			fill: currentColor;
+		}
+	}
+
+	// Subtitle inside modals (URL preview).
+	.#{$prefix}-modal-subtitle {
+		margin: 0 0 24px;
+		padding: 8px 12px;
+		background: #f6f7f7;
+		border-radius: 3px;
+		font-family: Menlo, Consolas, monospace;
+		font-size: 12px;
+		word-break: break-all;
+	}
+
+	// Migration banner spacing inside the list page.
+	.#{$prefix}-migration-banner {
+		margin: 16px 0 0;
+	}
+}
+
+// Red label for destructive actions in row / bulk dropdown menus.
+// Lives outside `.d404-wrap` so it applies even when the menu is
+// portalled to `body` (DataViews and `@wordpress/components` both
+// do that).
+.#{variables.$prefix}-action-destructive {
+	color: #cc1818;
+}
+
+// Log "View details" modal. Lives at the document root because
+// `@wordpress/components` Modal portals into `body`, outside the
+// `.d404-wrap` scope above.
+.#{$prefix}-log-details {
+
+	&__notice {
+		margin: 0 0 16px;
+		padding: 8px 12px;
+		background: #edfaef;
+		border-left: 3px solid #008a20;
+		border-radius: 2px;
+		color: #1e1e1e;
+	}
+
+	&__list {
+		display: grid;
+		grid-template-columns: 140px 1fr;
+		row-gap: 8px;
+		column-gap: 16px;
+		margin: 0;
+
+		dt {
+			color: #50575e;
+			font-weight: 600;
+		}
+
+		dd {
+			margin: 0;
+			word-break: break-word;
+		}
+	}
+
+	&__mono {
+		font-family: Menlo, Consolas, monospace;
+		font-size: 12px;
+	}
+
+	&__footer {
+		display: flex;
+		justify-content: flex-end;
+		margin-top: 16px;
+	}
+}
+
+// DataViews renders a hardcoded "No results" line with no prop to
+// override it. The Logs and Redirects lists render their own
+// <EmptyState> panel instead, so hide the default to avoid showing both.
+// The loading spinner uses a separate `dataviews-loading` class, so it
+// is unaffected.
+.#{$prefix}-wrap .dataviews-no-results {
+	display: none !important;
+}
+
+// Empty-state panel — a full-width card beneath the table, styled to
+// match the DataViews card so it reads like the table's own empty row.
+.#{$prefix}-empty-state {
+	display: flex;
+	justify-content: center;
+	// Tighten the gap to the table card above (which has a 32px bottom
+	// margin) so the two read as one unit rather than drifting apart.
+	margin: -16px 0 32px;
+	padding: 48px 24px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+
+	&__inner {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 6px;
+		max-width: 420px;
+		text-align: center;
+	}
+
+	&__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 48px;
+		height: 48px;
+		margin-bottom: 6px;
+		color: #757575;
+		background: #f0f0f1;
+		border-radius: 50%;
+	}
+
+	&__title {
+		margin: 0;
+		font-size: 15px;
+		font-weight: 600;
+		color: #1e1e1e;
+	}
+
+	&__description {
+		margin: 0;
+		font-size: 13px;
+		line-height: 1.5;
+		color: #757575;
+	}
+
+	&__action {
+		margin-top: 14px;
+	}
+}

@@ -1,456 +1,141 @@
-=== 404 to 301 - Redirect, Log and Notify 404 Errors ===
-Contributors: joelcj91,duckdev
-Tags: 404, 301, 302, 307, not found, 404 redirect, 404 to 301, 301 redirect, seo redirect, error redirect, 404 seo, custom 404 page
+=== 404 to 301 – Redirect Manager, 404 Error Logs & Notifications ===
+Contributors: joelcj91, duckdev
+Tags: redirect, redirection, redirect manager, 404, 404 error logs
 Donate link: https://www.paypal.me/JoelCJ
-Requires at least: 3.5
-Tested up to: 5.8
-Stable tag: 3.1.1
-Requires PHP: 5.6
+Requires at least: 6.4
+Tested up to: 6.5
+Stable tag: 4.0.0
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Automatically redirect, log and notify all 404 page errors to any page using 301 redirect for SEO. No more 404 Errors in WebMaster tool.
+Custom redirects (301, 302, 307), automatic 404 redirection, full 404 error logs and email alerts — a complete redirect & 404 toolkit.
 
 == Description ==
 
-If you care about your website, you should take steps to avoid 404 errors as it affects your SEO badly. 404 ( Page not found ) errors are common and we all hate it, even Search engines do the same! Install this plugin then sit back and relax. It will take care of 404 errors!
+**404 to 301** is a complete redirect manager and 404 error monitor for WordPress. Build your own custom redirects (301, 302, 307 and more) with exact, prefix or regex matching, automatically redirect every remaining 404 error to any page you choose, and keep a full log of every broken link that hits your site — so you can fix the real problem instead of just hiding it. An optional email alert lets you know the moment a URL starts getting hit.
 
-= What is 404 to 301? =
+Whether you are managing redirects after a site migration, cleaning up old URLs following a redesign, or simply protecting your SEO and visitor experience from dead links, 404 to 301 gives you precise redirect management **and** a 404 logging safety net for everything you miss — all from a fast, modern admin.
 
-*Handling 404 errors in your site should be easy. With this plugin, it finally is.*
+= Custom redirects =
 
-> #### 404 to 301 Log Manager - Add-on is now available!
->
-> - Instead of instant email alerts, get **hourly, twice daily, daily, twice weekly, weekly** alerts.<br />
-> - Limit the amount of emails sent out based on error logs count.<br />
-> - **PDF file** attachment of error logs will be delivered through the email.<br />
-> - **Automatically clear** old error logs based on time period.<br />
-> - Get email alerts to multiple email recipients.<br />
->
-> [Get this add-on now](https://duckdev.com/products/404-to-301-log-manager/) | [See Docs](https://duckdev.com/support/docs/404-to-301-log-manager/)
+Take full control of your URLs with a built-in redirect manager:
 
-404 to 301 is a simple but amazing plugin which handles all 404 errors for you. It will redirect all 404 errors to any page that you set, using 301 (or any other) status. That means no more 404 errors! Even in Google webmaster tool you are safe!
-You will not see any 404 error reports in your webmaster tool dashboard.
+* Create unlimited **custom redirects** with your choice of redirect type (301, 302, 307 and more).
+* Match URLs by **exact path, prefix or regular expression (regex)** for precise or pattern-based rules.
+* Enable or disable individual redirects without deleting them.
+* See a **hit counter and last-hit timestamp** on every redirect so you know what's actually being used.
+* Manage everything from a full-featured table with search, filters, bulk actions and pagination.
 
+= Automatic 404 redirection =
 
-> #### 404 to 301 - Features
->
-> - You can redirect errors to any existing page or custom link (globally).<br />
-> - **You can set custom redirect for each 404 path!**<br />
-> - No more 404 errors in your website. Seriously!<br />
-> - **Translation ready!**<br />
-> - You can optionally monitor/log all errors.<br />
-> - Exclude paths from errors.<br />
-> - You can optionally enable email notification on all 404 errors.<br />
-> - You can choose which redirect method to be used (301,302,307).<br />
-> - Will not irritate your visitors if they land on a non-existing page/url.<br />
-> - Increase your SEO by telling Google that all 404 pages are moved to some other page.<br />
-> - Completely free to use with lifetime updates.<br />
-> - Developer friendly.<br />
-> - Follows best WordPress coding standards.<br />
-> - Of course, available in [GitHub](https://github.com/joel-james/404-to-301)<br />
->
-> [Installation](https://wordpress.org/plugins/404-to-301/installation/) | [Docs](https://duckdev.com/support/docs/404-to-301/) | [Screenshots](https://wordpress.org/plugins/404-to-301/screenshots/)
+Don't have a custom rule for a broken URL? Set a **global fallback** and automatically redirect every leftover 404 error to your homepage, a custom page, or any URL — with the redirect type of your choice. No more dead-end 404 pages costing you visitors and link equity.
 
+= 404 error logs =
 
-**Bug Reports**
+Know exactly which links are breaking on your site:
 
-Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com/support/).
+* **Log every 404 error** with the requested URL, referrer, IP address, user agent and timestamp.
+* Duplicate hits are **deduplicated and counted**, so a busy broken URL is one row with a hit count — not thousands.
+* Track each error through a **lifecycle status** (open / ignored / fixed) and filter logs by date.
+* Turn any logged 404 into a redirect in a couple of clicks.
+* **GDPR-friendly:** IP addresses can be masked, and you can exclude paths you don't care about from logging.
 
-**More information**
+= Email notifications =
 
-- [404 to 301 - Plugin Homepage](https://duckdev.com/products/404-to-301), containing more details and docs.
-- Follow the developer [@Twitter](https://twitter.com/Joel_James)
-- Other [WordPress plugins](https://profiles.wordpress.org/joelcj91/#content-plugins) by Joel James for [Duck Dev](https://duckdev.com)
+Get an **email alert** when broken links appear, with a configurable hit threshold so busy sites don't flood your inbox. Stay on top of new 404s without living in the dashboard.
 
-**404 Errors and Redirect - More Details**
+= Built for performance and developers =
 
-If you are confused with these terms 404,301, redirect etc, [refer this page](https://moz.com/learn/seo/redirection/) to know more about the redirect and SEO.
+* The plugin does work **only on a 404 request** — healthy page loads are never touched.
+* Custom redirects are matched by a hashed, indexed lookup for near-instant resolution.
+* **REST API** at `/404-to-301/v1/` for every admin operation.
+* Full **WP-CLI** command set: `wp 404-to-301 logs|redirects|settings`.
+* A filterable action pipeline so developers can hook in their own logic.
+* **Multisite compatible** — each site keeps its own redirects and logs.
 
+== Add-ons ==
+
+Extend 404 to 301 with official add-ons. Browse the full catalogue at [https://duckdev.com/addons/404-to-301/](https://duckdev.com/addons/404-to-301/), or open the **Add-ons** tab inside the plugin.
+
+= Free add-ons =
+
+* **Redirects Importer** — Bulk import custom redirects into 404 to 301 from CSV files, or migrate them in from other redirect plugins like Redirection by John Godley and 301 Redirects – Redirect Manager by WebFactory — no manual re-entry.
+
+= Premium add-ons =
+
+* **Logs Cleaner** — Auto-prune the 404 log table by age, by row count, or on a periodic schedule to keep your database lean.
+* **Logs Exporter** — Export the 404 error log table as a downloadable CSV file directly from the Logs page.
+* **Email Reports** — Periodic email reports — daily, weekly or monthly digests of your 404 activity, each with an attached CSV.
+
+== Documentation & Support ==
+
+* **Documentation:** [https://docs.duckdev.com/404-to-301/](https://docs.duckdev.com/404-to-301/)
+* **Support forum:** [https://wordpress.org/support/plugin/404-to-301/](https://wordpress.org/support/plugin/404-to-301/)
+* **Add-ons:** [https://duckdev.com/addons/404-to-301/](https://duckdev.com/addons/404-to-301/)
 
 == Installation ==
 
-
-= Installing the plugin - Simple =
-1. In your WordPress admin panel, go to *Plugins > New Plugin*, search for **404 to 301** and click "*Install now*"
-2. Alternatively, download the plugin and upload the contents of `404-to-301.zip` to your plugins directory, which usually is `/wp-content/plugins/`.
-3. Activate the plugin
-4. Go to 404 to 301 tab on your admin menus.
-5. Configure the plugin options with available settings.
-
-
-= Need more help? =
-Please take a look at the [plugin documentation](https://duckdev.com/support/docs/404-to-301/) or [open a support request](http://wordpress.org/support/plugin/404-to-301/).
-
-= Missing something? =
-If you would like to have an additional feature for this plugin, [let me know](https://duckdev.com/support/)
+1. Upload the plugin folder to `/wp-content/plugins/`, or install **404 to 301** directly from the WordPress.org plugin directory.
+2. Activate it from the **Plugins** screen.
+3. Open **404 to 301** in the admin sidebar — Logs, Redirects, Settings and Add-ons all live there.
+4. Add your first custom redirect, or set a global 404 fallback under Settings, and you're done.
 
 == Frequently Asked Questions ==
 
-= What is the use of 404 to 301? =
+= Can I create my own custom redirects? =
 
-It will increase your SEO by redirecting all 404 errors using SEO redirects.
+Yes. The Redirects page lets you create unlimited custom redirects with exact, prefix or regex matching and your choice of redirect type (301, 302, 307 and more). Each redirect can be toggled active/inactive and shows a hit counter.
 
-= Can I monitor 404 errors? =
+= What happens to 404 errors I don't have a redirect for? =
 
-Yes. You can. If you enable logs from settings, it will list all the errors.
+You can set a global fallback that automatically redirects every remaining 404 error to your homepage, a chosen page, or any URL — using the redirect type you prefer. If you'd rather leave them, every 404 is still logged so you can review and fix it.
 
-= How can I clear logs? =
+= Does this slow down my site? =
 
-Select 'clear logs' from bulk actions and submit. It will delete all log data from your db.
+No. The plugin only does work on a 404 request — normal, healthy page loads aren't touched at all. Custom redirects use a hashed, indexed lookup for near-instant matching.
 
-= Can I get email notifications? =
+= Can I import or export my redirects and logs? =
 
-Yes. You can enable email notifications on each 404 errors (optional).
+Yes, via add-ons. The free **Redirects Importer** bulk-imports redirects from CSV or other redirect plugins, while the premium **Logs Exporter** and **Email Reports** add-ons export your 404 logs as CSV. See [the add-ons page](https://duckdev.com/addons/404-to-301/).
 
-= Can I set custom redirects for each errors? =
+= Is it GDPR friendly? =
 
-Yes. You can set that from error logs table.
+Yes. IP addresses in the 404 logs can be masked, and you can exclude specific paths from being logged altogether.
 
-= I need more details =
+= Does it support multisite? =
 
-Please take a look at the [plugin documentation](https://duckdev.com/support/docs/404-to-301/) or [open a support request](http://wordpress.org/support/plugin/404-to-301/).
+Yes. Each site in the network keeps its own redirects and 404 logs.
 
+= Where can I get help? =
 
-== Other Notes ==
-
-= Bug Reports =
-
-Bug reports for 404 to 301 are always welcome. [Report here](https://duckdev.com/support/).
-
+Read the [documentation](https://docs.duckdev.com/404-to-301/) or post on the [support forum](https://wordpress.org/support/plugin/404-to-301/).
 
 == Screenshots ==
 
-1. **Settings** - Settings page of 404 to 301.
-2. **Error Logs** - Logged 404 Errors.
-3. **Custom Redirect** - Setting custom redirect for each 404 paths.
-
+1. 404 error logs page with filters, bulk actions, hit counts and lifecycle status.
+2. Custom redirects manager with exact / prefix / regex matching and redirect types.
+3. Settings split across General, Redirects, Logs, Notifications and Tools tabs.
+4. Add-ons page for installing free and premium extensions.
 
 == Changelog ==
 
-= 3.1.1 (15/11/2021) =
-**👌 Improvements**
-
-* Security checks and improvements.
-
-= 3.1.0 (18/10/2021) =
-**👌 Improvements**
-
-* Tested with WP 5.8.
-* Added sanitization.
-
-= 3.0.9 (06/10/2021) =
-**👌 Improvements**
-
-* Added nonce verification for bulk actions.
-
-= 3.0.8 (12/06/2021) =
-**👌 Improvements**
-
-* Tested with WP 5.7.
-* Add capability checks for ajax actions - Thanks [Jerome](https://secure.nintechnet.com/).
-* Improve query preparations - Thanks [Jerome](https://secure.nintechnet.com/).
-
-= 3.0.7 (28/01/2021) =
-**🐛 Bug Fixes**
-
-* Activation hook was not being executed.
-* Table creation failed in new installations.
-
-= 3.0.6 (18/12/2020) =
-**👌 Improvements**
-
-* Tested with WP 5.6.
-* Small improvements.
-* Temporarily disabled Freemius SDK.
-
-= 3.0.5 (02/07/2019) =
-**👌 Improvements**
-
-* Updated Freemius SDK.
-* Tested with WP 5.2.
-
-= 3.0.4 (16/03/2019) =
-**📦 New**
-
-* Added option to disable URL guessing.
-* Added review notice.
-
-= 3.0.3 (15/03/2019) =
-**🐛 Bug Fixes**
-
-* Opt-in is disabled temporarily to debug the issues.
-
-= 3.0.2 (26/02/2019) =
-**🐛 Bug Fixes**
-
-* Security fix.
-
-**👌 Improvements**
-
-* Minor performance improvements.
-
-= 3.0.1 (24/08/2018) =
-**👌 Improvements**
-
-* Make release automated.
-
-**🐛 Bug Fixes**
-
-* Do not include exclude path items.
-
-= 3.0.0.1 (25/06/2018) =
-**Bug Fixes**
-
-- Using template_redirect hook for redirect instead of wp hook.
-- Fixed an issue with do_action in Freemius SDK.
-
-= 3.0.0 (20/06/2018) =
-**New Features**
-
-- Individual optional settings for each error log item (Individual redirec, log, email alert can be set).
-- Clear error logs without removing custom redirects.
-- Added error logs grouping with count.
-- [WPML compatible](https://wpml.org/plugin/404-to-301/).
-- Integrated Freemius for addon, support and analytics (optional).
-
-**Improvements**
-
-- Complete code revamp. More improved structure.
-- Set custom options from previous logs if same item exists.
-- Made 3rd party integration easier.
-
-= 2.3.3 (31/08/2016) =
-**Bug Fixes**
-
-- Using esc_url() for Ref and Url fields.
-- Fixed Cross Site Scripting vulnerability in "From" column - Thanks to [Plugin Vulnerabilities](https://www.pluginvulnerabilities.com/).
-
-= 2.3.1 (27/08/2016) =
-**Bug Fixes**
-
-- Fixed Cross Site Scripting vulnerability - Thanks to [Summer of Pwnage](https://www.sumofpwn.nl/) & Louis Dion-Marcil.
-- Fixed sorting issue in error log (Changed default order to Date Descending order).
-- Fixed issues when trailing slash found at the end of custom redirect.
-
-**Improvements**
-
-- Tested with WordPress 4.6.
-
-= 2.3.0 (17/08/2016) =
-**Bug Fixes**
-
-- Removed unused UAN button from help page.
-- Completely safe to use.
-- Tracking completely removed from the plugin since it was detected as spam. Read more [here](https://duckdev.com/blog/404-to-301-plugin-detected-by-wordfence-here-is-what-actually-happened/).
-
-= 2.2.9 (16/08/2016) =
-**Bug Fixes**
-
-- Serious issue fixed - Usage tracking script was being detected as spam.
-- Removed tracking completely.
-
-= 2.2.8 (12/07/2016) =
-**Bug Fixes**
-
-- Fixed a minor bug on TOC button.
-
-= 2.2.7 (07/07/2016) =
-**Bug Fixes**
-
-- Fixed issue with PHP 5.4 - Empty error log data.
-
-**Improvements**
-
-- Improved condition checking.
-- Speed improvements.
-- Made error log link to new tab.
-
-= 2.2.6 (30/06/2016) =
-**Bug Fixes**
-
-- Fixed issue - Undefined index when accessed directly.
-
-**Improvements**
-
-- Improved condition checking.
-
-= 2.2.5 (05/06/2016) =
-**Bug Fixes**
-
-- Fixed issue - Front end was slow.
-
-= 2.2.4 (02/06/2016) =
-**Bug Fixes**
-
-- Fixed custom redirect issue.
-- Fixed issues when activating.
-
-= 2.2.2 (01/06/2016) =
-**New Feature**
-
-- Now you can set **custom redirects** for reach error path.
-- Goto error logs list and set custom redirect.
-- Fixed issues with BuddyPress.
-
-**Improvements**
-
-- Improved code.
-
-= 2.1.7 (20/04/2016) =
-**New Add-on**
-
-- New [Log Manager](https://duckdev.com/products/404-to-301-log-manager/) add-on available now.
-- Get periodic email alerts instead of instant email alerts for every errors (add-on).
-- Automatically clear error logs (add-on).
-
-**Improvements**
-
-- Removed inactive filter - i4t3_before_404_redirect
-
-= 2.1.6 (06/04/2016) =
-**Improvements**
-
-- Fixed broken plugin website links.
-- Tested with WordPress 4.5.
-
-= 2.1.5 (22/03/2016) =
-**Improvements**
-
-- Fixed issues with deprecated functions - Thanks to [Pedro Mendonça](https://github.com/pedro-mendonca).
-- Translated missing strings.
-- Tested with WordPress 4.4.2.
-
-= 2.1.4 (22/01/2016) =
-**Bug Fixes**
-
-- Fixed issues when clearing logs (header already sent..).
-- Tested with WordPress 4.4.1.
-
-= 2.1.3 (20/12/2015) =
-**Bug Fixes**
-
-- Fixed issues with older version of WordPress.
-- Fixed issues with older version of PHP.
-
-= 2.1.0 (20/12/2015) =
-**New Feature**
-
-- New option to set items per page from error log listing page.
-- New option to show or hide items from listing table (Screen option).
-
-**Improvements**
-
-- Improved error listing page table structure.
-
-**Bug Fixes**
-
-- Fixed issue - Null value issue when no Referrer or User Agent found.
-- Fixed issue - Clearing errors and redirecting.
-
-= 2.0.9 (2/11/2015) =
-**Bug Fixes**
-
-- Fixed issue - Empty needle issue after 2.0.8 update.
-
-= 2.0.8 (28/10/2015) =
-**New Feature**
-
-- New option to exclude paths from error logs and redirect.
-
-**Bug Fixes**
-
-- Fixed issue - Email notifications are being sent even after disabling it.
-- Fixed issue - Settings reset after reactivation of plugin.
-
-= 2.0.7 (25/09/2015) =
-**New Feature**
-
-- New option to change error notification email address.
-- Now **100% Translation ready**.
-
-**Improvements**
-
-- Minor code improvements.
-
-= 2.0.6 (13/09/2015) =
-**Improvements**
-
-- Introduced new website for the plugin.
-- Fixed few dead link issues
-
-= 2.0.5 (03/09/2015) =
-**Improvements**
-
-- Added option to avoid search engine crawlers/bots from logging errors.
-
-**Bug Fixes**
-
-- Fixed error log per page issue.
-
-= 2.0.4 (26/08/2015) =
-
-**Bug Fixes**
-
-- Fixed an issue where error log table is not being created.
-
-= 2.0.3 (21/08/2015) =
-
-**Bug Fixes**
-
-- Fixed a serious issue which may cause SQL injection attack.
-
-= 2.0.2 (16/08/2015) =
-**Bug Fixes**
-
-- Fixed an issue with https redirect.
-- Fixed an issue with url preg_match.
-
-= 2.0.1 (29/07/2015) =
-**New Feature**
-
-- Now you can log/monitor all 404 errors (optional).
-- You can get email notifications on 404 errors (optional).
-- You can select existing pages from dropdown to set as redirect page.
-- New plugin home page.
-
-**Improvements**
-
-- Upgraded to WordPress plugin coding standard.
-- Documented all functions.
-
-= 1.0.8 =
-* Very minor bug fix
-* Tested for WP 4.2
-
-= 1.0.7 =
-* Fixed options saving issue in admin page.
-* Improved performance.
-
-= 1.0.6 =
-* Tested with latest version.
-* Improved structure.
-
-= 1.0.5 =
-* Bug fix.
-* Fixed permission issue on redirect link on plugin activation.
-
-= 1.0.4 =
-* Bug fix.
-* Fixed permission issue on activating along with some security plugins like WordFence.
-
-= 1.0.3 =
-* Added official support forum.
-
-= 1.0.1 =
-* Added official website details.
-
-= 1.0.0 =
-* Added first version with basic options.
+= 4.0.0 =
+* New: Custom redirect manager with exact, prefix and regex matching and per-redirect redirect type.
+* New: Active/inactive toggle, hit counter and last-hit timestamp on every redirect.
+* New: Dedicated, indexed database tables for 404 logs and custom redirects.
+* New: Modern React-powered admin with full-featured Logs and Redirects tables (search, filters, bulk actions, pagination).
+* New: Per-log lifecycle status (open / ignored / fixed) and date filters.
+* New: Email notifications with a configurable hit threshold.
+* New: REST API at `/404-to-301/v1/`.
+* New: WP-CLI command set — `wp 404-to-301 logs|redirects|settings`.
+* New: Add-ons catalogue for free and premium extensions.
+* Improve: IP masking and path exclusions for GDPR-friendly logging.
+
+= 3.1.3 =
+* Compatibility update for WP 5.8.
 
 == Upgrade Notice ==
 
-= 3.1.1 (15/11/2021) =
-**👌 Improvements**
-
-* Security checks and improvements.
+= 4.0.0 =
+A major release with a brand-new redirect manager, modern admin, faster 404 logging, REST API and WP-CLI support. Back up your database before updating.

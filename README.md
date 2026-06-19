@@ -1,91 +1,79 @@
-> ####WARNING: This latest version is not live yet. Use with caution!
+# 404 to 301
 
-# [404 to 301](https://wordpress.org/plugins/404-to-301) - No more 404 errors!
+[![CI](https://github.com/Joel-James/404-to-301/actions/workflows/ci.yml/badge.svg)](https://github.com/Joel-James/404-to-301/actions/workflows/ci.yml)
+[![License: GPL-2.0+](https://img.shields.io/badge/license-GPL--2.0%2B-blue.svg)](LICENSE)
 
-Automatically redirect all 404 errors to any page using 301 redirect to boost your SEO in WordPress. This plugin also can log all 404 erros and list it to you. Also you can optionally get email alerts on 404 errors!
+Automatically redirect every 404 error to any page using a 301 redirect, log every 404 request, and get email notifications when broken links are hit. Built for SEO.
 
-<hr/>
+> v4 is a ground-up rewrite — OOP-first, React-powered admin, BerlinDB-backed tables, REST API and WP-CLI commands.
 
-##### Contributors: <a href="https://github.com/joel-james/">Joel James</a>
-##### Requires at least: WordPress 3.5
-##### Tested up to: WordPress 5.8
-##### Stable tag: 3.1.1
+**📖 Full documentation: [docs.duckdev.com/404-to-301](https://docs.duckdev.com/404-to-301/getting-started)**
 
-Before starting development make sure you read and understand everything in this README.
+---
 
-Also, don't forget to document your code properly.
+## Features
 
-## Working with Git
+- **Custom redirects** — exact / prefix / regex matches, per-row redirect status, active/inactive toggle and per-row hit counters.
+- **404 logs** — every 404 is logged once and de-duplicated, with a `hits` counter, ignored/fixed lifecycle and date filters.
+- **Email notifications** — alert on N-th hit so the inbox doesn't get hammered by busy sites.
+- **React admin UI** — built on `@wordpress/components` + `@wordpress/dataviews`.
+- **REST API** — every list / CRUD operation has a clean endpoint under `/404-to-301/v1/`.
+- **WP-CLI** — full `wp 404-to-301` command surface (`logs`, `redirects`, `settings`, `migrate`).
+- **Background migration** — v3 → v4 data migration runs in chunks via wp-cron, or via Action Scheduler when available.
+- **Add-on catalogue + Freemius licensing** — addons grid with license-key activation.
 
-Clone the plugin repo and checkout the `dev` branch
+---
 
+## Requirements
+
+- WordPress **6.4** or later
+- PHP **7.4** or later
+- MySQL 5.6 / MariaDB 10.1 or later
+
+---
+
+## Documentation
+
+- [Getting started & settings](https://docs.duckdev.com/404-to-301/getting-started)
+- [Match modes & query handling](https://docs.duckdev.com/404-to-301/redirects/matching)
+- [Developer docs (hooks & REST API)](https://docs.duckdev.com/404-to-301/developer-docs)
+- [WP-CLI commands](https://docs.duckdev.com/404-to-301/wp-cli)
+- [Add-ons](https://docs.duckdev.com/404-to-301/addons/)
+
+---
+
+## Development
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for environment setup, build commands, coding standards and how to run the linters and tests.
+
+### Packaging a release
+
+```bash
+npm run pack
 ```
-# git clone git@github.com:Joel-James/404-to-301.git
-# git fetch && git checkout dev
-```
 
-## Installing dependencies and initial configuration
+`bin/pack.sh` verifies that the version header in `404-to-301.php`, `package.json` and `readme.txt` all match, then regenerates the POT, builds the assets, installs production-only Composer deps and stages the runtime files into a `404-to-301-<version>.zip` under `releases/`.
 
-Install Node
-```
-# curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-# sudo apt-get install -y nodejs build-essential
-```
+---
 
-Install the necessary npm modules and packages
-```
-# npm install
-``` 
+## Contributing
 
-After that for the first time, run below command to create updated assets.
-```
-# npm run compile
-``` 
+Bug reports, feature ideas and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a PR.
 
-Set up username and email for Git commits
-```
-# git config user.email "<your email>"
-# git config user.name "<your name>"
-```
+## Security
 
-## Build tasks (npm)
+Found a vulnerability? **Don't open a public issue.** See [SECURITY.md](SECURITY.md) for how to report it privately.
 
-Everything (except unit tests) should be handled by npm. Note that you don't need to interact with Grunt in a direct way.
+## Support
 
-Command | Action
-------- | ------
-`npm run translate` | Build pot and mo file inside /languages/ folder
-`npm run compile` | Compile assets
-`npm run build` | Build release version, useful to provide for testing
+- Documentation — [docs.duckdev.com/404-to-301](https://docs.duckdev.com/404-to-301/getting-started)
+- Support forum — [wordpress.org/support/plugin/404-to-301](https://wordpress.org/support/plugin/404-to-301/)
+- Bugs & features — [GitHub issues](https://github.com/Joel-James/404-to-301/issues)
 
-## Versioning
+---
 
-Follow semantic versioning [http://semver.org/](http://semver.org/) as `package.json` won't work otherwise. That's it:
+## License
 
-- `X.X.0` for mayor versions
-- `X.X.X` for minor versions
-- `X.X[.X||.0]-rc.1` for release candidates
-- `X.X[.X||.0]-beta.1` for betas
+GPL-2.0-or-later. See [LICENSE](LICENSE).
 
-## Workflow
-
-Do not commit on `master` branch (if you are on a forked repo, no need to worry). `dev` is the code
-that accumulates all the code for the next version.
-
-- Create a new branch from `dev` branch: `git checkout -b branch-name origin/dev`. Try to give it a descriptive name. For example:
-    * `release/X.X.X` for next releases
-    * `new/some-feature` for new features
-    * `enhance/some-enhancement` for enhancements
-    * `fix/some-bug` for bug fixing
-- Make your commits and push the new branch: `git push -u origin branch-name`
-- File the new Pull Request against `dev` branch
-- Once the PR is approved it will be merged to the `dev` branch.
-
-If you are sending pull requests from your forked repo, follow the same steps.
-
-## Important Links and Documentation
-
-- <a href="https://duckdev.com/products/404-to-301/"><strong>Plugin Website</strong></a>
-- <a href="https://wordpress.org/plugins/404-to-301/"><strong>WordPress Page</strong></a>
-- <a href="https://wordpress.org/support/plugin/404-to-301/"><strong>Plugin Support Forum</strong></a>
-- <a href="https://duckdev.com/support/docs/category/404-to-301/"><strong>Documentation</strong></a>
+Maintained by [Joel James](https://duckdev.com/) at DuckDev.
