@@ -34,13 +34,11 @@ Automatically redirect every 404 error to any page using a 301 redirect, log eve
 
 ## Documentation
 
-| Topic | Link |
-|-------|------|
-| Getting started & settings | [docs.duckdev.com/404-to-301/getting-started](https://docs.duckdev.com/404-to-301/getting-started) |
-| Match modes & query handling | [redirects/matching](https://docs.duckdev.com/404-to-301/redirects/matching) |
-| Developer docs (hooks & REST API) | [developer-docs](https://docs.duckdev.com/404-to-301/developer-docs) |
-| WP-CLI commands | [wp-cli](https://docs.duckdev.com/404-to-301/wp-cli) |
-| Add-ons | [addons](https://docs.duckdev.com/404-to-301/addons/) |
+- [Getting started & settings](https://docs.duckdev.com/404-to-301/getting-started)
+- [Match modes & query handling](https://docs.duckdev.com/404-to-301/redirects/matching)
+- [Developer docs (hooks & REST API)](https://docs.duckdev.com/404-to-301/developer-docs)
+- [WP-CLI commands](https://docs.duckdev.com/404-to-301/wp-cli)
+- [Add-ons](https://docs.duckdev.com/404-to-301/addons/)
 
 ---
 
