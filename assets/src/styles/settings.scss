@@ -15,15 +15,14 @@ $prefix: '#{variables.$prefix}';
 	padding-left: 0 !important;
 }
 
-// Cross-sell notices (Logs + Notifications panels) — flatten the
-// title's top margin so it sits flush with the top of the notice, and
-// drop the trailing margin on the last content element so the notice
-// isn't padded taller than its copy needs.
-.#{$prefix}-logs-cross-sell,
-.#{$prefix}-notifications-cross-sell {
+// Cross-sell notices — shared `.#{$prefix}-cross-sell` wrapper used by
+// every settings tab (Logs, Notifications, …) so the spacing reads the
+// same everywhere. Flatten the title's top margin so it sits flush with
+// the top of the notice, and drop the trailing margin on the last
+// content element so the notice isn't padded taller than its copy needs.
+.#{$prefix}-cross-sell {
 	.components-notice__content {
-		.#{$prefix}-logs-cross-sell__title,
-		.#{$prefix}-notifications-cross-sell__title {
+		.#{$prefix}-cross-sell__title {
 			margin-top: 0;
 		}
 

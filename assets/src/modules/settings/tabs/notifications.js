@@ -58,9 +58,9 @@ const DefaultCrossSell = ({ addons }) => {
 	}
 
 	return (
-		<PanelRow className="d404-notifications-cross-sell">
+		<PanelRow className="d404-cross-sell">
 			<Notice status="info" isDismissible={false}>
-				<p className="d404-notifications-cross-sell__title">
+				<p className="d404-cross-sell__title">
 					<strong>
 						{__('Want more 404 notifications?', '404-to-301')}
 					</strong>

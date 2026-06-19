@@ -25,9 +25,9 @@ import useSettings from '../../../hooks/use-settings'
  * stable banner the addon can swap out entirely.
  */
 const DefaultCrossSell = () => (
-	<PanelRow className="d404-logs-cross-sell">
+	<PanelRow className="d404-cross-sell">
 		<Notice status="info" isDismissible={false}>
-			<p className="d404-logs-cross-sell__title">
+			<p className="d404-cross-sell__title">
 				<strong>{__('Drowning in 404 logs?', '404-to-301')}</strong>
 			</p>
 			<p>
