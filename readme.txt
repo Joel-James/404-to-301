@@ -3,7 +3,7 @@ Contributors: joelcj91, duckdev
 Tags: redirect, redirection, redirect manager, 404, 404 error logs
 Donate link: https://www.paypal.me/JoelCJ
 Requires at least: 6.4
-Tested up to: 6.5
+Tested up to: 7.0
 Stable tag: 4.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
