@@ -32,30 +32,9 @@ Automatically redirect every 404 error to any page using a 301 redirect, log eve
 
 ## Development
 
-Install dependencies:
+See [CONTRIBUTING.md](CONTRIBUTING.md) for environment setup, the build commands, coding standards and how to run the linters and tests.
 
-```bash
-composer install
-npm install
-```
-
-Build the React bundles:
-
-```bash
-npm run build         # one-off build
-npm start             # watch mode
-```
-
-Run the linters / tests:
-
-```bash
-composer lint         # PHPCS (WordPress + WordPress-Extra + PHPCompatibility 7.4+)
-composer lint:fix     # PHPCBF auto-fix
-composer test         # PHPUnit (requires bin/install-wp-tests.sh once)
-
-npm run lint:js
-npm run format
-```
+### Packaging a release
 
 Pack a release-ready ZIP into `releases/`:
 
@@ -132,15 +111,30 @@ Don't have Action Scheduler? You don't need it. The banner offers a one-click "I
 
 The full hook list is documented inline next to each call. Notable ones:
 
-- `404_to_301_init`                  — fires once `Core` has booted.
-- `404_to_301_request` / `_404_request`  — fired after the front-end action chain.
-- `404_to_301_actions`               — filter the action chain (Redirect/Log/Email).
-- `404_to_301_settings_defaults`     — register addon settings.
-- `404_to_301_settings_pre_update`   — pre-write hook for the settings option.
-- `404_to_301_capability` / `_has_access` — change who can manage the plugin.
-- `404_to_301_redirect_target`       — last-mile override of a resolved redirect.
-- `404_to_301_addons_catalog`        — replace / extend the addons grid.
-- `404_to_301_migration_complete`    — fires when v3 → v4 migration finishes.
+- `404_to_301_init`                — fires once `Core` has booted.
+- `404_to_301_request`             — fires after the front-end action chain runs.
+- `404_to_301_caught_404`          — fires on every caught 404, after the chain.
+- `404_to_301_actions`             — filter the action chain (Redirect/Log/Email).
+- `404_to_301_should_process`      — short-circuit the whole pipeline for a request.
+- `404_to_301_settings_pre_update` — pre-write hook for the settings option.
+- `404_to_301_capability`          — change who can manage the plugin.
+- `404_to_301_redirect_targets`    — last-mile override of resolved redirect targets.
+- `404_to_301_redirect_audit`      — stream redirect create/update/delete events.
+- `404_to_301_addons_catalog`      — replace / extend the addons grid.
+- `404_to_301_migration_complete`  — fires when v3 → v4 migration finishes.
+
+---
+
+## Contributing
+
+Bug reports, feature ideas and pull requests are welcome. Please read
+[CONTRIBUTING.md](CONTRIBUTING.md) before opening a PR — it covers the
+branch naming, coding standards and test requirements CI enforces.
+
+## Security
+
+Found a vulnerability? **Don't open a public issue.** See
+[SECURITY.md](SECURITY.md) for how to report it privately.
 
 ---
 
