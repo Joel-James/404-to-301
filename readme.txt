@@ -114,10 +114,13 @@ Read the [documentation](https://docs.duckdev.com/404-to-301/) or post on the [s
 
 == Screenshots ==
 
-1. 404 error logs page with filters, bulk actions, hit counts and lifecycle status.
-2. Custom redirects manager with exact / prefix / regex matching and redirect types.
-3. Settings split across General, Redirects, Logs, Notifications and Tools tabs.
-4. Add-ons page for installing free and premium extensions.
+1. General settings — core plugin options and behaviour.
+2. Redirect settings — global 404 fallback and redirect defaults.
+3. Log settings — 404 logging options, retention and exclusions.
+4. Notification settings — email alerts on broken-link thresholds.
+5. Tools — import, export and maintenance utilities.
+6. 404 error logs list with filters, bulk actions, hit counts and lifecycle status.
+7. Custom redirects manager with exact / prefix / regex matching and redirect types.
 
 == Changelog ==
 
