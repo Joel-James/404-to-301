@@ -7,6 +7,8 @@ Automatically redirect every 404 error to any page using a 301 redirect, log eve
 
 > v4 is a ground-up rewrite — OOP-first, React-powered admin, BerlinDB-backed tables, REST API and WP-CLI commands.
 
+**📖 Full documentation: [docs.duckdev.com/404-to-301](https://docs.duckdev.com/404-to-301/getting-started)**
+
 ---
 
 ## Features
@@ -14,11 +16,11 @@ Automatically redirect every 404 error to any page using a 301 redirect, log eve
 - **Custom redirects** — exact / prefix / regex matches, per-row redirect status, active/inactive toggle and per-row hit counters.
 - **404 logs** — every 404 is logged once and de-duplicated, with a `hits` counter, ignored/fixed lifecycle and date filters.
 - **Email notifications** — alert on N-th hit so the inbox doesn't get hammered by busy sites.
-- **React admin UI** — built on `@wordpress/components` + `@wordpress/dataviews`, mirrors the LLC reference plugin layout.
-- **REST API** — every list / CRUD operation has a clean REST endpoint at `/404-to-301/v1/`.
+- **React admin UI** — built on `@wordpress/components` + `@wordpress/dataviews`.
+- **REST API** — every list / CRUD operation has a clean endpoint under `/404-to-301/v1/`.
 - **WP-CLI** — full `wp 404-to-301` command surface (`logs`, `redirects`, `settings`, `migrate`).
-- **Background migration** — v3 → v4 data migration runs in chunks via wp-cron, or opportunistically via Action Scheduler when it's available.
-- **Add-on catalogue + Freemius licensing** — addons grid with license-key activate/deactivate.
+- **Background migration** — v3 → v4 data migration runs in chunks via wp-cron, or via Action Scheduler when available.
+- **Add-on catalogue + Freemius licensing** — addons grid with license-key activation.
 
 ---
 
@@ -30,111 +32,45 @@ Automatically redirect every 404 error to any page using a 301 redirect, log eve
 
 ---
 
+## Documentation
+
+| Topic | Link |
+|-------|------|
+| Getting started & settings | [docs.duckdev.com/404-to-301/getting-started](https://docs.duckdev.com/404-to-301/getting-started) |
+| Match modes & query handling | [redirects/matching](https://docs.duckdev.com/404-to-301/redirects/matching) |
+| Developer docs (hooks & REST API) | [developer-docs](https://docs.duckdev.com/404-to-301/developer-docs) |
+| WP-CLI commands | [wp-cli](https://docs.duckdev.com/404-to-301/wp-cli) |
+| Add-ons | [addons](https://docs.duckdev.com/404-to-301/addons/) |
+
+---
+
 ## Development
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for environment setup, the build commands, coding standards and how to run the linters and tests.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for environment setup, build commands, coding standards and how to run the linters and tests.
 
 ### Packaging a release
-
-Pack a release-ready ZIP into `releases/`:
 
 ```bash
 npm run pack
 ```
 
-`bin/pack.sh` verifies that the version header in `404-to-301.php`, `package.json` and `readme.txt` all match, then regenerates the POT, builds the assets, installs production-only Composer deps and stages the runtime files into a `404-to-301-<version>.zip`.
-
----
-
-## REST API
-
-All routes live under `/wp-json/404-to-301/v1/` and require the plugin's `manage` capability (`manage_options` by default, filterable via `404_to_301_capability`).
-
-| Route                       | Methods                | Notes                                                   |
-|-----------------------------|------------------------|---------------------------------------------------------|
-| `/logs`                     | `GET`, `DELETE`        | List + bulk delete                                      |
-| `/logs/{id}`                | `GET`, `PUT`, `DELETE` | Single log: read, set status / link redirect, delete    |
-| `/redirects`                | `GET`, `POST`, `DELETE`| List + create + bulk delete                             |
-| `/redirects/{id}`           | `GET`, `PUT`, `DELETE` | Single redirect CRUD                                    |
-| `/addons`                   | `GET`                  | Addon catalogue (Freemius when configured, else stub)   |
-| `/addons/license`           | `POST`, `DELETE`       | Activate / deactivate a license key                     |
-| `/migration`                | `GET`, `POST`, `DELETE`| Migration status, start phase 2, abort                  |
-
-Settings live on the core `/wp/v2/settings` endpoint via `show_in_rest`, exactly the LLC pattern.
-
----
-
-## WP-CLI
-
-Run `wp help 404-to-301` for the full reference; here are the highlights:
-
-```bash
-# Logs
-wp 404-to-301 logs list [--status=] [--search=] [--per-page=] [--format=]
-wp 404-to-301 logs get <id>
-wp 404-to-301 logs status <id> --to=open|ignored|fixed
-wp 404-to-301 logs delete <id>... | --all | --status=
-wp 404-to-301 logs prune [--days=30]
-
-# Redirects
-wp 404-to-301 redirects list [--match-type=] [--active] [--per-page=]
-wp 404-to-301 redirects get <id>
-wp 404-to-301 redirects create --source=/old --target=https://example.com [--type=301] [--match-type=exact]
-wp 404-to-301 redirects update <id> [--target=] [--type=] [--active=]
-wp 404-to-301 redirects delete <id>... | --all
-
-# Settings
-wp 404-to-301 settings get [<key>]
-wp 404-to-301 settings update <key> <value>     # JSON-decoded when possible
-wp 404-to-301 settings reset [--yes]
-
-# Migration
-wp 404-to-301 migrate status
-wp 404-to-301 migrate run [--limit=N] [--phase=1|2|all]
-wp 404-to-301 migrate abort
-```
-
----
-
-## Migration from v3
-
-When v4 first boots on a site with the legacy `wp_404_to_301` table:
-
-1. **Phase 1 (automatic)** — rows that carry a custom redirect are migrated into the new `404_to_301_redirects` table. Runs unattended on activation.
-2. **Phase 2 (opt-in)** — the Logs page shows a banner with the number of remaining legacy log rows and a "Start migration" button. The chunked migrator runs in the background (via wp-cron, or via Action Scheduler when present) until the legacy table is empty, then drops it and removes the legacy options.
-
-Don't have Action Scheduler? You don't need it. The banner offers a one-click "Install Action Scheduler" link that hands off to WordPress's own plugin installer for users with `install_plugins`, but the chunked fallback works on every host.
-
----
-
-## Hooks
-
-The full hook list is documented inline next to each call. Notable ones:
-
-- `404_to_301_init`                — fires once `Core` has booted.
-- `404_to_301_request`             — fires after the front-end action chain runs.
-- `404_to_301_caught_404`          — fires on every caught 404, after the chain.
-- `404_to_301_actions`             — filter the action chain (Redirect/Log/Email).
-- `404_to_301_should_process`      — short-circuit the whole pipeline for a request.
-- `404_to_301_settings_pre_update` — pre-write hook for the settings option.
-- `404_to_301_capability`          — change who can manage the plugin.
-- `404_to_301_redirect_targets`    — last-mile override of resolved redirect targets.
-- `404_to_301_redirect_audit`      — stream redirect create/update/delete events.
-- `404_to_301_addons_catalog`      — replace / extend the addons grid.
-- `404_to_301_migration_complete`  — fires when v3 → v4 migration finishes.
+`bin/pack.sh` verifies that the version header in `404-to-301.php`, `package.json` and `readme.txt` all match, then regenerates the POT, builds the assets, installs production-only Composer deps and stages the runtime files into a `404-to-301-<version>.zip` under `releases/`.
 
 ---
 
 ## Contributing
 
-Bug reports, feature ideas and pull requests are welcome. Please read
-[CONTRIBUTING.md](CONTRIBUTING.md) before opening a PR — it covers the
-branch naming, coding standards and test requirements CI enforces.
+Bug reports, feature ideas and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a PR.
 
 ## Security
 
-Found a vulnerability? **Don't open a public issue.** See
-[SECURITY.md](SECURITY.md) for how to report it privately.
+Found a vulnerability? **Don't open a public issue.** See [SECURITY.md](SECURITY.md) for how to report it privately.
+
+## Support
+
+- Documentation — [docs.duckdev.com/404-to-301](https://docs.duckdev.com/404-to-301/getting-started)
+- Support forum — [wordpress.org/support/plugin/404-to-301](https://wordpress.org/support/plugin/404-to-301/)
+- Bugs & features — [GitHub issues](https://github.com/Joel-James/404-to-301/issues)
 
 ---
 
