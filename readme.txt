@@ -60,13 +60,14 @@ Extend 404 to 301 with official add-ons. Browse the full catalogue at [https://d
 
 = Free add-ons =
 
-* **Redirects Importer** — Bulk import custom redirects into 404 to 301 from CSV files, or migrate them in from other redirect plugins like Redirection by John Godley and 301 Redirects – Redirect Manager by WebFactory — no manual re-entry.
+* [**Redirects Importer**](https://duckdev.com/addon/404-to-301-redirects-importer/) — Bulk import custom redirects into 404 to 301 from CSV files, or migrate them in from other redirect plugins like Redirection by John Godley and 301 Redirects – Redirect Manager by WebFactory — no manual re-entry.
+* [**Logs Exporter**](https://duckdev.com/addon/404-to-301-logs-exporter/) — Export the 404 error log table as a downloadable CSV file directly from the Logs page.
 
 = Premium add-ons =
 
-* **Logs Cleaner** — Auto-prune the 404 log table by age, by row count, or on a periodic schedule to keep your database lean.
-* **Logs Exporter** — Export the 404 error log table as a downloadable CSV file directly from the Logs page.
-* **Email Reports** — Periodic email reports — daily, weekly or monthly digests of your 404 activity, each with an attached CSV.
+* [**Logs Cleaner**](https://duckdev.com/addon/404-to-301-logs-cleaner/) — Auto-prune the 404 log table by age, by row count, or on a periodic schedule to keep your database lean.
+* [**Email Reports**](https://duckdev.com/addon/404-to-301-email-reports/) — Periodic email reports — daily, weekly or monthly digests of your 404 activity, each with an attached CSV.
+* [**Telegram Alerts**](https://duckdev.com/addon/404-to-301-telegram-alerts/) — Real-time Telegram alerts for 404 errors and redirects, delivered in the background so visitors never wait on the API call.
 
 == Documentation & Support ==
 
@@ -97,7 +98,7 @@ No. The plugin only does work on a 404 request — normal, healthy page loads ar
 
 = Can I import or export my redirects and logs? =
 
-Yes, via add-ons. The free **Redirects Importer** bulk-imports redirects from CSV or other redirect plugins, while the premium **Logs Exporter** and **Email Reports** add-ons export your 404 logs as CSV. See [the add-ons page](https://duckdev.com/addons/404-to-301/).
+Yes, via add-ons. The free **Redirects Importer** bulk-imports redirects from CSV or other redirect plugins, the free **Logs Exporter** exports your 404 logs as a CSV file, and the premium **Email Reports** add-on emails periodic CSV digests of your 404 activity. See [the add-ons page](https://duckdev.com/addons/404-to-301/).
 
 = Is it GDPR friendly? =
 
