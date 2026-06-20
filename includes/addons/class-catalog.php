@@ -181,7 +181,7 @@ class Catalog extends Singleton {
 				),
 				'404-to-301-redirects-importer' => array(
 					'title'       => __( 'Redirects Importer', '404-to-301' ),
-					'description' => __( 'Bulk import custom redirects into 404 to 301 from CSV files or migrate them in from other redirect plugins like Redirection by John Godley and 301 Redirects – Redirect Manager by WebFactory — no manual re-entry.', '404-to-301' ),
+					'description' => __( 'Bulk import custom redirects from CSV, or migrate redirects from other redirect plugins. Fast, safe import with duplicate detection.', '404-to-301' ),
 				),
 			)
 		);
