@@ -292,6 +292,30 @@ class Logs extends Model {
 	}
 
 	/**
+	 * Truncate the entire logs table.
+	 *
+	 * Custom redirects live in a separate table and are untouched.
+	 * The BerlinDB cache is invalidated so subsequent reads reflect
+	 * the empty state without a stale-cache window.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @return bool True on success.
+	 */
+	public function purge_all(): bool {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.SchemaChange
+		$result = $wpdb->query( "TRUNCATE TABLE `{$wpdb->prefix}404_to_301_logs`" );
+
+		if ( false !== $result ) {
+			wp_cache_set( 'last_changed', microtime(), '404_to_301_logs' );
+		}
+
+		return false !== $result;
+	}
+
+	/**
 	 * Delete rows older than the given number of days.
 	 *
 	 * @since 4.0.0

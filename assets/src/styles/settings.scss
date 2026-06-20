@@ -163,3 +163,43 @@ $prefix: '#{variables.$prefix}';
 	gap: 12px;
 	align-items: center;
 }
+
+// Danger Zone panel — red border and tinted header to signal that the
+// actions inside are irreversible.
+.#{variables.$prefix}-panel-danger.components-panel__body {
+	border: 1px solid #f0b8b8;
+	border-radius: 2px;
+
+	.components-panel__body-title .components-button {
+		color: #d63638;
+		font-weight: 600;
+	}
+}
+
+.#{variables.$prefix}-purge-wrap {
+	width: 100%;
+}
+
+.#{variables.$prefix}-purge-description {
+	margin: 0 0 12px;
+	color: #3c434a;
+}
+
+.#{variables.$prefix}-purge-notice {
+	margin-bottom: 12px;
+	padding: 8px 12px;
+	border-radius: 2px;
+	border-left: 3px solid;
+
+	&--success {
+		background: #edfaef;
+		border-color: #008a20;
+		color: #1e1e1e;
+	}
+
+	&--error {
+		background: #fcf0f1;
+		border-color: #d63638;
+		color: #1e1e1e;
+	}
+}

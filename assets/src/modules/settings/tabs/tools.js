@@ -4,6 +4,7 @@ import { applyFilters } from '@wordpress/hooks'
 import useSettings from '../../../hooks/use-settings'
 import PathsRepeater from '../components/paths-repeater'
 import ImportExport from '../components/import-export'
+import PurgeLogs from '../components/purge-logs'
 
 const Tools = () => {
 	const { getSetting, setSetting } = useSettings()
@@ -55,6 +56,15 @@ const Tools = () => {
 			{extra}
 
 			{crossSell}
+
+			<PanelBody
+				title={__('Danger Zone', '404-to-301')}
+				className="d404-panel-danger"
+			>
+				<PanelRow>
+					<PurgeLogs />
+				</PanelRow>
+			</PanelBody>
 		</>
 	)
 }

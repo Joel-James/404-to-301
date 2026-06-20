@@ -60,6 +60,18 @@ class Logs extends Endpoint {
 			)
 		);
 
+		register_rest_route(
+			self::NAMESPACE,
+			'/logs/purge',
+			array(
+				array(
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'purge' ),
+					'permission_callback' => array( $this, 'require_access' ),
+				),
+			)
+		);
+
 		// Dedicated bulk-update endpoint. Keeps `PATCH /logs/{id}`
 		// for single-item updates and gives bulk operations a single
 		// round-trip instead of N concurrent requests.
@@ -265,6 +277,25 @@ class Logs extends Endpoint {
 				'deleted' => true,
 			)
 		);
+	}
+
+	/**
+	 * DELETE /logs/purge — wipe the entire logs table.
+	 *
+	 * Custom redirects are stored in a separate table and are untouched.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function purge() {
+		$ok = LogsModel::instance()->purge_all();
+
+		if ( ! $ok ) {
+			return $this->error( 'rest_purge_failed', __( 'Could not purge the logs.', '404-to-301' ), 500 );
+		}
+
+		return $this->respond( array( 'purged' => true ) );
 	}
 
 	/**
