@@ -1,6 +1,6 @@
 {
   "name": "404-to-301",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "private": true,
   "description": "Custom redirects (301, 302, 307), automatic 404 redirection, full 404 error logs and email alerts — a complete redirect & 404 toolkit.",
   "author": {
