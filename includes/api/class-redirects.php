@@ -160,6 +160,15 @@ class Redirects extends Endpoint {
 		return $this->respond( RedirectsModel::instance()->summary() );
 	}
 
+	/**
+	 * GET /redirects — paginated, filtered list of redirects.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param WP_REST_Request $request REST request.
+	 *
+	 * @return WP_REST_Response
+	 */
 	public function list( WP_REST_Request $request ): WP_REST_Response {
 		$args = $this->paging( $request, 'id' );
 

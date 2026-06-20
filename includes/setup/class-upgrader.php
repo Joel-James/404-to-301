@@ -105,19 +105,6 @@ class Upgrader extends Singleton {
 	}
 
 	/**
-	 * Mirror the activator's setup so the in-place upgrade path (where
-	 * the activation hook never fires) still installs tables and
-	 * migrates v3 options.
-	 *
-	 * Deliberately omits the `404_to_301_activated` action — addons
-	 * that care about "the plugin just changed version" should listen
-	 * for `404_to_301_upgraded` (fired above) instead.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return void
-	 */
-	/**
 	 * 4.0.0 → 4.0.1: migrate legacy status = 3 rows.
 	 *
 	 * In 4.0.0, linking a custom redirect set the log status to 3
@@ -140,23 +127,35 @@ class Upgrader extends Singleton {
 		$redirects_table = $wpdb->prefix . '404_to_301_redirects';
 
 		// Rows with status = 3 whose linked redirect is active → Fixed.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query(
-			"UPDATE `{$logs_table}` l
-			 INNER JOIN `{$redirects_table}` r ON r.id = l.redirect_id AND r.is_active = 1
-			 SET l.status = 2
-			 WHERE l.status = 3"
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table names are internal.
+			"UPDATE `{$logs_table}` l INNER JOIN `{$redirects_table}` r ON r.id = l.redirect_id AND r.is_active = 1 SET l.status = 2 WHERE l.status = 3"
 		);
 
 		// Remaining status = 3 rows (inactive or missing redirect) → Open.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is internal.
 			"UPDATE `{$logs_table}` SET status = 0 WHERE status = 3"
 		);
 
 		wp_cache_set( 'last_changed', microtime(), '404_to_301_logs' );
 	}
 
+	/**
+	 * Mirror the activator's setup so the in-place upgrade path (where
+	 * the activation hook never fires) still installs tables and
+	 * migrates v3 options.
+	 *
+	 * Deliberately omits the `404_to_301_activated` action — addons
+	 * that care about "the plugin just changed version" should listen
+	 * for `404_to_301_upgraded` (fired above) instead.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
 	private function run_first_boot_setup(): void {
 		if ( class_exists( '\\DuckDev\\FourNotFour\\Database\\Database' ) ) {
 			\DuckDev\FourNotFour\Database\Database::instance()->install_now();

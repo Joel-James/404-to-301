@@ -238,7 +238,7 @@ class Logs extends Model {
 		$status = self::STATUS_OPEN;
 		if ( $redirect_id > 0 ) {
 			$redirect = \DuckDev\FourNotFour\Models\Redirects::instance()->find( $redirect_id );
-			$status   = ( $redirect && (int) $redirect->is_active === 1 )
+			$status   = ( $redirect && 1 === (int) $redirect->is_active )
 				? self::STATUS_FIXED
 				: self::STATUS_OPEN;
 		}
@@ -288,17 +288,19 @@ class Logs extends Model {
 		// that the `last_changed` sentinel does not invalidate, so a
 		// stale row would otherwise come back even after the column has
 		// been cleared.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$ids = (array) $wpdb->get_col(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is internal.
 				"SELECT id FROM `{$table}` WHERE redirect_id = %d",
 				$redirect_id
 			)
 		);
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is internal.
 				"UPDATE `{$table}` SET redirect_id = NULL, status = %d, updated_at = %s WHERE redirect_id = %d",
 				self::STATUS_OPEN,
 				$now,
@@ -340,17 +342,19 @@ class Logs extends Model {
 		// Collect affected log ids before the UPDATE so we can bust the
 		// per-row BerlinDB cache afterwards. Without this, `find()` calls
 		// in the same request keep returning the pre-sync status.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$ids = (array) $wpdb->get_col(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is internal.
 				"SELECT id FROM `{$table}` WHERE redirect_id = %d",
 				$redirect_id
 			)
 		);
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is internal.
 				"UPDATE `{$table}` SET status = %d, updated_at = %s WHERE redirect_id = %d",
 				$status,
 				$now,
@@ -417,8 +421,9 @@ class Logs extends Model {
 
 		$table = $wpdb->prefix . '404_to_301_logs';
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is internal.
 			"SELECT status, COUNT(*) AS cnt FROM `{$table}` GROUP BY status",
 			ARRAY_A
 		);
@@ -438,8 +443,9 @@ class Logs extends Model {
 
 		// Count redirect_id IS NOT NULL separately — this is the ground
 		// truth for "has a custom redirect", independent of status.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$custom = (int) $wpdb->get_var(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is internal.
 			"SELECT COUNT(*) FROM `{$table}` WHERE redirect_id IS NOT NULL"
 		);
 

@@ -713,13 +713,10 @@ class Redirects extends Model {
 
 		$table = $wpdb->prefix . '404_to_301_redirects';
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$row = $wpdb->get_row(
-			"SELECT COUNT(*) AS total,
-			        SUM(is_active = 1) AS active,
-			        SUM(is_active = 0) AS inactive,
-			        SUM(hits) AS hits
-			 FROM `{$table}`",
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is internal.
+			"SELECT COUNT(*) AS total, SUM(is_active = 1) AS active, SUM(is_active = 0) AS inactive, SUM(hits) AS hits FROM `{$table}`",
 			ARRAY_A
 		);
 
@@ -749,9 +746,10 @@ class Redirects extends Model {
 
 		$logs_table = $wpdb->prefix . '404_to_301_logs';
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$result = $wpdb->get_var(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is internal.
 				"SELECT 1 FROM `{$logs_table}` WHERE redirect_id = %d LIMIT 1",
 				$redirect_id
 			)
@@ -760,6 +758,17 @@ class Redirects extends Model {
 		return ! is_null( $result );
 	}
 
+	/**
+	 * Whether at least one active redirect row exists.
+	 *
+	 * Reads the cached `has_active` flag (computed once on first use and
+	 * refreshed by {@see flush_cache()} on every mutation) so the front
+	 * router can short-circuit without hitting the DB on every request.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
 	public function has_active(): bool {
 		$cached = get_option( self::HAS_ACTIVE_OPTION, 'unset' );
 
