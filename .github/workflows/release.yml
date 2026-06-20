@@ -36,6 +36,10 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
+        with:
+          # Full history + tags so the changelog step can diff against
+          # the previous `v*` tag with `git log <prev>..<tag>`.
+          fetch-depth: 0
 
       # PHP 7.4 matches the plugin's declared floor (`Requires PHP`).
       # `tools: composer:v2, wp-cli` gives `composer` and `wp` in one
@@ -89,14 +93,70 @@ jobs:
       - name: Pack plugin
         run: npm run pack
 
+      # Build the release notes from `git log <prev-tag>..<tag>`.
+      # Subject-only bullet list with a linked commit SHA — clicking the
+      # SHA on the release page surfaces the full commit body, so long
+      # explanations don't bloat the release notes.
+      #
+      # Falls back to the entire history if no prior tag exists (first
+      # release on a new repo).
+      - name: Build changelog
+        id: changelog
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          # Make sure we have all tags — actions/checkout shallow-clones
+          # by default, which would hide the previous release tag.
+          git fetch --tags --force --quiet
+
+          prev_tag=$(git tag --list 'v*' --sort=-v:refname \
+            | grep -v "^${TAG}$" \
+            | head -n1 || true)
+
+          repo_url="${{ github.server_url }}/${{ github.repository }}"
+
+          if [[ -n "$prev_tag" ]]; then
+            echo "Diffing against previous tag: $prev_tag"
+            range="${prev_tag}..${TAG}"
+            header="## What's changed since ${prev_tag}"
+          else
+            echo "No previous tag — listing entire history."
+            range="${TAG}"
+            header="## What's changed"
+          fi
+
+          notes_file="$(mktemp)"
+          {
+            echo "$header"
+            echo
+            # Skip "Bump version …" commits — they're release plumbing,
+            # not changelog content.
+            git log "$range" --no-merges --reverse \
+              --pretty=format:"- %s ([\`%h\`](${repo_url}/commit/%H))" \
+              | grep -Ev '^- Bump version '
+            echo
+            echo
+            if [[ -n "$prev_tag" ]]; then
+              echo "**Full diff:** [${prev_tag}...${TAG}](${repo_url}/compare/${prev_tag}...${TAG})"
+            fi
+          } > "$notes_file"
+
+          echo "notes_file=${notes_file}" >> "$GITHUB_OUTPUT"
+          echo "----- release notes -----"
+          cat "$notes_file"
+          echo "-------------------------"
+
       # `gh release view` returns non-zero when the release is missing,
       # so the `||` branch handles the "create" path and the success
       # branch handles "update existing" with `--clobber`.
       - name: Create or update GitHub Release
         env:
-          GH_TOKEN: ${{ github.token }}
-          TAG:     ${{ steps.version.outputs.tag }}
-          VERSION: ${{ steps.version.outputs.version }}
+          GH_TOKEN:   ${{ github.token }}
+          TAG:        ${{ steps.version.outputs.tag }}
+          VERSION:    ${{ steps.version.outputs.version }}
+          NOTES_FILE: ${{ steps.changelog.outputs.notes_file }}
         run: |
           set -euo pipefail
 
@@ -108,11 +168,12 @@ jobs:
           fi
 
           if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release ${TAG} exists — replacing the ZIP asset."
+            echo "Release ${TAG} exists — replacing the ZIP asset and refreshing notes."
             gh release upload "$TAG" "$zip" --clobber
+            gh release edit   "$TAG" --notes-file "$NOTES_FILE"
           else
             echo "Creating release ${TAG}."
             gh release create "$TAG" "$zip" \
               --title "$TAG" \
-              --generate-notes
+              --notes-file "$NOTES_FILE"
           fi
