@@ -124,8 +124,8 @@ class Logs extends Schema {
 			'sortable'   => true,
 		),
 
-		// Lifecycle marker:
-		// 0 = open, 1 = ignored, 2 = fixed, 3 = custom redirect set.
+		// Lifecycle marker: 0 = open, 1 = ignored, 2 = fixed.
+		// Whether a redirect is linked is tracked by redirect_id, not status.
 		array(
 			'name'     => 'status',
 			'type'     => 'tinyint',

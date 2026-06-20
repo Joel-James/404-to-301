@@ -101,8 +101,8 @@ class Log extends Row {
 	public $redirect_id = null;
 
 	/**
-	 * Lifecycle status:
-	 *   0 = open, 1 = ignored, 2 = fixed, 3 = custom redirect set.
+	 * Lifecycle status: 0 = open, 1 = ignored, 2 = fixed.
+	 * Whether a redirect is linked is tracked by redirect_id, not this field.
 	 *
 	 * @since 4.0.0
 	 * @var int

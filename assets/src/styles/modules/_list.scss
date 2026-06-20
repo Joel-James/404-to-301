@@ -203,7 +203,14 @@ $prefix: '#{variables.$prefix}';
 	.#{$prefix}-status-fixed    { color: #008a20; font-weight: 600; }
 	.#{$prefix}-status-ignored  { color: #8c8f94; }
 	.#{$prefix}-status-open     { color: #2271b1; }
-	.#{$prefix}-status-custom   { color: #7e3ab1; font-weight: 600; }
+
+	// Status cell wrapper — lays out the status icon and optional
+	// redirect badge side by side.
+	.#{$prefix}-status-cell {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+	}
 
 	// Icon variant — status column renders an icon instead of text.
 	// `fill: currentColor` lets the per-status color rules above
@@ -212,6 +219,19 @@ $prefix: '#{variables.$prefix}';
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+
+		svg {
+			fill: currentColor;
+		}
+	}
+
+	// Small badge shown when a log has a linked custom redirect.
+	// Intentionally subtle — it supplements the status icon rather
+	// than competing with it.
+	.#{$prefix}-status-redirect-badge {
+		display: inline-flex;
+		align-items: center;
+		color: #7e3ab1;
 
 		svg {
 			fill: currentColor;
@@ -278,7 +298,6 @@ $prefix: '#{variables.$prefix}';
 		&--open    { background: #fff3cd; color: #856404; }
 		&--ignored { background: #f6f7f7; color: #1d2327; }
 		&--fixed   { background: #d4edda; color: #155724; }
-		&--custom  { background: #eef2ff; color: #4338ca; }
 	}
 
 	&__notice {

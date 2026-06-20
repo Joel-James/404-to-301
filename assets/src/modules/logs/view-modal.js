@@ -36,7 +36,7 @@ const ViewDetails = ({ items, closeModal }) => {
 		}
 	}
 
-	const statusSlug = ['open', 'ignored', 'fixed', 'custom'][log.status] ?? 'open'
+	const statusSlug = ['open', 'ignored', 'fixed'][log.status] ?? 'open'
 	const statusLabel = log.status_label || statusSlug
 
 	return (

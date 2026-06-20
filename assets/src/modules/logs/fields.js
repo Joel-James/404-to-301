@@ -8,14 +8,12 @@ const statusElements = [
 	{ value: 0, label: __('Open', '404-to-301') },
 	{ value: 1, label: __('Ignored', '404-to-301') },
 	{ value: 2, label: __('Fixed', '404-to-301') },
-	{ value: 3, label: __('Custom redirect', '404-to-301') },
 ]
 
 const statusMeta = {
 	0: { slug: 'open', icon: notFound },
 	1: { slug: 'ignored', icon: unseen },
 	2: { slug: 'fixed', icon: published },
-	3: { slug: 'custom', icon: shuffle },
 }
 
 // Preset ranges for the "First seen" filter. DataViews has no date
@@ -100,16 +98,31 @@ export const fields = [
 				statusElements.find((el) => el.value === item.status)?.label ||
 				item.status_label ||
 				''
-			const meta = statusMeta[item.status] || statusMeta[2]
+			const meta = statusMeta[item.status] || statusMeta[0]
+			const hasRedirect = item.redirect_id != null && item.redirect_id > 0
 			return (
-				<Tooltip text={label}>
-					<span
-						className={`d404-status d404-status-icon d404-status-${meta.slug}`}
-						aria-label={label}
-					>
-						<Icon icon={meta.icon} size={20} />
-					</span>
-				</Tooltip>
+				<span className="d404-status-cell">
+					<Tooltip text={label}>
+						<span
+							className={`d404-status d404-status-icon d404-status-${meta.slug}`}
+							aria-label={label}
+						>
+							<Icon icon={meta.icon} size={20} />
+						</span>
+					</Tooltip>
+					{hasRedirect && (
+						<Tooltip
+							text={__('Has custom redirect', '404-to-301')}
+						>
+							<span
+								className="d404-status-redirect-badge"
+								aria-label={__('Has custom redirect', '404-to-301')}
+							>
+								<Icon icon={shuffle} size={14} />
+							</span>
+						</Tooltip>
+					)}
+				</span>
 			)
 		},
 	},

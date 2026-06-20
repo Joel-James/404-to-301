@@ -18,6 +18,7 @@ namespace DuckDev\FourNotFour\Api;
 defined( 'ABSPATH' ) || exit;
 
 use DuckDev\FourNotFour\Database\Rows\Redirect as RedirectRow;
+use DuckDev\FourNotFour\Models\Logs as LogsModel;
 use DuckDev\FourNotFour\Models\Redirects as RedirectsModel;
 use DuckDev\FourNotFour\Utils\Helpers;
 use WP_Error;
@@ -273,6 +274,12 @@ class Redirects extends Endpoint {
 
 		if ( ! empty( $data ) ) {
 			RedirectsModel::instance()->update( $id, $data );
+
+			// When is_active changes, sync the status of every log that
+			// is linked to this redirect so the overview stays accurate.
+			if ( isset( $data['is_active'] ) ) {
+				LogsModel::instance()->sync_status_for_redirect( $id, (bool) $data['is_active'] );
+			}
 		}
 
 		$row = RedirectsModel::instance()->find( $id );
@@ -366,10 +373,15 @@ class Redirects extends Endpoint {
 			return $this->respond( array( 'updated' => 0 ) );
 		}
 
-		$updated = 0;
+		$updated    = 0;
+		$logs_model = isset( $data['is_active'] ) ? LogsModel::instance() : null;
+
 		foreach ( $ids as $id ) {
 			if ( $id > 0 && $model->update( $id, $data ) ) {
 				++$updated;
+				if ( $logs_model ) {
+					$logs_model->sync_status_for_redirect( $id, (bool) $data['is_active'] );
+				}
 			}
 		}
 

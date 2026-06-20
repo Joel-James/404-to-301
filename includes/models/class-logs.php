@@ -32,7 +32,6 @@ class Logs extends Model {
 	const STATUS_OPEN    = 0;
 	const STATUS_IGNORED = 1;
 	const STATUS_FIXED   = 2;
-	const STATUS_CUSTOM  = 3;
 
 	/**
 	 * Per-row override value-space (matches the schema). Kept here so
@@ -205,7 +204,6 @@ class Logs extends Model {
 			self::STATUS_OPEN,
 			self::STATUS_IGNORED,
 			self::STATUS_FIXED,
-			self::STATUS_CUSTOM,
 		);
 
 		if ( ! in_array( $status, $allowed, true ) ) {
@@ -233,13 +231,21 @@ class Logs extends Model {
 	 * @return bool
 	 */
 	public function link_redirect( int $id, int $redirect_id ): bool {
+		// Status follows the redirect's active state: Fixed when the
+		// redirect is live (it handles the 404), Open when it isn't
+		// (so the admin knows it still needs attention). Unlinking
+		// always reopens the log.
+		$status = self::STATUS_OPEN;
+		if ( $redirect_id > 0 ) {
+			$redirect = \DuckDev\FourNotFour\Models\Redirects::instance()->find( $redirect_id );
+			$status   = ( $redirect && (int) $redirect->is_active === 1 )
+				? self::STATUS_FIXED
+				: self::STATUS_OPEN;
+		}
+
 		$data = array(
 			'redirect_id' => $redirect_id > 0 ? $redirect_id : null,
-			// A linked redirect promotes the row to the dedicated
-			// `custom redirect` status so it surfaces with its own
-			// badge / filter on the UI. Unlinking sends it back to
-			// `open` so the admin can decide what to do next.
-			'status'      => $redirect_id > 0 ? self::STATUS_CUSTOM : self::STATUS_OPEN,
+			'status'      => $status,
 			'updated_at'  => current_time( 'mysql', true ),
 		);
 
@@ -252,6 +258,44 @@ class Logs extends Model {
 		}
 
 		return $this->update( $id, $data );
+	}
+
+	/**
+	 * Sync the status of every log linked to a redirect when its
+	 * `is_active` flag changes.
+	 *
+	 * Active → Fixed (the redirect handles it).
+	 * Inactive → Open (needs attention again).
+	 *
+	 * @since 4.0.1
+	 *
+	 * @param int  $redirect_id Redirect row id.
+	 * @param bool $is_active   New active state.
+	 *
+	 * @return void
+	 */
+	public function sync_status_for_redirect( int $redirect_id, bool $is_active ): void {
+		if ( $redirect_id <= 0 ) {
+			return;
+		}
+
+		global $wpdb;
+
+		$status = $is_active ? self::STATUS_FIXED : self::STATUS_OPEN;
+		$table  = $wpdb->prefix . '404_to_301_logs';
+		$now    = current_time( 'mysql', true );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE `{$table}` SET status = %d, updated_at = %s WHERE redirect_id = %d",
+				$status,
+				$now,
+				$redirect_id
+			)
+		);
+
+		wp_cache_set( 'last_changed', microtime(), '404_to_301_logs' );
 	}
 
 	/**
@@ -317,7 +361,6 @@ class Logs extends Model {
 			self::STATUS_OPEN    => 0,
 			self::STATUS_IGNORED => 0,
 			self::STATUS_FIXED   => 0,
-			self::STATUS_CUSTOM  => 0,
 		);
 
 		foreach ( (array) $rows as $row ) {
@@ -327,12 +370,19 @@ class Logs extends Model {
 			}
 		}
 
+		// Count redirect_id IS NOT NULL separately — this is the ground
+		// truth for "has a custom redirect", independent of status.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$custom = (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM `{$table}` WHERE redirect_id IS NOT NULL"
+		);
+
 		return array(
 			'total'   => array_sum( $counts ),
 			'open'    => $counts[ self::STATUS_OPEN ],
 			'ignored' => $counts[ self::STATUS_IGNORED ],
 			'fixed'   => $counts[ self::STATUS_FIXED ],
-			'custom'  => $counts[ self::STATUS_CUSTOM ],
+			'custom'  => $custom,
 		);
 	}
 

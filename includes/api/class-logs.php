@@ -126,7 +126,7 @@ class Logs extends Endpoint {
 					'args'                => array(
 						'status'            => array(
 							'type' => 'integer',
-							'enum' => array( 0, 1, 2, 3 ),
+							'enum' => array( 0, 1, 2 ),
 						),
 						'redirect_id'       => array( 'type' => 'integer' ),
 						'override_redirect' => array(
@@ -408,9 +408,7 @@ class Logs extends Endpoint {
 			'search'    => array( 'type' => 'string' ),
 			'status'    => array(
 				'type' => 'integer',
-				// Includes 3 (custom redirect) so the Logs list can filter
-				// by it — the table exposes all four statuses as a filter.
-				'enum' => array( 0, 1, 2, 3 ),
+				'enum' => array( 0, 1, 2 ),
 			),
 			'date_from' => array( 'type' => 'string' ),
 			'date_to'   => array( 'type' => 'string' ),
@@ -435,7 +433,6 @@ class Logs extends Endpoint {
 			LogsModel::STATUS_OPEN    => __( 'Open', '404-to-301' ),
 			LogsModel::STATUS_IGNORED => __( 'Ignored', '404-to-301' ),
 			LogsModel::STATUS_FIXED   => __( 'Fixed', '404-to-301' ),
-			LogsModel::STATUS_CUSTOM  => __( 'Custom redirect', '404-to-301' ),
 		);
 
 		return array(
