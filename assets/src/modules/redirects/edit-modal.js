@@ -6,6 +6,7 @@ import {
 	FlexItem,
 	Modal,
 	Notice,
+	TextControl,
 	__experimentalVStack as VStack,
 } from '@wordpress/components'
 import { DataForm, isItemValid } from '@wordpress/dataviews'
@@ -149,18 +150,19 @@ const EditRedirect = ({
 					)}
 					{lockSource && (
 						<div className="d404-source-locked">
-							<span className="d404-source-locked__label">
-								{__('Source URL or pattern', '404-to-301')}
-							</span>
-							<code className="d404-source-locked__value">
-								{form.source}
-							</code>
-							<span className="d404-source-locked__hint">
+							<TextControl
+								label={__('Source URL or pattern', '404-to-301')}
+								value={form.source}
+								onChange={() => {}}
+								disabled
+								__nextHasNoMarginBottom
+							/>
+							<p className="d404-source-locked__notice">
 								{__(
 									'Source is locked because this redirect is linked to a 404 log.',
 									'404-to-301',
 								)}
-							</span>
+							</p>
 						</div>
 					)}
 					<DataForm
