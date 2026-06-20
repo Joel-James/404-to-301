@@ -141,11 +141,11 @@ class Catalog extends Singleton {
 	 * presentational data — there's no license and no Freemius
 	 * registration.
 	 *
-	 * Until the wp.org plugin review team approves the addons, the
-	 * rows below point at their GitHub repos (download = Releases
-	 * page, icon/banner = `.wporg` folder in the repo). Once an addon
-	 * lands on wp.org, swap its row back to the `ps.w.org` asset URLs
-	 * and the wp.org install/update flow.
+	 * Rows below point at the addon's wp.org listing — icon, banner and
+	 * download URL are derived from the slug against the `ps.w.org` CDN
+	 * and `wordpress.org/plugins/` so they pick up whatever artwork is
+	 * currently published, and the download/install link goes through
+	 * the wp.org install flow (one-click install + auto-updates).
 	 *
 	 * `id` is a negative integer derived from a CRC32 of the slug so
 	 * it can't collide with a Freemius project id (those are positive).
@@ -198,15 +198,20 @@ class Catalog extends Singleton {
 				continue;
 			}
 
-			$repo = "https://raw.githubusercontent.com/duckdev/{$slug}/main/.wporg";
+			// wp.org publishes plugin marketing assets to the `ps.w.org`
+			// CDN at well-known paths derived from the plugin slug. The
+			// 128px icon variant matches the addon card's render size;
+			// the 772×250 banner is the standard regular size, with
+			// 1544×500 as the retina/large variant.
+			$assets = "https://ps.w.org/{$slug}/assets";
 
 			$items[] = array(
 				'id'                => -abs( (int) sprintf( '%u', crc32( $slug ) ) % PHP_INT_MAX ),
 				'source'            => 'wporg',
 				'slug'              => $slug,
 				'title'             => (string) $addon['title'],
-				'icon'              => (string) ( $addon['icon'] ?? "{$repo}/icon.png" ),
-				'link'              => (string) ( $addon['link'] ?? "https://github.com/duckdev/{$slug}/releases" ),
+				'icon'              => (string) ( $addon['icon'] ?? "{$assets}/icon-128x128.png" ),
+				'link'              => (string) ( $addon['link'] ?? "https://wordpress.org/plugins/{$slug}/" ),
 				'description'       => (string) ( $addon['description'] ?? '' ),
 				'homepage'          => (string) ( $addon['homepage'] ?? "https://duckdev.com/addon/{$slug}/" ),
 				'is_premium'        => false,
@@ -214,8 +219,8 @@ class Catalog extends Singleton {
 				'is_active'         => $this->is_wporg_addon_active( $slug ),
 				'is_license_active' => false,
 				'license_key'       => '',
-				'banner'            => (string) ( $addon['banner'] ?? "{$repo}/banner.png" ),
-				'banner_large'      => (string) ( $addon['banner_large'] ?? "{$repo}/banner-large.png" ),
+				'banner'            => (string) ( $addon['banner'] ?? "{$assets}/banner-772x250.png" ),
+				'banner_large'      => (string) ( $addon['banner_large'] ?? "{$assets}/banner-1544x500.png" ),
 			);
 		}
 
