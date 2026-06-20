@@ -124,6 +124,17 @@ Read the [documentation](https://docs.duckdev.com/404-to-301/) or post on the [s
 
 == Changelog ==
 
+= 4.0.1 =
+* New: Summary card strip above the Logs and Redirects tables for an at-a-glance overview.
+* New: "Purge all logs" action in Settings → Tools → Danger Zone with a confirmation modal.
+* New: Custom redirect modal on the Logs page now also lets you edit an already-linked redirect.
+* Improve: Redesigned log "View details" modal with a cleaner table layout and prominent 404 path.
+* Improve: Log status is decoupled from custom redirect linkage — the redirect link is shown as a separate badge so the workflow status (open / ignored / fixed) stays meaningful.
+* Improve: Linking a custom redirect now sets the log to Fixed only when the redirect is active; toggling a redirect's active state syncs every linked log automatically.
+* Improve: Deleting a custom redirect now unlinks any logs that referenced it.
+* Improve: Source field is locked when editing a redirect that is linked to a 404 log, so the link can't be broken accidentally.
+* Fix: Stale per-row cache on logs after bulk status syncs.
+
 = 4.0.0 =
 * New: Custom redirect manager with exact, prefix and regex matching and per-redirect redirect type.
 * New: Active/inactive toggle, hit counter and last-hit timestamp on every redirect.
@@ -143,6 +154,9 @@ Read the [documentation](https://docs.duckdev.com/404-to-301/) or post on the [s
 For the full release history, see the [changelog](https://docs.duckdev.com/404-to-301/changelog).
 
 == Upgrade Notice ==
+
+= 4.0.1 =
+A maintenance release with UX polish, a Purge-all-logs tool and a one-time data migration that converts legacy "custom redirect" log rows to the new status model.
 
 = 4.0.0 =
 A major release with a brand-new redirect manager, modern admin, faster 404 logging, REST API and WP-CLI support. Back up your database before updating.
