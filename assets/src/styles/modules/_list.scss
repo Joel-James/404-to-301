@@ -424,3 +424,21 @@ $prefix: '#{variables.$prefix}';
 		margin-top: 14px;
 	}
 }
+
+// Locked source field in the redirect edit modal — shown when the
+// redirect is linked to a 404 log and the source must not change.
+// Lives here (not settings.scss) because the modal renders on both
+// the Logs and Redirects pages, which both include this file.
+.#{$prefix}-source-locked {
+	margin-bottom: 8px;
+
+	&__notice {
+		margin: 6px 0 0;
+		padding: 8px 12px;
+		border-radius: 2px;
+		border-left: 3px solid #b26200;
+		background: #fcf9e8;
+		color: #1e1e1e;
+		font-size: 13px;
+	}
+}

@@ -204,18 +204,3 @@ $prefix: '#{variables.$prefix}';
 	}
 }
 
-// Locked source field in the redirect edit modal — shown when the
-// redirect is linked to a 404 log and the source must not change.
-.#{variables.$prefix}-source-locked {
-	margin-bottom: 8px;
-
-	&__notice {
-		margin: 6px 0 0;
-		padding: 8px 12px;
-		border-radius: 2px;
-		border-left: 3px solid #b26200;
-		background: #fcf9e8;
-		color: #1e1e1e;
-		font-size: 13px;
-	}
-}
