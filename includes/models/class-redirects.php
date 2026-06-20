@@ -731,6 +731,35 @@ class Redirects extends Model {
 		);
 	}
 
+	/**
+	 * Check whether at least one log row is linked to the given redirect.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @param int $redirect_id Redirect row id.
+	 *
+	 * @return bool
+	 */
+	public function has_linked_log( int $redirect_id ): bool {
+		if ( $redirect_id <= 0 ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		$logs_table = $wpdb->prefix . '404_to_301_logs';
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$result = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT 1 FROM `{$logs_table}` WHERE redirect_id = %d LIMIT 1",
+				$redirect_id
+			)
+		);
+
+		return ! is_null( $result );
+	}
+
 	public function has_active(): bool {
 		$cached = get_option( self::HAS_ACTIVE_OPTION, 'unset' );
 

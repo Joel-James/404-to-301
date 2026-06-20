@@ -261,6 +261,42 @@ class Logs extends Model {
 	}
 
 	/**
+	 * Clear the redirect link from every log that references a deleted redirect.
+	 *
+	 * Called after a redirect row is deleted so orphaned logs don't retain
+	 * a stale `redirect_id`. Status is reset to Open so the log resurfaces
+	 * for review.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @param int $redirect_id Redirect row id that was just deleted.
+	 *
+	 * @return void
+	 */
+	public function unlink_redirect( int $redirect_id ): void {
+		if ( $redirect_id <= 0 ) {
+			return;
+		}
+
+		global $wpdb;
+
+		$table = $wpdb->prefix . '404_to_301_logs';
+		$now   = current_time( 'mysql', true );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE `{$table}` SET redirect_id = NULL, status = %d, updated_at = %s WHERE redirect_id = %d",
+				self::STATUS_OPEN,
+				$now,
+				$redirect_id
+			)
+		);
+
+		wp_cache_set( 'last_changed', microtime(), '404_to_301_logs' );
+	}
+
+	/**
 	 * Sync the status of every log linked to a redirect when its
 	 * `is_active` flag changes.
 	 *

@@ -162,6 +162,7 @@ const List = ({
 			{editing && (
 				<EditRedirect
 					redirect={editing}
+					lockSource={editing?.has_linked_log === true}
 					onClose={() => setEditing(null)}
 					onSave={(data) => updateRedirect(editing.id, data)}
 				/>

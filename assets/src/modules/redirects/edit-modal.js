@@ -11,6 +11,13 @@ import {
 import { DataForm, isItemValid } from '@wordpress/dataviews'
 import { redirectFormFields, redirectFormLayout } from './form-fields'
 
+// Form fields and layout with `source` excluded — used when the source is locked.
+const formFieldsNoSource = redirectFormFields.filter((f) => f.id !== 'source')
+const formLayoutNoSource = {
+	...redirectFormLayout,
+	fields: redirectFormLayout.fields.filter((id) => id !== 'source'),
+}
+
 /**
  * Hydrate the form state with the row being edited (or `initialValues`
  * when creating). Pulled out so the `useEffect` below shares the exact
@@ -43,12 +50,19 @@ const buildSeed = (seed = {}) => ({
  *                                            launches it with a 404 path seeded
  *                                            into `source`). Ignored when
  *                                            `redirect` is set.
+ * @param {boolean}       props.lockSource    When true the source field is shown
+ *                                            as read-only text and excluded from
+ *                                            the editable form. Automatically
+ *                                            applied when `redirect.has_linked_log`
+ *                                            is true so the field stays locked
+ *                                            even when not opened from the Logs page.
  * @param {Function}      props.onSave        `(payload) => Promise<boolean>`
  * @param {Function}      props.onClose       Close handler.
  */
 const EditRedirect = ({
 	redirect = null,
 	initialValues = null,
+	lockSource = false,
 	onSave,
 	onClose,
 }) => {
@@ -68,11 +82,15 @@ const EditRedirect = ({
 	}, [redirect])
 
 	// `isItemValid` runs every field's `isValid` callback against the
-	// current draft. The submit button stays disabled until they all
-	// pass — currently just the "source must be non-empty" check.
+	// current draft. When the source is locked it's excluded from the
+	// editable fields but still present in `form` state, so validation
+	// still passes without the user having to touch it.
+	const activeFields = lockSource ? formFieldsNoSource : redirectFormFields
+	const activeLayout = lockSource ? formLayoutNoSource : redirectFormLayout
+
 	const canSubmit = useMemo(
-		() => isItemValid(form, redirectFormFields, redirectFormLayout),
-		[form],
+		() => isItemValid(form, activeFields, activeLayout),
+		[form, activeFields, activeLayout],
 	)
 
 	// DataForm emits partial edits — merge them into the current
@@ -129,10 +147,26 @@ const EditRedirect = ({
 							{submitError.message}
 						</Notice>
 					)}
+					{lockSource && (
+						<div className="d404-source-locked">
+							<span className="d404-source-locked__label">
+								{__('Source URL or pattern', '404-to-301')}
+							</span>
+							<code className="d404-source-locked__value">
+								{form.source}
+							</code>
+							<span className="d404-source-locked__hint">
+								{__(
+									'Source is locked because this redirect is linked to a 404 log.',
+									'404-to-301',
+								)}
+							</span>
+						</div>
+					)}
 					<DataForm
 						data={form}
-						fields={redirectFormFields}
-						form={redirectFormLayout}
+						fields={activeFields}
+						form={activeLayout}
 						onChange={handleChange}
 					/>
 				</VStack>

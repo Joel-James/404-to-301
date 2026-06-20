@@ -304,6 +304,9 @@ class Redirects extends Endpoint {
 			return $this->error( 'rest_delete_failed', __( 'Could not delete the redirect.', '404-to-301' ), 500 );
 		}
 
+		// Unlink any logs that were pointing at this redirect.
+		LogsModel::instance()->unlink_redirect( $id );
+
 		return $this->respond(
 			array(
 				'id'      => $id,
@@ -322,13 +325,16 @@ class Redirects extends Endpoint {
 	 * @return WP_REST_Response
 	 */
 	public function bulk_delete( WP_REST_Request $request ): WP_REST_Response {
-		$ids     = (array) $request->get_param( 'ids' );
-		$model   = RedirectsModel::instance();
-		$deleted = 0;
+		$ids        = (array) $request->get_param( 'ids' );
+		$model      = RedirectsModel::instance();
+		$logs_model = LogsModel::instance();
+		$deleted    = 0;
 
 		foreach ( $ids as $id ) {
-			if ( $model->delete( (int) $id ) ) {
+			$int_id = (int) $id;
+			if ( $model->delete( $int_id ) ) {
 				++$deleted;
+				$logs_model->unlink_redirect( $int_id );
 			}
 		}
 
@@ -474,6 +480,7 @@ class Redirects extends Endpoint {
 			'modified_by_name' => $modified_by_name,
 			'created_at'       => $row->created_at,
 			'updated_at'       => $row->updated_at,
+			'has_linked_log'   => RedirectsModel::instance()->has_linked_log( (int) $row->id ),
 		);
 	}
 

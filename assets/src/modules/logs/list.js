@@ -9,7 +9,6 @@ import { defaultView } from './view'
 import DeleteConfirmation from './delete-modal'
 import ViewDetails from './view-modal'
 import ConfigureLog from './configure-modal'
-import CustomRedirectModal from './custom-redirect-modal'
 import useLogs from '../../hooks/use-logs'
 import usePersistedView from '../../hooks/persisted-view'
 import { BulkActions, EmptyState, isViewFiltered } from '../../common'
@@ -27,12 +26,6 @@ const getItemId = (item) => String(item.id)
 const List = () => {
 	const [view, setView] = usePersistedView(STORAGE_KEY, defaultView)
 	const [selection, setSelection] = useState([])
-	// "Custom redirect" launches the Redirects edit-modal — which
-	// supplies its own <Modal> chrome. DataViews' `RenderModal` would
-	// wrap that in a second modal, so we mount it from the page
-	// instead, gated by `customRedirectLog`.
-	const [customRedirectLog, setCustomRedirectLog] = useState(null)
-
 	const {
 		items,
 		total,
@@ -95,14 +88,24 @@ const List = () => {
 				),
 			},
 			{
-				// Opens the Redirects "create" modal (seeded with the
-				// log's path), creates the redirect, then links it
-				// back to this log row — same flow as the legacy
-				// plugin's "Custom redirect" inline editor.
+				// Navigate to the Redirects page with query params so the
+				// user can create or edit the redirect there. The source
+				// field is pre-filled and locked to the log's 404 path.
 				id: 'custom-redirect',
 				label: __('Custom redirect', '404-to-301'),
 				supportsBulk: false,
-				callback: ([row]) => setCustomRedirectLog(row),
+				callback: ([row]) => {
+					const base = window?.d404?.adminUrl || ''
+					const root = base.replace(/wp-admin\/?$/, 'wp-admin/')
+					const redirectsPage = `${root}admin.php?page=404-to-301-redirects`
+
+					if (row.redirect_id) {
+						window.location.href = `${redirectsPage}&redirect_id=${row.redirect_id}&lock_source=1`
+					} else {
+						const source = encodeURIComponent(row.url || '')
+						window.location.href = `${redirectsPage}&create=1&source=${source}&lock_source=1`
+					}
+				},
 			},
 			// Status mutations hide themselves when the row is already
 			// in that status — keeps the row dropdown from listing
@@ -223,13 +226,6 @@ const List = () => {
 				onClear={clearSelection}
 			/>
 
-			{customRedirectLog && (
-				<CustomRedirectModal
-					log={customRedirectLog}
-					onClose={() => setCustomRedirectLog(null)}
-					onSaved={refresh}
-				/>
-			)}
 		</>
 	)
 }

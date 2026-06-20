@@ -203,3 +203,36 @@ $prefix: '#{variables.$prefix}';
 		color: #1e1e1e;
 	}
 }
+
+// Locked source field in the redirect edit modal — shown when the
+// redirect is linked to a 404 log and the source must not change.
+.#{variables.$prefix}-source-locked {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin-bottom: 8px;
+
+	&__label {
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+		color: #757575;
+	}
+
+	&__value {
+		display: block;
+		padding: 6px 10px;
+		background: #f6f7f7;
+		border: 1px solid #dcdcde;
+		border-radius: 3px;
+		font-size: 13px;
+		word-break: break-all;
+		color: #1e1e1e;
+	}
+
+	&__hint {
+		font-size: 12px;
+		color: #757575;
+		font-style: italic;
+	}
+}
