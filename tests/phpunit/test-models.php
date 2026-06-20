@@ -178,20 +178,287 @@ class ModelsTest extends WP_UnitTestCase {
 	/**
 	 * Linking a redirect flips status to CUSTOM; unlinking sends it back to OPEN.
 	 */
-	public function test_logs_link_redirect_flips_status_to_custom_and_back(): void {
-		$model = Logs::instance();
-		$id    = $model->record_hit( array( 'url' => '/link-me' ) );
+	public function test_logs_link_redirect_to_active_redirect_sets_status_fixed(): void {
+		$logs      = Logs::instance();
+		$redirects = Redirects::instance();
 
-		$this->assertTrue( $model->link_redirect( $id, 12 ) );
-		$row = $model->find( $id );
-		$this->assertSame( Logs::STATUS_CUSTOM, (int) $row->status );
-		$this->assertSame( 12, (int) $row->redirect_id );
+		$log_id      = $logs->record_hit( array( 'url' => '/link-me' ) );
+		$redirect_id = $redirects->create(
+			array(
+				'source'      => '/link-me',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
 
-		// Passing 0 clears the link and resets the status back to open.
-		$this->assertTrue( $model->link_redirect( $id, 0 ) );
-		$row = $model->find( $id );
+		$this->assertTrue( $logs->link_redirect( $log_id, $redirect_id ) );
+		$row = $logs->find( $log_id );
+		$this->assertSame( Logs::STATUS_FIXED, (int) $row->status );
+		$this->assertSame( $redirect_id, (int) $row->redirect_id );
+
+		// Unlinking always reopens the log.
+		$this->assertTrue( $logs->link_redirect( $log_id, 0 ) );
+		$row = $logs->find( $log_id );
 		$this->assertSame( Logs::STATUS_OPEN, (int) $row->status );
 		$this->assertNull( $row->redirect_id );
+	}
+
+	/**
+	 * Linking to an inactive redirect keeps the log Open (the redirect
+	 * isn't actually handling the 404 yet).
+	 */
+	public function test_logs_link_redirect_to_inactive_redirect_keeps_status_open(): void {
+		$logs      = Logs::instance();
+		$redirects = Redirects::instance();
+
+		$log_id      = $logs->record_hit( array( 'url' => '/inactive-link' ) );
+		$redirect_id = $redirects->create(
+			array(
+				'source'      => '/inactive-link',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 0,
+			)
+		);
+
+		$this->assertTrue( $logs->link_redirect( $log_id, $redirect_id ) );
+		$row = $logs->find( $log_id );
+		$this->assertSame( Logs::STATUS_OPEN, (int) $row->status );
+		$this->assertSame( $redirect_id, (int) $row->redirect_id );
+	}
+
+	/**
+	 * `sync_status_for_redirect` flips every linked log's status when a
+	 * redirect's active state changes — active → Fixed, inactive → Open.
+	 */
+	public function test_logs_sync_status_for_redirect_updates_all_linked_rows(): void {
+		$logs      = Logs::instance();
+		$redirects = Redirects::instance();
+
+		$redirect_id = $redirects->create(
+			array(
+				'source'      => '/sync-source',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		$log_a = $logs->record_hit( array( 'url' => '/a' ) );
+		$log_b = $logs->record_hit( array( 'url' => '/b' ) );
+		$logs->link_redirect( $log_a, $redirect_id );
+		$logs->link_redirect( $log_b, $redirect_id );
+
+		// Both linked logs start as Fixed because the redirect is active.
+		$this->assertSame( Logs::STATUS_FIXED, (int) $logs->find( $log_a )->status );
+		$this->assertSame( Logs::STATUS_FIXED, (int) $logs->find( $log_b )->status );
+
+		// Flip the redirect to inactive — every linked log should reopen.
+		$logs->sync_status_for_redirect( $redirect_id, false );
+		$this->assertSame( Logs::STATUS_OPEN, (int) $logs->find( $log_a )->status );
+		$this->assertSame( Logs::STATUS_OPEN, (int) $logs->find( $log_b )->status );
+
+		// And back to Fixed when re-activated.
+		$logs->sync_status_for_redirect( $redirect_id, true );
+		$this->assertSame( Logs::STATUS_FIXED, (int) $logs->find( $log_a )->status );
+		$this->assertSame( Logs::STATUS_FIXED, (int) $logs->find( $log_b )->status );
+	}
+
+	/**
+	 * `unlink_redirect` clears `redirect_id` and resets status to Open
+	 * on every log row pointing at the deleted redirect.
+	 */
+	public function test_logs_unlink_redirect_clears_linked_rows(): void {
+		$logs      = Logs::instance();
+		$redirects = Redirects::instance();
+
+		$redirect_id = $redirects->create(
+			array(
+				'source'      => '/unlink-source',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		$log_id = $logs->record_hit( array( 'url' => '/unlink-me' ) );
+		$logs->link_redirect( $log_id, $redirect_id );
+		$this->assertSame( $redirect_id, (int) $logs->find( $log_id )->redirect_id );
+
+		$logs->unlink_redirect( $redirect_id );
+
+		$row = $logs->find( $log_id );
+		$this->assertNull( $row->redirect_id );
+		$this->assertSame( Logs::STATUS_OPEN, (int) $row->status );
+	}
+
+	/**
+	 * Invalid redirect ids (≤ 0) are no-ops for both sync and unlink.
+	 */
+	public function test_logs_sync_and_unlink_ignore_invalid_redirect_id(): void {
+		$logs = Logs::instance();
+
+		// Pure smoke check — neither should throw or return anything.
+		$logs->sync_status_for_redirect( 0, true );
+		$logs->sync_status_for_redirect( -1, false );
+		$logs->unlink_redirect( 0 );
+		$logs->unlink_redirect( -1 );
+
+		$this->assertTrue( true );
+	}
+
+	/**
+	 * `purge_all` truncates the logs table without touching redirects.
+	 */
+	public function test_logs_purge_all_truncates_logs_only(): void {
+		$logs      = Logs::instance();
+		$redirects = Redirects::instance();
+
+		$logs->record_hit( array( 'url' => '/purge-1' ) );
+		$logs->record_hit( array( 'url' => '/purge-2' ) );
+		$redirect_id = $redirects->create(
+			array(
+				'source'      => '/keep-me',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		$this->assertTrue( $logs->purge_all() );
+
+		// Logs are gone, the redirect survives.
+		$this->assertNull( $logs->get_by_url( '/purge-1' ) );
+		$this->assertNull( $logs->get_by_url( '/purge-2' ) );
+		$this->assertNotNull( $redirects->find( $redirect_id ) );
+	}
+
+	/**
+	 * `Logs::summary` returns counts grouped by status plus a `custom`
+	 * count of rows with a non-null `redirect_id`.
+	 */
+	public function test_logs_summary_returns_status_and_custom_counts(): void {
+		$logs      = Logs::instance();
+		$redirects = Redirects::instance();
+
+		// Custom plugin tables aren't covered by WP_UnitTestCase's
+		// transaction rollback (only core WP tables are), so any rows
+		// left by prior tests in the suite leak into the counts. Capture
+		// a baseline and assert on deltas.
+		$before = $logs->summary();
+
+		$logs->record_hit( array( 'url' => '/sum-open-a' ) );
+		$logs->record_hit( array( 'url' => '/sum-open-b' ) );
+		$ignored   = $logs->record_hit( array( 'url' => '/sum-ignored' ) );
+		$fixed     = $logs->record_hit( array( 'url' => '/sum-fixed' ) );
+		$with_link = $logs->record_hit( array( 'url' => '/sum-with-link' ) );
+
+		$logs->set_status( $ignored, Logs::STATUS_IGNORED );
+		$logs->set_status( $fixed, Logs::STATUS_FIXED );
+
+		$redirect_id = $redirects->create(
+			array(
+				'source'      => '/sum-with-link',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+		$logs->link_redirect( $with_link, $redirect_id );
+
+		$after = $logs->summary();
+
+		$this->assertSame( 5, $after['total'] - $before['total'] );
+		$this->assertSame( 2, $after['open'] - $before['open'] );
+		$this->assertSame( 1, $after['ignored'] - $before['ignored'] );
+		// `$with_link` is Fixed too because its redirect is active.
+		$this->assertSame( 2, $after['fixed'] - $before['fixed'] );
+		$this->assertSame( 1, $after['custom'] - $before['custom'] );
+	}
+
+	/**
+	 * `Redirects::summary` aggregates totals, active/inactive splits and
+	 * the sum of `hits` in one query.
+	 */
+	public function test_redirects_summary_aggregates_counts_and_hits(): void {
+		$model  = Redirects::instance();
+		$before = $model->summary();
+
+		$a = $model->create(
+			array(
+				'source'      => '/r-sum-a',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+		$b = $model->create(
+			array(
+				'source'      => '/r-sum-b',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+		$model->create(
+			array(
+				'source'      => '/r-sum-c',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 0,
+			)
+		);
+
+		$model->update( $a, array( 'hits' => 3 ) );
+		$model->update( $b, array( 'hits' => 7 ) );
+
+		$after = $model->summary();
+
+		$this->assertSame( 3, $after['total'] - $before['total'] );
+		$this->assertSame( 2, $after['active'] - $before['active'] );
+		$this->assertSame( 1, $after['inactive'] - $before['inactive'] );
+		$this->assertSame( 10, $after['hits'] - $before['hits'] );
+	}
+
+	/**
+	 * `Redirects::has_linked_log` reflects whether any log row references
+	 * the redirect.
+	 */
+	public function test_redirects_has_linked_log_tracks_log_references(): void {
+		$logs      = Logs::instance();
+		$redirects = Redirects::instance();
+
+		$redirect_id = $redirects->create(
+			array(
+				'source'      => '/has-linked',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		$this->assertFalse( $redirects->has_linked_log( $redirect_id ) );
+		$this->assertFalse( $redirects->has_linked_log( 0 ) );
+
+		$log_id = $logs->record_hit( array( 'url' => '/some-404' ) );
+		$logs->link_redirect( $log_id, $redirect_id );
+
+		$this->assertTrue( $redirects->has_linked_log( $redirect_id ) );
+
+		// Unlink → goes back to false.
+		$logs->link_redirect( $log_id, 0 );
+		$this->assertFalse( $redirects->has_linked_log( $redirect_id ) );
 	}
 
 	/**

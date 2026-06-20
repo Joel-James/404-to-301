@@ -248,7 +248,10 @@ class CustomRedirectsTest extends WP_UnitTestCase {
 
 		$log = LogsModel::instance()->find( $log_id );
 		$this->assertSame( $id, (int) $log->redirect_id );
-		$this->assertSame( LogsModel::STATUS_CUSTOM, (int) $log->status );
+		// Active redirect → log transitions to Fixed (was STATUS_CUSTOM
+		// before v4.0.1; that value was removed and replaced with
+		// redirect_id as the ground truth for "has linked redirect").
+		$this->assertSame( LogsModel::STATUS_FIXED, (int) $log->status );
 	}
 
 	/**

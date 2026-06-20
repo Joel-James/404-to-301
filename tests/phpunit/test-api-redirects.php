@@ -291,6 +291,192 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * The REST response shape includes `has_linked_log`, true when at
+	 * least one log row references the redirect.
+	 */
+	public function test_shape_exposes_has_linked_log(): void {
+		$model = RedirectsModel::instance();
+		$id    = $model->create(
+			array(
+				'source'      => '/has-linked-shape',
+				'target_url'  => 'https://example.com/',
+				'match_type'  => 'exact',
+				'target_type' => 'link',
+				'is_active'   => 1,
+			)
+		);
+
+		$response = $this->dispatch( 'GET', self::ROUTE . '/' . $id );
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertArrayHasKey( 'has_linked_log', $response->get_data() );
+		$this->assertFalse( $response->get_data()['has_linked_log'] );
+
+		// Link a log → `has_linked_log` flips to true.
+		$logs   = \DuckDev\FourNotFour\Models\Logs::instance();
+		$log_id = $logs->record_hit( array( 'url' => '/some-404' ) );
+		$logs->link_redirect( $log_id, $id );
+
+		$response = $this->dispatch( 'GET', self::ROUTE . '/' . $id );
+		$this->assertTrue( $response->get_data()['has_linked_log'] );
+	}
+
+	/**
+	 * Deleting a redirect unlinks any log rows pointing at it and resets
+	 * their status to Open.
+	 */
+	public function test_delete_unlinks_linked_logs(): void {
+		$logs        = \DuckDev\FourNotFour\Models\Logs::instance();
+		$model       = RedirectsModel::instance();
+		$redirect_id = $model->create(
+			array(
+				'source'      => '/del-with-logs',
+				'target_url'  => 'https://example.com/',
+				'match_type'  => 'exact',
+				'target_type' => 'link',
+				'is_active'   => 1,
+			)
+		);
+
+		$log_id = $logs->record_hit( array( 'url' => '/log-attached' ) );
+		$logs->link_redirect( $log_id, $redirect_id );
+
+		$response = $this->dispatch( 'DELETE', self::ROUTE . '/' . $redirect_id );
+		$this->assertSame( 200, $response->get_status() );
+
+		wp_cache_delete( $log_id, '404_to_301_logs' );
+		$row = $logs->find( $log_id );
+		$this->assertNull( $row->redirect_id );
+		$this->assertSame( \DuckDev\FourNotFour\Models\Logs::STATUS_OPEN, (int) $row->status );
+	}
+
+	/**
+	 * Bulk-delete also unlinks logs that referenced any of the removed rows.
+	 */
+	public function test_bulk_delete_unlinks_linked_logs(): void {
+		$logs  = \DuckDev\FourNotFour\Models\Logs::instance();
+		$model = RedirectsModel::instance();
+
+		$r1 = $model->create(
+			array(
+				'source'      => '/bulk-del-1',
+				'target_url'  => 'https://example.com/',
+				'match_type'  => 'exact',
+				'target_type' => 'link',
+				'is_active'   => 1,
+			)
+		);
+		$r2 = $model->create(
+			array(
+				'source'      => '/bulk-del-2',
+				'target_url'  => 'https://example.com/',
+				'match_type'  => 'exact',
+				'target_type' => 'link',
+				'is_active'   => 1,
+			)
+		);
+
+		$log_a = $logs->record_hit( array( 'url' => '/a' ) );
+		$log_b = $logs->record_hit( array( 'url' => '/b' ) );
+		$logs->link_redirect( $log_a, $r1 );
+		$logs->link_redirect( $log_b, $r2 );
+
+		$this->dispatch( 'DELETE', self::ROUTE, array( 'ids' => array( $r1, $r2 ) ) );
+
+		wp_cache_delete( $log_a, '404_to_301_logs' );
+		wp_cache_delete( $log_b, '404_to_301_logs' );
+		$this->assertNull( $logs->find( $log_a )->redirect_id );
+		$this->assertNull( $logs->find( $log_b )->redirect_id );
+	}
+
+	/**
+	 * Flipping `is_active` via PATCH syncs the status of every linked log.
+	 */
+	public function test_update_is_active_syncs_log_status(): void {
+		$logs        = \DuckDev\FourNotFour\Models\Logs::instance();
+		$model       = RedirectsModel::instance();
+		$redirect_id = $model->create(
+			array(
+				'source'      => '/sync-via-api',
+				'target_url'  => 'https://example.com/',
+				'match_type'  => 'exact',
+				'target_type' => 'link',
+				'is_active'   => 1,
+			)
+		);
+
+		$log_id = $logs->record_hit( array( 'url' => '/sync-log' ) );
+		$logs->link_redirect( $log_id, $redirect_id );
+		$this->assertSame(
+			\DuckDev\FourNotFour\Models\Logs::STATUS_FIXED,
+			(int) $logs->find( $log_id )->status
+		);
+
+		// Flip the redirect to inactive → log reopens.
+		$this->dispatch(
+			'POST',
+			self::ROUTE . '/' . $redirect_id,
+			array( 'is_active' => false )
+		);
+		wp_cache_delete( $log_id, '404_to_301_logs' );
+		$this->assertSame(
+			\DuckDev\FourNotFour\Models\Logs::STATUS_OPEN,
+			(int) $logs->find( $log_id )->status
+		);
+
+		// Re-activate → back to Fixed.
+		$this->dispatch(
+			'POST',
+			self::ROUTE . '/' . $redirect_id,
+			array( 'is_active' => true )
+		);
+		wp_cache_delete( $log_id, '404_to_301_logs' );
+		$this->assertSame(
+			\DuckDev\FourNotFour\Models\Logs::STATUS_FIXED,
+			(int) $logs->find( $log_id )->status
+		);
+	}
+
+	/**
+	 * `GET /redirects/summary` returns the aggregate counts.
+	 */
+	public function test_summary_endpoint_returns_aggregate_counts(): void {
+		$model = RedirectsModel::instance();
+
+		// Capture baseline; custom plugin tables aren't wrapped in the
+		// WP_UnitTestCase transaction so rows from prior tests in the
+		// suite still exist.
+		$before = $model->summary();
+
+		$model->create(
+			array(
+				'source'      => '/api-sum-active',
+				'target_url'  => 'https://example.com/',
+				'match_type'  => 'exact',
+				'target_type' => 'link',
+				'is_active'   => 1,
+			)
+		);
+		$model->create(
+			array(
+				'source'      => '/api-sum-inactive',
+				'target_url'  => 'https://example.com/',
+				'match_type'  => 'exact',
+				'target_type' => 'link',
+				'is_active'   => 0,
+			)
+		);
+
+		$response = $this->dispatch( 'GET', self::ROUTE . '/summary' );
+		$this->assertSame( 200, $response->get_status() );
+
+		$body = $response->get_data();
+		$this->assertSame( 2, $body['total'] - $before['total'] );
+		$this->assertSame( 1, $body['active'] - $before['active'] );
+		$this->assertSame( 1, $body['inactive'] - $before['inactive'] );
+		$this->assertArrayHasKey( 'hits', $body );
+	}
+
+	/**
 	 * Logged-in subscribers (no `manage_options`) get rejected with 401/403.
 	 */
 	public function test_subscriber_is_forbidden(): void {

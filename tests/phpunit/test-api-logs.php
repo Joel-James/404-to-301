@@ -262,6 +262,89 @@ class ApiLogsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * `GET /logs/summary` returns counts grouped by status plus a
+	 * separate `custom` count of rows with a linked redirect.
+	 */
+	public function test_summary_endpoint_returns_status_and_custom_counts(): void {
+		$model     = LogsModel::instance();
+		$redirects = \DuckDev\FourNotFour\Models\Redirects::instance();
+
+		// Custom tables aren't rolled back between tests; use a baseline.
+		$before     = $model->summary();
+		$open_id    = $model->record_hit( array( 'url' => '/api-sum-open' ) );
+		$ignored_id = $model->record_hit( array( 'url' => '/api-sum-ignored' ) );
+		$linked_log = $model->record_hit( array( 'url' => '/api-sum-linked' ) );
+
+		$model->set_status( $ignored_id, LogsModel::STATUS_IGNORED );
+
+		$redirect_id = $redirects->create(
+			array(
+				'source'      => '/api-sum-linked',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+		$model->link_redirect( $linked_log, $redirect_id );
+
+		$response = $this->dispatch( 'GET', self::ROUTE . '/summary' );
+		$this->assertSame( 200, $response->get_status() );
+
+		$body = $response->get_data();
+		$this->assertSame( 3, $body['total'] - $before['total'] );
+		$this->assertSame( 1, $body['open'] - $before['open'] );
+		$this->assertSame( 1, $body['ignored'] - $before['ignored'] );
+		$this->assertSame( 1, $body['fixed'] - $before['fixed'] );
+		$this->assertSame( 1, $body['custom'] - $before['custom'] );
+	}
+
+	/**
+	 * `DELETE /logs/purge` truncates the logs table. Custom redirects
+	 * live in a separate table and are untouched.
+	 */
+	public function test_purge_endpoint_truncates_logs(): void {
+		$model     = LogsModel::instance();
+		$redirects = \DuckDev\FourNotFour\Models\Redirects::instance();
+
+		$model->record_hit( array( 'url' => '/purge-a' ) );
+		$model->record_hit( array( 'url' => '/purge-b' ) );
+		$redirect_id = $redirects->create(
+			array(
+				'source'      => '/keep-redirect',
+				'target_url'  => 'https://example.com/',
+				'target_type' => 'link',
+				'match_type'  => 'exact',
+				'is_active'   => 1,
+			)
+		);
+
+		$response = $this->dispatch( 'DELETE', self::ROUTE . '/purge' );
+		$this->assertSame( 200, $response->get_status() );
+
+		$this->assertNull( $model->get_by_url( '/purge-a' ) );
+		$this->assertNull( $model->get_by_url( '/purge-b' ) );
+		$this->assertNotNull( $redirects->find( $redirect_id ) );
+	}
+
+	/**
+	 * Status enum no longer accepts 3 (removed in v4.0.1). Anything
+	 * outside [0, 1, 2] is rejected by the REST schema.
+	 */
+	public function test_update_rejects_legacy_status_3(): void {
+		$id = LogsModel::instance()->record_hit( array( 'url' => '/no-status-3' ) );
+
+		$response = $this->dispatch(
+			'POST',
+			self::ROUTE . '/' . $id,
+			array( 'status' => 3 )
+		);
+
+		$this->assertSame( 400, $response->get_status() );
+		$this->assertSame( 'rest_invalid_param', $response->get_data()['code'] );
+	}
+
+	/**
 	 * Logged-out requests get rejected with 401/403.
 	 */
 	public function test_requires_authentication(): void {

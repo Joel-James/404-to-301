@@ -283,6 +283,19 @@ class Logs extends Model {
 		$table = $wpdb->prefix . '404_to_301_logs';
 		$now   = current_time( 'mysql', true );
 
+		// Collect affected log ids first so we can bust per-row caches
+		// after the UPDATE. BerlinDB serves `find()` from a per-id cache
+		// that the `last_changed` sentinel does not invalidate, so a
+		// stale row would otherwise come back even after the column has
+		// been cleared.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$ids = (array) $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT id FROM `{$table}` WHERE redirect_id = %d",
+				$redirect_id
+			)
+		);
+
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query(
 			$wpdb->prepare(
@@ -293,6 +306,9 @@ class Logs extends Model {
 			)
 		);
 
+		foreach ( $ids as $id ) {
+			wp_cache_delete( (int) $id, '404_to_301_logs' );
+		}
 		wp_cache_set( 'last_changed', microtime(), '404_to_301_logs' );
 	}
 
@@ -321,6 +337,17 @@ class Logs extends Model {
 		$table  = $wpdb->prefix . '404_to_301_logs';
 		$now    = current_time( 'mysql', true );
 
+		// Collect affected log ids before the UPDATE so we can bust the
+		// per-row BerlinDB cache afterwards. Without this, `find()` calls
+		// in the same request keep returning the pre-sync status.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$ids = (array) $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT id FROM `{$table}` WHERE redirect_id = %d",
+				$redirect_id
+			)
+		);
+
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query(
 			$wpdb->prepare(
@@ -331,6 +358,9 @@ class Logs extends Model {
 			)
 		);
 
+		foreach ( $ids as $id ) {
+			wp_cache_delete( (int) $id, '404_to_301_logs' );
+		}
 		wp_cache_set( 'last_changed', microtime(), '404_to_301_logs' );
 	}
 
