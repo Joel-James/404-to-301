@@ -72,6 +72,18 @@ class Redirects extends Endpoint {
 			)
 		);
 
+		register_rest_route(
+			self::NAMESPACE,
+			'/redirects/summary',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'summary' ),
+					'permission_callback' => array( $this, 'require_access' ),
+				),
+			)
+		);
+
 		// Dedicated bulk-update endpoint. Keeps `PATCH /redirects/{id}`
 		// for single-item updates and gives bulk operations a single
 		// round-trip instead of N concurrent requests.
@@ -136,6 +148,17 @@ class Redirects extends Endpoint {
 	 *
 	 * @return WP_REST_Response
 	 */
+	/**
+	 * GET /redirects/summary — aggregate counts for the dashboard strip.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function summary(): WP_REST_Response {
+		return $this->respond( RedirectsModel::instance()->summary() );
+	}
+
 	public function list( WP_REST_Request $request ): WP_REST_Response {
 		$args = $this->paging( $request, 'id' );
 

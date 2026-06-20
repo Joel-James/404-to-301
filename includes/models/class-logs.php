@@ -292,6 +292,51 @@ class Logs extends Model {
 	}
 
 	/**
+	 * Return aggregate counts for the summary dashboard.
+	 *
+	 * A single GROUP BY query is cheaper than four COUNT(*) calls.
+	 * Counts are keyed by status integer; anything not in the result
+	 * defaults to 0 so the caller never has to null-check.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @return array{ total: int, open: int, ignored: int, fixed: int, custom: int }
+	 */
+	public function summary(): array {
+		global $wpdb;
+
+		$table = $wpdb->prefix . '404_to_301_logs';
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$rows = $wpdb->get_results(
+			"SELECT status, COUNT(*) AS cnt FROM `{$table}` GROUP BY status",
+			ARRAY_A
+		);
+
+		$counts = array(
+			self::STATUS_OPEN    => 0,
+			self::STATUS_IGNORED => 0,
+			self::STATUS_FIXED   => 0,
+			self::STATUS_CUSTOM  => 0,
+		);
+
+		foreach ( (array) $rows as $row ) {
+			$status = (int) $row['status'];
+			if ( array_key_exists( $status, $counts ) ) {
+				$counts[ $status ] = (int) $row['cnt'];
+			}
+		}
+
+		return array(
+			'total'   => array_sum( $counts ),
+			'open'    => $counts[ self::STATUS_OPEN ],
+			'ignored' => $counts[ self::STATUS_IGNORED ],
+			'fixed'   => $counts[ self::STATUS_FIXED ],
+			'custom'  => $counts[ self::STATUS_CUSTOM ],
+		);
+	}
+
+	/**
 	 * Truncate the entire logs table.
 	 *
 	 * Custom redirects live in a separate table and are untouched.

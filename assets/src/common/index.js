@@ -15,6 +15,7 @@ import isViewFiltered from './is-view-filtered'
 import Notices from './notices'
 import PageBody from './page-body'
 import PageHeader from './page-header'
+import SummaryCards from './summary-cards'
 import TabNav from './tab-nav'
 import Truncate from './truncate'
 
@@ -27,6 +28,7 @@ export {
 	Notices,
 	PageBody,
 	PageHeader,
+	SummaryCards,
 	TabNav,
 	Truncate,
 }

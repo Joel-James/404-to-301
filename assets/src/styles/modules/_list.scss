@@ -2,6 +2,44 @@
 
 $prefix: '#{variables.$prefix}';
 
+// Summary card strip — shown above the DataViews table on Logs and
+// Redirects pages.
+.#{$prefix}-summary {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+	gap: 12px;
+	margin-bottom: 24px;
+
+	&--loading {
+		opacity: 0.6;
+		pointer-events: none;
+	}
+}
+
+.#{$prefix}-summary__card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	padding: 20px 16px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	text-align: center;
+}
+
+.#{$prefix}-summary__value {
+	font-size: 28px;
+	font-weight: 600;
+	color: #1e1e1e;
+	line-height: 1.2;
+}
+
+.#{$prefix}-summary__label {
+	font-size: 13px;
+	color: #757575;
+}
+
 .#{$prefix}-wrap {
 
 	// DataViews container card.

@@ -701,6 +701,36 @@ class Redirects extends Model {
 	 *
 	 * @return bool
 	 */
+	/**
+	 * Return aggregate counts for the summary dashboard.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @return array{ total: int, active: int, inactive: int, hits: int }
+	 */
+	public function summary(): array {
+		global $wpdb;
+
+		$table = $wpdb->prefix . '404_to_301_redirects';
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$row = $wpdb->get_row(
+			"SELECT COUNT(*) AS total,
+			        SUM(is_active = 1) AS active,
+			        SUM(is_active = 0) AS inactive,
+			        SUM(hits) AS hits
+			 FROM `{$table}`",
+			ARRAY_A
+		);
+
+		return array(
+			'total'    => (int) ( $row['total'] ?? 0 ),
+			'active'   => (int) ( $row['active'] ?? 0 ),
+			'inactive' => (int) ( $row['inactive'] ?? 0 ),
+			'hits'     => (int) ( $row['hits'] ?? 0 ),
+		);
+	}
+
 	public function has_active(): bool {
 		$cached = get_option( self::HAS_ACTIVE_OPTION, 'unset' );
 

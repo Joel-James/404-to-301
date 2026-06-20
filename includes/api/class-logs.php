@@ -62,6 +62,18 @@ class Logs extends Endpoint {
 
 		register_rest_route(
 			self::NAMESPACE,
+			'/logs/summary',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'summary' ),
+					'permission_callback' => array( $this, 'require_access' ),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
 			'/logs/purge',
 			array(
 				array(
@@ -277,6 +289,17 @@ class Logs extends Endpoint {
 				'deleted' => true,
 			)
 		);
+	}
+
+	/**
+	 * GET /logs/summary — aggregate counts for the dashboard strip.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function summary(): WP_REST_Response {
+		return $this->respond( LogsModel::instance()->summary() );
 	}
 
 	/**
