@@ -209,6 +209,39 @@ $prefix: '#{variables.$prefix}';
 // `@wordpress/components` Modal portals into `body`, outside the
 // `.d404-wrap` scope above.
 .#{$prefix}-log-details {
+	font-size: 13px;
+
+	// 404 path + status badge row above the tables.
+	&__header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20px;
+		padding-bottom: 16px;
+		border-bottom: 1px solid #e0e0e0;
+	}
+
+	&__path {
+		font-size: 16px;
+		background: #f0f0f0;
+		padding: 4px 12px;
+		border-radius: 4px;
+		word-break: break-all;
+	}
+
+	&__status {
+		display: inline-block;
+		padding: 2px 8px;
+		border-radius: 10px;
+		font-size: 11px;
+		font-weight: 500;
+		text-transform: uppercase;
+
+		&--open    { background: #fff3cd; color: #856404; }
+		&--ignored { background: #f6f7f7; color: #1d2327; }
+		&--fixed   { background: #d4edda; color: #155724; }
+		&--custom  { background: #eef2ff; color: #4338ca; }
+	}
 
 	&__notice {
 		margin: 0 0 16px;
@@ -219,33 +252,57 @@ $prefix: '#{variables.$prefix}';
 		color: #1e1e1e;
 	}
 
-	&__list {
-		display: grid;
-		grid-template-columns: 140px 1fr;
-		row-gap: 8px;
-		column-gap: 16px;
-		margin: 0;
+	&__section {
+		margin-bottom: 20px;
+	}
 
-		dt {
-			color: #50575e;
-			font-weight: 600;
+	&__section-title {
+		font-size: 13px;
+		font-weight: 600;
+		margin: 0 0 12px;
+		color: #1e1e1e;
+	}
+
+	&__table {
+		width: 100%;
+		border-collapse: collapse;
+
+		th,
+		td {
+			padding: 8px 0;
+			text-align: left;
+			vertical-align: top;
+			border-bottom: 1px solid #f0f0f0;
+			word-break: break-word;
 		}
 
-		dd {
-			margin: 0;
-			word-break: break-word;
+		th {
+			width: 140px;
+			font-weight: 500;
+			color: #757575;
+		}
+
+		td {
+			color: #1e1e1e;
+		}
+
+		tr:last-child th,
+		tr:last-child td {
+			border-bottom: none;
 		}
 	}
 
 	&__mono {
-		font-family: Menlo, Consolas, monospace;
+		font-family: monospace;
 		font-size: 12px;
 	}
 
 	&__footer {
 		display: flex;
 		justify-content: flex-end;
-		margin-top: 16px;
+		margin-top: 20px;
+		padding-top: 16px;
+		border-top: 1px solid #e0e0e0;
 	}
 }
 

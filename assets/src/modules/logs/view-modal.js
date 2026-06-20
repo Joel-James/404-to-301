@@ -5,20 +5,12 @@ import { Button, ExternalLink } from '@wordpress/components'
 /**
  * Read-only "View details" modal for a single log row.
  *
- * Triggered from the row's ⋮ menu. Renders every field on the row in
- * a definition-list layout. Unlike the cells in the DataViews table,
- * values here are NOT truncated — long URLs / User-Agents wrap on to
- * multiple lines so the operator can see the whole string.
- *
- * When the log is linked to a custom redirect (`redirect_id` is set on
- * the row), a status note is shown calling that out so the operator
- * doesn't wonder why the same path stopped re-appearing.
+ * Triggered from the row's ⋮ menu. Groups every field into three
+ * labelled table sections — Request, Visit info, Settings — with the
+ * 404 path displayed prominently above them in a <code> block.
  *
  * @param {Object}   props
- * @param {Object[]} props.items      Selected rows. DataViews always
- *                                    passes an array; we render the
- *                                    first row for this single-item
- *                                    action (`supportsBulk: false`).
+ * @param {Object[]} props.items      Selected rows (single-item action).
  * @param {Function} props.closeModal Provided by DataViews.
  */
 const ViewDetails = ({ items, closeModal }) => {
@@ -28,14 +20,11 @@ const ViewDetails = ({ items, closeModal }) => {
 		return null
 	}
 
-	const statusLabel = log.status_label || ''
 	const hasRedirect = log.redirect_id != null && log.redirect_id > 0
 
 	const formatDate = (value) =>
 		value ? dateI18n('M j, Y g:i a', value) : '—'
 
-	// Mirror the OVERRIDE_* enum from the server. Empty / 0 means
-	// "follow the global setting" and reads as "Global" here.
 	const overrideLabel = (value) => {
 		switch (parseInt(value, 10)) {
 			case 1:
@@ -47,11 +36,20 @@ const ViewDetails = ({ items, closeModal }) => {
 		}
 	}
 
-	// DataViews wraps `RenderModal` content in its own <Modal> already
-	// (see @wordpress/dataviews ActionModal). Returning a fragment here
-	// avoids the nested-modal blank overlay.
+	const statusSlug = ['open', 'ignored', 'fixed', 'custom'][log.status] ?? 'open'
+	const statusLabel = log.status_label || statusSlug
+
 	return (
 		<div className="d404-log-details">
+			{/* Prominent 404 path header — outside the table so it reads as
+			    the subject of this modal, not just another row in the data. */}
+			<div className="d404-log-details__header">
+				<code className="d404-log-details__path">{log.url || '—'}</code>
+				<span className={`d404-log-details__status d404-log-details__status--${statusSlug}`}>
+					{statusLabel}
+				</span>
+			</div>
+
 			{hasRedirect && (
 				<p className="d404-log-details__notice">
 					{__(
@@ -61,57 +59,89 @@ const ViewDetails = ({ items, closeModal }) => {
 				</p>
 			)}
 
-			<dl className="d404-log-details__list">
-				<dt>{__('404 path', '404-to-301')}</dt>
-				<dd className="d404-log-details__mono">{log.url || '—'}</dd>
+			<div className="d404-log-details__section">
+				<h3 className="d404-log-details__section-title">
+					{__('Request', '404-to-301')}
+				</h3>
+				<table className="d404-log-details__table">
+					<tbody>
+						<tr>
+							<th>{__('Referrer', '404-to-301')}</th>
+							<td>
+								{log.ref ? (
+									<ExternalLink href={log.ref}>{log.ref}</ExternalLink>
+								) : (
+									'—'
+								)}
+							</td>
+						</tr>
+						<tr>
+							<th>{__('IP address', '404-to-301')}</th>
+							<td className="d404-log-details__mono">{log.ip || '—'}</td>
+						</tr>
+						<tr>
+							<th>{__('User agent', '404-to-301')}</th>
+							<td className="d404-log-details__mono">{log.ua || '—'}</td>
+						</tr>
+						<tr>
+							<th>{__('Method', '404-to-301')}</th>
+							<td>{log.method || '—'}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
-				<dt>{__('Referrer', '404-to-301')}</dt>
-				<dd>
-					{log.ref ? (
-						<ExternalLink href={log.ref}>{log.ref}</ExternalLink>
-					) : (
-						'—'
-					)}
-				</dd>
+			<div className="d404-log-details__section">
+				<h3 className="d404-log-details__section-title">
+					{__('Visit info', '404-to-301')}
+				</h3>
+				<table className="d404-log-details__table">
+					<tbody>
+						<tr>
+							<th>{__('Hits', '404-to-301')}</th>
+							<td>{(log.hits ?? 0).toLocaleString()}</td>
+						</tr>
+						<tr>
+							<th>{__('First seen', '404-to-301')}</th>
+							<td>{formatDate(log.created_at)}</td>
+						</tr>
+						<tr>
+							<th>{__('Last hit', '404-to-301')}</th>
+							<td>{formatDate(log.updated_at)}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
-				<dt>{__('IP address', '404-to-301')}</dt>
-				<dd>{log.ip || '—'}</dd>
-
-				<dt>{__('User agent', '404-to-301')}</dt>
-				<dd>{log.ua || '—'}</dd>
-
-				<dt>{__('Method', '404-to-301')}</dt>
-				<dd>{log.method || '—'}</dd>
-
-				<dt>{__('Hits', '404-to-301')}</dt>
-				<dd>{log.hits ?? 0}</dd>
-
-				<dt>{__('Status', '404-to-301')}</dt>
-				<dd>{statusLabel || '—'}</dd>
-
-				<dt>{__('Custom redirect', '404-to-301')}</dt>
-				<dd>
-					{hasRedirect
-						? sprintf(
-								/* translators: %d: redirect id. */
-								__('Linked redirect #%d', '404-to-301'),
-								log.redirect_id,
-						  )
-						: __('Not set', '404-to-301')}
-				</dd>
-
-				<dt>{__('Override: Redirect', '404-to-301')}</dt>
-				<dd>{overrideLabel(log.override_redirect)}</dd>
-
-				<dt>{__('Override: Email', '404-to-301')}</dt>
-				<dd>{overrideLabel(log.override_email)}</dd>
-
-				<dt>{__('First seen', '404-to-301')}</dt>
-				<dd>{formatDate(log.created_at)}</dd>
-
-				<dt>{__('Last hit', '404-to-301')}</dt>
-				<dd>{formatDate(log.updated_at)}</dd>
-			</dl>
+			<div className="d404-log-details__section">
+				<h3 className="d404-log-details__section-title">
+					{__('Settings', '404-to-301')}
+				</h3>
+				<table className="d404-log-details__table">
+					<tbody>
+						<tr>
+							<th>{__('Custom redirect', '404-to-301')}</th>
+							<td>
+								{hasRedirect
+									? sprintf(
+											/* translators: %d: redirect id. */
+											__('Linked to redirect #%d', '404-to-301'),
+											log.redirect_id,
+									  )
+									: __('Not set', '404-to-301')}
+							</td>
+						</tr>
+						<tr>
+							<th>{__('Redirect override', '404-to-301')}</th>
+							<td>{overrideLabel(log.override_redirect)}</td>
+						</tr>
+						<tr>
+							<th>{__('Email override', '404-to-301')}</th>
+							<td>{overrideLabel(log.override_email)}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
 			<div className="d404-log-details__footer">
 				<Button variant="tertiary" onClick={closeModal}>

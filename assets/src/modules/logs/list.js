@@ -78,6 +78,7 @@ const List = () => {
 				id: 'view-details',
 				label: __('View details', '404-to-301'),
 				modalHeader: __('Log details', '404-to-301'),
+				modalSize: 'large',
 				supportsBulk: false,
 				RenderModal: (props) => <ViewDetails {...props} />,
 			},
