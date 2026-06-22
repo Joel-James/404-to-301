@@ -124,6 +124,12 @@ Read the [documentation](https://docs.duckdev.com/404-to-301/) or post on the [s
 
 == Changelog ==
 
+= 4.0.2 =
+* Improve: Add-ons catalogue now pulls each free add-on's icon and banner from the WordPress.org asset CDN and links to its WordPress.org plugin page.
+* Improve: Clearer Redirects Importer description in the add-ons catalogue.
+* Fix: Migration banner no longer shows on fresh installs running on SQLite (such as WordPress Playground).
+* Fix: Restored the spacing below the migration banner so it no longer touches the logs summary cards.
+
 = 4.0.1 =
 * New: Summary card strip above the Logs and Redirects tables for an at-a-glance overview.
 * New: "Purge all logs" action in Settings → Tools → Danger Zone with a confirmation modal.
@@ -154,6 +160,9 @@ Read the [documentation](https://docs.duckdev.com/404-to-301/) or post on the [s
 For the full release history, see the [changelog](https://docs.duckdev.com/404-to-301/changelog).
 
 == Upgrade Notice ==
+
+= 4.0.2 =
+A maintenance release with add-ons catalogue improvements and migration-banner fixes, including a false positive on SQLite (WordPress Playground) installs.
 
 = 4.0.1 =
 A maintenance release with UX polish, a Purge-all-logs tool and a one-time data migration that converts legacy "custom redirect" log rows to the new status model.
