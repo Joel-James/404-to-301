@@ -249,9 +249,11 @@ $prefix: '#{variables.$prefix}';
 		word-break: break-all;
 	}
 
-	// Migration banner spacing inside the list page.
+	// Migration banner spacing inside the list page. Needs a bottom
+	// margin too: it sits directly above the summary counter grid,
+	// which has no top margin, so without this they butt together.
 	.#{$prefix}-migration-banner {
-		margin: 16px 0 0;
+		margin: 16px 0 24px;
 	}
 }
 
