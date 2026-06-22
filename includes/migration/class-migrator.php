@@ -455,24 +455,30 @@ class Migrator extends Singleton {
 
 		$table = $wpdb->prefix . '404_to_301';
 
-		// Probe the table directly instead of asking the catalogue.
+		// Probe the table with a real `SELECT` and treat "no error" as
+		// "exists". We deliberately avoid the obvious alternatives.
 		// `SHOW TABLES LIKE` needs `esc_like()` for the underscores in
-		// the table name and the round-trip through `wpdb::prepare()`
-		// silently re-escapes the backslashes — the resulting pattern
-		// fails to match on the MySQL 8 image GHA's CI uses, and the
-		// detector then reports the table as missing even when it's
-		// there. `information_schema` had a different failure mode on
-		// the same runner. A bare `DESCRIBE` on the table succeeds iff
-		// the table exists, with no LIKE pattern or catalogue view in
-		// the loop. Errors are suppressed so a missing table doesn't
-		// leak a notice into the request.
+		// the name, and the round-trip through `wpdb::prepare()`
+		// re-escapes the backslashes — the pattern then fails to match
+		// on the MySQL 8 image CI uses, reporting the table missing when
+		// it's there. `information_schema` had its own failure mode on
+		// the same runner. A bare `DESCRIBE` works on MySQL but is not
+		// portable: under SQLite (WordPress Playground, the SQLite
+		// Database Integration plugin) it isn't translated into something
+		// that errors on a missing table, so `last_error` stays empty and
+		// the table is reported present on a fresh install — the
+		// migration banner then shows with "0 rows" on every Playground
+		// install. A real `SELECT ... LIMIT 1` errors on a missing table
+		// on BOTH MySQL and SQLite, so the `last_error` check is reliable
+		// on each. Errors are suppressed so a missing table doesn't leak
+		// a notice.
 		$previous_suppress = $wpdb->suppress_errors( true );
 		$previous_show     = $wpdb->show_errors( false );
 		$wpdb->last_error  = '';
 
 		// `$table` is built from `$wpdb->prefix` + a fixed literal — no
 		// user input, safe to interpolate.
-		$wpdb->query( "DESCRIBE `{$table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "SELECT 1 FROM `{$table}` LIMIT 1" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		$exists = '' === (string) $wpdb->last_error;
 
