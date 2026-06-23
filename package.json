@@ -22,6 +22,6 @@
     "clsx": "^2.1.1"
   },
   "devDependencies": {
-    "@wordpress/scripts": "^31.0.0"
+    "@wordpress/scripts": "^32.4.1"
   }
 }
