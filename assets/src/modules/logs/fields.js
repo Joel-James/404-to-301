@@ -16,18 +16,6 @@ const statusMeta = {
 	2: { slug: 'fixed', icon: published },
 }
 
-// Preset ranges for the "First seen" filter. DataViews has no date
-// operator, so the range is offered as a single-select of relative
-// windows — each value is a day count that `useLogs` turns into the
-// endpoint's `date_from` (0 = today).
-const dateRanges = [
-	{ value: '0', label: __('Today', '404-to-301') },
-	{ value: '7', label: __('Last 7 days', '404-to-301') },
-	{ value: '30', label: __('Last 30 days', '404-to-301') },
-	{ value: '90', label: __('Last 90 days', '404-to-301') },
-	{ value: '365', label: __('Last 12 months', '404-to-301') },
-]
-
 const empty = <span className="d404-empty">{'—'}</span>
 
 /**
@@ -70,6 +58,11 @@ export const fields = [
 		type: 'text',
 		enableGlobalSearch: true,
 		enableSorting: true,
+		// IPs live in a packed VARBINARY column. LIKE / contains over
+		// packed bytes can't match user input, so only exact / IN
+		// operators are exposed — the server packs the value via
+		// `inet_pton()` before comparing.
+		filterBy: { operators: ['is', 'isNot', 'isAny', 'isNone'] },
 		render: ({ item }) => (item.ip ? <Truncate value={item.ip} /> : empty),
 	},
 	{
@@ -78,6 +71,10 @@ export const fields = [
 		type: 'text',
 		enableGlobalSearch: true,
 		enableSorting: false,
+		// User-agent strings are noisy and high-cardinality. The
+		// global search still hits this column; a dedicated DV filter
+		// would just clutter the picker.
+		filterBy: false,
 		render: ({ item }) => (item.ua ? <Truncate value={item.ua} /> : empty),
 	},
 	{
@@ -92,7 +89,9 @@ export const fields = [
 		label: __('Status', '404-to-301'),
 		type: 'integer',
 		elements: statusElements,
-		filterBy: { operators: ['is', 'isNot'] },
+		// Status is an enum: only the membership operators apply.
+		// Excludes the integer defaults (`lessThan`, `between`, …).
+		filterBy: { operators: ['is', 'isNot', 'isAny', 'isNone'] },
 		render: ({ item }) => {
 			const label =
 				statusElements.find((el) => el.value === item.status)?.label ||
@@ -132,10 +131,11 @@ export const fields = [
 		label: __('First seen', '404-to-301'),
 		type: 'datetime',
 		enableSorting: true,
-		// Preset relative-window filter (Today / Last 7 days / …).
-		// `useLogs` maps the chosen day count to `date_from`.
-		elements: dateRanges,
-		filterBy: { operators: ['is'] },
+		// Date columns are sortable but not filterable: DV16's
+		// datetime operator set (`before`, `after`, `inThePast`, …)
+		// would need date_query plumbing on the API that we haven't
+		// committed to yet.
+		filterBy: false,
 		render: ({ item }) =>
 			item.created_at ? (
 				<time dateTime={item.created_at}>
@@ -150,6 +150,7 @@ export const fields = [
 		label: __('Last hit', '404-to-301'),
 		type: 'datetime',
 		enableSorting: true,
+		filterBy: false,
 		render: ({ item }) =>
 			item.updated_at ? (
 				<time dateTime={item.updated_at}>

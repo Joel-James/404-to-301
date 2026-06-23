@@ -38,7 +38,7 @@ final class Redirects extends Table {
 	 * @since 4.0.0
 	 * @var string
 	 */
-	protected $version = '4.0.0';
+	protected $version = '4.0.2';
 
 	/**
 	 * Per-version upgrade routines.
@@ -52,7 +52,9 @@ final class Redirects extends Table {
 	 * @since 4.0.0
 	 * @var array<string, string>
 	 */
-	protected $upgrades = array();
+	protected $upgrades = array(
+		'4.0.2' => 'upgrade_to_4_0_2',
+	);
 
 	/**
 	 * Wire the schema in.
@@ -84,7 +86,25 @@ final class Redirects extends Table {
 			KEY is_active (is_active),
 			KEY redirect_type (redirect_type),
 			KEY match_type (match_type),
-			KEY modified_by (modified_by)
+			KEY modified_by (modified_by),
+			KEY hits (hits)
 		";
+	}
+
+	/**
+	 * Add the `hits` index introduced in 4.0.2.
+	 *
+	 * The DataViews list view exposes numeric range filters on `hits`
+	 * (`<`, `>`, `BETWEEN`); without an index those filters scan the
+	 * full table.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @return bool True on success.
+	 */
+	protected function upgrade_to_4_0_2(): bool {
+		$this->get_db()->query( "ALTER TABLE {$this->table_name} ADD KEY hits (hits)" );
+
+		return $this->is_success( true );
 	}
 }

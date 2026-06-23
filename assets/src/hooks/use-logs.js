@@ -15,23 +15,12 @@ import { buildQueryKey } from './persisted-view'
 const BASE = '/404-to-301/v1/logs'
 
 /**
- * Local-time `YYYY-MM-DD` for `days` ago (0 = today). Backs the
- * "First seen" preset-range filter — the endpoint's `date_from`
- * expects a plain date string.
- *
- * @param {number} days Days to subtract from today.
- * @return {string} Date in `YYYY-MM-DD`.
- */
-const daysAgoISO = (days) => {
-	const d = new Date()
-	d.setDate(d.getDate() - days)
-	const mm = String(d.getMonth() + 1).padStart(2, '0')
-	const dd = String(d.getDate()).padStart(2, '0')
-	return `${d.getFullYear()}-${mm}-${dd}`
-}
-
-/**
  * Translate a DataViews `view` object into REST query parameters.
+ *
+ * `view.filters` is forwarded verbatim as a structured `filters[]`
+ * array. The server-side mapper (`Filter_Mapper::for_logs()`) maps
+ * each `{ field, operator, value }` entry onto the appropriate
+ * BerlinDB clause (`IN`, `NOT IN`, `compare_query`, or a LIKE).
  *
  * @param {Object} view DataViews view state.
  * @return {Object} Query args for the logs endpoint.
@@ -51,30 +40,21 @@ const viewToQuery = (view) => {
 		query.order = view.sort.direction === 'asc' ? 'asc' : 'desc'
 	}
 
-	// Filters such as `status` come through `view.filters` as
-	// `{ field, operator, value }`. Forward each as a query arg.
 	if (Array.isArray(view.filters)) {
-		view.filters.forEach((filter) => {
-			if (
-				!filter ||
-				!filter.field ||
-				filter.value === undefined ||
-				filter.value === ''
-			) {
-				return
-			}
-
-			// "First seen" is a preset-range filter (its value is a
-			// number of days, see `dateRanges`). DataViews has no date
-			// operator, so we translate the preset into the endpoint's
-			// `date_from` rather than forwarding `created_at` verbatim.
-			if (filter.field === 'created_at') {
-				query.date_from = daysAgoISO(Number(filter.value) || 0)
-				return
-			}
-
-			query[filter.field] = filter.value
-		})
+		const filters = view.filters
+			.filter(
+				(f) =>
+					f &&
+					f.field &&
+					f.operator &&
+					f.value !== undefined &&
+					f.value !== '' &&
+					!(Array.isArray(f.value) && f.value.length === 0),
+			)
+			.map(({ field, operator, value }) => ({ field, operator, value }))
+		if (filters.length > 0) {
+			query.filters = filters
+		}
 	}
 
 	return query

@@ -172,23 +172,13 @@ class Redirects extends Endpoint {
 	public function list( WP_REST_Request $request ): WP_REST_Response {
 		$args = $this->paging( $request, 'id' );
 
-		// Optional filters.
-		foreach ( array( 'match_type', 'target_type', 'redirect_type' ) as $key ) {
-			$val = $request->get_param( $key );
-			if ( null !== $val && '' !== $val ) {
-				$args[ $key ] = $val;
-			}
-		}
-
-		$active = $request->get_param( 'is_active' );
-		if ( null !== $active && '' !== $active ) {
-			$args['is_active'] = (int) (bool) $active;
-		}
-
 		$search = (string) $request->get_param( 'search' );
 		if ( '' !== $search ) {
 			$args['search'] = $search;
 		}
+
+		$filters = (array) ( $request->get_param( 'filters' ) ?? array() );
+		Filter_Mapper::for_redirects()->apply( $filters, $args );
 
 		$result = RedirectsModel::instance()->paginate( $args );
 
@@ -502,34 +492,45 @@ class Redirects extends Endpoint {
 	 */
 	private function list_args(): array {
 		return array(
-			'page'          => array(
+			'page'     => array(
 				'type'    => 'integer',
 				'default' => 1,
 			),
-			'per_page'      => array(
+			'per_page' => array(
 				'type'    => 'integer',
 				'default' => 20,
 			),
-			'orderby'       => array(
+			'orderby'  => array(
 				'type'    => 'string',
 				'default' => 'id',
 			),
-			'order'         => array(
+			'order'    => array(
 				'type'    => 'string',
 				'enum'    => array( 'ASC', 'DESC', 'asc', 'desc' ),
 				'default' => 'DESC',
 			),
-			'search'        => array( 'type' => 'string' ),
-			'match_type'    => array(
-				'type' => 'string',
-				'enum' => array( 'exact', 'prefix', 'regex' ),
+			'search'   => array( 'type' => 'string' ),
+			// DataViews v16 `view.filters` shape: `[ { field, operator,
+			// value }, … ]`. Validated and translated into BerlinDB
+			// query args by {@see Filter_Mapper::for_redirects()}.
+			'filters'  => array(
+				'type'    => 'array',
+				'items'   => array(
+					'type'       => 'object',
+					'properties' => array(
+						'field'    => array(
+							'type' => 'string',
+							'enum' => array( 'source', 'target_url', 'redirect_type', 'match_type', 'is_active', 'hits' ),
+						),
+						'operator' => array( 'type' => 'string' ),
+						'value'    => array(
+							'type' => array( 'string', 'integer', 'number', 'boolean', 'array', 'null' ),
+						),
+					),
+					'required'   => array( 'field', 'operator' ),
+				),
+				'default' => array(),
 			),
-			'target_type'   => array(
-				'type' => 'string',
-				'enum' => array( 'link', 'page', 'none' ),
-			),
-			'redirect_type' => array( 'type' => 'integer' ),
-			'is_active'     => array( 'type' => 'boolean' ),
 		);
 	}
 

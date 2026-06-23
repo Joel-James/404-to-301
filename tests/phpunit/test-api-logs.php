@@ -13,6 +13,7 @@ declare( strict_types = 1 );
 
 use DuckDev\FourNotFour\Database\Database;
 use DuckDev\FourNotFour\Models\Logs as LogsModel;
+use DuckDev\FourNotFour\Utils\Helpers;
 
 /**
  * Class ApiLogsTest
@@ -100,9 +101,10 @@ class ApiLogsTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * `GET /logs?status=…` narrows the collection to the matching status.
+	 * `GET /logs` with a `status` filter (operator `is`) narrows the
+	 * collection to the matching status.
 	 */
-	public function test_list_filters_by_status(): void {
+	public function test_list_filters_by_status_is(): void {
 		$model   = LogsModel::instance();
 		$ignored = $model->record_hit( array( 'url' => '/ign' ) );
 		$model->set_status( $ignored, LogsModel::STATUS_IGNORED );
@@ -111,13 +113,202 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$response = $this->dispatch(
 			'GET',
 			self::ROUTE,
-			array( 'status' => LogsModel::STATUS_IGNORED )
+			array(
+				'filters' => array(
+					array(
+						'field'    => 'status',
+						'operator' => 'is',
+						'value'    => LogsModel::STATUS_IGNORED,
+					),
+				),
+			)
 		);
 
 		$data = $response->get_data();
 		$this->assertCount( 1, $data );
 		$this->assertSame( '/ign', $data[0]['url'] );
 		$this->assertSame( LogsModel::STATUS_IGNORED, $data[0]['status'] );
+	}
+
+	/**
+	 * `status` with the `isAny` operator narrows to rows in the
+	 * supplied set (delegates to BerlinDB's `__in` arg).
+	 */
+	public function test_list_filters_by_status_is_any(): void {
+		$model   = LogsModel::instance();
+		$ignored = $model->record_hit( array( 'url' => '/i' ) );
+		$model->set_status( $ignored, LogsModel::STATUS_IGNORED );
+		$fixed = $model->record_hit( array( 'url' => '/f' ) );
+		$model->set_status( $fixed, LogsModel::STATUS_FIXED );
+		$model->record_hit( array( 'url' => '/o' ) );
+
+		$response = $this->dispatch(
+			'GET',
+			self::ROUTE,
+			array(
+				'filters' => array(
+					array(
+						'field'    => 'status',
+						'operator' => 'isAny',
+						'value'    => array( LogsModel::STATUS_IGNORED, LogsModel::STATUS_FIXED ),
+					),
+				),
+			)
+		);
+
+		$urls = wp_list_pluck( $response->get_data(), 'url' );
+		sort( $urls );
+		$this->assertSame( array( '/f', '/i' ), $urls );
+	}
+
+	/**
+	 * `hits` with the `between` operator emits a numeric `compare_query`
+	 * BETWEEN clause.
+	 */
+	public function test_list_filters_by_hits_between(): void {
+		$model = LogsModel::instance();
+		$low   = $model->record_hit( array( 'url' => '/low' ) );
+		$mid   = $model->record_hit( array( 'url' => '/mid' ) );
+		$high  = $model->record_hit( array( 'url' => '/high' ) );
+
+		// Bump the hits counters via repeated record_hit calls so we
+		// don't reach into the model internals.
+		for ( $i = 0; $i < 4; $i++ ) {
+			$model->record_hit( array( 'url' => '/mid' ) );
+		}
+		for ( $i = 0; $i < 19; $i++ ) {
+			$model->record_hit( array( 'url' => '/high' ) );
+		}
+
+		$response = $this->dispatch(
+			'GET',
+			self::ROUTE,
+			array(
+				'filters' => array(
+					array(
+						'field'    => 'hits',
+						'operator' => 'between',
+						'value'    => array( 3, 10 ),
+					),
+				),
+			)
+		);
+
+		$urls = wp_list_pluck( $response->get_data(), 'url' );
+		$this->assertSame( array( '/mid' ), $urls );
+	}
+
+	/**
+	 * `url` with `contains` runs a LIKE clause on the column.
+	 */
+	public function test_list_filters_by_url_contains(): void {
+		$model = LogsModel::instance();
+		$model->record_hit( array( 'url' => '/blog/post-1' ) );
+		$model->record_hit( array( 'url' => '/blog/post-2' ) );
+		$model->record_hit( array( 'url' => '/landing/page' ) );
+
+		$response = $this->dispatch(
+			'GET',
+			self::ROUTE,
+			array(
+				'filters' => array(
+					array(
+						'field'    => 'url',
+						'operator' => 'contains',
+						'value'    => 'blog',
+					),
+				),
+			)
+		);
+
+		$this->assertCount( 2, $response->get_data() );
+	}
+
+	/**
+	 * `%` and `_` in a `contains` value must be matched literally —
+	 * `wpdb::esc_like()` is used to escape them.
+	 */
+	public function test_list_filters_by_url_contains_escapes_like_wildcards(): void {
+		$model = LogsModel::instance();
+		$model->record_hit( array( 'url' => '/foo%bar' ) );
+		$model->record_hit( array( 'url' => '/fooXbar' ) );
+
+		$response = $this->dispatch(
+			'GET',
+			self::ROUTE,
+			array(
+				'filters' => array(
+					array(
+						'field'    => 'url',
+						'operator' => 'contains',
+						'value'    => '%',
+					),
+				),
+			)
+		);
+
+		$urls = wp_list_pluck( $response->get_data(), 'url' );
+		$this->assertSame( array( '/foo%bar' ), $urls );
+	}
+
+	/**
+	 * `ip` filter values are packed via `inet_pton()` before being sent
+	 * to the model, so exact-match works against the VARBINARY column.
+	 */
+	public function test_list_filters_by_ip_is(): void {
+		$model = LogsModel::instance();
+		$model->record_hit(
+			array(
+				'url' => '/a',
+				'ip'  => Helpers::pack_ip( '192.168.1.1' ),
+			)
+		);
+		$model->record_hit(
+			array(
+				'url' => '/b',
+				'ip'  => Helpers::pack_ip( '10.0.0.1' ),
+			)
+		);
+
+		$response = $this->dispatch(
+			'GET',
+			self::ROUTE,
+			array(
+				'filters' => array(
+					array(
+						'field'    => 'ip',
+						'operator' => 'is',
+						'value'    => '192.168.1.1',
+					),
+				),
+			)
+		);
+
+		$urls = wp_list_pluck( $response->get_data(), 'url' );
+		$this->assertSame( array( '/a' ), $urls );
+	}
+
+	/**
+	 * Filter entries that name a field outside the schema enum are
+	 * rejected by REST's schema validator with a 400.
+	 */
+	public function test_list_rejects_unknown_filter_field(): void {
+		$response = $this->dispatch(
+			'GET',
+			self::ROUTE,
+			array(
+				'filters' => array(
+					array(
+						'field'    => 'definitely_not_a_column',
+						'operator' => 'is',
+						'value'    => 'x',
+					),
+				),
+			)
+		);
+
+		$this->assertSame( 400, $response->get_status() );
+		$this->assertSame( 'rest_invalid_param', $response->get_data()['code'] );
 	}
 
 	/**
@@ -307,11 +498,20 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$model     = LogsModel::instance();
 		$redirects = \DuckDev\FourNotFour\Models\Redirects::instance();
 
+		// `DELETE /logs/purge` issues a TRUNCATE, which is implicit-commit
+		// DDL — that breaks WP_UnitTestCase's transaction rollback, so
+		// any row this test creates beforehand sticks around in the
+		// table on the next run. Use a unique-per-run source to dodge
+		// the `source_hash` UNIQUE collision and assert the row count
+		// against a baseline.
 		$model->record_hit( array( 'url' => '/purge-a' ) );
 		$model->record_hit( array( 'url' => '/purge-b' ) );
+
+		$baseline    = (int) $redirects->paginate( array( 'number' => 1 ) )['total'];
+		$source      = '/keep-redirect-' . uniqid( '', true );
 		$redirect_id = $redirects->create(
 			array(
-				'source'      => '/keep-redirect',
+				'source'      => $source,
 				'target_url'  => 'https://example.com/',
 				'target_type' => 'link',
 				'match_type'  => 'exact',
@@ -325,6 +525,11 @@ class ApiLogsTest extends WP_UnitTestCase {
 		$this->assertNull( $model->get_by_url( '/purge-a' ) );
 		$this->assertNull( $model->get_by_url( '/purge-b' ) );
 		$this->assertNotNull( $redirects->find( $redirect_id ) );
+		$this->assertSame( $baseline + 1, (int) $redirects->paginate( array( 'number' => 1 ) )['total'] );
+
+		// Tidy up — TRUNCATE above committed the surrounding tx, so the
+		// usual rollback can't undo this row.
+		$redirects->delete( $redirect_id );
 	}
 
 	/**

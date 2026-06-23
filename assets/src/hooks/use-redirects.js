@@ -30,16 +30,20 @@ const viewToQuery = (view) => {
 	}
 
 	if (Array.isArray(view.filters)) {
-		view.filters.forEach((filter) => {
-			if (
-				filter &&
-				filter.field &&
-				filter.value !== undefined &&
-				filter.value !== ''
-			) {
-				query[filter.field] = filter.value
-			}
-		})
+		const filters = view.filters
+			.filter(
+				(f) =>
+					f &&
+					f.field &&
+					f.operator &&
+					f.value !== undefined &&
+					f.value !== '' &&
+					!(Array.isArray(f.value) && f.value.length === 0),
+			)
+			.map(({ field, operator, value }) => ({ field, operator, value }))
+		if (filters.length > 0) {
+			query.filters = filters
+		}
 	}
 
 	return query

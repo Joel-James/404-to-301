@@ -12,15 +12,13 @@ namespace DuckDev\FourNotFour\Database\Queries;
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) || exit;
 
-use BerlinDB\Database\Query;
-
 /**
  * Class Redirect
  *
  * @since   4.0.0
  * @package DuckDev\FourNotFour\Database\Queries
  */
-class Redirect extends Query {
+class Redirect extends Base_Query {
 
 	/**
 	 * Table name (without WP prefix).

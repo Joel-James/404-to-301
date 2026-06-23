@@ -160,28 +160,13 @@ class Logs extends Endpoint {
 	public function list( WP_REST_Request $request ): WP_REST_Response {
 		$args = $this->paging( $request, 'updated_at' );
 
-		$status = $request->get_param( 'status' );
-		if ( null !== $status && '' !== $status ) {
-			$args['status'] = (int) $status;
-		}
-
 		$search = (string) $request->get_param( 'search' );
 		if ( '' !== $search ) {
 			$args['search'] = $search;
 		}
 
-		$date_from = (string) $request->get_param( 'date_from' );
-		$date_to   = (string) $request->get_param( 'date_to' );
-		if ( '' !== $date_from || '' !== $date_to ) {
-			$range = array( 'column' => 'created_at' );
-			if ( '' !== $date_from ) {
-				$range['after'] = $date_from;
-			}
-			if ( '' !== $date_to ) {
-				$range['before'] = $date_to;
-			}
-			$args['date_query'] = array( $range );
-		}
+		$filters = (array) ( $request->get_param( 'filters' ) ?? array() );
+		Filter_Mapper::for_logs()->apply( $filters, $args );
 
 		$result = LogsModel::instance()->paginate( $args );
 
@@ -388,30 +373,47 @@ class Logs extends Endpoint {
 	 */
 	private function list_args(): array {
 		return array(
-			'page'      => array(
+			'page'     => array(
 				'type'    => 'integer',
 				'default' => 1,
 			),
-			'per_page'  => array(
+			'per_page' => array(
 				'type'    => 'integer',
 				'default' => 20,
 			),
-			'orderby'   => array(
+			'orderby'  => array(
 				'type'    => 'string',
 				'default' => 'updated_at',
 			),
-			'order'     => array(
+			'order'    => array(
 				'type'    => 'string',
 				'enum'    => array( 'ASC', 'DESC', 'asc', 'desc' ),
 				'default' => 'DESC',
 			),
-			'search'    => array( 'type' => 'string' ),
-			'status'    => array(
-				'type' => 'integer',
-				'enum' => array( 0, 1, 2 ),
+			'search'   => array( 'type' => 'string' ),
+			// DataViews v16 `view.filters` shape: `[ { field, operator,
+			// value }, … ]`. Validated and translated into BerlinDB
+			// query args by {@see Filter_Mapper::for_logs()}.
+			'filters'  => array(
+				'type'    => 'array',
+				'items'   => array(
+					'type'       => 'object',
+					'properties' => array(
+						'field'    => array(
+							'type' => 'string',
+							'enum' => array( 'url', 'ref', 'ip', 'hits', 'status' ),
+						),
+						'operator' => array( 'type' => 'string' ),
+						// `value` is mixed (scalar or array depending on
+						// operator); validate per-operator inside the mapper.
+						'value'    => array(
+							'type' => array( 'string', 'integer', 'number', 'boolean', 'array', 'null' ),
+						),
+					),
+					'required'   => array( 'field', 'operator' ),
+				),
+				'default' => array(),
 			),
-			'date_from' => array( 'type' => 'string' ),
-			'date_to'   => array( 'type' => 'string' ),
 		);
 	}
 

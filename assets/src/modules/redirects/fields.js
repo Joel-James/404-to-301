@@ -85,7 +85,8 @@ export const fields = [
 		type: 'integer',
 		elements: redirectTypes,
 		enableSorting: true,
-		filterBy: { operators: ['is', 'isNot'] },
+		// Status codes are an enum — only membership operators apply.
+		filterBy: { operators: ['is', 'isNot', 'isAny', 'isNone'] },
 		// Show the bare status code in the column so it fits the narrow
 		// width; the full label (e.g. "301 — Moved Permanently (SEO)")
 		// stays available on hover.
@@ -105,18 +106,18 @@ export const fields = [
 		label: __('Match', '404-to-301'),
 		type: 'text',
 		elements: matchTypes,
-		filterBy: { operators: ['is', 'isNot'] },
+		filterBy: { operators: ['is', 'isNot', 'isAny', 'isNone'] },
 		render: ({ item }) => findLabel(matchTypes, item.match_type),
 	},
 	{
-		// Filter-only by default (not in `defaultView.fields`), so it
-		// adds a "Destination type" filter without forcing the column
-		// on — the Destination column already shows link vs. page.
 		id: 'target_type',
 		label: __('Destination type', '404-to-301'),
 		type: 'text',
 		elements: targetTypes,
-		filterBy: { operators: ['is', 'isNot'] },
+		// The Destination column already shows link vs. page; an
+		// explicit destination-type filter is more clutter than
+		// signal here, so leave it column-only.
+		filterBy: false,
 		render: ({ item }) => findLabel(targetTypes, item.target_type),
 	},
 	{
@@ -124,7 +125,9 @@ export const fields = [
 		label: __('Status', '404-to-301'),
 		type: 'boolean',
 		elements: activeStates,
-		filterBy: { operators: ['is'] },
+		// `isNot` is collapsed back to `is` (with the flipped bool) on
+		// the server side — see {@see Filter_Mapper::translate()}.
+		filterBy: { operators: ['is', 'isNot'] },
 		render: ({ item }) => {
 			const label = item.is_active
 				? __('Active', '404-to-301')
@@ -158,6 +161,9 @@ export const fields = [
 		label: __('Last hit', '404-to-301'),
 		type: 'datetime',
 		enableSorting: true,
+		// Date columns are sortable but not filterable — see the
+		// matching note in logs/fields.js.
+		filterBy: false,
 		render: ({ item }) =>
 			item.last_hit_at ? (
 				<time dateTime={item.last_hit_at}>
@@ -172,6 +178,7 @@ export const fields = [
 		label: __('Created', '404-to-301'),
 		type: 'datetime',
 		enableSorting: true,
+		filterBy: false,
 		render: ({ item }) =>
 			item.created_at ? (
 				<time dateTime={item.created_at}>
@@ -190,6 +197,9 @@ export const fields = [
 		label: __('Last edited by', '404-to-301'),
 		type: 'text',
 		enableSorting: true,
+		// We don't ship a user-picker for filtering by author; keep
+		// the column sortable but off the filter list.
+		filterBy: false,
 		render: ({ item }) =>
 			item.modified_by_name ? (
 				<span className="d404-modified-by">

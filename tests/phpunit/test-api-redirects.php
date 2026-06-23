@@ -260,9 +260,9 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * `GET /redirects?is_active=…` narrows the collection to matching rows.
+	 * `is_active` with `is false` narrows the collection to disabled rows.
 	 */
-	public function test_list_filters_by_is_active(): void {
+	public function test_list_filters_by_is_active_false(): void {
 		$model = RedirectsModel::instance();
 		$model->create(
 			array(
@@ -283,11 +283,184 @@ class ApiRedirectsTest extends WP_UnitTestCase {
 			)
 		);
 
-		$response = $this->dispatch( 'GET', self::ROUTE, array( 'is_active' => false ) );
+		$response = $this->dispatch(
+			'GET',
+			self::ROUTE,
+			array(
+				'filters' => array(
+					array(
+						'field'    => 'is_active',
+						'operator' => 'is',
+						'value'    => false,
+					),
+				),
+			)
+		);
 
 		$data = $response->get_data();
 		$this->assertCount( 1, $data );
 		$this->assertSame( '/off', $data[0]['source'] );
+	}
+
+	/**
+	 * `is_active` with `isNot true` is normalised server-side into
+	 * `is false`, so the result is identical to passing `is false`.
+	 */
+	public function test_list_filters_by_is_active_is_not_true_normalised(): void {
+		$model = RedirectsModel::instance();
+		$model->create(
+			array(
+				'source'      => '/on2',
+				'target_url'  => 'https://example.com/on2',
+				'match_type'  => 'exact',
+				'target_type' => 'link',
+				'is_active'   => 1,
+			)
+		);
+		$model->create(
+			array(
+				'source'      => '/off2',
+				'target_url'  => 'https://example.com/off2',
+				'match_type'  => 'exact',
+				'target_type' => 'link',
+				'is_active'   => 0,
+			)
+		);
+
+		$response = $this->dispatch(
+			'GET',
+			self::ROUTE,
+			array(
+				'filters' => array(
+					array(
+						'field'    => 'is_active',
+						'operator' => 'isNot',
+						'value'    => true,
+					),
+				),
+			)
+		);
+
+		$data = $response->get_data();
+		$this->assertCount( 1, $data );
+		$this->assertSame( '/off2', $data[0]['source'] );
+	}
+
+	/**
+	 * `redirect_type` with `isAny` narrows to rows whose status code is
+	 * in the supplied set.
+	 */
+	public function test_list_filters_by_redirect_type_is_any(): void {
+		$model = RedirectsModel::instance();
+		// Sources include a unique prefix so other tests' committed
+		// leftovers (TRUNCATE-via-purge breaks the rollback) can't
+		// collide with our `source_hash` UNIQUE.
+		$tag = 'isany-' . uniqid( '', true );
+		$model->create(
+			array(
+				'source'        => "/{$tag}-r301",
+				'target_url'    => 'https://example.com/a',
+				'match_type'    => 'exact',
+				'target_type'   => 'link',
+				'redirect_type' => 301,
+				'is_active'     => 1,
+			)
+		);
+		$model->create(
+			array(
+				'source'        => "/{$tag}-r302",
+				'target_url'    => 'https://example.com/b',
+				'match_type'    => 'exact',
+				'target_type'   => 'link',
+				'redirect_type' => 302,
+				'is_active'     => 1,
+			)
+		);
+		$id_307 = $model->create(
+			array(
+				'source'        => "/{$tag}-r307",
+				'target_url'    => 'https://example.com/c',
+				'match_type'    => 'exact',
+				'target_type'   => 'link',
+				'redirect_type' => 307,
+				'is_active'     => 1,
+			)
+		);
+
+		$response = $this->dispatch(
+			'GET',
+			self::ROUTE,
+			array(
+				'per_page' => 100,
+				'filters'  => array(
+					array(
+						'field'    => 'redirect_type',
+						'operator' => 'isAny',
+						'value'    => array( 301, 302 ),
+					),
+				),
+			)
+		);
+
+		$sources = wp_list_pluck( $response->get_data(), 'source' );
+		$this->assertContains( "/{$tag}-r301", $sources );
+		$this->assertContains( "/{$tag}-r302", $sources );
+		$this->assertNotContains( "/{$tag}-r307", $sources );
+
+		// Tagged rows for `redirect_type` filtering are unique per run,
+		// so a single delete is enough — but every row this test
+		// inserts still has to be torn down by hand because the wider
+		// suite leaves the table in an implicit-commit state (see the
+		// purge tests).
+		foreach ( $response->get_data() as $row ) {
+			if ( str_starts_with( $row['source'], "/{$tag}-" ) ) {
+				$model->delete( (int) $row['id'] );
+			}
+		}
+		$model->delete( $id_307 );
+	}
+
+	/**
+	 * `source` with `startsWith` runs a LIKE clause anchored at the
+	 * beginning of the value.
+	 */
+	public function test_list_filters_by_source_starts_with(): void {
+		$model = RedirectsModel::instance();
+		$model->create(
+			array(
+				'source'      => '/blog/a',
+				'target_url'  => 'https://example.com/a',
+				'match_type'  => 'exact',
+				'target_type' => 'link',
+				'is_active'   => 1,
+			)
+		);
+		$model->create(
+			array(
+				'source'      => '/news/a',
+				'target_url'  => 'https://example.com/n',
+				'match_type'  => 'exact',
+				'target_type' => 'link',
+				'is_active'   => 1,
+			)
+		);
+
+		$response = $this->dispatch(
+			'GET',
+			self::ROUTE,
+			array(
+				'filters' => array(
+					array(
+						'field'    => 'source',
+						'operator' => 'startsWith',
+						'value'    => '/blog',
+					),
+				),
+			)
+		);
+
+		$sources = wp_list_pluck( $response->get_data(), 'source' );
+		$this->assertSame( array( '/blog/a' ), $sources );
 	}
 
 	/**

@@ -48,7 +48,20 @@ final class Logs extends Table {
 	 * @since 4.0.0
 	 * @var string
 	 */
-	protected $version = '4.0.0';
+	protected $version = '4.0.2';
+
+	/**
+	 * Per-version upgrade routines.
+	 *
+	 * BerlinDB compares each declared version against the value stored
+	 * in `db_version` and runs only the callbacks that are newer.
+	 *
+	 * @since 4.0.2
+	 * @var array<string, string>
+	 */
+	protected $upgrades = array(
+		'4.0.2' => 'upgrade_to_4_0_2',
+	);
 
 	/**
 	 * Wire the schema in.
@@ -81,7 +94,28 @@ final class Logs extends Table {
 			UNIQUE KEY url_hash (url_hash),
 			KEY status (status),
 			KEY created_at (created_at),
-			KEY redirect_id (redirect_id)
+			KEY redirect_id (redirect_id),
+			KEY ip (ip),
+			KEY hits (hits)
 		";
+	}
+
+	/**
+	 * Add the `ip` and `hits` indexes introduced in 4.0.2.
+	 *
+	 * Both columns are now filterable via the DataViews list view:
+	 * `ip` takes equality / IN filters, `hits` takes numeric range
+	 * filters (`<`, `>`, `BETWEEN`). Without an index those filters
+	 * scan the full table.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @return bool True on success.
+	 */
+	protected function upgrade_to_4_0_2(): bool {
+		$this->get_db()->query( "ALTER TABLE {$this->table_name} ADD KEY ip (ip)" );
+		$this->get_db()->query( "ALTER TABLE {$this->table_name} ADD KEY hits (hits)" );
+
+		return $this->is_success( true );
 	}
 }

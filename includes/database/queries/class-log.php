@@ -16,15 +16,13 @@ namespace DuckDev\FourNotFour\Database\Queries;
 // If this file is called directly, abort.
 defined( 'ABSPATH' ) || exit;
 
-use BerlinDB\Database\Query;
-
 /**
  * Class Log
  *
  * @since   4.0.0
  * @package DuckDev\FourNotFour\Database\Queries
  */
-class Log extends Query {
+class Log extends Base_Query {
 
 	/**
 	 * Table name (without WP prefix). Matches `Database\Tables\Logs::$name`.
