@@ -16,14 +16,16 @@ export const defaultView = {
 	filters: [],
 	layout: {
 		density: 'comfortable',
-		// Center every data column except the long-text ones (Referrer,
-		// User agent) and the primary column (404 Path), which read
-		// better left-aligned. `align` here maps to DataViews'
-		// `cell-align-center` class; an explicit value also overrides
-		// the integer default right-alignment for Hits / Status.
+		// Center the short, fixed-size data columns (Hits, Status,
+		// Last hit). The width-capped, potentially-long columns —
+		// Referrer, IP (IPv6 can be long), User agent — and the primary
+		// column (404 Path) stay left-aligned so they truncate cleanly;
+		// centering fights truncation. `align` maps to DataViews'
+		// `cell-align-center` class and also overrides the integer
+		// default right-alignment for Hits / Status.
 		styles: {
 			ref: { maxWidth: '260px' },
-			ip: { maxWidth: '160px', align: 'center' },
+			ip: { maxWidth: '160px' },
 			ua: { maxWidth: '260px' },
 			hits: { align: 'center' },
 			status: { align: 'center' },

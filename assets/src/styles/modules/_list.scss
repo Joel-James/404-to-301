@@ -129,13 +129,30 @@ $prefix: '#{variables.$prefix}';
 			overflow: hidden;
 		}
 
-		// DataViews 16 right-aligns integer/number columns (Hits, Type,
-		// Status) via `cell-align-end` → `justify-content: flex-end`.
-		// Combined with the `max-width: 0; overflow: hidden` truncation
-		// hack above, that pushes the (short) value past the clipped
-		// edge and hides it entirely — the columns render but look
-		// blank. These cells don't need truncation, so keep them
-		// left-aligned (as they were pre-DataViews-16) to stay visible.
+		// Centered columns (set via `view.layout.styles[col].align`)
+		// hold short, fixed-size values — status codes, icons, counts,
+		// dates. The `max-width: 0; overflow: hidden` truncation clip
+		// above is meant for the long, width-capped columns; on a
+		// centered cell it hides content on BOTH sides (e.g. "301" → "3",
+		// "Exact" → "Exa", a half-cut Hits badge). Exempt these cells so
+		// they size to their content, and drop DataViews' 15ch min-width
+		// so the column stays compact around the centered value.
+		.dataviews-view-table tbody td:has(
+				.dataviews-view-table__cell-align-center
+			) {
+			max-width: none;
+			overflow: visible;
+		}
+
+		.dataviews-view-table tbody td
+			.dataviews-view-table__cell-content-wrapper.dataviews-view-table__cell-align-center {
+			min-width: 0;
+		}
+
+		// Safety net: if any integer/number column is ever shown without
+		// an explicit `align` it falls back to DataViews 16's default
+		// right-alignment (`cell-align-end`), which the clip above would
+		// hide. Keep such cells left-aligned so they stay visible.
 		.dataviews-view-table tbody td
 			.dataviews-view-table__cell-align-end {
 			justify-content: flex-start;
