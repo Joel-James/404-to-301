@@ -18,7 +18,7 @@
     "pack": "bash bin/pack.sh"
   },
   "dependencies": {
-    "@wordpress/dataviews": "^4.0.0",
+    "@wordpress/dataviews": "^16.0.1",
     "clsx": "^2.1.1"
   },
   "devDependencies": {

@@ -55,9 +55,15 @@ export const redirectFormFields = [
 		),
 		// Required: reject an empty / whitespace-only source on the
 		// client so the submit button stays disabled until the user
-		// types something. Server still re-validates.
-		isValid: (item) =>
-			typeof item.source === 'string' && item.source.trim() !== '',
+		// types something. Server still re-validates. `custom` returns
+		// null when valid or an error string DataForm surfaces inline.
+		isValid: {
+			required: true,
+			custom: (item) =>
+				typeof item.source === 'string' && item.source.trim() !== ''
+					? null
+					: __('Enter a source URL or pattern.', '404-to-301'),
+		},
 	},
 	{
 		id: 'match_type',
@@ -90,11 +96,19 @@ export const redirectFormFields = [
 		// and nothing renders for `'none'`.
 		isVisible: (data) => data.target_type === 'link',
 		// Required when visible; must parse as an absolute http(s) URL
-		// or a root-relative path. Ignored when the field is hidden so
-		// `target_type === 'page' | 'none'` rows can still submit.
-		isValid: (item) =>
-			item.target_type !== 'link' ||
-			isValidRedirectTarget(item.target_url),
+		// or a root-relative path. Conditional on `target_type`, so it
+		// stays in `custom` rather than `required` — `page` / `none`
+		// rows still submit with an empty target URL.
+		isValid: {
+			custom: (item) =>
+				item.target_type !== 'link' ||
+				isValidRedirectTarget(item.target_url)
+					? null
+					: __(
+							'Enter a valid URL (https://…) or a root-relative path (/page).',
+							'404-to-301',
+					  ),
+		},
 	},
 	{
 		id: 'target_page_id',
@@ -104,8 +118,12 @@ export const redirectFormFields = [
 		// numeric input — see PageSelectEdit.
 		Edit: PageSelectEdit,
 		isVisible: (data) => data.target_type === 'page',
-		isValid: (item) =>
-			item.target_type !== 'page' || Number(item.target_page_id) > 0,
+		isValid: {
+			custom: (item) =>
+				item.target_type !== 'page' || Number(item.target_page_id) > 0
+					? null
+					: __('Select a target page.', '404-to-301'),
+		},
 	},
 	{
 		id: 'redirect_type',
@@ -164,7 +182,7 @@ export const redirectFormFields = [
  * `isVisible` on individual fields handles the target-type swap.
  */
 export const redirectFormLayout = {
-	type: 'regular',
+	layout: { type: 'regular' },
 	fields: [
 		'source',
 		'match_type',

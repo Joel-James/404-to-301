@@ -129,6 +129,18 @@ $prefix: '#{variables.$prefix}';
 			overflow: hidden;
 		}
 
+		// DataViews 16 right-aligns integer/number columns (Hits, Type,
+		// Status) via `cell-align-end` → `justify-content: flex-end`.
+		// Combined with the `max-width: 0; overflow: hidden` truncation
+		// hack above, that pushes the (short) value past the clipped
+		// edge and hides it entirely — the columns render but look
+		// blank. These cells don't need truncation, so keep them
+		// left-aligned (as they were pre-DataViews-16) to stay visible.
+		.dataviews-view-table tbody td
+			.dataviews-view-table__cell-align-end {
+			justify-content: flex-start;
+		}
+
 		// Give the primary (titleField) column a quarter of the table
 		// width. DataViews renders it as the first `<th>`/`<td>` after
 		// the checkbox column and — unlike data columns — it doesn't

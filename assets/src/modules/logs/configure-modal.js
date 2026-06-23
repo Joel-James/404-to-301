@@ -115,7 +115,7 @@ const ConfigureLog = ({ items, closeModal, onSave }) => {
 	// Hide the field and surface the real lever via the hint instead.
 	const hasLinkedRedirect = Boolean(log.redirect_id)
 	const layout = {
-		type: 'regular',
+		layout: { type: 'regular' },
 		fields: hasLinkedRedirect
 			? ['override_email']
 			: ['override_redirect', 'override_email'],

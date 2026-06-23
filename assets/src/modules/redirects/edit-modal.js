@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n'
-import { useState, useEffect, useMemo } from '@wordpress/element'
+import { useState, useEffect } from '@wordpress/element'
 import {
 	Button,
 	Flex,
@@ -9,7 +9,7 @@ import {
 	TextControl,
 	__experimentalVStack as VStack,
 } from '@wordpress/components'
-import { DataForm, isItemValid } from '@wordpress/dataviews'
+import { DataForm, useFormValidity } from '@wordpress/dataviews'
 import { redirectFormFields, redirectFormLayout } from './form-fields'
 
 // Form fields and layout with `source` excluded — used when the source is locked.
@@ -82,16 +82,19 @@ const EditRedirect = ({
 		}
 	}, [redirect])
 
-	// `isItemValid` runs every field's `isValid` callback against the
-	// current draft. When the source is locked it's excluded from the
-	// editable fields but still present in `form` state, so validation
-	// still passes without the user having to touch it.
+	// `useFormValidity` runs every field's `isValid` rules against the
+	// current draft, returning `isValid` (drives the submit button) and
+	// `validity` (per-field error messages fed back to DataForm so it
+	// can render them inline). When the source is locked it's excluded
+	// from the editable fields but still present in `form` state, so
+	// validation still passes without the user having to touch it.
 	const activeFields = lockSource ? formFieldsNoSource : redirectFormFields
 	const activeLayout = lockSource ? formLayoutNoSource : redirectFormLayout
 
-	const canSubmit = useMemo(
-		() => isItemValid(form, activeFields, activeLayout),
-		[form, activeFields, activeLayout],
+	const { validity, isValid: canSubmit } = useFormValidity(
+		form,
+		activeFields,
+		activeLayout,
 	)
 
 	// DataForm emits partial edits — merge them into the current
@@ -173,6 +176,7 @@ const EditRedirect = ({
 						fields={activeFields}
 						form={activeLayout}
 						onChange={handleChange}
+						validity={validity}
 					/>
 				</VStack>
 
