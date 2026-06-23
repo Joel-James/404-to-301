@@ -111,12 +111,13 @@ export const fields = [
 						</span>
 					</Tooltip>
 					{hasRedirect && (
-						<Tooltip
-							text={__('Has custom redirect', '404-to-301')}
-						>
+						<Tooltip text={__('Has custom redirect', '404-to-301')}>
 							<span
 								className="d404-status-redirect-badge"
-								aria-label={__('Has custom redirect', '404-to-301')}
+								aria-label={__(
+									'Has custom redirect',
+									'404-to-301',
+								)}
 							>
 								<Icon icon={shuffle} size={14} />
 							</span>

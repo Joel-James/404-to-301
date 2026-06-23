@@ -16,12 +16,17 @@ const LogsPage = () => {
 		{ label: __('Open', '404-to-301'), value: data?.open ?? 0 },
 		{ label: __('Fixed', '404-to-301'), value: data?.fixed ?? 0 },
 		{ label: __('Ignored', '404-to-301'), value: data?.ignored ?? 0 },
-		{ label: __('Custom redirects', '404-to-301'), value: data?.custom ?? 0 },
+		{
+			label: __('Custom redirects', '404-to-301'),
+			value: data?.custom ?? 0,
+		},
 	]
 
 	return (
 		<>
-			<PageHeader title={__('404 to 301 - 404 Error Logs', '404-to-301')} />
+			<PageHeader
+				title={__('404 to 301 - 404 Error Logs', '404-to-301')}
+			/>
 			<PageBody wide>
 				<Notices />
 				<MigrationBanner />

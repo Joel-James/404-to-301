@@ -45,7 +45,9 @@ const ViewDetails = ({ items, closeModal }) => {
 			    the subject of this modal, not just another row in the data. */}
 			<div className="d404-log-details__header">
 				<code className="d404-log-details__path">{log.url || '—'}</code>
-				<span className={`d404-log-details__status d404-log-details__status--${statusSlug}`}>
+				<span
+					className={`d404-log-details__status d404-log-details__status--${statusSlug}`}
+				>
 					{statusLabel}
 				</span>
 			</div>
@@ -69,7 +71,9 @@ const ViewDetails = ({ items, closeModal }) => {
 							<th>{__('Referrer', '404-to-301')}</th>
 							<td>
 								{log.ref ? (
-									<ExternalLink href={log.ref}>{log.ref}</ExternalLink>
+									<ExternalLink href={log.ref}>
+										{log.ref}
+									</ExternalLink>
 								) : (
 									'—'
 								)}
@@ -77,11 +81,15 @@ const ViewDetails = ({ items, closeModal }) => {
 						</tr>
 						<tr>
 							<th>{__('IP address', '404-to-301')}</th>
-							<td className="d404-log-details__mono">{log.ip || '—'}</td>
+							<td className="d404-log-details__mono">
+								{log.ip || '—'}
+							</td>
 						</tr>
 						<tr>
 							<th>{__('User agent', '404-to-301')}</th>
-							<td className="d404-log-details__mono">{log.ua || '—'}</td>
+							<td className="d404-log-details__mono">
+								{log.ua || '—'}
+							</td>
 						</tr>
 						<tr>
 							<th>{__('Method', '404-to-301')}</th>
@@ -125,7 +133,10 @@ const ViewDetails = ({ items, closeModal }) => {
 								{hasRedirect
 									? sprintf(
 											/* translators: %d: redirect id. */
-											__('Linked to redirect #%d', '404-to-301'),
+											__(
+												'Linked to redirect #%d',
+												'404-to-301',
+											),
 											log.redirect_id,
 									  )
 									: __('Not set', '404-to-301')}

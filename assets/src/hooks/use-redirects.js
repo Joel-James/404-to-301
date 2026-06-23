@@ -107,8 +107,7 @@ const useRedirects = (view) => {
 				return { ok: true }
 			} catch (e) {
 				const message =
-					e?.message ||
-					__('Failed to create redirect.', '404-to-301')
+					e?.message || __('Failed to create redirect.', '404-to-301')
 				createErrorNotice(message)
 				return {
 					ok: false,
@@ -136,8 +135,7 @@ const useRedirects = (view) => {
 				return { ok: true }
 			} catch (e) {
 				const message =
-					e?.message ||
-					__('Failed to update redirect.', '404-to-301')
+					e?.message || __('Failed to update redirect.', '404-to-301')
 				createErrorNotice(message)
 				return {
 					ok: false,

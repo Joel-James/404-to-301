@@ -151,7 +151,10 @@ const EditRedirect = ({
 					{lockSource && (
 						<div className="d404-source-locked">
 							<TextControl
-								label={__('Source URL or pattern', '404-to-301')}
+								label={__(
+									'Source URL or pattern',
+									'404-to-301',
+								)}
 								value={form.source}
 								onChange={() => {}}
 								disabled

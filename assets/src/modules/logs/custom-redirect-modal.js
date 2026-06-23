@@ -102,7 +102,9 @@ const CustomRedirectModal = ({ log, onClose, onSaved }) => {
 	return (
 		<EditRedirect
 			redirect={hasLinkedRedirect ? existingRedirect : null}
-			initialValues={hasLinkedRedirect ? null : { source: log?.url ?? '' }}
+			initialValues={
+				hasLinkedRedirect ? null : { source: log?.url ?? '' }
+			}
 			lockSource
 			onClose={onClose}
 			onSave={handleSave}

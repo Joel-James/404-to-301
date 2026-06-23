@@ -49,7 +49,9 @@ const PurgeLogs = () => {
 	return (
 		<div className="d404-purge-wrap">
 			{notice && (
-				<div className={`d404-purge-notice d404-purge-notice--${notice.type}`}>
+				<div
+					className={`d404-purge-notice d404-purge-notice--${notice.type}`}
+				>
 					{notice.message}
 				</div>
 			)}

@@ -29,19 +29,13 @@ const CROSS_SELL_ADDONS = [
 		key: 'email_reports',
 		label: __('Email Reports', '404-to-301'),
 		url: 'https://duckdev.com/addon/404-to-301-email-reports/',
-		text: __(
-			'scheduled email digests of your 404s',
-			'404-to-301',
-		),
+		text: __('scheduled email digests of your 404s', '404-to-301'),
 	},
 	{
 		key: 'telegram_alerts',
 		label: __('Telegram Alerts', '404-to-301'),
 		url: 'https://duckdev.com/addon/404-to-301-telegram-alerts/',
-		text: __(
-			'instant 404 alerts in Telegram',
-			'404-to-301',
-		),
+		text: __('instant 404 alerts in Telegram', '404-to-301'),
 	},
 ]
 
