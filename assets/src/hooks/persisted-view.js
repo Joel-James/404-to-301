@@ -69,6 +69,15 @@ const usePersistedView = (storageKey, defaultView) => {
 			layout: {
 				...(defaultView.layout || {}),
 				...(stored.layout || {}),
+				// Deep-merge per-column styles so defaults introduced in
+				// code (e.g. column alignment) reach users with an older
+				// persisted view, instead of being masked wholesale by
+				// the stored `layout`. Stored entries still win per
+				// column, so a width a user set by hand is preserved.
+				styles: {
+					...(defaultView.layout?.styles || {}),
+					...(stored.layout?.styles || {}),
+				},
 			},
 		}
 	})
