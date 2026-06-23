@@ -3,7 +3,7 @@
  * Plugin Name:       404 to 301 - Redirect Manager, 404 Error Logs & Notifications
  * Plugin URI:        https://wordpress.org/plugins/404-to-301/
  * Description:       Custom redirects (301, 302, 307), automatic 404 redirection, full 404 error logs and email alerts — a complete redirect & 404 toolkit.
- * Version:           4.0.2
+ * Version:           4.0.3
  * Author:            Joel James
  * Author URI:        https://duckdev.com/
  * Donate link:       https://paypal.me/JoelCJ
@@ -59,7 +59,7 @@ if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
  */
 
 // Plugin version (kept in sync with the `Version:` header above).
-define( 'D404_VERSION', '4.0.2' );
+define( 'D404_VERSION', '4.0.3' );
 
 // Database schema version. Bumped only when migrations change.
 define( 'D404_DB_VERSION', '4.0.0' );
