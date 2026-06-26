@@ -135,6 +135,36 @@ done
 # Strip OS noise that may have crept into the staged copy.
 find "$plugin_stage" -name '.DS_Store' -delete
 
+# Prune dev junk from each vendor package. Conservative list — LICENSE,
+# composer.json, README and anything under src/ stays. Removes CI
+# configs, test fixtures, dev-tool configs and editor metadata that have
+# no runtime use and just bloat the ZIP.
+if [[ -d "$plugin_stage/vendor" ]]; then
+	log "Pruning dev junk from staged vendor tree"
+
+	find "$plugin_stage/vendor" -type d \( \
+		-name '.github' -o \
+		-name 'tests' -o \
+		-name 'Tests' -o \
+		-name 'test' -o \
+		-name 'docs' -o \
+		-name 'examples' \
+	\) -prune -exec rm -rf {} +
+
+	find "$plugin_stage/vendor" -type f \( \
+		-name '.gitignore' -o \
+		-name '.gitattributes' -o \
+		-name '.editorconfig' -o \
+		-name '.travis.yml' -o \
+		-name '.scrutinizer.yml' -o \
+		-name 'phpcs*.xml*' -o \
+		-name 'phpunit*.xml*' -o \
+		-name 'psalm*.xml*' -o \
+		-name 'phpstan*.neon*' -o \
+		-name 'Makefile' \
+	\) -delete
+fi
+
 (cd "$stage" && zip -rq "$zip_path" "$SLUG")
 
 printf '\nPacked: %s\n' "$zip_path"
