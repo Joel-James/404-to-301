@@ -156,9 +156,10 @@ $prefix: '#{variables.$prefix}';
 		text-transform: uppercase;
 		letter-spacing: .02em;
 
-		&--premium { background: #3582c4; }
-		&--free    { background: #50575e; }
-		&--success { background: #008a20; }
-		&--warning { background: #b26200; }
+		&--premium  { background: #7c3aed; }
+		&--free     { background: #50575e; }
+		&--success  { background: #008a20; }
+		&--licensed { background: #008a20; }
+		&--warning  { background: #b26200; }
 	}
 }

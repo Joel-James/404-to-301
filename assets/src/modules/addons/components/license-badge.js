@@ -18,7 +18,7 @@ const LicenseBadge = ({ isActive, isLicenseActive }) => {
 	}
 
 	return isLicenseActive ? (
-		<Badge kind="success">{__('Licensed', '404-to-301')}</Badge>
+		<Badge kind="licensed">{__('Licensed', '404-to-301')}</Badge>
 	) : (
 		<Badge kind="warning">{__('Unlicensed', '404-to-301')}</Badge>
 	)
